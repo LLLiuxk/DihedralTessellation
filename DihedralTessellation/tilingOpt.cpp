@@ -863,7 +863,15 @@ namespace Tiling_tiles{
 			mid2.y = (extre[1][0].y + extre[1][1].y) / 2;
 			sae[1][0] = mid2 + (length_final / 2) * unit_vec(extre[1][0] - mid2);
 			sae[1][1] = mid2 + (length_final / 2) * unit_vec(extre[1][1] - mid2);
-			//double k =  
+			
+			vector<Point2f> out1;
+			re_warp_Aff(output_final, out1, sae[0][0], sae[0][1]);
+			proto_interval_first[i].swap(vector<Point2f>());
+			for (int i = 0; i < out1.size(); i++)
+			{
+				proto_interval_first[i][i] = out1[i];
+			}
+			//找到哪一条边的哪一个点是是改变后的sae点
 
 		}
 
