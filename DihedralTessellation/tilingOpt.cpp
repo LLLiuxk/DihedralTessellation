@@ -866,11 +866,8 @@ namespace Tiling_tiles{
 			
 			vector<Point2f> out1;
 			re_warp_Aff(output_final, out1, sae[0][0], sae[0][1]);
-			proto_interval_first[i].swap(vector<Point2f>());
-			for (int i = 0; i < out1.size(); i++)
-			{
-				proto_interval_first[i][i] = out1[i];
-			}
+			proto_interval_first[i].swap(out1);
+			
 			//找到哪一条边的哪一个点是是改变后的sae点
 
 		}

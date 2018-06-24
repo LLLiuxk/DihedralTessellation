@@ -350,6 +350,161 @@ namespace Tiling_tiles{
 		return shift;
 	}
 
+	double Tiling_opt::warpAff_sca(vector<Point2f> &input_, vector<Point2f> &output_, Point2f start, Point2f end)
+	{
+		if (input_[0] == start) cout << "ok!!----" << endl;
+		double scale = length_two_point2f(start, end) / length_two_point2f(input_[0], input_[input_.size()-1]);
+		Point2f srcTri[3];
+		Point2f dstTri[3];
+		srcTri[0] = input_[0];
+		srcTri[1] = input_[input_.size() - 1];
+		dstTri[0] = start;//Point2f(50, 50); 
+		//cout << "dstTri[0]: " << dstTri[0] << endl;
+		dstTri[1] = end; //Point2f(length_two_point2f(srcTri[0], srcTri[1]) + 50, 50);
+		
+		//先求dis_line和dis_x,在这里加上一个flag判断第三点在线的哪一侧
+		double dis_line = 0;
+		double line_k = 0;
+		double line_b = 0;
+		double dis_x;
+		int half = input_.size() / 2 - 1;
+		bool left = true;
+		if (abs(srcTri[0].x - srcTri[1].x) < 0.001)  //line 为x=start.x
+		{
+			dis_line = input_[half].x - srcTri[0].x;
+			while ((abs(dis_line) <= 0.01) && (half < (input_.size() - 1))) //dis_line==0 说明共线
+			{
+				half++;
+				dis_line = input_[half].y;
+			}
+			if (dis_line == 0)
+			{
+				cout << "Error: no enough Noncollinear Point!" << endl;
+				return 0;
+			}
+			dis_x = sqrt(length_two_point2f(input_[half], srcTri[0])*length_two_point2f(input_[half], srcTri[0]) - dis_line*dis_line);
+			if (dis_line > 0)
+			{
+				if (srcTri[0].y < srcTri[1].y) 
+					left = false;
+			}
+			else
+			{
+				if (srcTri[0].y > srcTri[1].y)
+					left = false;
+			}
+			dis_line = abs(dis_line);
+		}
+		else  //line为y=kx+b,点到直线的距离为|kx-y+b|/sart(k*k+1)
+		{
+			line_k = (srcTri[1].y - srcTri[0].y) / (srcTri[1].x - srcTri[0].x);
+			line_b = srcTri[0].y - srcTri[0].x*line_k;
+			dis_line = (line_k*input_[half].x - input_[half].y + line_b) / sqrt(line_k*line_k + 1); //正数说明在下方
+			while ((dis_line == 0) && (half < (input_.size() - 1))) //dis_line==0 说明共线
+			{
+				half++;
+				dis_line = (line_k*input_[half].x - input_[half].y + line_b) / sqrt(line_k*line_k + 1);
+			}
+			if (dis_line == 0)
+			{
+				cout << "Error: no enough Noncollinear Point!" << endl;
+				return 0;
+			}
+			dis_x = sqrt(length_two_point2f(input_[half], srcTri[0])*length_two_point2f(input_[half], srcTri[0]) - dis_line*dis_line);
+			if (dis_line > 0)
+			{
+				if (srcTri[0].x < srcTri[1].x)
+					left = false;
+			}
+			else
+			{
+				if (srcTri[0].x > srcTri[1].x)
+					left = false;
+			}
+			dis_line = abs(dis_line);
+		}
+		srcTri[2] = input_[half];
+		dis_x = dis_x*scale;
+		dis_line = dis_line*scale;
+		//确定第三点的目标位置
+		if (abs(start.x - end.x) <= 0.001)  //line 为x=start.x
+		{
+			if (start.y>end.y)
+			{
+				if (left)
+				{
+					dstTri[2].x = start.x + dis_line;
+					dstTri[2].y = start.y - dis_x;
+				}
+				else
+				{
+					dstTri[2].x = start.x - dis_line;
+					dstTri[2].y = start.y - dis_x;
+				}
+			}
+			else
+			{
+				if (left)
+				{
+					dstTri[2].x = start.x - dis_line;
+					dstTri[2].y = start.y + dis_x;
+				}
+				else
+				{
+					dstTri[2].x = start.x + dis_line;
+					dstTri[2].y = start.y + dis_x;
+				}
+			}
+		}
+		else   //line为y=kx+b,点到直线的距离为|kx-y+b|/sart(k*k+1)
+		{
+			line_k = (end.y - start.y) / (end.x - start.x);
+			Point2f vec = unit_vec(Point2f(1, line_k));
+			Point2f mid;
+			if (start.x < end.x)
+			{
+				mid = start + dis_x*vec;
+			}
+			else
+			{
+				mid = start - dis_x*vec;
+			}
+			Point2f v = unit_vec(Point2f(1, -1 / line_k));
+			if (!left) dis_line = -dis_line;
+
+			if (((start.x - end.x) *line_k)<0)  //异号，s.x<e.x且k>0 或者s.x>e.x且k<0  ,p=mid-d*v
+			{
+				dstTri[2] = mid - dis_line * v;
+			}
+			else
+			{
+				dstTri[2] = mid + dis_line * v;
+			}
+		}
+
+		Mat warp_mat(2, 3, CV_32FC1);
+
+		/*for (int i = 0; i < 3; i++)
+		{
+		cout << "srcTri["<<i<<"]: " << srcTri[i] << endl;
+		cout << "dstTri[" << i << "]: " << dstTri[i] << endl;
+		}*/
+		warp_mat = getAffineTransform(srcTri, dstTri);
+
+		//cout << warp_mat << endl;
+
+		cv::transform(input_, output_, warp_mat);//transform
+		//cout << "dstTri[0]: " << dstTri[0] << endl;
+		//for (int i = 0; i < input_.size(); i++)
+		//{
+		//	cout << "src[" << i << "]:" << input_[i] << endl;
+		//	cout << "dst[" << i << "]:" << output_[i] << endl;
+
+		//}
+		return length_two_point2f(dstTri[0], dstTri[1]) / 2;
+	}
+
+
 	double Tiling_opt::DTW(vector<Point2f> &first_arr, vector<Point2f> &second_arr)
 	{
 		//ofstream out("D:\\VisualStudioProjects\\manual_record\\dtw.txt");
