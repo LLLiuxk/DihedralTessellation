@@ -509,12 +509,24 @@ namespace Tiling_tiles{
 		Point2f srcTri[3];
 		Point2f dstTri[3];
 		vector<Point2f> output;
-		srcTri[0] = input1[0];
-		srcTri[1] = input1[2];
-		srcTri[2] = input1[input1.size() - 1];
-		dstTri[0] = input2[0];//Point2f(50, 50); 
-		dstTri[1] = input2[2];
-		dstTri[2] = input2[input2.size() - 1];
+		int half = input2.size() / 2 - 1;
+		srcTri[0] = input2[0];
+		srcTri[1] = input2[input2.size() - 1];
+
+		dstTri[0] = input1[input1.size() - 1];//Point2f(50, 50); 
+		dstTri[1] = input1[0];
+
+		while ((unit_vec(input2[half] - input2[0]) == unit_vec(input2[input2.size() - 1] - input2[half])) && half<input2.size()-1)
+		{
+			half++;
+		}
+		if (half == (input2.size() - 1))
+		{
+			cout << "Error: no enough Noncollinear Point!" << endl;
+			return 0;
+		}
+		srcTri[2] = input2[half];
+		dstTri[2] = input1[input1.size() - 1 - half];
 		Mat warp_mat(2, 3, CV_32FC1);
 
 		warp_mat = getAffineTransform(srcTri, dstTri);

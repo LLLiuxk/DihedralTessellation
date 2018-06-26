@@ -38,11 +38,11 @@ int main(int argc, char** argv)
 
 	b.push_back(Point2f(1, 1));
 	b.push_back(Point2f(2, 1));
-	b.push_back(Point2f(2, 0));
 	b.push_back(Point2f(3, 0));
-	b.push_back(Point2f(3, 1));
 	b.push_back(Point2f(4, 1));
+	b.push_back(Point2f(5, 1));
 	b.push_back(Point2f(5, 2));
+	b.push_back(Point2f(6, 2));
 	b.push_back(Point2f(6, 1));
 	b.push_back(Point2f(7, 1));
 
