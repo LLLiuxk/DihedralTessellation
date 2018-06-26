@@ -23,33 +23,43 @@ int main(int argc, char** argv)
 	////tiling->com_score(imagename1, imagename1);
 	//tiling->com_score_manual(imagename1, imagename2);
 
+	//¼ì²â¸÷ÖÖ·ÂÉä±ä»»
 	vector<Point2f> a;
 	vector<Point2f> b;
-	a.push_back(Point2f(0, 0));
-	a.push_back(Point2f(5, -4));
-	a.push_back(Point2f(7, 8));
-	a.push_back(Point2f(8, 4));
-	a.push_back(Point2f(14.14, 0));
-	Point2f s(2, 12);
-	Point2f e(12, 2);
-	double ab = tiling->re_warp_Aff(a, b, s, e);
-	for (int i = 0; i < a.size(); i++)
-	{
-		cout << "output: " << b[i] << endl;
+	a.push_back(Point2f(1, 1));
+	a.push_back(Point2f(2, 1));
+	a.push_back(Point2f(2, 2));
+	a.push_back(Point2f(3, 2));
+	a.push_back(Point2f(3, 1));
+	a.push_back(Point2f(4, 1));
+	a.push_back(Point2f(5, 0));
+	a.push_back(Point2f(6, 1));
+	a.push_back(Point2f(7, 1));
 
-	}
+	b.push_back(Point2f(1, 1));
+	b.push_back(Point2f(2, 1));
+	b.push_back(Point2f(2, 0));
+	b.push_back(Point2f(3, 0));
+	b.push_back(Point2f(3, 1));
+	b.push_back(Point2f(4, 1));
+	b.push_back(Point2f(5, 2));
+	b.push_back(Point2f(6, 1));
+	b.push_back(Point2f(7, 1));
 
-	//vector<Point2f> a;
-	//vector<Point2f> b;
-	//a.push_back(Point2f(1, 1));
-	//a.push_back(Point2f(2, 1));
-	//a.push_back(Point2f(3, 2));
-	//a.push_back(Point2f(4, 2));
+	vector<vector<Point2f>> prototwo;
+	tiling->Aff_place(a, b, prototwo);
+	//Point2f s(5, 1);
+	//Point2f e(1, 5);
+	////double ab = tiling->re_warp_Aff(a, b, s, e);
+	//double ab = tiling->warpAff_sca(a, b, s, e);
+	//for (int i = 0; i < a.size(); i++)
+	//{
+	//	cout << "output: " << b[i] << endl;
 
+	//}
 
-	//b.push_back(Point2f(1, 2));
-	//b.push_back(Point2f(2, 3));
-	//b.push_back(Point2f(3, 3));
+	//warpAff_sca(vector<Point2f> &input_, vector<Point2f> &output_, Point2f start, Point2f end)
+
 	//tiling->DTW(a, b);
 
 	

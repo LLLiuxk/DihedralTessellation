@@ -89,6 +89,8 @@ namespace Tiling_tiles{
 
 		double warpAff_sca(vector<Point2f> &input_, vector<Point2f> &output_,Point2f start, Point2f end);
 
+		double Aff_place(vector<Point2f> &input1, vector<Point2f> &input2, vector<vector<Point2f>> &prototwo);
+			 
 		double DTW(vector<Point2f> &first_arr, vector<Point2f> &second_arr);
 		void printPath(double d[][50], double dp[][50], int i, int j, vector<Point2f> &first_arr, vector<Point2f> &second_arr, vector<pair<int, int>>& path);
 		double quadr_mismatch(vector<Point2f> &first_arr, vector<Point2f> &second_arr, vector<char> &first_char, vector<char> &second_char);

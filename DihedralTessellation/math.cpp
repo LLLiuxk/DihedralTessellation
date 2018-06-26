@@ -504,6 +504,44 @@ namespace Tiling_tiles{
 		return length_two_point2f(dstTri[0], dstTri[1]) / 2;
 	}
 
+	double Tiling_opt::Aff_place(vector<Point2f> &input1, vector<Point2f> &input2, vector<vector<Point2f>> &prototwo)
+	{
+		Point2f srcTri[3];
+		Point2f dstTri[3];
+		vector<Point2f> output;
+		srcTri[0] = input1[0];
+		srcTri[1] = input1[2];
+		srcTri[2] = input1[input1.size() - 1];
+		dstTri[0] = input2[0];//Point2f(50, 50); 
+		dstTri[1] = input2[2];
+		dstTri[2] = input2[input2.size() - 1];
+		Mat warp_mat(2, 3, CV_32FC1);
+
+		warp_mat = getAffineTransform(srcTri, dstTri);
+
+		//cout << warp_mat << endl;
+
+		cv::transform(input1, output, warp_mat);//transform
+		Mat drawing1 = Mat::zeros(800,800, CV_8UC3);
+		for (int j = 0; j < input1.size(); j++)
+		{
+			circle(drawing1, input1[j]*20, 1, Scalar(255, 0, 0), -1);
+		}
+		Mat drawing2 = Mat::zeros(800, 800, CV_8UC3);
+		for (int j = 0; j < input2.size(); j++)
+		{
+			circle(drawing2, input2[j]*20, 1, Scalar(0, 255, 0), -1);
+		}
+		Mat drawing3 = Mat::zeros(800, 800, CV_8UC3);
+		for (int j = 0; j < output.size(); j++)
+		{
+			circle(drawing3, output[j]*20, 1, Scalar(0, 0, 255), -1);
+		}
+		imshow("1:",drawing1);
+		imshow("2:", drawing2);
+		imshow("out:", drawing3);
+		return 0;
+	}
 
 	double Tiling_opt::DTW(vector<Point2f> &first_arr, vector<Point2f> &second_arr)
 	{
