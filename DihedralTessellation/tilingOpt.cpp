@@ -425,7 +425,7 @@ namespace Tiling_tiles{
 
 
 		return total_score;
-			
+
 	}
 
 
@@ -433,7 +433,7 @@ namespace Tiling_tiles{
 	{
 		double score = 0;
 		double score2 = 0;
-		
+
 		vector<Point2f> first_after_aff;
 		vector<Point2f> second_after_aff;
 		vector<Point2f> second_after_aff_ref;
@@ -497,14 +497,14 @@ namespace Tiling_tiles{
 		out << "0 代表sec,1 代表ref" << endl;
 		prototile_first->loadTileData(imagename1);
 		prototile_second->loadTileData(imagename2);
-		
+
 		//选择100点的采样轮廓
 		vector<Point2f> contour1 = prototile_first->contour_sample[0];
 		vector<Point2f> contour2 = prototile_second->contour_sample[0];
 
 		//vector<double> contour1_cur = prototile_first->contour_curva[0];
 		//vector<double> contour2_cur = prototile_second->contour_curva[0];
-		
+
 
 		double factor = com_scale_factor();
 		for (int i = 0; i < contour2.size(); i++)
@@ -671,16 +671,16 @@ namespace Tiling_tiles{
 		out.close();
 		vector<pair<int, int>> order;
 
-		double score = com_optimal_score(proto_interval_first, proto_first_char,proto_interval_second, proto_second_char, order); //返回一种排列顺序以及分数并依次记录，order[i].first：轮廓1中第i段对应的2中的段数，order[i].second:匹配类型是反转还是正常
-		
+		double score = com_optimal_score(proto_interval_first, proto_first_char, proto_interval_second, proto_second_char, order); //返回一种排列顺序以及分数并依次记录，order[i].first：轮廓1中第i段对应的2中的段数，order[i].second:匹配类型是反转还是正常
+
 		//求得最优结果后重新计算得到排列方式，这里仍有一个问题：上一步com_optimal里的仍是通过仿射变化一段某一端点对齐的结果，下面展示的时候则是把对应边中点对齐
 		vector<Point2f> output_first;
 		vector<Point2f> output_second;
 		vector<Point2f> output_final;
 		vector<char> sec_char_out;
 		//vector<Point2f> output_second_ref;
-		
-		
+
+
 		//在这里进行变形的还原，可以将第一层for换成while加终止条件
 		for (int i = 0; i < 1; i++)
 		{
@@ -693,14 +693,14 @@ namespace Tiling_tiles{
 			Point2f sae[2][2];*/
 			/*for (int j = 0; j < proto_interval_first[i].size(); j++)
 			{
-				cout << "proto_interval_first[i]: " << proto_interval_first[i][j]  << endl;
+			cout << "proto_interval_first[i]: " << proto_interval_first[i][j]  << endl;
 			}
 			for (int j = 0; j < proto_interval_first[i].size(); j++)
 			{
-				cout << "proto_interval_second[i]: " << proto_interval_second[order[i].first][j] << endl;
+			cout << "proto_interval_second[i]: " << proto_interval_second[order[i].first][j] << endl;
 
 			}*/
-			
+
 			double re_first = warpAff_tra(proto_interval_first[i], output_first);
 			double re_second = 0;
 			if (order[i].second == 0)
@@ -744,16 +744,16 @@ namespace Tiling_tiles{
 				MyLine(drawing_src2, output_second[t], output_second[t + 1], "orange");
 				MyLine(drawing_src3, output_second[t], output_second[t + 1], "orange");  //总的展示
 			}
-			
+
 			cout << "dp_path: " << dp_path.size() << endl;
 			//重新计算
 			DTW(output_first, output_second); // 考虑是否加上字符串比较
 
 			for (int i = 0; i < dp_path.size(); i++)
 			{
-				MyLine(drawing_src3, output_first[dp_path[i].first], output_second[dp_path[i].second], "grey"); 
+				MyLine(drawing_src3, output_first[dp_path[i].first], output_second[dp_path[i].second], "grey");
 			}
-			
+
 			//---------------------以下为morphing阶段
 			// 首先找到一一对应的点序列
 			vector<Point2f> src1_points;
@@ -766,12 +766,12 @@ namespace Tiling_tiles{
 			//	cout << dp_path[i].first << " -- " << dp_path[i].second << endl;
 			//}
 			if (output_first.size() < output_second.size())
-			{	
+			{
 				int f = 1;
 				int j = 0;
 				for (int i = 1; i < output_first.size() - 1;)
 				{
-					
+
 					double min = 10000;
 					while (f < dp_path.size())
 					{
@@ -804,19 +804,19 @@ namespace Tiling_tiles{
 				}
 			}
 			else
-			{			
+			{
 				int f = 1;
 				int j = 0;
-				for (int i = 1; i < output_second.size() - 1; )
+				for (int i = 1; i < output_second.size() - 1;)
 				{
 					double min = 10000;
 
 					while (f < dp_path.size())
 					{
 
-						if ((dp_path[f].second < i) || dp_path[f].first < j) 
+						if ((dp_path[f].second < i) || dp_path[f].first < j)
 						{
-							
+
 							f++;
 							if (dp_path[f].second > i) i++;
 							continue;
@@ -860,7 +860,7 @@ namespace Tiling_tiles{
 			//if (src1_points.size() == src2_points.size()) cout << "____________________-------------------___________________";
 			//ImageMorphing(drawing_src1, src1_points, drawing_src2, src2_points, drawing_dst, output_final, 0.5);
 			//char i;
-			
+
 			//double length_final = length_two_point2f(output_final[0], output_final[output_final.size()-1]);
 			//for (int i = 0; i < output_final.size()-1; i++)
 			//{
@@ -875,7 +875,7 @@ namespace Tiling_tiles{
 			name = name + char(i + 48) + " pair: ";
 			imshow(name, drawing_src3);
 
-			
+
 			////在这里将out_final映射回原来的位置，根据两个端点的坐标
 			//Point2f mid1;
 			//mid1.x = (extre[0][0].x + extre[0][1].x) / 2;
@@ -925,7 +925,7 @@ namespace Tiling_tiles{
 			//	warpAff_sca(proto_interval_first[i+1], output_, proto_interval_first[i][proto_interval_first[i].size() - 1], proto_interval_first[i+1][proto_interval_first[i+1].size() - 1]);
 			//	proto_interval_first[i+1].swap(output_);
 			//}
-			
+
 
 			//找到哪一条边的哪一个点是是改变后的sae点
 		}
@@ -1004,7 +1004,7 @@ namespace Tiling_tiles{
 			}
 			MyLine(drawing4, proto_interval_second[i][0] - shift2, proto_interval_second[i][proto_interval_second[i].size() - 1] - shift2, "orange");
 		}
-		imshow("final " + imagename1 + " and  "+ imagename2 , drawing4);
+		imshow("final " + imagename1 + " and  " + imagename2, drawing4);
 
 
 		return 0;
