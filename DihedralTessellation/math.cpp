@@ -117,7 +117,7 @@ namespace Tiling_tiles{
 		double line_k = 0;
 		double line_b = 0;
 		double line_x = 0;
-		if ((srcTri[1].x - srcTri[0].x) <= 0.01) //line 为x=srcTri[1].x
+		if (abs(srcTri[1].x - srcTri[0].x) <= 0.01) //line 为x=srcTri[1].x
 		{
 			line_x = srcTri[1].x;
 			dis_line = input_[half].x - line_x;
@@ -506,15 +506,55 @@ namespace Tiling_tiles{
 
 	double Tiling_opt::Aff_place(vector<Point2f> &input1, vector<Point2f> &input2, vector<vector<Point2f>> &prototwo)
 	{
+		if (input1.size() == input2.size())
+			cout << "input right" << endl;
+		int flag = 0; 
 		Point2f srcTri[3];
 		Point2f dstTri[3];
 		vector<Point2f> output;
-		srcTri[0] = input1[0];
-		srcTri[1] = input1[2];
-		srcTri[2] = input1[input1.size() - 1];
-		dstTri[0] = input2[0];//Point2f(50, 50); 
-		dstTri[1] = input2[2];
-		dstTri[2] = input2[input2.size() - 1];
+		if (flag == 0)  //flag=0,sec
+		{
+			int half = input2.size() / 2 - 1;
+			srcTri[0] = input2[0];
+			srcTri[1] = input2[input2.size() - 1];
+
+			dstTri[0] = input1[input1.size() - 1];//Point2f(50, 50); 
+			dstTri[1] = input1[0];
+
+			while ((unit_vec(input2[half] - input2[0]) == unit_vec(input2[input2.size() - 1] - input2[half])) && half<input2.size() - 1)
+			{
+				half++;
+			}
+			if (half == (input2.size() - 1))
+			{
+				cout << "Error: no enough Noncollinear Point!" << endl;
+				return 0;
+			}
+			srcTri[2] = input2[half];
+			dstTri[2] = input1[input1.size() - 1 - half];
+		}
+		else   //flag=1,ref
+		{
+			int half = input2.size() / 2 - 1;
+			srcTri[0] = input2[0];
+			srcTri[1] = input2[input2.size() - 1];
+
+			dstTri[0] = input1[0];
+			dstTri[1] = input1[input1.size() - 1];
+
+			while ((unit_vec(input2[half] - input2[0]) == unit_vec(input2[input2.size() - 1] - input2[half])) && half<input2.size() - 1)
+			{
+				half++;
+			}
+			if (half == (input2.size() - 1))
+			{
+				cout << "Error: no enough Noncollinear Point!" << endl;
+				return 0;
+			}
+			srcTri[2] = input2[half];
+			dstTri[2] = input1[half];
+		}
+		
 		Mat warp_mat(2, 3, CV_32FC1);
 
 		warp_mat = getAffineTransform(srcTri, dstTri);
@@ -694,7 +734,7 @@ namespace Tiling_tiles{
 		int first_num = first_arr.size();
 		int second_num = second_arr.size();
 
-		cout << "\n        first.size: " << first_num << "  -----    chararr_size" << first_char.size() << endl;
+		//cout << "\n        first.size: " << first_num << "  -----    chararr_size" << first_char.size() << endl;
 
 		double dis[50][50];//两组点之间的坐标差异
 		for (int i = 0; i < first_num; i++)

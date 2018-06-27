@@ -21,10 +21,10 @@ int main(int argc, char** argv)
 	tiling = new Tiling_tiles::Tiling_opt();
 	////tiling->com_cur_string(imagename1, imagename2);
 	////tiling->com_score(imagename1, imagename1);
-	//tiling->com_score_manual(imagename1, imagename2);
+	tiling->com_score_manual(imagename1, imagename2);
 
 	//¼ì²â¸÷ÖÖ·ÂÉä±ä»»
-	vector<Point2f> a;
+	/*vector<Point2f> a;
 	vector<Point2f> b;
 	a.push_back(Point2f(1, 1));
 	a.push_back(Point2f(2, 1));
@@ -38,16 +38,16 @@ int main(int argc, char** argv)
 
 	b.push_back(Point2f(1, 1));
 	b.push_back(Point2f(2, 1));
-	b.push_back(Point2f(2, 0));
 	b.push_back(Point2f(3, 0));
-	b.push_back(Point2f(3, 1));
 	b.push_back(Point2f(4, 1));
+	b.push_back(Point2f(5, 1));
 	b.push_back(Point2f(5, 2));
+	b.push_back(Point2f(6, 2));
 	b.push_back(Point2f(6, 1));
 	b.push_back(Point2f(7, 1));
 
 	vector<vector<Point2f>> prototwo;
-	tiling->Aff_place(a, b, prototwo);
+	tiling->Aff_place(a, b, prototwo);*/
 	//Point2f s(5, 1);
 	//Point2f e(1, 5);
 	////double ab = tiling->re_warp_Aff(a, b, s, e);

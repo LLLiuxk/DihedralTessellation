@@ -291,7 +291,7 @@ namespace Tiling_tiles{
 			///////////
 			double step = (max - min) / 52;
 			double mid = (max + min) / 2;
-			cout << "step: " << step << "\n max: " << max << "\n mid: " << mid << endl;
+			//cout << "step: " << step << "\n max: " << max << "\n mid: " << mid << endl;
 
 			//Z~A0a~z
 			cout << endl;
