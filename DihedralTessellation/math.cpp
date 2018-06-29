@@ -234,8 +234,11 @@ namespace Tiling_tiles{
 		Point2f dstTri[3];
 		srcTri[0] = input_[0];
 		srcTri[1] = input_[input_.size() - 1];
-		if (srcTri[0].y == 0 && srcTri[0].x == 0 && srcTri[1].y == 0) cout << "ok________________" << endl;
-
+		if (abs(srcTri[0].y) <= 0.01 && abs(srcTri[0].x) <= 0.01 && abs(srcTri[1].y) <= 0.01) cout << "ok________________" << endl;
+		else {
+			cout << "gg" << endl;
+			return 0;
+		}
 		dstTri[0] = start;//Point2f(50, 50); 
 		//cout << "dstTri[0]: " << dstTri[0] << endl;
 		dstTri[1] = end; //Point2f(length_two_point2f(srcTri[0], srcTri[1]) + 50, 50);

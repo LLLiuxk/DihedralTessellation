@@ -1,57 +1,27 @@
-﻿Build started 2018/6/27 21:55:28.
-     1>Project "D:\VisualStudioProjects\DihedralTessellation\DihedralTessellation\DihedralTessellation.vcxproj" on node 2 (Build target(s)).
+﻿生成启动时间为 2018/6/29 18:11:01。
+     1>项目“D:\VisualStudioProjects\DihedralTessellation\DihedralTessellation\DihedralTessellation.vcxproj”在节点 2 上(Build 个目标)。
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /IC:\local\opencv\build\include /IC:\local\opencv\build\include\opencv /IC:\local\opencv\build\include\opencv2 /Zi /nologo /W3 /WX- /Od /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Debug\\" /Fd"x64\Debug\vc120.pdb" /Gd /TP /errorReport:prompt math.cpp
-         math.cpp
-     1>math.cpp(35): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(90): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>math.cpp(112): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(114): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>math.cpp(138): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(139): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(143): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(144): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(165): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(166): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(170): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(171): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(202): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>math.cpp(214): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>math.cpp(243): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>math.cpp(265): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(270): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(278): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(288): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(323): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>math.cpp(370): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>math.cpp(436): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(437): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(441): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(442): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(449): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(450): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(454): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(455): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(462): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(472): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(517): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>math.cpp(538): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>math.cpp(558): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>math.cpp(608): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>math.cpp(609): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>math.cpp(753): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>math.cpp(754): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>d:\visualstudioprojects\dihedraltessellation\dihedraltessellation\math.cpp(85): warning C4715: 'Tiling_tiles::cur_char_length' : not all control paths return a value
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /IC:\local\opencv\build\include /IC:\local\opencv\build\include\opencv /IC:\local\opencv\build\include\opencv2 /Zi /nologo /W3 /WX- /Od /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Debug\\" /Fd"x64\Debug\vc120.pdb" /Gd /TP /errorReport:prompt tilingOpt.cpp
+         tilingOpt.cpp
+     1>tilingOpt.cpp(290): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(512): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>tilingOpt.cpp(513): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>tilingOpt.cpp(722): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+     1>tilingOpt.cpp(722): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>tilingOpt.cpp(723): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+     1>tilingOpt.cpp(723): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>tilingOpt.cpp(894): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+     1>tilingOpt.cpp(894): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>tilingOpt.cpp(985): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.exe" /INCREMENTAL /NOLOGO /LIBPATH:C:\local\opencv\build\x64\vc12\lib opencv_calib3d248d.lib opencv_contrib248d.lib opencv_core248d.lib opencv_features2d248d.lib opencv_flann248d.lib opencv_gpu248d.lib opencv_highgui248d.lib opencv_imgproc248d.lib opencv_legacy248d.lib opencv_ml248d.lib opencv_objdetect248d.lib opencv_ts248d.lib opencv_video248d.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.lib" /MACHINE:X64 x64\Debug\main.obj
          x64\Debug\math.obj
          x64\Debug\morphing.obj
          x64\Debug\Prototile.obj
          x64\Debug\tilingOpt.obj
-         LINK : D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.exe not found or not built by the last incremental link; performing full link
          DihedralTessellation.vcxproj -> D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.exe
-     1>Done Building Project "D:\VisualStudioProjects\DihedralTessellation\DihedralTessellation\DihedralTessellation.vcxproj" (Build target(s)).
+     1>已完成生成项目“D:\VisualStudioProjects\DihedralTessellation\DihedralTessellation\DihedralTessellation.vcxproj”(Build 个目标)的操作。
 
-Build succeeded.
+生成成功。
 
-Time Elapsed 00:00:00.88
+已用时间 00:00:01.77

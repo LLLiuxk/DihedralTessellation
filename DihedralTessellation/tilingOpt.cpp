@@ -512,6 +512,7 @@ namespace Tiling_tiles{
 			contour2[i].x = contour2[i].x * factor;
 			contour2[i].y = contour2[i].y * factor;
 		}
+		//cout << "contour1_length(): " << contour_length(contour1) << endl << "contour2_length(): " << contour_length(contour2) << endl;
 		//将两个轮廓一起缩放，可用在最后显示阶段
 		/*double scale = 0.5;
 		for (int i = 0; i < contour1.size(); i++)
@@ -680,17 +681,19 @@ namespace Tiling_tiles{
 		vector<char> sec_char_out;
 		//vector<Point2f> output_second_ref;
 
-
 		//在这里进行变形的还原，可以将第一层for换成while加终止条件
-		for (int i = 0; i < 1; i++)
+		//变换回去这一步，没有对齐0点
+		//dtw有dp，另一个还没有
+		for (int t = 0; t < 8; t++)
 		{
+			int i = t % 4;
 			//all_types[max_x][max_y].second[i];
-			/*Point2f extre[2][2];
+			Point2f extre[2][2];
 			extre[0][0] = proto_interval_first[i][0];
 			extre[0][1] = proto_interval_first[i][proto_interval_first[i].size()-1];
 			extre[1][0] = proto_interval_second[order[i].first][0];
 			extre[1][1] = proto_interval_second[order[i].first][proto_interval_second[order[i].first].size()-1];
-			Point2f sae[2][2];*/
+			Point2f sae[2][2];
 			/*for (int j = 0; j < proto_interval_first[i].size(); j++)
 			{
 			cout << "proto_interval_first[i]: " << proto_interval_first[i][j]  << endl;
@@ -724,7 +727,7 @@ namespace Tiling_tiles{
 			Mat drawing_src3 = Mat(size, size, CV_8UC3, Scalar(255, 255, 255));
 			Mat drawing_dst = Mat(size, size, CV_8UC3, Scalar(255, 255, 255));
 
-			// 这一步把output的点全部移到了中间位置
+			// 这一步把output对齐到中间位置
 			for (int t = 0; t < output_first.size(); t++)
 			{
 				output_first[t] = output_first[t] + shift1;
@@ -845,7 +848,6 @@ namespace Tiling_tiles{
 			src1_points.push_back(output_first[dp_path[dp_path.size() - 1].first]);
 			src2_points.push_back(output_second[dp_path[dp_path.size() - 1].second]);
 
-			cout << endl;
 			if (src1_points.size() == src2_points.size())
 			{
 				for (int i = 0; i < src1_points.size(); i++)
@@ -853,19 +855,18 @@ namespace Tiling_tiles{
 					circle(drawing_src3, src1_points[i], 1, Scalar(255, 0, 0), -1);
 					circle(drawing_src3, src2_points[i], 1, Scalar(0, 0, 255), -1);
 					MyLine(drawing_src3, src1_points[i], src2_points[i], "orange");
-					cout << src1_points[i] << " - " << src2_points[i] << endl;
+					//cout << src1_points[i] << " - " << src2_points[i] << endl;
 				}
 			}
 			else cout << "num error!" << endl;
-			//if (src1_points.size() == src2_points.size()) cout << "____________________-------------------___________________";
-			//ImageMorphing(drawing_src1, src1_points, drawing_src2, src2_points, drawing_dst, output_final, 0.5);
+			ImageMorphing(drawing_src1, src1_points, drawing_src2, src2_points, drawing_dst, output_final, 0.5);
 			//char i;
 
-			//double length_final = length_two_point2f(output_final[0], output_final[output_final.size()-1]);
-			//for (int i = 0; i < output_final.size()-1; i++)
-			//{
-			//	MyLine(drawing_src3, output_final[i], output_final[i+1], "green");
-			//}
+			double length_final = length_two_point2f(output_final[0], output_final[output_final.size()-1]);
+			for (int i = 0; i < output_final.size()-1; i++)
+			{
+				MyLine(drawing_src3, output_final[i], output_final[i+1], "green");
+			}
 
 			//imshow("drawing_src1", drawing_src1);
 			//imshow("drawing_src2", drawing_src2);
@@ -876,55 +877,96 @@ namespace Tiling_tiles{
 			imshow(name, drawing_src3);
 
 
-			////在这里将out_final映射回原来的位置，根据两个端点的坐标
-			//Point2f mid1;
-			//mid1.x = (extre[0][0].x + extre[0][1].x) / 2;
-			//mid1.y = (extre[0][0].y + extre[0][1].y) / 2;
-			//sae[0][0] = mid1 + (length_final / 2) * unit_vec(extre[0][0] - mid1);
-			//sae[0][1] = mid1 + (length_final / 2) * unit_vec(extre[0][1] - mid1);
-			//Point2f mid2;
-			//mid2.x = (extre[1][0].x + extre[1][1].x) / 2;
-			//mid2.y = (extre[1][0].y + extre[1][1].y) / 2;
-			//sae[1][0] = mid2 + (length_final / 2) * unit_vec(extre[1][0] - mid2);
-			//sae[1][1] = mid2 + (length_final / 2) * unit_vec(extre[1][1] - mid2);
-			//
-			//vector<Point2f> out1;
-			//re_warp_Aff(output_final, out1, sae[0][0], sae[0][1]);
-			//proto_interval_first[i].swap(out1);
-			//if (order[i].second == 0)  //不同的值采用不同的函数
-			//{
-			//	vector<Point2f> out2;
-			//	re_warp_Aff_sec(output_final, out2, sae[1][0], sae[1][1]);
-			//	proto_interval_second[order[i].first].swap(out2);
-			//}
-			//else if (order[i].second == 1)
-			//{
-			//	vector<Point2f> out2;
-			//	re_warp_Aff_ref(output_final, out2, sae[1][0], sae[1][1]);
-			//	proto_interval_second[order[i].first].swap(out2);
-			//}
+			//在这里将out_final映射回原来的位置，根据两个端点的坐标
+			Point2f mid1;
+			mid1.x = (extre[0][0].x + extre[0][1].x) / 2;
+			mid1.y = (extre[0][0].y + extre[0][1].y) / 2;
+			sae[0][0] = mid1 + (length_final / 2) * unit_vec(extre[0][0] - mid1);
+			sae[0][1] = mid1 + (length_final / 2) * unit_vec(extre[0][1] - mid1);
+			Point2f mid2;
+			mid2.x = (extre[1][0].x + extre[1][1].x) / 2;
+			mid2.y = (extre[1][0].y + extre[1][1].y) / 2;
+			sae[1][0] = mid2 + (length_final / 2) * unit_vec(extre[1][0] - mid2);
+			sae[1][1] = mid2 + (length_final / 2) * unit_vec(extre[1][1] - mid2);
+			
+			vector<Point2f> out1;
+			//此处将output_final对齐到0点
+			Point2f shift3 = Point2f(length_final / 2 - size / 2, - size / 2);
+			for (int i = 0; i < output_final.size(); i++)
+			{
+				cout << "output_final_origin[i]: " << output_final[i] << endl;
+			}
+			for (int i = 0; i < output_final.size(); i++)
+			{
+				output_final[i] = output_final[i] + shift3;
+			}
+			for (int i = 0; i < output_final.size(); i++)
+			{
+				cout << "output_final[i]: " << output_final[i] << endl;
+			}
+			re_warp_Aff(output_final, out1, sae[0][0], sae[0][1]);
+			//检测转变前后点的变化
+			//cout << "out1[0]: " << out1[0] << "  out1[1]: " << out1[out1.size()-1] << endl;
+			//cout << "out1[0]: " << proto_interval_first[i][0] << "  out1[1]: " << proto_interval_first[i][proto_interval_first[i].size()-1] << endl;
+			proto_interval_first[i].swap(out1);
+			if (order[i].second == 0)  //不同的值采用不同的函数
+			{
+				vector<Point2f> out2;
+				re_warp_Aff_sec(output_final, out2, sae[1][0], sae[1][1]);
+				proto_interval_second[order[i].first].swap(out2);
+			}
+			else if (order[i].second == 1)
+			{
+				vector<Point2f> out2;
+				re_warp_Aff_ref(output_final, out2, sae[1][0], sae[1][1]);
+				proto_interval_second[order[i].first].swap(out2);
+			}
 
-			////将变形后的边还原到原来位置，对相邻两边进行微调
-			//Point2f start;
-			//Point2f end;
-			//if (i == 0)
-			//{
-			//	vector<Point2f> output_;
-			//	warpAff_sca(proto_interval_first[3], output_, proto_interval_first[3][0], proto_interval_first[i][0]);
-			//	proto_interval_first[3].swap(output_);
-			//	output_.swap(vector<Point2f>());
-			//	warpAff_sca(proto_interval_first[1], output_, proto_interval_first[i][proto_interval_first[i].size() - 1], proto_interval_first[1][proto_interval_first[1].size() - 1]);
-			//	proto_interval_first[1].swap(output_);
-			//}
-			//else
-			//{
-			//	vector<Point2f> output_;
-			//	warpAff_sca(proto_interval_first[i-1], output_, proto_interval_first[i-1][0], proto_interval_first[i][0]);
-			//	proto_interval_first[i-1].swap(output_);
-			//	output_.swap(vector<Point2f>());
-			//	warpAff_sca(proto_interval_first[i+1], output_, proto_interval_first[i][proto_interval_first[i].size() - 1], proto_interval_first[i+1][proto_interval_first[i+1].size() - 1]);
-			//	proto_interval_first[i+1].swap(output_);
-			//}
+			//将变形后的边还原到原来位置，对相邻两边进行微调
+			Point2f start;
+			Point2f end;
+			//cout << "out1[0]: " << proto_interval_first[1][0] << "  out1[1]: " << proto_interval_first[1][proto_interval_first[1].size() - 1] << endl;
+
+			if (i == 0)
+			{
+				vector<Point2f> output_;
+				warpAff_sca(proto_interval_first[3], output_, proto_interval_first[3][0], proto_interval_first[i][0]);
+				proto_interval_first[3].swap(output_);
+				output_.swap(vector<Point2f>());
+				warpAff_sca(proto_interval_first[1], output_, proto_interval_first[i][proto_interval_first[i].size() - 1], proto_interval_first[1][proto_interval_first[1].size() - 1]);
+				proto_interval_first[1].swap(output_);
+			}
+			else
+			{
+				vector<Point2f> output_;
+				warpAff_sca(proto_interval_first[i-1], output_, proto_interval_first[i-1][0], proto_interval_first[i][0]);
+				proto_interval_first[i-1].swap(output_);
+				output_.swap(vector<Point2f>());
+				warpAff_sca(proto_interval_first[(i + 1) % 4], output_, proto_interval_first[i][proto_interval_first[i].size() - 1], proto_interval_first[(i + 1) % 4][proto_interval_first[(i + 1) % 4].size() - 1]);
+				proto_interval_first[(i + 1) % 4].swap(output_);
+			}
+			//当i=4时此处出问题
+			if (order[i].first == 0)
+			{
+				vector<Point2f> output_;
+				cout << "hahahah" << endl;
+				warpAff_sca(proto_interval_second[3], output_, proto_interval_second[3][0], proto_interval_second[order[i].first][0]);
+				proto_interval_second[3].swap(output_);
+				output_.swap(vector<Point2f>());
+				cout << "hahahah" << endl;
+				warpAff_sca(proto_interval_second[1], output_, proto_interval_second[order[i].first][proto_interval_second[order[i].first].size() - 1], proto_interval_second[1][proto_interval_second[1].size() - 1]);
+				proto_interval_second[1].swap(output_);
+			}
+			else
+			{
+				vector<Point2f> output_;
+				warpAff_sca(proto_interval_second[order[i].first - 1], output_, proto_interval_second[order[i].first - 1][0], proto_interval_second[order[i].first][0]);
+				proto_interval_second[order[i].first - 1].swap(output_);
+				output_.swap(vector<Point2f>());
+				warpAff_sca(proto_interval_second[(order[i].first + 1) % 4], output_, proto_interval_second[order[i].first][proto_interval_second[order[i].first].size() - 1], proto_interval_second[(order[i].first + 1) % 4][proto_interval_second[(order[i].first + 1) % 4].size() - 1]);
+				proto_interval_second[(order[i].first + 1) % 4].swap(output_);
+			}
+			//cout << "out1_[0]: " << proto_interval_first[1][0] << "  out1[1]: " << proto_interval_first[1][proto_interval_first[1].size() - 1] << endl;
 
 
 			//找到哪一条边的哪一个点是是改变后的sae点
@@ -940,7 +982,7 @@ namespace Tiling_tiles{
 		//用shift将两张图对齐到图像的左右中点
 		Point2f shift1 = Point2f(prototile_first->center_point.x - col / 4, prototile_first->center_point.y - row / 2);
 
-		Point2f shift2 = prototile_second->center_point - Point2f(3 * col / 4, row / 2);
+		Point2f shift2 = prototile_second->center_point - Point2f(1 * col / 4+700, row / 2);
 
 		/*for (int s = 0; s < 4; s++)
 		{
