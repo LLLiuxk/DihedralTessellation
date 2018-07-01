@@ -859,7 +859,8 @@ namespace Tiling_tiles{
 				}
 			}
 			else cout << "num error!" << endl;
-			ImageMorphing(drawing_src1, src1_points, drawing_src2, src2_points, drawing_dst, output_final, 0.5);
+			//调整系数改变变化程度，作为优化的变量
+			ImageMorphing(drawing_src1, src1_points, drawing_src2, src2_points, drawing_dst, output_final, 0.2);
 			//char i;
 
 			double length_final = length_two_point2f(output_final[0], output_final[output_final.size()-1]);
@@ -967,8 +968,7 @@ namespace Tiling_tiles{
 				proto_interval_second[(order[i].first + 1) % 4].swap(output_);
 			}
 			//cout << "out1_[0]: " << proto_interval_first[1][0] << "  out1[1]: " << proto_interval_first[1][proto_interval_first[1].size() - 1] << endl;
-
-
+			
 			//找到哪一条边的哪一个点是是改变后的sae点
 		}
 
@@ -981,48 +981,8 @@ namespace Tiling_tiles{
 
 		//用shift将两张图对齐到图像的左右中点
 		Point2f shift1 = Point2f(prototile_first->center_point.x - col / 4, prototile_first->center_point.y - row / 2);
-
 		Point2f shift2 = prototile_second->center_point - Point2f(1 * col / 4+700, row / 2);
-
-		/*for (int s = 0; s < 4; s++)
-		{
-		Point2f srcTri[3];
-		Point2f dstTri[3];
-		srcTri[0] = proto_interval_first[s][0];
-		srcTri[1] = proto_interval_first[s][proto_interval_first.size() - 1];
-		double midd = (srcTri[1].x + srcTri[0].x) / 2;
-		Point2f midp = Point2f((srcTri[1].x + srcTri[0].x) / 2, (srcTri[1].y + srcTri[0].y) / 2;);
-		srcTri[2] = Point2f(midd,)
-		dstTri[0] = Point2f(0, 0);//Point2f(50, 50);
-		//cout << "dstTri[0]: " << dstTri[0] << endl;
-		dstTri[1] = Point2f(length_two_point2f(srcTri[0], srcTri[1]), 0);
-		for (int i = 0; i < 4; i++)
-		{
-		//cout << "proto_interval_first[" << i << "]  num:" << proto_interval_first[i].size() << endl;
-		string color;
-		if (i == 0) color = "red";
-		else if (i == 1) color = "blue";
-		else if (i == 2) color = "green";
-		else if (i == 3) color = "cyan";
-
-		if (s == 0)
-		{
-		for (int j = 0; j < proto_interval_first[i].size() - 1; j++)
-		{
-		MyLine(drawing4, proto_interval_first[i][j] - shift1, proto_interval_first[i][j + 1] - shift1, color);
-
-		}
-		MyLine(drawing4, proto_interval_first[i][0] - shift1, proto_interval_first[i][proto_interval_first[i].size() - 1] - shift1, "orange");
-		}
-		for (int j = 0; j < proto_interval_second[order[i].first].size() - 1; j++)
-		{
-		MyLine(drawing4, proto_interval_second[order[i].first][j] - shift2, proto_interval_second[order[i].first][j + 1] - shift2, color);
-
-		}
-		MyLine(drawing4, proto_interval_second[i][0] - shift2, proto_interval_second[i][proto_interval_second[i].size() - 1] - shift2, "orange");
-		}
-		}*/
-
+			
 		for (int i = 0; i < 4; i++)
 		{
 			//cout << "proto_interval_first[" << i << "]  num:" << proto_interval_first[i].size() << endl;
@@ -1047,6 +1007,16 @@ namespace Tiling_tiles{
 			MyLine(drawing4, proto_interval_second[i][0] - shift2, proto_interval_second[i][proto_interval_second[i].size() - 1] - shift2, "orange");
 		}
 		imshow("final " + imagename1 + " and  " + imagename2, drawing4);
+
+		//接下来摆放，得到最终的密铺图
+
+		vector<vector<Point2f>> prototwoAff_place;
+		for (int i = 0; i < 4; i++)
+		{
+			prototwoAff_place = (proto_interval_first[i], proto_interval_second[order[i].first], proto_interval_second);
+
+		}
+		
 
 
 		return 0;
