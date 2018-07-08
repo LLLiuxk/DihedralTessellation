@@ -893,18 +893,18 @@ namespace Tiling_tiles{
 			vector<Point2f> out1;
 			//此处将output_final对齐到0点
 			Point2f shift3 = Point2f(length_final / 2 - size / 2, - size / 2);
-			for (int i = 0; i < output_final.size(); i++)
+			/*for (int i = 0; i < output_final.size(); i++)
 			{
 				cout << "output_final_origin[i]: " << output_final[i] << endl;
-			}
+			}*/
 			for (int i = 0; i < output_final.size(); i++)
 			{
 				output_final[i] = output_final[i] + shift3;
 			}
-			for (int i = 0; i < output_final.size(); i++)
+			/*for (int i = 0; i < output_final.size(); i++)
 			{
 				cout << "output_final[i]: " << output_final[i] << endl;
-			}
+			}*/
 			re_warp_Aff(output_final, out1, sae[0][0], sae[0][1]);
 			//检测转变前后点的变化
 			//cout << "out1[0]: " << out1[0] << "  out1[1]: " << out1[out1.size()-1] << endl;
@@ -976,13 +976,9 @@ namespace Tiling_tiles{
 		int col = 1600;
 		//Mat drawing4 = Mat::zeros(row, col, CV_8UC3); //黑色背景
 		Mat drawing4 = Mat(row, col, CV_8UC3, Scalar(255, 255, 255)); //白色背景
-		//Mat drawing5 = Mat::zeros(800, 800, CV_8UC3);
-		//namedWindow("simple111 contour", WINDOW_AUTOSIZE);
-
 		//用shift将两张图对齐到图像的左右中点
 		Point2f shift1 = Point2f(prototile_first->center_point.x - col / 4, prototile_first->center_point.y - row / 2);
 		Point2f shift2 = prototile_second->center_point - Point2f(1 * col / 4+700, row / 2);
-			
 		for (int i = 0; i < 4; i++)
 		{
 			//cout << "proto_interval_first[" << i << "]  num:" << proto_interval_first[i].size() << endl;
@@ -1009,13 +1005,71 @@ namespace Tiling_tiles{
 		imshow("final " + imagename1 + " and  " + imagename2, drawing4);
 
 		//接下来摆放，得到最终的密铺图
+		Mat drawing5 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255)); //白色背景
+		double scale_ = 0.4;
 
-		vector<vector<Point2f>> prototwoAff_place;
 		for (int i = 0; i < 4; i++)
 		{
-			prototwoAff_place = (proto_interval_first[i], proto_interval_second[order[i].first], proto_interval_second);
-
+			for (int j = 0; j < proto_interval_first[i].size(); j++)
+			{
+				proto_interval_first[i][j] = proto_interval_first[i][j] * scale_;
+			}
+			for (int j = 0; j < proto_interval_second[i].size(); j++)
+			{
+				proto_interval_second[i][j] = proto_interval_second[i][j] * scale_;
+			}
 		}
+		//此处需要加一步判断proto1如何进行排列，是否有反转，可以根据最终得到的1和2的对应关系得到。这里暂时默认为顺序排列
+		Point2f hori_axis_length = proto_interval_first[2][0] - proto_interval_first[0][0];
+		Point2f vert_axis_length = proto_interval_first[3][0] - proto_interval_first[1][0];
+
+		vector<Point2f> prototwoAff_place;
+		vector<vector<Point2f>> protoFirst;
+		while (1)
+		{
+			prototwoAff_place.swap(vector<Point2f>());
+			protoFirst.swap(vector<vector<Point2f>>());
+			for (int n = 0; n < 4; n++)
+			{
+				for (int m = 0; m < protoFirst[n].size(); m++)
+				{
+					protoFirst[n][m] = proto_interval_first[n][m] + hori_axis_length;
+				}
+				protoFirst[n]
+			}
+		}
+		for (int i = 0; i < 4; i++)
+		{
+			prototwoAff_place.swap(vector<Point2f>());
+			for (int j = 0; j < proto_interval_first[i].size()-1; j++)
+			{
+				MyLine(drawing5, proto_interval_first[i][j], proto_interval_first[i][j + 1], "blue");
+			}
+			Aff_place(proto_interval_first[i], proto_interval_second[order[i].first], proto_interval_second, prototwoAff_place,order[i].second);
+			
+			int n = prototwoAff_place.size();
+			cout << "n: " << n << endl;
+			Point rook_points[1][800];
+			for (int t = 0; t < n; t++)
+			{
+				rook_points[0][t] = prototwoAff_place[t];
+			}
+			const Point* ppt[1] = { rook_points[0] };
+			int npt[] = { n };
+			fillPoly(drawing5,
+				ppt,
+				npt,
+				1,
+				Scalar(0, 0, 0) //黑色
+				);
+
+
+			//for (int t = 0; t < prototwoAff_place.size()-1; t++)
+			//{
+			//	MyLine(drawing5, prototwoAff_place[t], prototwoAff_place[t+1], "orange");
+			//}
+		}
+		imshow("result", drawing5);
 		
 
 

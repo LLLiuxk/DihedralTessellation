@@ -507,11 +507,8 @@ namespace Tiling_tiles{
 		return length_two_point2f(dstTri[0], dstTri[1]) / 2;
 	}
 
-	double Tiling_opt::Aff_place(vector<Point2f> &input1, vector<Point2f> &input2, vector<vector<Point2f>> &prototwo, int flag = 0)
+	double Tiling_opt::Aff_place(vector<Point2f> &input1, vector<Point2f> &input2, vector<vector<Point2f>> &prototwo, vector<Point2f> &protoAff, int flag = 0)
 	{
-		vector<vector<Point2f>> protoout;
-		if (input1.size() == input2.size())
-			cout << "input right" << endl;
 		Point2f srcTri[3];
 		Point2f dstTri[3];
 		vector<Point2f> output;
@@ -561,30 +558,67 @@ namespace Tiling_tiles{
 
 		warp_mat = getAffineTransform(srcTri, dstTri);
 
-		//cout << warp_mat << endl;
-		//检测output与input2是否一致
-		cv::transform(input2, output, warp_mat);//transform
+		////cout << warp_mat << endl;
+		////检测output与input2是否一致
+		//cv::transform(input2, output, warp_mat);//transform
+		//Mat drawing1 = Mat::zeros(800, 800, CV_8UC3);
+		//for (int j = 0; j < input1.size(); j++)
+		//{
+		//	circle(drawing1, input1[j], 1, Scalar(255, 0, 0), -1);
+		//}
+		//Mat drawing2 = Mat::zeros(800, 800, CV_8UC3);
+		//for (int j = 0; j < input2.size(); j++)
+		//{
+		//	circle(drawing2, input2[j], 1, Scalar(0, 255, 0), -1);
+		//}
+		//Mat drawing3 = Mat::zeros(800, 800, CV_8UC3);
+		//for (int j = 0; j < output.size(); j++)
+		//{
+		//	circle(drawing3, output[j], 1, Scalar(0, 0, 255), -1);
+		//}
+		//imshow("1:", drawing1);
+		//imshow("2:", drawing2);
+		//imshow("out:", drawing3);
+
 
 		//将整个prototwo与input1映齐
-		cv::transform(prototwo, protoout, warp_mat);
-		Mat drawing1 = Mat::zeros(800,800, CV_8UC3);
-		for (int j = 0; j < input1.size(); j++)
+		Mat drawing2 = Mat::zeros(1600, 1600, CV_8UC3);
+		Mat drawing3 = Mat::zeros(1600, 1600, CV_8UC3);
+		for (int i = 0; i < 4; i++)
 		{
-			circle(drawing1, input1[j]*20, 1, Scalar(255, 0, 0), -1);
+			vector<Point2f> out_;
+			cv::transform(prototwo[i], out_, warp_mat);
+			if (!protoAff.empty())
+			{
+				Point2f pop = protoAff[protoAff.size() - 1];
+				if (pop == out_[0])
+				{
+					protoAff.pop_back();
+					cout << "repeat____________" << endl;
+				}
+			}
+			for (int j = 0; j < out_.size(); j++)
+			{
+				protoAff.push_back(out_[j]);
+			}
+
+			//for (int j = 0; j < prototwo[i].size() - 1; j++)
+			//{
+			//	cout << "proto[i]:" << prototwo[i][j] << endl;
+			//	MyLine(drawing3, prototwo[i][j], prototwo[i][j + 1], "green");
+			//	//circle(drawing2, protoAff[i][j], 1, Scalar(0, 255, 0), -1);
+			//}
+			//for (int j = 0; j < protoAff[i].size()-1; j++)
+			//{
+			//	cout << "protoAff[i]:" << protoAff[i][j] << endl;
+			//	MyLine(drawing2, protoAff[i][j], protoAff[i][j + 1], "blue");
+			//	//circle(drawing2, protoAff[i][j], 1, Scalar(0, 255, 0), -1);
+			//}
+			//cv::transform(prototwo[i], protoAff[i], warp_mat);
 		}
-		Mat drawing2 = Mat::zeros(800, 800, CV_8UC3);
-		for (int j = 0; j < input2.size(); j++)
-		{
-			circle(drawing2, input2[j]*20, 1, Scalar(0, 255, 0), -1);
-		}
-		Mat drawing3 = Mat::zeros(800, 800, CV_8UC3);
-		for (int j = 0; j < output.size(); j++)
-		{
-			circle(drawing3, output[j]*20, 1, Scalar(0, 0, 255), -1);
-		}
-		imshow("1:",drawing1);
-		imshow("2:", drawing2);
-		imshow("out:", drawing3);
+		//imshow("out11:", drawing2);
+		//imshow("out111:", drawing3);
+		
 		return 0;
 	}
 
