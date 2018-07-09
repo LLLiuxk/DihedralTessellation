@@ -857,4 +857,39 @@ namespace Tiling_tiles{
 		return distance[first_num - 1][second_num - 1];
 	}
 
+
+	void bbx_center_point(vector<vector<Point2f>> all_point, vector<Point2f> &three_p)
+	{
+		three_p.swap(vector<Point2f>());
+		vector<Point2f> contour;
+		for (int i = 0; i < all_point.size(); i++)
+		{
+			for (int j = 0; j < all_point[i].size(); j++)
+			{
+				contour.push_back(all_point[i][j]);
+			}
+		}
+		double bbx_max_x = -10000;
+		double bbx_max_y = -10000;
+		double bbx_min_x = 10000;
+		double bbx_min_y = 10000;
+		double center_x = 0;
+		double center_y = 0;
+
+		for (int i = 0; i < contour.size(); i++)
+		{
+			center_x += contour[i].x;
+			center_y += contour[i].y;
+			if (contour[i].x < bbx_min_x) bbx_min_x = contour[i].x;
+			if (contour[i].x > bbx_max_x) bbx_max_x = contour[i].x;
+			if (contour[i].y < bbx_min_y) bbx_min_y = contour[i].y;
+			if (contour[i].y > bbx_max_y) bbx_max_y = contour[i].y;
+		}
+		center_x = center_x / contour.size();
+		center_y = center_y / contour.size();
+		three_p.push_back(Point2f(center_x, center_y));
+		three_p.push_back(Point2f(bbx_max_x, bbx_max_y));
+		three_p.push_back(Point2f(bbx_min_x, bbx_min_y));
+
+	}
 }

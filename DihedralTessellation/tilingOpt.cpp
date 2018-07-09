@@ -1024,7 +1024,8 @@ namespace Tiling_tiles{
 		Point2f vert_axis_length = proto_interval_first[3][0] - proto_interval_first[1][0];
 
 		vector<Point2f> prototwoAff_place;
-		vector<vector<Point2f>> protoFirst;
+		vector<Point2f> protoFirst_bbx;
+		bbx_center_point(proto_interval_first,);
 		while (1)
 		{
 			prototwoAff_place.swap(vector<Point2f>());
