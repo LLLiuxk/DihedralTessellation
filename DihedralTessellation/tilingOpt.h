@@ -114,7 +114,7 @@ namespace Tiling_tiles{
 	int cur_char_length(char a, char b);
 	double cur_length_two_p(double cur1, double cur2, double zeta);
 	Point2f unit_vec(Point2f vec);
-	void bbx_center_point(vector<vector<Point2f>> all_point, vector<Point2f> &three_p);
+	void bbx_center_point(vector<vector<Point2f>> all_point, vector<Point2f> &five_p);
 }
 
 #endif

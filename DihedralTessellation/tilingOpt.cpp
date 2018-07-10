@@ -860,7 +860,7 @@ namespace Tiling_tiles{
 			}
 			else cout << "num error!" << endl;
 			//调整系数改变变化程度，作为优化的变量
-			ImageMorphing(drawing_src1, src1_points, drawing_src2, src2_points, drawing_dst, output_final, 0.2);
+			ImageMorphing(drawing_src1, src1_points, drawing_src2, src2_points, drawing_dst, output_final, 0.1);
 			//char i;
 
 			double length_final = length_two_point2f(output_final[0], output_final[output_final.size()-1]);
@@ -987,8 +987,7 @@ namespace Tiling_tiles{
 			else if (i == 1) color = "blue";
 			else if (i == 2) color = "green";
 			else if (i == 3) color = "cyan";
-			Point2f srcTri[3];
-			Point2f dstTri[3];
+
 			for (int j = 0; j < proto_interval_first[i].size() - 1; j++)
 			{
 				MyLine(drawing4, proto_interval_first[i][j] - shift1, proto_interval_first[i][j + 1] - shift1, color);
@@ -1005,7 +1004,10 @@ namespace Tiling_tiles{
 		imshow("final " + imagename1 + " and  " + imagename2, drawing4);
 
 		//接下来摆放，得到最终的密铺图
-		Mat drawing5 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255)); //白色背景
+		int num1 = 800;
+		int num2 = 800;
+		Mat drawing5 = Mat(num1, num2, CV_8UC3, Scalar(255, 255, 255)); //白色背景
+		//Mat drawing5 = Mat(num1, num2, CV_8UC3, Scalar(0, 0, 0)); //黑色背景
 		double scale_ = 0.4;
 
 		for (int i = 0; i < 4; i++)
@@ -1019,41 +1021,112 @@ namespace Tiling_tiles{
 				proto_interval_second[i][j] = proto_interval_second[i][j] * scale_;
 			}
 		}
+
 		//此处需要加一步判断proto1如何进行排列，是否有反转，可以根据最终得到的1和2的对应关系得到。这里暂时默认为顺序排列
 		Point2f hori_axis_length = proto_interval_first[2][0] - proto_interval_first[0][0];
 		Point2f vert_axis_length = proto_interval_first[3][0] - proto_interval_first[1][0];
+		int fff_sign[30][30] = {0};
 
-		vector<Point2f> prototwoAff_place;
-		vector<Point2f> protoFirst_bbx;
-		bbx_center_point(proto_interval_first,);
-		while (1)
+		Point2f sign[4];
+		sign[0] = hori_axis_length;
+		sign[1] = -hori_axis_length;
+		sign[2] = vert_axis_length;
+		sign[3] = -vert_axis_length;
+
+		vector<Point2f> prototwoAff_place; 
+		vector<Point2f> protoFirst_bbx;//保存5个点，center，up,down,left and right
+		pair<int, int> protoFirst;
+		vector<vector<Point2f>> bbx_all;
+		vector<pair<int, int>> sign_all;
+		vector<vector<Point2f>> proto_first;
+		bbx_center_point(proto_interval_first, protoFirst_bbx);
+		bbx_all.push_back(protoFirst_bbx);
+		int n1 = 14;
+		int n2 = 14;
+		fff_sign[n1][n2] = 1;
+		protoFirst = make_pair(n1, n2);
+		sign_all.push_back(protoFirst);
+		int type = 0;//表明proto1的复制类型
+		int g = 0;
+		while (!bbx_all.empty())
 		{
-			prototwoAff_place.swap(vector<Point2f>());
-			protoFirst.swap(vector<vector<Point2f>>());
-			for (int n = 0; n < 4; n++)
+			g++;
+			cout << "g: " << g << endl;
+			vector<Point2f> first_bbx;
+			pair<int, int> first_sign;
+			if (type == 0)
 			{
-				for (int m = 0; m < protoFirst[n].size(); m++)
-				{
-					protoFirst[n][m] = proto_interval_first[n][m] + hori_axis_length;
-				}
-				protoFirst[n]
+				first_bbx = bbx_all[bbx_all.size() - 1];
+				bbx_all.pop_back();
+				first_sign = sign_all[sign_all.size() - 1];
+				sign_all.pop_back();
+				cout << "first_bbx: " << first_bbx.size() << endl;
+				cout << "bbx_all:  " << bbx_all.size() << endl;
 			}
-		}
-		for (int i = 0; i < 4; i++)
-		{
-			prototwoAff_place.swap(vector<Point2f>());
-			for (int j = 0; j < proto_interval_first[i].size()-1; j++)
-			{
-				MyLine(drawing5, proto_interval_first[i][j], proto_interval_first[i][j + 1], "blue");
-			}
-			Aff_place(proto_interval_first[i], proto_interval_second[order[i].first], proto_interval_second, prototwoAff_place,order[i].second);
 			
-			int n = prototwoAff_place.size();
+			proto_first.swap(vector<vector<Point2f>>());
+			Point2f diff = first_bbx[0] - protoFirst_bbx[0];
+			cout << "diff: " << diff << endl;
+			//得到该proto1的坐标
+			for (int i = 0; i < 4; i++)
+			{
+				vector<Point2f> first_inter;
+				for (int j = 0; j < proto_interval_first[i].size(); j++)
+				{
+					first_inter.push_back(proto_interval_first[i][j]+diff);
+				}
+				proto_first.push_back(first_inter);
+			}
+
+			//将该proto1的相邻四个proto1放入堆栈
+			for (int i = 0; i < 4; i++)
+			{
+				pair<int, int> sign_;
+				if (i == 0) sign_ = make_pair(first_sign.first + 1, first_sign.second);
+				if (i == 1) sign_ = make_pair(first_sign.first - 1, first_sign.second);
+				if (i == 2) sign_ = make_pair(first_sign.first, first_sign.second + 1);
+				if (i == 3) sign_ = make_pair(first_sign.first, first_sign.second - 1);
+				if (fff_sign[sign_.first][sign_.second] == 0)
+				{
+					vector<Point2f> firstbbx;
+					int fff = 0;
+					for (int t = 0; t < 5; t++)
+					{
+						Point2f sigh_re = first_bbx[t] + sign[i];
+						firstbbx.push_back(sigh_re);
+						if (firstbbx[t].x < num1 && firstbbx[t].x>0 && firstbbx[t].y>0 && firstbbx[t].y<num2)
+						{
+							fff = 1;
+						}
+					}
+					if (fff == 1)
+					{
+						bbx_all.push_back(firstbbx);
+						sign_all.push_back(sign_);
+						fff_sign[sign_.first][sign_.second] = 1;
+					}
+				}
+				
+				cout << "bbx_all:  " << bbx_all.size() << endl;
+			}
+			//将该proto1以及相邻四个proto2展示出来
+			vector<Point2f> pro_st;
+			for (int i = 0; i < 4; i++)
+			{
+				//prototwoAff_place.swap(vector<Point2f>());
+				for (int j = 0; j < proto_first[i].size() - 1; j++)
+				{
+					pro_st.push_back(proto_first[i][j]);
+					//MyLine(drawing5, proto_first[i][j], proto_first[i][j + 1], "blue");
+				}
+			}
+				//Aff_place(proto_first[i], proto_interval_second[order[i].first], proto_interval_second, prototwoAff_place, order[i].second);
+			int n = pro_st.size();
 			cout << "n: " << n << endl;
 			Point rook_points[1][800];
 			for (int t = 0; t < n; t++)
 			{
-				rook_points[0][t] = prototwoAff_place[t];
+				rook_points[0][t] = pro_st[t];
 			}
 			const Point* ppt[1] = { rook_points[0] };
 			int npt[] = { n };
@@ -1062,16 +1135,40 @@ namespace Tiling_tiles{
 				npt,
 				1,
 				Scalar(0, 0, 0) //黑色
+				//Scalar(255, 255, 255) //白色
 				);
+				
+		
+			for (int i = 0; i < 4; i++)
+			{
+				prototwoAff_place.swap(vector<Point2f>());
+				for (int j = 0; j < proto_first[i].size() - 1; j++)
+				{
+					MyLine(drawing5, proto_first[i][j], proto_first[i][j + 1], "white");
+				}
+			}
+			//	Aff_place(proto_first[i], proto_interval_second[order[i].first], proto_interval_second, prototwoAff_place, order[i].second);
 
-
-			//for (int t = 0; t < prototwoAff_place.size()-1; t++)
-			//{
-			//	MyLine(drawing5, prototwoAff_place[t], prototwoAff_place[t+1], "orange");
+			//	int n = prototwoAff_place.size();
+			//	cout << "n: " << n << endl;
+			//	Point rook_points[1][800];
+			//	for (int t = 0; t < n; t++)
+			//	{
+			//		rook_points[0][t] = prototwoAff_place[t];
+			//	}
+			//	const Point* ppt[1] = { rook_points[0] };
+			//	int npt[] = { n };
+			//	fillPoly(drawing5,
+			//		ppt,
+			//		npt,
+			//		1,
+			//		Scalar(0, 0, 0) //黑色
+			//		);
 			//}
+			//if (g == 4) break;
 		}
 		imshow("result", drawing5);
-		
+		imwrite("D:\\images\\111\\111.png", drawing5);
 
 
 		return 0;

@@ -14,8 +14,10 @@ namespace Tiling_tiles{
 		else if (color1.compare("grey") == 0) color = Scalar(190, 190, 190);
 		else if (color1.compare("yellow") == 0) color = Scalar(0, 255, 255);
 		else if (color1.compare("purple") == 0) color = Scalar(60, 32, 240);
+		else if (color1.compare("white") == 0) color = Scalar(255, 255, 255);
+		else if (color1.compare("black") == 0) color = Scalar(0, 0, 0);
 		else color = Scalar(0, 165, 255);
-		int thickness = 2;
+		int thickness = 1;
 		int lineType = 8;
 		line(img,
 			start,
@@ -594,7 +596,6 @@ namespace Tiling_tiles{
 				if (pop == out_[0])
 				{
 					protoAff.pop_back();
-					cout << "repeat____________" << endl;
 				}
 			}
 			for (int j = 0; j < out_.size(); j++)
@@ -858,9 +859,9 @@ namespace Tiling_tiles{
 	}
 
 
-	void bbx_center_point(vector<vector<Point2f>> all_point, vector<Point2f> &three_p)
+	void bbx_center_point(vector<vector<Point2f>> all_point, vector<Point2f> &five_p)
 	{
-		three_p.swap(vector<Point2f>());
+		five_p.swap(vector<Point2f>());
 		vector<Point2f> contour;
 		for (int i = 0; i < all_point.size(); i++)
 		{
@@ -887,9 +888,11 @@ namespace Tiling_tiles{
 		}
 		center_x = center_x / contour.size();
 		center_y = center_y / contour.size();
-		three_p.push_back(Point2f(center_x, center_y));
-		three_p.push_back(Point2f(bbx_max_x, bbx_max_y));
-		three_p.push_back(Point2f(bbx_min_x, bbx_min_y));
+		five_p.push_back(Point2f(center_x, center_y));
+		five_p.push_back(Point2f(bbx_min_x, bbx_max_y));
+		five_p.push_back(Point2f(bbx_min_x, bbx_min_y));
+		five_p.push_back(Point2f(bbx_max_x, bbx_min_y));
+		five_p.push_back(Point2f(bbx_max_x, bbx_max_y));
 
 	}
 }
