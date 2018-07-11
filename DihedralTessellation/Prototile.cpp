@@ -183,36 +183,33 @@ namespace Tiling_tiles{
 			if (contour.size() < sam_num)
 			{
 				cout << "Lost the " << sam_num << " and more samples!" << endl;
-				break;
+				//break;
 			}
-			else
+			Lambda = c_length / sam_num;
+			contour_sam.push_back(contour[0]);
+			sample = contour[0];
+			for (int t = 1; t < contour.size(); t++)
 			{
-				Lambda = c_length / sam_num;
-				contour_sam.push_back(contour[0]);
-				sample = contour[0];
-				for (int t = 1; t < contour.size(); t++)
+				double length_ = length_two_point2f(sample, contour[t]);
+				if (length_ > Lambda)
 				{
-					double length_ = length_two_point2f(sample, contour[t]);
-					if (length_ > Lambda)
+					Point2f vec = unit_vec(contour[t] - sample);
+					sample = sample + Lambda * vec;
+					contour_sam.push_back(sample);
+					t = t - 1;
+				}
+				else if (t < contour.size() - 1)
+				{
+					while ((length_ + length_two_point2f(contour[t], contour[t + 1])) < Lambda)
 					{
-						Point2f vec = unit_vec(contour[t] - sample);
-						sample = sample + Lambda * vec;
-						contour_sam.push_back(sample);
-						t = t - 1;
-					}
-					else if (t < contour.size() - 1)
-					{
-						while ((length_ + length_two_point2f(contour[t], contour[t + 1])) < Lambda)
-						{
-							length_ = length_ + length_two_point2f(contour[t], contour[t + 1]);
-							t++;
-							if (t >= (contour.size() - 1)) break;
-						}
+						length_ = length_ + length_two_point2f(contour[t], contour[t + 1]);
+						t++;
 						if (t >= (contour.size() - 1)) break;
-						Point2f vec = unit_vec(contour[t + 1] - contour[t]);
-						sample = contour[t] + (Lambda - length_) * vec;
-						contour_sam.push_back(sample);
 					}
+					if (t >= (contour.size() - 1)) break;
+					Point2f vec = unit_vec(contour[t + 1] - contour[t]);
+					sample = contour[t] + (Lambda - length_) * vec;
+					contour_sam.push_back(sample);
 				}
 			}
 			if (contour_sam[0] == contour_sam[contour_sam.size() - 1]) contour_sam.pop_back();

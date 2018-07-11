@@ -76,7 +76,7 @@ namespace Tiling_tiles{
 
 		//simulation
 		double com_score_manual(string imagename1, string imagename2);
-	
+		double com_score_GT(string imagename1, string imagename2);
 
 		//math
 		double warpAff_tra(vector<Point2f> &input_, vector<Point2f> &output_);

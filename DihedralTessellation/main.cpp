@@ -4,8 +4,10 @@ using namespace Tiling_tiles;
 int main(int argc, char** argv)
 {
 
-	string imagename1 = "bird4";
-	string imagename2 = "fish3";
+	//string imagename1 = "bird4"; 
+	//string imagename2 = "fish3";
+	string imagename1 = "Boat";
+	string imagename2 = "fish8";
 	//string txtname = "D:/images/111.png";
 	//string txtname1 = "D:/images/fish3.png";
 
@@ -21,7 +23,8 @@ int main(int argc, char** argv)
 	tiling = new Tiling_tiles::Tiling_opt();
 	////tiling->com_cur_string(imagename1, imagename2);
 	////tiling->com_score(imagename1, imagename1);
-	tiling->com_score_manual(imagename1, imagename2);
+	//tiling->com_score_manual(imagename1, imagename2);
+	tiling->com_score_GT(imagename1, imagename2);
 
 	//¼ì²â¸÷ÖÖ·ÂÉä±ä»»
 	/*vector<Point2f> a;
