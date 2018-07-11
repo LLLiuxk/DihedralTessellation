@@ -17,7 +17,7 @@ namespace Tiling_tiles{
 		else if (color1.compare("white") == 0) color = Scalar(255, 255, 255);
 		else if (color1.compare("black") == 0) color = Scalar(0, 0, 0);
 		else color = Scalar(0, 165, 255);
-		int thickness = 1;
+		int thickness = 2;
 		int lineType = 8;
 		line(img,
 			start,
