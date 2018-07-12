@@ -526,9 +526,9 @@ namespace Tiling_tiles{
 		contour2[i].y = contour2[i].y * scale;
 		}*/
 		int parem[2][4];
-		parem[0][0] = 29;
-		parem[0][1] = 17;
-		parem[0][2] = 27;
+		parem[0][0] = 21;
+		parem[0][1] = 15;
+		parem[0][2] = 21;
 		parem[0][3] = 0;
 		int all_num = 0;
 		vector<vector<Point2f>> proto_interval_first;
@@ -593,10 +593,10 @@ namespace Tiling_tiles{
 			out << "first num1: " << parem[0][0] << " num2: " << parem[0][1] << " num3: " << parem[0][2] <<
 				" all num: " << all_num << " delay: " << parem[0][3] << endl;
 		}
-		parem[1][0] = 27;
-		parem[1][1] = 32;
-		parem[1][2] = 17;
-		parem[1][3] = 20;
+		parem[1][0] = 20;
+		parem[1][1] = 15;
+		parem[1][2] = 24;
+		parem[1][3] = 9;
 		all_num = 0;
 		vector<vector<Point2f>> proto_interval_second;
 		vector<vector<char>> proto_second_char;
@@ -896,7 +896,7 @@ namespace Tiling_tiles{
 			double length_final = length_two_point2f(output_final[0], output_final[output_final.size()-1]);
 			for (int i = 0; i < output_final.size()-1; i++)
 			{
-				MyLine(drawing_src3, output_final[i], output_final[i+1], "green");
+				MyLine(drawing_src3, output_final[i], output_final[i+1], "red");
 			}
 
 			//imshow("drawing_src1", drawing_src1);

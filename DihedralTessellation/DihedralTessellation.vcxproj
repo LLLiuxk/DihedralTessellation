@@ -150,6 +150,7 @@
     <ClCompile Include="math.cpp" />
     <ClCompile Include="morphing.cpp" />
     <ClCompile Include="Prototile.cpp" />
+    <ClCompile Include="Skeleton.cpp" />
     <ClCompile Include="tilingOpt.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

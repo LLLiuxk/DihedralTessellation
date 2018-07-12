@@ -114,6 +114,14 @@ namespace Tiling_tiles{
 	double cur_length_two_p(double cur1, double cur2, double zeta);
 	Point2f unit_vec(Point2f vec);
 	void bbx_center_point(vector<vector<Point2f>> all_point, vector<Point2f> &five_p);
+
+	//skeleton
+	Mat thinImage(const Mat & src, const int maxIterations);
+	void filterOver(Mat thinSrc);
+	vector<cv::Point2f> getPoints(const Mat &thinSrc, unsigned int raudis, unsigned int thresholdMax, unsigned int thresholdMin);
+	vector<Point2f> get_Skeleton(string imaname);
+
+
 }
 
 #endif
