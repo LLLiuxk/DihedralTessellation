@@ -12,12 +12,15 @@ int main(int argc, char** argv)
 	//string imagename2 = "bird5";
 	//string txtname = "D:/images/111.png";
 	//string txtname1 = "D:/images/fish3.png";
-	vector<Point2f> ske_points;
-	ske_points = get_Skeleton(imagename1);
-	//Tiling_tiles::Prototile *prototile_first;
-	//prototile_first = new Tiling_tiles::Prototile();
+
+	//vector<Point2f> ske_points;
+	//ske_points = get_Skeleton(imagename1);
+
+
+	Tiling_tiles::Prototile *prototile_first;
+	prototile_first = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
-	//prototile_first->loadTileData(imagename1);
+	prototile_first->loadTileData(imagename2);
 	//Tiling_tiles::Prototile *prototile_second;
 	//prototile_second = new Tiling_tiles::Prototile();
 	//prototile_first->loadTileData(imagename2);
