@@ -63,7 +63,6 @@ namespace Tiling_tiles{
 		//imshow("oral contour: ", drawing3);
 
 		//output two 
-		cout << "contour[0].size: " << contours[0].size() << endl;
 		//namedWindow("contour one", WINDOW_AUTOSIZE);
 
 		//分别处理多个轮廓，此时按两个算，第一个每两个点采样一个画出来
@@ -88,11 +87,12 @@ namespace Tiling_tiles{
 		ofstream out("D:\\VisualStudioProjects\\contours\\" + contourname + ".txt");
 		if (out.is_open())
 		{
-			out << contours[0].size() << endl;//contours[0].size()
+			out << contours[0].size()+1 << endl;//contours[0].size()
 			for (int j = contours[0].size()-1; j >= 0; j--)
 				out << contours[0][j].x << "," << contours[0][j].y <<endl;
 			out << contours[0][contours[0].size() - 1].x << "," << contours[0][contours[0].size() - 1].y << endl;  //首尾连起来
 		}
+		cout << "contours[0].size(): " << contours[0].size()<< endl;
 		out.close();
 
 	}
@@ -112,44 +112,45 @@ namespace Tiling_tiles{
 		vector<char> each_point;
 		int aa = 0;
 		int bb = 0;
+		int nn = 0;
 		char cc;
 		char buf[200];
-		for ()
+		//for ()
 		in.getline(buf, 200);
 		cout << "num: " << buf << endl;
-		in.getline(buf, 200);
-		cout << "num: " << buf << endl;
-		while (in >> cc)
+		while (!in.eof())
 		{
-			//if (cc == ' ')
-			//	continue;
-			if ((cc >= '0' && cc <= '9'))
+			aa = 0;
+			bb = 0;
+			nn = 0;
+			int f = 0;
+			in.getline(buf, 200);
+			cc = buf[nn++];
+			while ((cc >= '0' && cc <= '9')|| cc == ','|| cc == ' ')
 			{
-				each_point.push_back(cc);
-				continue;
-			}
-			if (cc == ',')
-			{
-				for (int i = 0; i < each_point.size(); i++)
+				f = 1;
+				if ((cc >= '0' && cc <= '9'))
 				{
-					aa = aa * 10 + (each_point[i] - 48);
+					each_point.push_back(cc);
 				}
-				//cout << "aa:  " << aa << endl;
-				each_point.swap(vector<char>());
-				continue;
-			}
-
-			if (cc == ' ')
+				if (cc == ',')
+				{
+					for (int i = 0; i < each_point.size(); i++)
+					{
+						aa = aa * 10 + (each_point[i] - 48);
+					}
+					each_point.swap(vector<char>());
+				}
+				cc = buf[nn++];				
+			}			
+			if (f)
 			{
 				for (int i = 0; i < each_point.size(); i++)
 				{
 					bb = bb * 10 + (each_point[i] - 48);
 				}
-				//cout << "bb:  " << bb << endl;
 				each_point.swap(vector<char>());
 				con_point.push_back(Point(aa, bb));
-				aa = 0;
-				bb = 0;
 			}
 		}
 		cout << "num,:" << con_point.size();
@@ -185,22 +186,22 @@ namespace Tiling_tiles{
 		//		aa = 0;
 		//		bb = 0;
 		//	}
-			//else continue;
-			Mat drwa = Mat::zeros(800,800, CV_8UC3);
-			int i = 0;
-			for (; i < con_point.size() / 4; i++)
-			{
-				circle(drwa, con_point[i], 1, Scalar(255, 0, 0), -1);
-			}
-			for (; i < con_point.size() / 2; i++)
-			{
-				circle(drwa, con_point[i], 1, Scalar(0, 255, 0), -1);
-			}
-			for (; i < con_point.size(); i++)
-			{
-				circle(drwa, con_point[i], 1, Scalar(0, 0, 255), -1);
-			}
-			imshow("hahahah ", drwa);
+		//else continue;
+		Mat drwa = Mat::zeros(800, 800, CV_8UC3);
+		int i = 0;
+		for (; i < con_point.size() / 4; i++)
+		{
+			circle(drwa, con_point[i], 1, Scalar(255, 0, 0), -1);
+		}
+		for (; i < con_point.size() / 2; i++)
+		{
+			circle(drwa, con_point[i], 1, Scalar(0, 255, 0), -1);
+		}
+		for (; i < con_point.size(); i++)
+		{
+			circle(drwa, con_point[i], 1, Scalar(0, 0, 255), -1);
+		}
+		imshow("hahahah ", drwa);
 		in.close();
 
 	}
