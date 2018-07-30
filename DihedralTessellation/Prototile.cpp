@@ -28,7 +28,7 @@ namespace Tiling_tiles{
 		int max_thresh = 255;
 
 		//read image
-		String imageName("D:/images/" + contourname + ".png"); // by default
+		String imageName("D:/dataset/" + contourname + ".png"); // by default
 		src = imread(imageName, IMREAD_COLOR);
 
 		if (src.empty())
@@ -81,7 +81,7 @@ namespace Tiling_tiles{
 			true,
 			Scalar(255, 255, 255)
 			);
-		imshow("contour" + contourname + " one", drawing);
+		//imshow("contour" + contourname + " one", drawing);
 
 		//存储数据时还是原样存储,现在是顺时针
 		ofstream out("D:\\VisualStudioProjects\\contours\\" + contourname + ".txt");
@@ -153,7 +153,6 @@ namespace Tiling_tiles{
 				con_point.push_back(Point(aa, bb));
 			}
 		}
-		cout << "num,:" << con_point.size();
 		//while (in >> cc)
 		//{
 		//	if ((cc == '[') || (cc == ' '))
@@ -201,7 +200,7 @@ namespace Tiling_tiles{
 		{
 			circle(drwa, con_point[i], 1, Scalar(0, 0, 255), -1);
 		}
-		imshow("hahahah ", drwa);
+		imshow("contour" + contourname, drwa);
 		in.close();
 
 	}
