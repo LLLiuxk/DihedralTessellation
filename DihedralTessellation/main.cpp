@@ -9,7 +9,7 @@ int main(int argc, char** argv)
 	//string imagename1 = "Boat";
 	//string imagename2 = "fish8";
 	//string imagename1 = "fish5";
-	string imagename3 = "14";
+	string imagename3 = "999";
 	//string txtname = "D:/images/111.png";
 	//string txtname1 = "D:/images/fish3.png";
 
@@ -20,30 +20,36 @@ int main(int argc, char** argv)
 	Tiling_tiles::Prototile *prototile_first;
 	prototile_first = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
-	prototile_first->loadTileData(imagename3);
-	for (int i = 0; i < 20; i++)
-	{
-		prototile_first->~Prototile();
-		char ch[3];
-		//for (int j = 0; j < 2; j++)
+	int f = 0;
+	if (f==1)
+	    prototile_first->loadTileData(imagename3);
+	
+	else {
+		for (int i = 0; i < 20; i++)
+		{
+			prototile_first->~Prototile();
+			char ch[3];
+			//for (int j = 0; j < 2; j++)
 			//cout << ch[j] << endl;
-		if (i / 10 == 0)
-		{
-			ch[0] = i % 10 + 48;
-			ch[1] = '\0';
-		}
-		else
-		{
-			ch[0] = i / 10 + 48;
-			ch[1] = i % 10 + 48;
-			ch[2] = '\0';
-		}
-		
-		string image = ch;
-		cout << image << endl;
-		prototile_first->loadTileData(image);
-		//if (prototile_first->contour.size() < 300)
+			if (i / 10 == 0)
+			{
+				ch[0] = i % 10 + 48;
+				ch[1] = '\0';
+			}
+			else
+			{
+				ch[0] = i / 10 + 48;
+				ch[1] = i % 10 + 48;
+				ch[2] = '\0';
+			}
+
+			string image = ch;
+			cout << image << endl;
+			prototile_first->loadTileData(image);
+			//if (prototile_first->contour.size() < 300)
 			//cout << image + ".png may be error" << endl;
+		}
+	
 	}
 
 	//Tiling_tiles::Prototile *prototile_second;

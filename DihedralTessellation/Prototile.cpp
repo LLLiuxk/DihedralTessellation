@@ -28,7 +28,7 @@ namespace Tiling_tiles{
 		int max_thresh = 255;
 
 		//read image
-		String imageName("D:/dataset/" + contourname + ".png"); // by default
+		String imageName("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\" + contourname + ".png"); // by default
 		src = imread(imageName, IMREAD_COLOR);
 
 		if (src.empty())
