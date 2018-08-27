@@ -24,21 +24,40 @@ namespace Tiling_tiles{
 	{
 		Mat src;
 		Mat src_gray;
+		Mat src_2;
 		int thresh = 100;
 		int max_thresh = 255;
 
 		//read image
 		String imageName("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\" + contourname + ".png"); // by default
 		src = imread(imageName, IMREAD_COLOR);
-
 		if (src.empty())
 		{
 			cerr << "No image supplied ..." << endl;
 			return;
 		}
-		cvtColor(src, src_gray, COLOR_BGR2GRAY);
-		blur(src_gray, src_gray, Size(3, 3));
-
+		/*这里的处理过程：
+		1.将任意一张图像转化成灰度图 
+		2.模糊，利于下一步进行筛选过滤 
+		3.转化二值图 
+		4.模糊方便提取轮廓*/
+		int raw = 1;
+		if (raw == 1)
+		{
+			cvtColor(src, src_gray, COLOR_BGR2GRAY);
+			blur(src_gray, src_gray, Size(3, 3));
+			//未经处理的图需要四步，之前处理好的用四步会处理过头
+			threshold(src_gray, src_gray, 248, 255, cv::THRESH_BINARY);
+			imwrite("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\" + contourname + "2.png", src_gray);
+			blur(src_gray, src_gray, Size(3, 3));
+			imshow("src_gray_blur", src_gray);
+		}
+		else
+		{
+			cvtColor(src, src_gray, COLOR_BGR2GRAY);
+			blur(src_gray, src_gray, Size(3, 3));
+			imshow("src_gray_blur", src_gray);
+		}
 		Mat canny_output;
 		//考虑到可能有多个轮廓
 		vector<vector<Point> > contours;
@@ -46,9 +65,9 @@ namespace Tiling_tiles{
 
 		//用candy法由灰度图求出掩码图
 		Canny(src_gray, canny_output, thresh, thresh * 2, 3);
-
+		imshow("canny_output", canny_output);
 		//由掩码图求出有序轮廓点
-		findContours(canny_output, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE, Point(0, 0));
+		findContours(canny_output, contours, hierarchy, CV_RETR_EXTERNAL, CHAIN_APPROX_SIMPLE, Point(0, 0));
 		cout << "contours num:" << contours.size() << endl;
 		Mat drawing = Mat::zeros(canny_output.size(), CV_8UC3);
 		//Mat drawing2 = Mat::zeros(canny_output.size(), CV_8UC3);
@@ -66,7 +85,7 @@ namespace Tiling_tiles{
 		//namedWindow("contour one", WINDOW_AUTOSIZE);
 
 		//分别处理多个轮廓，此时按两个算，第一个每两个点采样一个画出来
-		int n = contours[0].size() / 2;
+		/*int n = contours[0].size() / 2;
 		Point rook_points[1][1000];
 		for (int t = 0; t < n; t++)
 		{
@@ -80,7 +99,7 @@ namespace Tiling_tiles{
 			1,
 			true,
 			Scalar(255, 255, 255)
-			);
+			);*/
 		//imshow("contour" + contourname + " one", drawing);
 
 		//存储数据时还是原样存储,现在是顺时针
@@ -94,6 +113,15 @@ namespace Tiling_tiles{
 		}
 		cout << "contours[0].size(): " << contours[0].size()<< endl;
 		out.close();
+		//if (out.is_open())
+		//{
+		//	out << contours[1].size() + 1 << endl;//contours[0].size()
+		//	for (int j = contours[1].size() - 1; j >= 0; j--)
+		//		out << contours[1][j].x << "," << contours[1][j].y << endl;
+		//	out << contours[1][contours[1].size() - 1].x << "," << contours[1][contours[1].size() - 1].y << endl;  //首尾连起来
+		//}
+		//cout << "contours[1].size(): " << contours[1].size() << endl;
+		//out.close();
 
 	}
 

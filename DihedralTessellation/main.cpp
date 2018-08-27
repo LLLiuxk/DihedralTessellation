@@ -1,6 +1,7 @@
 #include "tilingOpt.h"
 
 using namespace Tiling_tiles;
+
 int main(int argc, char** argv)
 {
 
@@ -9,7 +10,7 @@ int main(int argc, char** argv)
 	//string imagename1 = "Boat";
 	//string imagename2 = "fish8";
 	//string imagename1 = "fish5";
-	string imagename3 = "999";
+	string imagename3 = "20";
 	//string txtname = "D:/images/111.png";
 	//string txtname1 = "D:/images/fish3.png";
 
@@ -20,7 +21,7 @@ int main(int argc, char** argv)
 	Tiling_tiles::Prototile *prototile_first;
 	prototile_first = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
-	int f = 0;
+	int f = 1;
 	if (f==1)
 	    prototile_first->loadTileData(imagename3);
 	
