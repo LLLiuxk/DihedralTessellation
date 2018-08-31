@@ -36,7 +36,7 @@ namespace Tiling_tiles{
 		//vector<double> curvature_com(vector<Point2f> &contour_sam);
 
 		//io polygon
-		void imgtocout();
+		void imgtocout(string tile_image);
 		void readTxt(vector<Point2f> &con_point);
 
 		

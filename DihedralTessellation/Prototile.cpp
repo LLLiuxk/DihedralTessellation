@@ -12,7 +12,7 @@ namespace Tiling_tiles{
 		//vector<double> cos_vec_contour;
 		//vector<int> index_cos;
 		contourname = tile_data;
-		imgtocout();
+		//imgtocout();
 	    readTxt(contour);
 		//c_length = contour_length(contour);
 		////采样并求曲率
@@ -20,7 +20,7 @@ namespace Tiling_tiles{
 		//cur_normalize();
 	}
 
-	void Prototile::imgtocout()
+	void Prototile::imgtocout(string tile_image)
 	{
 		Mat src;
 		Mat src_gray;
@@ -29,7 +29,7 @@ namespace Tiling_tiles{
 		int max_thresh = 255;
 
 		//read image
-		String imageName("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\" + contourname + ".png"); // by default
+		String imageName("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\" + tile_image + ".png"); // by default
 		src = imread(imageName, IMREAD_COLOR);
 		if (src.empty())
 		{
@@ -44,11 +44,13 @@ namespace Tiling_tiles{
 		int raw = 1;
 		if (raw == 1)
 		{
-			cvtColor(src, src_gray, COLOR_BGR2GRAY);
+		    cvtColor(src, src_gray, COLOR_BGR2GRAY);
 			blur(src_gray, src_gray, Size(3, 3));
 			//未经处理的图需要四步，之前处理好的用四步会处理过头
-			threshold(src_gray, src_gray, 248, 255, cv::THRESH_BINARY);
-			imwrite("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\" + contourname + "2.png", src_gray);
+			threshold(src_gray, src_gray, 128, 255, cv::THRESH_BINARY);
+			if (imread("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\" + tile_image + "2.png", IMREAD_COLOR).empty())
+				imwrite("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\" + tile_image + "2.png", src_gray);
+			else cout << tile_image + "2.png has already exist!!!" << endl;
 			blur(src_gray, src_gray, Size(3, 3));
 			imshow("src_gray_blur", src_gray);
 		}
@@ -69,23 +71,30 @@ namespace Tiling_tiles{
 		//由掩码图求出有序轮廓点
 		findContours(canny_output, contours, hierarchy, CV_RETR_EXTERNAL, CHAIN_APPROX_SIMPLE, Point(0, 0));
 		cout << "contours num:" << contours.size() << endl;
-		Mat drawing = Mat::zeros(canny_output.size(), CV_8UC3);
-		//Mat drawing2 = Mat::zeros(canny_output.size(), CV_8UC3);
-
-		////output the oral points
-		//Mat drawing3 = Mat::zeros(800,800, CV_8UC3);
-		//for (int j = 0; j < contours[1].size(); j++)
-		//{
-		//	circle(drawing3, contours[1][j], 1, Scalar(255, 0, 0), -1);
-		//	//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
-		//}
-		//imshow("oral contour: ", drawing3);
+		
+		
+		Mat drwa = Mat::zeros(800, 800, CV_8UC3);
+		int i = 0;
+		for (; i < contours[0].size() / 4; i++)
+		{
+			circle(drwa, contours[0][i], 1, Scalar(255, 0, 0), -1);
+		}
+		for (; i < contours[0].size() / 2; i++)
+		{
+			circle(drwa, contours[0][i], 1, Scalar(0, 255, 0), -1);
+		}
+		for (; i < contours[0].size(); i++)
+		{
+			circle(drwa, contours[0][i], 1, Scalar(0, 0, 255), -1);
+		}
+		imshow("contour" + tile_image, drwa);
 
 		//output two 
 		//namedWindow("contour one", WINDOW_AUTOSIZE);
 
 		//分别处理多个轮廓，此时按两个算，第一个每两个点采样一个画出来
-		/*int n = contours[0].size() / 2;
+		/*Mat drawing = Mat::zeros(canny_output.size(), CV_8UC3);
+		int n = contours[0].size() / 2;
 		Point rook_points[1][1000];
 		for (int t = 0; t < n; t++)
 		{
@@ -102,8 +111,8 @@ namespace Tiling_tiles{
 			);*/
 		//imshow("contour" + contourname + " one", drawing);
 
-		//存储数据时还是原样存储,现在是顺时针
-		ofstream out("D:\\VisualStudioProjects\\contours\\" + contourname + ".txt");
+		//顺时针存储
+		/*ofstream out("D:\\VisualStudioProjects\\contours\\" + contourname + ".txt");
 		if (out.is_open())
 		{
 			out << contours[0].size()+1 << endl;//contours[0].size()
@@ -112,16 +121,19 @@ namespace Tiling_tiles{
 			out << contours[0][contours[0].size() - 1].x << "," << contours[0][contours[0].size() - 1].y << endl;  //首尾连起来
 		}
 		cout << "contours[0].size(): " << contours[0].size()<< endl;
+		out.close();*/
+
+		//逆时针存储
+		ofstream out("D:\\VisualStudioProjects\\contours\\" + tile_image + ".txt");
+		if (out.is_open())
+		{
+			out << contours[0].size() + 1 << endl;//contours[0].size()
+			for (int j = 0; j < contours[0].size(); j++)
+				out << contours[0][j].x << "," << contours[0][j].y << endl;
+			out << contours[0][0].x << "," << contours[0][0].y << endl;  //首尾连起来
+		}
+		cout << "contours[0].size(): " << contours[0].size() << endl;
 		out.close();
-		//if (out.is_open())
-		//{
-		//	out << contours[1].size() + 1 << endl;//contours[0].size()
-		//	for (int j = contours[1].size() - 1; j >= 0; j--)
-		//		out << contours[1][j].x << "," << contours[1][j].y << endl;
-		//	out << contours[1][contours[1].size() - 1].x << "," << contours[1][contours[1].size() - 1].y << endl;  //首尾连起来
-		//}
-		//cout << "contours[1].size(): " << contours[1].size() << endl;
-		//out.close();
 
 	}
 
@@ -132,11 +144,11 @@ namespace Tiling_tiles{
 		ifstream in("D:\\VisualStudioProjects\\contours\\" + contourname + ".txt");
 		if (!in.is_open())
 		{
-			cout << "Error opening file";
+			cout << "Error opening file" << endl;
 			return;
 		}
 		//挨个处理每个字符
-		cout << "Error opening file  ok!!!";
+		cout << "Opening file!!!" << endl;
 		vector<char> each_point;
 		int aa = 0;
 		int bb = 0;

@@ -10,43 +10,61 @@ int main(int argc, char** argv)
 	//string imagename1 = "Boat";
 	//string imagename2 = "fish8";
 	//string imagename1 = "fish5";
-	string imagename3 = "20";
+	string imagename3 = "203";
 	//string txtname = "D:/images/111.png";
 	//string txtname1 = "D:/images/fish3.png";
 
 	//vector<Point2f> ske_points;
-	//ske_points = get_Skeleton(imagename1);
+	//ske_points = get_Skeleon(imagename1);
 
 
 	Tiling_tiles::Prototile *prototile_first;
 	prototile_first = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
 	int f = 1;
-	if (f==1)
-	    prototile_first->loadTileData(imagename3);
-	
-	else {
-		for (int i = 0; i < 20; i++)
+	if (f == 0) //已有dataset
+	{
+		prototile_first->imgtocout(imagename3);
+		prototile_first->loadTileData(imagename3);
+	}
+	else if (f == 1)
+	{
+		prototile_first->imgtocout(imagename3);
+	}	
+	else {  //批量读图
+		for (int i = 201; i < 205; i++)
 		{
 			prototile_first->~Prototile();
-			char ch[3];
+			char ch[4];
 			//for (int j = 0; j < 2; j++)
 			//cout << ch[j] << endl;
-			if (i / 10 == 0)
+			if (i < 100)
 			{
-				ch[0] = i % 10 + 48;
-				ch[1] = '\0';
+				if (i / 10 == 0)
+				{
+					ch[0] = i % 10 + 48;
+					ch[1] = '\0';
+				}
+				else
+				{
+					ch[0] = i / 10 + 48;
+					ch[1] = i % 10 + 48;
+					ch[2] = '\0';
+				}
 			}
 			else
 			{
-				ch[0] = i / 10 + 48;
-				ch[1] = i % 10 + 48;
-				ch[2] = '\0';
+				ch[0] = i / 100 + 48;
+				ch[1] = ( i % 100 ) / 10+ 48;
+				ch[2] = i % 10 + 48;
+				ch[3] = '\0';
+
 			}
+			
 
 			string image = ch;
 			cout << image << endl;
-			prototile_first->loadTileData(image);
+			prototile_first->imgtocout(image);
 			//if (prototile_first->contour.size() < 300)
 			//cout << image + ".png may be error" << endl;
 		}
