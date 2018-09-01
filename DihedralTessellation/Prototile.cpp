@@ -301,23 +301,23 @@ namespace Tiling_tiles{
 			}
 			if (contour_sam[0] == contour_sam[contour_sam.size() - 1]) contour_sam.pop_back();
 			contour_sample.push_back(contour_sam);
-			contour_curva.push_back(curvature_com_k(contour_sam));
+			contour_curva.push_back(curvature_com(contour_sam));
 			
 			
-			// invertion
-			for (int i = contour_sam.size() - 1; i >= 0; i--)
-			{
-				contour_sam_inver.push_back(contour_sam[i]);
-			}
-			contour_sample_inver.push_back(contour_sam_inver);
-			contour_curva_inver.push_back(curvature_com_k(contour_sam_inver));
+			//// invertion
+			//for (int i = contour_sam.size() - 1; i >= 0; i--)
+			//{
+			//	contour_sam_inver.push_back(contour_sam[i]);
+			//}
+			//contour_sample_inver.push_back(contour_sam_inver);
+			//contour_curva_inver.push_back(curvature_com_k(contour_sam_inver));
 
-			//求一点两个方向的曲率的均值
-			for (int j = 0; j < contour_curva[i-1].size(); j++)
-			{
-				contour_curva[i-1][j] = (contour_curva[i-1][j] + contour_curva_inver[i-1][contour_curva[i-1].size() - 1 - j]) / 2;
-			}
-			//cout << "cur: " << contour_curva[0][i] << "  cur_inver: " << contour_curva_inver[0][i] << endl;
+			////求一点两个方向的曲率的均值
+			//for (int j = 0; j < contour_curva[i-1].size(); j++)
+			//{
+			//	contour_curva[i-1][j] = (contour_curva[i-1][j] + contour_curva_inver[i-1][contour_curva[i-1].size() - 1 - j]) / 2;
+			//}
+			////cout << "cur: " << contour_curva[0][i] << "  cur_inver: " << contour_curva_inver[0][i] << endl;
 
 
 			//_________________________show the result
@@ -327,7 +327,7 @@ namespace Tiling_tiles{
 			double max_cur = 0.0;
 			for (int j = 0; j < contour_sam.size(); j++)
 			{
-				if (contour_curva[i-1][j]>0.1)
+				if (contour_curva[i-1][j]>-0.91)
 				{
 					max_cur = max_cur + 1;
 					circle(drawing4, contour_sam[j], 1, Scalar(0, 0, 255), -1);

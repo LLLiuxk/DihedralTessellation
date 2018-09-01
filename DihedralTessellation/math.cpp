@@ -110,11 +110,15 @@ namespace Tiling_tiles{
 		vector<double> eachOfcurvature;
 		int c_s = contour_sam.size();
 		double curvature = cos_two_vector(contour_sam[c_s - 1] - contour_sam[0], contour_sam[1] - contour_sam[0]);
-		for (int i = 1; i < c_s - 1; i++)
+		eachOfcurvature.push_back(curvature);
+		int i = 1;
+		for (; i < c_s - 1; i++)
 		{
 			curvature = cos_two_vector(contour_sam[i - 1] - contour_sam[i], contour_sam[i + 1] - contour_sam[i]);
 			eachOfcurvature.push_back(curvature);
 		}
+		curvature = cos_two_vector(contour_sam[i - 1] - contour_sam[i], contour_sam[0] - contour_sam[i]);
+		eachOfcurvature.push_back(curvature);
 		return eachOfcurvature;
 	}
 
