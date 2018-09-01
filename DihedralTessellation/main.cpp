@@ -10,7 +10,7 @@ int main(int argc, char** argv)
 	//string imagename1 = "Boat";
 	//string imagename2 = "fish8";
 	//string imagename1 = "fish5";
-	string imagename3 = "203";
+	string imagename3 = "204";
 	//string txtname = "D:/images/111.png";
 	//string txtname1 = "D:/images/fish3.png";
 
@@ -21,11 +21,12 @@ int main(int argc, char** argv)
 	Tiling_tiles::Prototile *prototile_first;
 	prototile_first = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
-	int f = 1;
+	int f = 0;
 	if (f == 0) //ÒÑÓÐdataset
 	{
 		prototile_first->imgtocout(imagename3);
 		prototile_first->loadTileData(imagename3);
+
 	}
 	else if (f == 1)
 	{

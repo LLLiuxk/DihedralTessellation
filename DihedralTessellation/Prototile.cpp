@@ -14,9 +14,11 @@ namespace Tiling_tiles{
 		contourname = tile_data;
 		//imgtocout();
 	    readTxt(contour);
-		//c_length = contour_length(contour);
-		////采样并求曲率
-		//contour_sam_cur();
+		c_length = contour_length(contour);
+		//采样并求曲率
+		contour_sam_cur();
+		
+
 		//cur_normalize();
 	}
 
@@ -41,7 +43,7 @@ namespace Tiling_tiles{
 		2.模糊，利于下一步进行筛选过滤 
 		3.转化二值图 
 		4.模糊方便提取轮廓*/
-		int raw = 1;
+		int raw = 0;
 		if (raw == 1)
 		{
 		    cvtColor(src, src_gray, COLOR_BGR2GRAY);
@@ -261,7 +263,7 @@ namespace Tiling_tiles{
 		center_point.y = center_point.y / contour.size();
 
 		//sampling and computing curvature
-		for (int i = 1; i < 6; i++)
+		for (int i = 1; i < 5; i++)  //确定采样点数，此处为800点
 		{
 
 			Lambda = 0;
@@ -270,11 +272,6 @@ namespace Tiling_tiles{
 			vector<Point2f> contour_sam_inver;
 			Point2f sample;
 
-			if (contour.size() < sam_num)
-			{
-				cout << "Lost the " << sam_num << " and more samples!" << endl;
-				//break;
-			}
 			Lambda = c_length / sam_num;
 			contour_sam.push_back(contour[0]);
 			sample = contour[0];
@@ -305,6 +302,8 @@ namespace Tiling_tiles{
 			if (contour_sam[0] == contour_sam[contour_sam.size() - 1]) contour_sam.pop_back();
 			contour_sample.push_back(contour_sam);
 			contour_curva.push_back(curvature_com_k(contour_sam));
+			
+			
 			// invertion
 			for (int i = contour_sam.size() - 1; i >= 0; i--)
 			{
@@ -313,52 +312,59 @@ namespace Tiling_tiles{
 			contour_sample_inver.push_back(contour_sam_inver);
 			contour_curva_inver.push_back(curvature_com_k(contour_sam_inver));
 
-
-			////_________________________show the result
-
-			////Mat drawing4 = Mat::zeros(800, 800, CV_8UC3);
-			//Mat drawing4 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-
-			//for (int j = 0; j < contour_sam.size(); j++)
-			//{
-			//	circle(drawing4, contour_sam[j], 1, Scalar(0, 0, 0), -1);
-			//	//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
-			//}
-			////circle(drawing4, contour_sam[contour_sam.size() - 2], 1, Scalar(255, 255, 0), -1);
-			////circle(drawing4, contour_sam[contour_sam.size() - 1], 1, Scalar(255, 255, 0), -1);
-			////namedWindow("simple contour", WINDOW_AUTOSIZE);
-
-			/////*	int n = contour_sam.size();
-			////	cout << "n: " << n << endl;
-			////	Point rook_points[1][600];
-			////	for (int t = 0; t < n; t++)
-			////	{
-			////		rook_points[0][t] = contour_sam[t];
-			////	}
-			////	const Point* ppt[1] = { rook_points[0] };
-			////	int npt[] = { n };
-			////	polylines(drawing4,
-			////		ppt,
-			////		npt,
-			////		1,
-			////		true,
-			////		Scalar(255, 255, 255)
-			////		);*/
-			//string name = "the ";
-			//name = name + char(i + 48) + " simple contour ";
-			//imshow(name, drawing4);
-			////________________________ show over
-		}
-
-		//求一点两个方向的曲率的均值
-		for (int i = 0; i < 5; i++)
-		{
-			for (int j = 0; j < contour_curva[i].size(); j++)
+			//求一点两个方向的曲率的均值
+			for (int j = 0; j < contour_curva[i-1].size(); j++)
 			{
-				contour_curva[i][j] = (contour_curva[i][j] + contour_curva_inver[i][contour_curva[i].size() - 1 - j]) / 2;
+				contour_curva[i-1][j] = (contour_curva[i-1][j] + contour_curva_inver[i-1][contour_curva[i-1].size() - 1 - j]) / 2;
 			}
 			//cout << "cur: " << contour_curva[0][i] << "  cur_inver: " << contour_curva_inver[0][i] << endl;
+
+
+			//_________________________show the result
+
+			//Mat drawing4 = Mat::zeros(800, 800, CV_8UC3);
+			Mat drawing4 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+			double max_cur = 0.0;
+			for (int j = 0; j < contour_sam.size(); j++)
+			{
+				if (contour_curva[i-1][j]>0.1)
+				{
+					max_cur = max_cur + 1;
+					circle(drawing4, contour_sam[j], 1, Scalar(0, 0, 255), -1);
+				}
+				else 
+					circle(drawing4, contour_sam[j], 1, Scalar(0, 0, 0), -1);
+
+				//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
+			}
+			cout << "contour_curva["<<i-1<<"].max= " << max_cur << endl;
+			//circle(drawing4, contour_sam[contour_sam.size() - 2], 1, Scalar(255, 255, 0), -1);
+			//circle(drawing4, contour_sam[contour_sam.size() - 1], 1, Scalar(255, 255, 0), -1);
+			//namedWindow("simple contour", WINDOW_AUTOSIZE);
+
+			///*	int n = contour_sam.size();
+			//	cout << "n: " << n << endl;
+			//	Point rook_points[1][600];
+			//	for (int t = 0; t < n; t++)
+			//	{
+			//		rook_points[0][t] = contour_sam[t];
+			//	}
+			//	const Point* ppt[1] = { rook_points[0] };
+			//	int npt[] = { n };
+			//	polylines(drawing4,
+			//		ppt,
+			//		npt,
+			//		1,
+			//		true,
+			//		Scalar(255, 255, 255)
+			//		);*/
+			string name = "the ";
+			name = name + char(i + 48) + " simple contour ";
+			imshow(name, drawing4);
+			//________________________ show over
 		}
+
+		
 	}
 
 	void Prototile::cur_normalize()

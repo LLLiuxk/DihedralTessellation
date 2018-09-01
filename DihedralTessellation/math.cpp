@@ -37,6 +37,10 @@ namespace Tiling_tiles{
 		Point2f unit = Point2f(vec.x / fenmu, vec.y / fenmu);
 		return unit;
 	}
+	double cos_two_vector(Point2f &v0, Point2f &v1)
+	{
+		return unit_vec(v0).x*unit_vec(v1).x + unit_vec(v0).y*unit_vec(v1).y;
+	}
 
 	double contour_length(vector<Point2f> contour)
 	{
@@ -96,6 +100,19 @@ namespace Tiling_tiles{
 			double angle2_tan = (contour_sam[(i + 2) % c_s].y - contour_sam[(i + 1) % c_s].y) / (contour_sam[(i + 2) % c_s].x - contour_sam[(i + 1) % c_s].x);
 			double angle_incre = abs(atan(angle2_tan) - atan(angle1_tan));
 			double curvature = angle_incre / sqrt((contour_sam[(i + 1) % c_s].x - contour_sam[i].x)*(contour_sam[(i + 1) % c_s].x - contour_sam[i].x) + (contour_sam[(i + 1) % c_s].y - contour_sam[i].y)*(contour_sam[(i + 1) % c_s].y - contour_sam[i].y));
+			eachOfcurvature.push_back(curvature);
+		}
+		return eachOfcurvature;
+	}
+
+	vector<double> Prototile::curvature_com(vector<Point2f> &contour_sam) 
+	{
+		vector<double> eachOfcurvature;
+		int c_s = contour_sam.size();
+		double curvature = cos_two_vector(contour_sam[c_s - 1] - contour_sam[0], contour_sam[1] - contour_sam[0]);
+		for (int i = 1; i < c_s - 1; i++)
+		{
+			curvature = cos_two_vector(contour_sam[i - 1] - contour_sam[i], contour_sam[i + 1] - contour_sam[i]);
 			eachOfcurvature.push_back(curvature);
 		}
 		return eachOfcurvature;

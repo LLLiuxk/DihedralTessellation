@@ -30,10 +30,9 @@ namespace Tiling_tiles{
 		void cur_normalize();
 
 		//math tool
-		double cos_two_vector(Point &v0, Point &v1);
 		void sort_cos(vector<double> &vect, vector<int> &index_num);
 		vector<double> curvature_com_k(vector<Point2f> &contour_sam);
-		//vector<double> curvature_com(vector<Point2f> &contour_sam);
+		vector<double> curvature_com(vector<Point2f> &contour_sam); //¼ÇÂ¼cosÖµ
 
 		//io polygon
 		void imgtocout(string tile_image);
@@ -113,6 +112,7 @@ namespace Tiling_tiles{
 	int cur_char_length(char a, char b);
 	double cur_length_two_p(double cur1, double cur2, double zeta);
 	Point2f unit_vec(Point2f vec);
+	double cos_two_vector(Point2f &v0, Point2f &v1);
 	void bbx_center_point(vector<vector<Point2f>> all_point, vector<Point2f> &five_p);
 
 	//skeleton
