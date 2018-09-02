@@ -43,6 +43,7 @@ namespace Tiling_tiles{
 					uchar p6 = (i == height - 1) ? 0 : *(p + dst.step + j);
 					uchar p5 = (i == height - 1 || j == width - 1) ? 0 : *(p + dst.step + j + 1);
 					uchar p7 = (i == height - 1 || j == 0) ? 0 : *(p + dst.step + j - 1);
+
 					if ((p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9) >= 2 && (p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9) <= 6)
 					{
 						int ap = 0;
@@ -55,7 +56,7 @@ namespace Tiling_tiles{
 						if (p8 == 0 && p9 == 1) ++ap;
 						if (p9 == 0 && p2 == 1) ++ap;
 
-						if (ap == 1 && p2 * p4 * p6 == 0 && p4 * p6 * p8 == 0)
+						if (ap == 1 && p2 * p4 * p8 == 0 && p2 * p6 * p8 == 0)
 						{
 							//标记  
 							mFlag.push_back(p + j);
@@ -63,13 +64,11 @@ namespace Tiling_tiles{
 					}
 				}
 			}
-
 			//将标记的点删除  
 			for (vector<uchar *>::iterator i = mFlag.begin(); i != mFlag.end(); ++i)
 			{
 				**i = 0;
 			}
-
 			//直到没有点满足，算法结束  
 			if (mFlag.empty())
 			{
@@ -79,8 +78,7 @@ namespace Tiling_tiles{
 			{
 				mFlag.clear();//将mFlag清空  
 			}
-
-
+			
 			//对点标记  
 			for (int i = 0; i < height; ++i)
 			{
@@ -101,7 +99,6 @@ namespace Tiling_tiles{
 					uchar p6 = (i == height - 1) ? 0 : *(p + dst.step + j);
 					uchar p5 = (i == height - 1 || j == width - 1) ? 0 : *(p + dst.step + j + 1);
 					uchar p7 = (i == height - 1 || j == 0) ? 0 : *(p + dst.step + j - 1);
-
 					if ((p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9) >= 2 && (p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9) <= 6)
 					{
 						int ap = 0;
@@ -114,7 +111,7 @@ namespace Tiling_tiles{
 						if (p8 == 0 && p9 == 1) ++ap;
 						if (p9 == 0 && p2 == 1) ++ap;
 
-						if (ap == 1 && p2 * p4 * p8 == 0 && p2 * p6 * p8 == 0)
+						if (ap == 1 && p2 * p4 * p6 == 0 && p4 * p6 * p8 == 0)
 						{
 							//标记  
 							mFlag.push_back(p + j);
