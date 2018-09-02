@@ -228,7 +228,7 @@ namespace Tiling_tiles{
 	}
 
 
-	vector<Point2f> get_Skeleton(string imaname)
+	vector<Point2f> get_Skeleton(string imaname, vector<Point2f> &skeleton)
 	{
 		Mat src;
 		//获取图像  
@@ -266,11 +266,20 @@ namespace Tiling_tiles{
 		//二值图转化成灰度图，并绘制找到的点
 		dst = dst * 255;
 		src = src * 255;
-		
+
+		for (int i = 0; i < dst.rows; i++)
+		{
+			for (int j = 0; j < dst.cols; j++)
+			{
+				//cout << (int)src.at<uchar>(i, j);
+				if (dst.at<uchar>(i, j) == 255) skeleton.push_back(Point2f(j,i));
+			}
+		}
+
 		vector<Point2f>::iterator it = points.begin();
 		for (; it != points.end(); it++)
 		{
-			circle(dst, *it, 4, 128, -1);
+			circle(dst, *it, 4, 255, -1);
 		}
 		//imwrite("dst.jpg", dst);
 

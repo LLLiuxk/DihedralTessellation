@@ -27,7 +27,7 @@ namespace Tiling_tiles{
 
 		void loadTileData(string tile_data);
 		void contour_sam_cur();
-		void convex_p(vector<Point2f> &ske_p);
+		void convex_p(vector<Point2f> &ske_p, vector<Point2f> &skeleton);
 		void cur_normalize();
 
 		//math tool
@@ -120,7 +120,7 @@ namespace Tiling_tiles{
 	Mat thinImage(const Mat & src, const int maxIterations);
 	void filterOver(Mat thinSrc);
 	vector<cv::Point2f> getPoints(const Mat &thinSrc, unsigned int raudis, unsigned int thresholdMax, unsigned int thresholdMin);
-	vector<Point2f> get_Skeleton(string imaname);
+	vector<Point2f> get_Skeleton(string imaname, vector<Point2f> &skeleton);
 
 
 }

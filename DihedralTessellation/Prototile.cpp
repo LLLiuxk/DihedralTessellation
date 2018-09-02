@@ -360,7 +360,7 @@ namespace Tiling_tiles{
 		
 	}
 
-	void Prototile::convex_p(vector<Point2f> &ske_p)
+	void Prototile::convex_p(vector<Point2f> &ske_p, vector<Point2f> &skeleton)
 	{
 		int sam_num = contour_sample.size();
 		vector<Point2f> contour_sam = contour_sample[sam_num - 2];
@@ -386,11 +386,17 @@ namespace Tiling_tiles{
 		}
 		for (int j = 0; j < max_cur; j++)
 		{
-			circle(drawing5, contour_sam[index_num[j]], 2, Scalar(0, 0, 255), -1);
+			circle(drawing5, contour_sam[index_num[j]], 4, Scalar(0, 0, 255), -1);
+		}
+
+		for (int j = 0; j < skeleton.size() - 1; j++)
+		{
+			circle(drawing5, skeleton[j], 1, Scalar(128, 128, 128), -1);
+
 		}
 		for (int j = 0; j < ske_p.size() - 1; j++)
 		{
-			circle(drawing5, ske_p[j], 2, Scalar(0, 255, 255), -1);
+			circle(drawing5, ske_p[j], 4, Scalar(255, 0, 0), -1);
 
 		}
 		imshow("convex points: ", drawing5);

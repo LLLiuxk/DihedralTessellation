@@ -10,7 +10,7 @@ int main(int argc, char** argv)
 	//string imagename1 = "Boat";
 	//string imagename2 = "fish8";
 	//string imagename1 = "fish5";
-	string imagename3 = "37";
+	string imagename3 = "65";
 	//string txtname = "D:/images/111.png";
 	//string txtname1 = "D:/images/fish3.png";
 
@@ -25,11 +25,12 @@ int main(int argc, char** argv)
 	if (f == 0) //ÒÑÓÐdataset
 	{
 		vector<Point2f> ske_points;
-		ske_points = get_Skeleton(imagename3);
+		vector<Point2f> skeleton_points;
+		ske_points = get_Skeleton(imagename3, skeleton_points);
 		cout << ske_points.size() << endl;
 		prototile_first->imgtocout(imagename3);
 		prototile_first->loadTileData(imagename3);
-		prototile_first->convex_p(ske_points);
+		prototile_first->convex_p(ske_points, skeleton_points);
 
 	}
 	else if (f == 1)
