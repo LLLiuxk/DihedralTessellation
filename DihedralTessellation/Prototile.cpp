@@ -18,7 +18,6 @@ namespace Tiling_tiles{
 		//采样并求曲率
 		contour_sam_cur();
 		
-
 		//cur_normalize();
 	}
 
@@ -263,9 +262,9 @@ namespace Tiling_tiles{
 		center_point.y = center_point.y / contour.size();
 
 		//sampling and computing curvature
-		for (int i = 1; i < 5; i++)  //确定采样点数，此处为800点
-		{
 
+		for (int i = 3; i < 7; i++)  //确定采样点数，此处为600点
+		{			
 			Lambda = 0;
 			sam_num = i * 100;
 			vector<Point2f> contour_sam;
@@ -324,20 +323,14 @@ namespace Tiling_tiles{
 
 			//Mat drawing4 = Mat::zeros(800, 800, CV_8UC3);
 			Mat drawing4 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-			double max_cur = 0.0;
+
 			for (int j = 0; j < contour_sam.size(); j++)
 			{
-				if (contour_curva[i-1][j]>-0.91)
-				{
-					max_cur = max_cur + 1;
-					circle(drawing4, contour_sam[j], 1, Scalar(0, 0, 255), -1);
-				}
-				else 
-					circle(drawing4, contour_sam[j], 1, Scalar(0, 0, 0), -1);
+				circle(drawing4, contour_sam[j], 1, Scalar(0, 0, 0), -1);
 
 				//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
 			}
-			cout << "contour_curva["<<i-1<<"].max= " << max_cur << endl;
+			
 			//circle(drawing4, contour_sam[contour_sam.size() - 2], 1, Scalar(255, 255, 0), -1);
 			//circle(drawing4, contour_sam[contour_sam.size() - 1], 1, Scalar(255, 255, 0), -1);
 			//namedWindow("simple contour", WINDOW_AUTOSIZE);
@@ -366,6 +359,43 @@ namespace Tiling_tiles{
 
 		
 	}
+
+	void Prototile::convex_p(vector<Point2f> &ske_p)
+	{
+		int sam_num = contour_sample.size();
+		vector<Point2f> contour_sam = contour_sample[sam_num - 2];
+		vector<double> contour_sam_cur = contour_curva[sam_num - 2];
+		cout << "num : " << contour_sample[sam_num - 2].size() << endl;
+		//排序，找最大的一些凹凸点
+		vector<int> index_num;
+		int max_cur = 20;
+		for (int i = 0; i < contour_sam.size(); i++)
+		{
+			index_num.push_back(i);
+
+		}
+		sort_cos(contour_sam_cur, index_num);
+
+		Mat drawing5 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+
+		for (int j = 0; j < contour_sam.size(); j++)
+		{
+			circle(drawing5, contour_sam[j], 1, Scalar(0, 0, 0), -1);
+
+			//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
+		}
+		for (int j = 0; j < max_cur; j++)
+		{
+			circle(drawing5, contour_sam[index_num[j]], 2, Scalar(0, 0, 255), -1);
+		}
+		for (int j = 0; j < ske_p.size() - 1; j++)
+		{
+			circle(drawing5, ske_p[j], 2, Scalar(0, 255, 255), -1);
+
+		}
+		imshow("convex points: ", drawing5);
+	}
+
 
 	void Prototile::cur_normalize()
 	{

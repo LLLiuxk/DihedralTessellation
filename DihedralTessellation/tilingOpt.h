@@ -27,6 +27,7 @@ namespace Tiling_tiles{
 
 		void loadTileData(string tile_data);
 		void contour_sam_cur();
+		void convex_p(vector<Point2f> &ske_p);
 		void cur_normalize();
 
 		//math tool

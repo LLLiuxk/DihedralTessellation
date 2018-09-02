@@ -80,6 +80,7 @@ namespace Tiling_tiles{
 				mFlag.clear();//将mFlag清空  
 			}
 
+
 			//对点标记  
 			for (int i = 0; i < height; ++i)
 			{
@@ -137,6 +138,7 @@ namespace Tiling_tiles{
 			{
 				mFlag.clear();//将mFlag清空  
 			}
+
 		}
 		return dst;
 	}
@@ -233,7 +235,7 @@ namespace Tiling_tiles{
 	{
 		Mat src;
 		//获取图像  
-		string name = "D:\\images\\" + imaname + ".png";
+		string name = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\" + imaname + ".png";
 
 		src = imread(name, cv::IMREAD_GRAYSCALE);
 
@@ -257,19 +259,24 @@ namespace Tiling_tiles{
 		}
 		//图像细化，骨骼化  
 		Mat dst = thinImage(src);
+
 		//过滤细化后的图像
 		filterOver(dst);
+
 		//查找端点和交叉点  
 		vector<Point2f> points = getPoints(dst, 6, 9, 6);
+
 		//二值图转化成灰度图，并绘制找到的点
 		dst = dst * 255;
 		src = src * 255;
+		
 		vector<Point2f>::iterator it = points.begin();
 		for (; it != points.end(); it++)
 		{
-			circle(dst, *it, 4, 255, -1);
+			circle(dst, *it, 4, 128, -1);
 		}
-		imwrite("dst.jpg", dst);
+		//imwrite("dst.jpg", dst);
+
 		//显示图像  
 		cv::namedWindow("src1", CV_WINDOW_AUTOSIZE);
 		cv::namedWindow("dst1", CV_WINDOW_AUTOSIZE);
