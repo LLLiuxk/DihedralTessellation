@@ -27,11 +27,12 @@ namespace Tiling_tiles{
 
 		void loadTileData(string tile_data);
 		void contour_sam_cur();
-		void convex_p(vector<Point2f> &ske_p, vector<Point2f> &skeleton);
+		vector<int> convex_p();                 //求轮廓上值最大的10个不临近的凸点
+		void partition_points(string imaname);  //求得用做划分的点
 		void cur_normalize();
 
 		//math tool
-		void sort_cos(vector<double> &vect, vector<int> &index_num);
+		void sort_cos(vector<double> vect, vector<int> &index_num);
 		vector<double> curvature_com_k(vector<Point2f> &contour_sam);
 		vector<double> curvature_com(vector<Point2f> &contour_sam); //记录cos值
 
@@ -43,6 +44,7 @@ namespace Tiling_tiles{
 
 		string contourname;
 		vector<Point2f> contour;
+		vector<double> cconvex;
 		vector<vector<Point2f>> contour_sample;
 		vector<vector<Point2f>> contour_sample_inver;
 		vector<vector<double>> contour_curva;
@@ -62,12 +64,10 @@ namespace Tiling_tiles{
 		Tiling_opt();
 		~Tiling_opt();
 		void com_score(string imagename1, string imagename2);
-		double com_scale_factor();
+		double scale_factor();
 		double com_each_pair(vector<Point2f> &first_interval, vector<Point2f> &second_interval, int &flag);
 
-
-		void divide_intervals(int intervals, vector<Point2f> &contour, vector<vector<Point2f>> &proto_interval, int delay);
-
+		void points_dividing(string imaname);
 
 		double com_optimal_score(vector<vector<Point2f>> &proto_interval_1, vector<vector<char>> &proto_first_char, 
 			vector<vector<Point2f>> &proto_interval_2, vector<vector<char>> &proto_second_char, vector<pair<int, int>> &order_type);

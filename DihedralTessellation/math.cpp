@@ -122,7 +122,7 @@ namespace Tiling_tiles{
 		return eachOfcurvature;
 	}
 
-	void Prototile::sort_cos(vector<double> &vect, vector<int> &index_num) //保留下标的排序
+	void Prototile::sort_cos(vector<double> vect, vector<int> &index_num) //保留下标的排序
 	{
 		int i, j;
 		double temp;

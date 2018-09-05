@@ -23,7 +23,7 @@ namespace Tiling_tiles{
 		delete[] prototile_second;
 	}
 
-	double Tiling_opt::com_scale_factor()
+	double Tiling_opt::scale_factor()
 	{
 		double scale_factor; //   first/second
 		cout << "length1: " << prototile_first->c_length << "length2: " << prototile_second->c_length << endl;
@@ -31,7 +31,11 @@ namespace Tiling_tiles{
 		cout << "scale factor: " << scale_factor << endl;
 		return scale_factor;
 	}
-
+	void Tiling_opt::points_dividing(string imaname) //此处还是平均分的方法，需要做的： 优化分段的方法
+	{		
+		prototile_first->partition_points(imaname);
+	}
+	/*
 	//每一个轮廓分成四段
 	void Tiling_opt::com_score(string imagename1, string imagename2)
 	{
@@ -290,31 +294,7 @@ namespace Tiling_tiles{
 
 	}
 
-	void Tiling_opt::divide_intervals(int intervals, vector<Point2f> &contour, vector<vector<Point2f>> &proto_interval, int delay) //此处还是平均分的方法，需要做的： 优化分段的方法
-	{
-		int interval_num = contour.size() / intervals; //每段的点数
-		int all_num = 0;
-		for (int i = 0; i < intervals - 1; i++)
-		{
-			vector<Point2f> each_inter;
-			for (int j = 0; j < interval_num; j++)
-			{
-				each_inter.push_back(contour[all_num + delay]);
-				all_num++;
-			}
-			each_inter.push_back(contour[all_num + delay]);
-			proto_interval.push_back(each_inter);
-		}
-		vector<Point2f> each_inter;
-		for (; all_num < contour.size(); all_num++)
-		{
-			each_inter.push_back(contour[(all_num + delay) % (contour.size())]);
-		}
-		each_inter.push_back(contour[(all_num + delay) % (contour.size())]);
-		proto_interval.push_back(each_inter);
-
-		//cout << "proto_interval  num:" << proto_interval.size() << endl;
-	}
+	
 
 
 	double Tiling_opt::com_optimal_score(vector<vector<Point2f>> &proto_interval_1, vector<vector<char>> &proto_first_char,
@@ -519,17 +499,17 @@ namespace Tiling_tiles{
 		}
 		//cout << "contour1_length(): " << contour_length(contour1) << endl << "contour2_length(): " << contour_length(contour2) << endl;
 		//将两个轮廓一起缩放，可用在最后显示阶段
-		/*double scale = 0.5;
-		for (int i = 0; i < contour1.size(); i++)
-		{
-		contour1[i].x = contour1[i].x * scale;
-		contour1[i].y = contour1[i].y * scale;
-		}
-		for (int i = 0; i < contour2.size(); i++)
-		{
-		contour2[i].x = contour2[i].x * scale;
-		contour2[i].y = contour2[i].y * scale;
-		}*/
+		//double scale = 0.5;
+		//for (int i = 0; i < contour1.size(); i++)
+		//{
+		//contour1[i].x = contour1[i].x * scale;
+		//contour1[i].y = contour1[i].y * scale;
+		//}
+		//for (int i = 0; i < contour2.size(); i++)
+		//{
+		//contour2[i].x = contour2[i].x * scale;
+		//contour2[i].y = contour2[i].y * scale;
+		//}
 		int parem[2][4];
 		parem[0][0] = 21;
 		parem[0][1] = 15;
@@ -729,15 +709,15 @@ namespace Tiling_tiles{
 			extre[1][0] = proto_interval_second[order[i].first][0];
 			extre[1][1] = proto_interval_second[order[i].first][proto_interval_second[order[i].first].size()-1];
 			Point2f sae[2][2];
-			/*for (int j = 0; j < proto_interval_first[i].size(); j++)
-			{
-			cout << "proto_interval_first[i]: " << proto_interval_first[i][j]  << endl;
-			}
-			for (int j = 0; j < proto_interval_first[i].size(); j++)
-			{
-			cout << "proto_interval_second[i]: " << proto_interval_second[order[i].first][j] << endl;
+			//for (int j = 0; j < proto_interval_first[i].size(); j++)
+			//{
+			//cout << "proto_interval_first[i]: " << proto_interval_first[i][j]  << endl;
+			//}
+			//for (int j = 0; j < proto_interval_first[i].size(); j++)
+			//{
+			//cout << "proto_interval_second[i]: " << proto_interval_second[order[i].first][j] << endl;
 
-			}*/
+			//}
 
 			double re_first = warpAff_tra(proto_interval_first[i], output_first);
 			double re_second = 0;
@@ -928,18 +908,18 @@ namespace Tiling_tiles{
 			vector<Point2f> out1;
 			//此处将output_final对齐到0点
 			Point2f shift3 = Point2f(length_final / 2 - size / 2, - size / 2);
-			/*for (int i = 0; i < output_final.size(); i++)
-			{
-				cout << "output_final_origin[i]: " << output_final[i] << endl;
-			}*/
+			//for (int i = 0; i < output_final.size(); i++)
+			//{
+			//	cout << "output_final_origin[i]: " << output_final[i] << endl;
+			//}
 			for (int i = 0; i < output_final.size(); i++)
 			{
 				output_final[i] = output_final[i] + shift3;
 			}
-			/*for (int i = 0; i < output_final.size(); i++)
-			{
-				cout << "output_final[i]: " << output_final[i] << endl;
-			}*/
+			//for (int i = 0; i < output_final.size(); i++)
+			//{
+			//	cout << "output_final[i]: " << output_final[i] << endl;
+			//}
 			re_warp_Aff(output_final, out1, sae[0][0], sae[0][1]);
 			//检测转变前后点的变化
 			//cout << "out1[0]: " << out1[0] << "  out1[1]: " << out1[out1.size()-1] << endl;
@@ -1212,5 +1192,5 @@ namespace Tiling_tiles{
 
 		return 0;
 	}
-
+	*/
 }

@@ -360,48 +360,118 @@ namespace Tiling_tiles{
 		
 	}
 
-	void Prototile::convex_p(vector<Point2f> &ske_p, vector<Point2f> &skeleton)
+	vector<int> Prototile::convex_p()
 	{
-		int sam_num = contour_sample.size();
-		vector<Point2f> contour_sam = contour_sample[sam_num - 2];
-		vector<double> contour_sam_cur = contour_curva[sam_num - 2];
+		int max_cur_num = 15; 		//排序，找最大的20个凹凸点
+		contour.swap(vector<Point2f>());
+		int sam_num = contour_sample.size();	
+		contour = contour_sample[sam_num - 2];
+		cconvex = contour_curva[sam_num - 2];
 		cout << "num : " << contour_sample[sam_num - 2].size() << endl;
-		//排序，找最大的一些凹凸点
 		vector<int> index_num;
-		int max_cur = 20;
-		for (int i = 0; i < contour_sam.size(); i++)
+		int contoursize = contour.size();
+		for (int i = 0; i < contoursize; i++)
 		{
 			index_num.push_back(i);
 
 		}
-		sort_cos(contour_sam_cur, index_num);
+		sort_cos(cconvex, index_num);
 
+		vector<int> cand_points_index;
+		int t = 1;
+		cand_points_index.push_back(index_num[0]);
+		cout << "length: " << c_length << endl;
+		
+		for (int i = 1; i < contoursize; i++)
+		{
+			if (t >= max_cur_num) break;
+			else
+			{ 
+				int flag = 0;
+				for (vector<int>::iterator it = cand_points_index.begin(); it != cand_points_index.end(); it++)
+				{
+					double leng = length_two_point2f(contour[index_num[i]], contour[*it]);				
+					if (leng < 0.01*c_length)
+					{
+						flag = 1;
+						break;
+					}
+				}
+
+				if (flag == 0)
+				{
+					cand_points_index.push_back(index_num[i]);
+					t++;
+				}
+
+			}
+		}
+		
+		cout << "cand_points_index: " << cand_points_index.size()<<endl;
+		//// show convex points
+		//Mat drawing5 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+
+		//for (int j = 0; j < contour.size(); j++)
+		//{
+		//	circle(drawing5, contour[j], 1, Scalar(0, 0, 0), -1);
+
+		//	//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
+		//}
+		//for (int j = 0; j < 20; j++)
+		//{
+		//	circle(drawing5, contour[index_num[j]], 4, Scalar(0, 0, 255), -1);
+		//}		
+		//imshow("convex points: ", drawing5);
+		
+		return cand_points_index;
+	}
+
+	void Prototile::partition_points(string imaname)
+	{
+		
+		vector<Point2f> ske_points;
+		vector<Point2f> skeleton_points;
+		ske_points = get_Skeleton(imaname, skeleton_points);
+		cout << ske_points.size() << endl;
+
+		vector<int> max_order;
+		imgtocout(imaname);
+		loadTileData(imaname);
+		max_order = convex_p();
+		int contoursize = contour.size();
+		//vector<Point2f> candidate_points;
+		//// 对轮廓凸点进行第一波相近筛选
+		//for (int i = 0; i < contoursize; i++)
+		//{
+		//	int t = 1;
+		//	candidate_points.push_back(contour[max_order[i]]);
+		//	
+		//}
+		// show convex points
 		Mat drawing5 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 
-		for (int j = 0; j < contour_sam.size(); j++)
+		for (int j = 0; j < contoursize; j++)
 		{
-			circle(drawing5, contour_sam[j], 1, Scalar(0, 0, 0), -1);
+			circle(drawing5, contour[j], 1, Scalar(0, 0, 0), -1);
 
 			//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
 		}
-		for (int j = 0; j < max_cur; j++)
+		for (int j = 0; j < max_order.size(); j++)
 		{
-			circle(drawing5, contour_sam[index_num[j]], 4, Scalar(0, 0, 255), -1);
+			circle(drawing5, contour[max_order[j]], 4, Scalar(0, 0, 255), -1);
 		}
 
-		for (int j = 0; j < skeleton.size() - 1; j++)
+		for (int j = 0; j < skeleton_points.size() - 1; j++)
 		{
-			circle(drawing5, skeleton[j], 1, Scalar(128, 128, 128), -1);
+			circle(drawing5, skeleton_points[j], 1, Scalar(128, 128, 128), -1);
 
 		}
-		for (int j = 0; j < ske_p.size() - 1; j++)
+		for (int j = 0; j < ske_points.size() - 1; j++)
 		{
-			circle(drawing5, ske_p[j], 4, Scalar(255, 0, 0), -1);
-
+			circle(drawing5, ske_points[j], 4, Scalar(255, 0, 0), -1);
 		}
 		imshow("convex points: ", drawing5);
 	}
-
 
 	void Prototile::cur_normalize()
 	{

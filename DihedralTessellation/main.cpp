@@ -10,27 +10,22 @@ int main(int argc, char** argv)
 	//string imagename1 = "Boat";
 	//string imagename2 = "fish8";
 	//string imagename1 = "fish5";
-	string imagename3 = "65";
+	string imagename3 = "23";
 	//string txtname = "D:/images/111.png";
 	//string txtname1 = "D:/images/fish3.png";
 
 	//vector<Point2f> ske_points;
 	//ske_points = get_Skeleon(imagename1);
 
-
+	Tiling_tiles::Tiling_opt *tiling_opt;
+	tiling_opt = new Tiling_tiles::Tiling_opt();
 	Tiling_tiles::Prototile *prototile_first;
 	prototile_first = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
 	int f = 0;
 	if (f == 0) //ÒÑÓÐdataset
 	{
-		vector<Point2f> ske_points;
-		vector<Point2f> skeleton_points;
-		ske_points = get_Skeleton(imagename3, skeleton_points);
-		cout << ske_points.size() << endl;
-		prototile_first->imgtocout(imagename3);
-		prototile_first->loadTileData(imagename3);
-		prototile_first->convex_p(ske_points, skeleton_points);
+		tiling_opt->points_dividing(imagename3);
 
 	}
 	else if (f == 1)

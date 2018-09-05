@@ -256,12 +256,12 @@ namespace Tiling_tiles{
 		}
 		//图像细化，骨骼化  
 		Mat dst = thinImage(src);
-
+		
 		//过滤细化后的图像
-		filterOver(dst);
-
+		//filterOver(dst);
+		
 		//查找端点和交叉点  
-		vector<Point2f> points = getPoints(dst, 6, 9, 6);
+		vector<Point2f> points = getPoints(dst, 6, 34, 12);
 
 		//二值图转化成灰度图，并绘制找到的点
 		dst = dst * 255;
@@ -275,6 +275,30 @@ namespace Tiling_tiles{
 				if (dst.at<uchar>(i, j) == 255) skeleton.push_back(Point2f(j,i));
 			}
 		}
+		/*for (int i = 1; i < contoursize; i++)
+		{
+			if (t >= max_cur_num) break;
+			else
+			{
+				int flag = 0;
+				for (vector<int>::iterator it = cand_points_index.begin(); it != cand_points_index.end(); it++)
+				{
+					double leng = length_two_point2f(contour[index_num[i]], contour[*it]);
+					if (leng < 0.01*c_length)
+					{
+						flag = 1;
+						break;
+					}
+				}
+
+				if (flag == 0)
+				{
+					cand_points_index.push_back(index_num[i]);
+					t++;
+				}
+
+			}
+		}*/
 
 		vector<Point2f>::iterator it = points.begin();
 		for (; it != points.end(); it++)
