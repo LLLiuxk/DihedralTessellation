@@ -443,6 +443,7 @@ namespace Tiling_tiles{
 		int contoursize = contour.size();
 
 		vector<int> cct;
+		vector<int> cctt;
 		for (int i = 0; i < ske_points.size(); i++)
 		{
 			double dist = 1000;
@@ -461,7 +462,11 @@ namespace Tiling_tiles{
 		for (int t = 0; t < cct.size(); t++)
 		{
 			cout << cct[t] << " ";
+			//cctt.push_back((cct[t] + cct[t + 1]) / 2);
 		}
+		int mid = ((cct[0] + contour.size() - cct[cct.size() - 1]) / 2 + cct[cct.size() - 1]) % contour.size();
+		cout << "mid:" << mid << endl;
+		cctt.push_back(mid);
 		//cout <<"cct num :"<< cct.size() << endl;
 		//vector<Point2f> candidate_points;
 		//// 对轮廓凸点进行第一波相近筛选
@@ -484,7 +489,10 @@ namespace Tiling_tiles{
 		{
 			circle(drawing5, contour[max_order[j]], 4, Scalar(0, 0, 255), -1);
 		}
-
+		for (int j = 0; j < cctt.size(); j++)
+		{
+			circle(drawing5, contour[cctt[j]], 4, Scalar(0, 255, 0), -1);
+		}
 		for (int j = 0; j < skeleton_points.size(); j++)
 		{
 			circle(drawing5, skeleton_points[j], 1, Scalar(128, 128, 128), -1);
