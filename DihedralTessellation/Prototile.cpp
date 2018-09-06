@@ -360,14 +360,14 @@ namespace Tiling_tiles{
 		
 	}
 
-	vector<int> Prototile::convex_p()
+	vector<int> Prototile::convex_p(int max_cur_num)
 	{
-		int max_cur_num = 15; 		//排序，找最大的20个凹凸点
+		//排序，找最大的max_cur_num个凹凸点
 		contour.swap(vector<Point2f>());
 		int sam_num = contour_sample.size();	
 		contour = contour_sample[sam_num - 2];
 		cconvex = contour_curva[sam_num - 2];
-		cout << "num : " << contour_sample[sam_num - 2].size() << endl;
+		cout << "contour_sample num: " << contour_sample[sam_num - 2].size() << endl;
 		vector<int> index_num;
 		int contoursize = contour.size();
 		for (int i = 0; i < contoursize; i++)
@@ -434,11 +434,35 @@ namespace Tiling_tiles{
 		ske_points = get_Skeleton(imaname, skeleton_points);
 		cout << ske_points.size() << endl;
 
+		int cur_p_num = 10;
 		vector<int> max_order;
 		imgtocout(imaname);
 		loadTileData(imaname);
-		max_order = convex_p();
+		max_order = convex_p(cur_p_num );
+
 		int contoursize = contour.size();
+
+		vector<int> cct;
+		for (int i = 0; i < ske_points.size(); i++)
+		{
+			double dist = 1000;
+			int index = 0;
+			for (int j = 0; j < max_order.size(); j++)
+			{
+				if (dist > length_two_point2f(ske_points[i], contour[max_order[j]]))
+				{
+					dist = length_two_point2f(ske_points[i], contour[max_order[j]]);
+					index = max_order[j];
+				}
+			}
+			cct.push_back(index);
+		}
+		sort_bub(cct);
+		for (int t = 0; t < cct.size(); t++)
+		{
+			cout << cct[t] << " ";
+		}
+		//cout <<"cct num :"<< cct.size() << endl;
 		//vector<Point2f> candidate_points;
 		//// 对轮廓凸点进行第一波相近筛选
 		//for (int i = 0; i < contoursize; i++)
@@ -461,12 +485,12 @@ namespace Tiling_tiles{
 			circle(drawing5, contour[max_order[j]], 4, Scalar(0, 0, 255), -1);
 		}
 
-		for (int j = 0; j < skeleton_points.size() - 1; j++)
+		for (int j = 0; j < skeleton_points.size(); j++)
 		{
 			circle(drawing5, skeleton_points[j], 1, Scalar(128, 128, 128), -1);
 
 		}
-		for (int j = 0; j < ske_points.size() - 1; j++)
+		for (int j = 0; j < ske_points.size(); j++)
 		{
 			circle(drawing5, ske_points[j], 4, Scalar(255, 0, 0), -1);
 		}

@@ -275,30 +275,37 @@ namespace Tiling_tiles{
 				if (dst.at<uchar>(i, j) == 255) skeleton.push_back(Point2f(j,i));
 			}
 		}
-		/*for (int i = 1; i < contoursize; i++)
+		int p_size = points.size();
+		double length_p = 0;
+		for (int i = 0; i < p_size - 1; i++)
 		{
-			if (t >= max_cur_num) break;
-			else
+			length_p = length_p + length_two_point2f(points[i], points[i+1]);
+		}
+		length_p = length_p + length_two_point2f(points[p_size-1], points[0]);
+		length_p = 0.5 * length_p / p_size;
+		vector<Point2f> points_;
+		if (points.empty())  cout << "error ske points!" << endl; 
+		points_.push_back(points[0]);
+
+		for (int i = 1; i < p_size; i++)
+		{
+			int flag = 0;
+			for (vector<Point2f>::iterator it = points_.begin(); it != points_.end(); it++)
 			{
-				int flag = 0;
-				for (vector<int>::iterator it = cand_points_index.begin(); it != cand_points_index.end(); it++)
+				double leng = length_two_point2f(points[i], *it);
+				if (leng < length_p)
 				{
-					double leng = length_two_point2f(contour[index_num[i]], contour[*it]);
-					if (leng < 0.01*c_length)
-					{
-						flag = 1;
-						break;
-					}
+					flag = 1;
+					break;
 				}
-
-				if (flag == 0)
-				{
-					cand_points_index.push_back(index_num[i]);
-					t++;
-				}
-
 			}
-		}*/
+
+			if (flag == 0)
+			{
+				points_.push_back(points[i]);
+			}
+		}
+		points.swap(points_);
 
 		vector<Point2f>::iterator it = points.begin();
 		for (; it != points.end(); it++)

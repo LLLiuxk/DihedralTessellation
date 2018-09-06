@@ -26,22 +26,6 @@ namespace Tiling_tiles{
 			thickness,
 			lineType);
 	}
-
-	double length_two_point2f(Point2f &u, Point2f &v)
-	{
-		return sqrt((u.x - v.x)*(u.x - v.x) + (u.y - v.y)*(u.y - v.y));
-	}
-	Point2f unit_vec(Point2f vec)
-	{
-		double fenmu = sqrt(vec.x*vec.x + vec.y*vec.y);
-		Point2f unit = Point2f(vec.x / fenmu, vec.y / fenmu);
-		return unit;
-	}
-	double cos_two_vector(Point2f &v0, Point2f &v1)
-	{
-		return unit_vec(v0).x*unit_vec(v1).x + unit_vec(v0).y*unit_vec(v1).y;
-	}
-
 	double contour_length(vector<Point2f> contour)
 	{
 		double length = 0;
@@ -53,6 +37,40 @@ namespace Tiling_tiles{
 		length += length_two_point2f(contour[i], contour[0]);
 		return length;
 	}
+
+	double length_two_point2f(Point2f &u, Point2f &v)
+	{
+		return sqrt((u.x - v.x)*(u.x - v.x) + (u.y - v.y)*(u.y - v.y));
+	}
+
+	Point2f unit_vec(Point2f vec)
+	{
+		double fenmu = sqrt(vec.x*vec.x + vec.y*vec.y);
+		Point2f unit = Point2f(vec.x / fenmu, vec.y / fenmu);
+		return unit;
+	}
+
+	double cos_two_vector(Point2f &v0, Point2f &v1)
+	{
+		return unit_vec(v0).x*unit_vec(v1).x + unit_vec(v0).y*unit_vec(v1).y;
+	}
+
+	void sort_bub(vector<int> &target)  //从小到大
+	{
+		int i, j;
+		int temp;
+		for (i = 0; i < target.size() - 1; i++)
+			for (j = 0; j < target.size() - 1 - i; j++)
+				if (target[j] > target[j + 1])
+				{
+					temp = target[j];
+					target[j] = target[j + 1];
+					target[j + 1] = temp;
+					
+				}
+	}
+
+	
 	double cur_length_two_p(double cur1, double cur2, double zeta)
 	{
 		double mis = (cur1 - cur2)*(cur1 - cur2)*zeta;
@@ -90,6 +108,43 @@ namespace Tiling_tiles{
 
 	}
 
+	void bbx_center_point(vector<vector<Point2f>> all_point, vector<Point2f> &five_p)
+	{
+		five_p.swap(vector<Point2f>());
+		vector<Point2f> contour;
+		for (int i = 0; i < all_point.size(); i++)
+		{
+			for (int j = 0; j < all_point[i].size(); j++)
+			{
+				contour.push_back(all_point[i][j]);
+			}
+		}
+		double bbx_max_x = -10000;
+		double bbx_max_y = -10000;
+		double bbx_min_x = 10000;
+		double bbx_min_y = 10000;
+		double center_x = 0;
+		double center_y = 0;
+
+		for (int i = 0; i < contour.size(); i++)
+		{
+			center_x += contour[i].x;
+			center_y += contour[i].y;
+			if (contour[i].x < bbx_min_x) bbx_min_x = contour[i].x;
+			if (contour[i].x > bbx_max_x) bbx_max_x = contour[i].x;
+			if (contour[i].y < bbx_min_y) bbx_min_y = contour[i].y;
+			if (contour[i].y > bbx_max_y) bbx_max_y = contour[i].y;
+		}
+		center_x = center_x / contour.size();
+		center_y = center_y / contour.size();
+		five_p.push_back(Point2f(center_x, center_y));
+		five_p.push_back(Point2f(bbx_min_x, bbx_max_y));
+		five_p.push_back(Point2f(bbx_min_x, bbx_min_y));
+		five_p.push_back(Point2f(bbx_max_x, bbx_min_y));
+		five_p.push_back(Point2f(bbx_max_x, bbx_max_y));
+
+	}
+
 	vector<double> Prototile::curvature_com_k(vector<Point2f> &contour_sam) //k等于角度的差值比弧长的差值（近似为三角的斜边）
 	{
 		vector<double> eachOfcurvature;
@@ -122,7 +177,7 @@ namespace Tiling_tiles{
 		return eachOfcurvature;
 	}
 
-	void Prototile::sort_cos(vector<double> vect, vector<int> &index_num) //保留下标的排序
+	void Prototile::sort_cos(vector<double> vect, vector<int> &index_num) //只保留下标的排序,从小到大
 	{
 		int i, j;
 		double temp;
@@ -899,40 +954,5 @@ namespace Tiling_tiles{
 	}
 
 
-	void bbx_center_point(vector<vector<Point2f>> all_point, vector<Point2f> &five_p)
-	{
-		five_p.swap(vector<Point2f>());
-		vector<Point2f> contour;
-		for (int i = 0; i < all_point.size(); i++)
-		{
-			for (int j = 0; j < all_point[i].size(); j++)
-			{
-				contour.push_back(all_point[i][j]);
-			}
-		}
-		double bbx_max_x = -10000;
-		double bbx_max_y = -10000;
-		double bbx_min_x = 10000;
-		double bbx_min_y = 10000;
-		double center_x = 0;
-		double center_y = 0;
-
-		for (int i = 0; i < contour.size(); i++)
-		{
-			center_x += contour[i].x;
-			center_y += contour[i].y;
-			if (contour[i].x < bbx_min_x) bbx_min_x = contour[i].x;
-			if (contour[i].x > bbx_max_x) bbx_max_x = contour[i].x;
-			if (contour[i].y < bbx_min_y) bbx_min_y = contour[i].y;
-			if (contour[i].y > bbx_max_y) bbx_max_y = contour[i].y;
-		}
-		center_x = center_x / contour.size();
-		center_y = center_y / contour.size();
-		five_p.push_back(Point2f(center_x, center_y));
-		five_p.push_back(Point2f(bbx_min_x, bbx_max_y));
-		five_p.push_back(Point2f(bbx_min_x, bbx_min_y));
-		five_p.push_back(Point2f(bbx_max_x, bbx_min_y));
-		five_p.push_back(Point2f(bbx_max_x, bbx_max_y));
-
-	}
+	
 }

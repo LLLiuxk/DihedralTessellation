@@ -27,7 +27,7 @@ namespace Tiling_tiles{
 
 		void loadTileData(string tile_data);
 		void contour_sam_cur();
-		vector<int> convex_p();                 //求轮廓上值最大的10个不临近的凸点
+		vector<int> convex_p(int max_cur_num);                 //求轮廓上值最大的10个不临近的凸点
 		void partition_points(string imaname);  //求得用做划分的点
 		void cur_normalize();
 
@@ -110,10 +110,16 @@ namespace Tiling_tiles{
 	//math tool
 	double contour_length(vector<Point2f> contour);
 	double length_two_point2f(Point2f &u, Point2f &v);
-	int cur_char_length(char a, char b);
-	double cur_length_two_p(double cur1, double cur2, double zeta);
+
 	Point2f unit_vec(Point2f vec);
 	double cos_two_vector(Point2f &v0, Point2f &v1);
+
+	void sort_bub(vector<int> &target);
+
+	int cur_char_length(char a, char b);
+	double cur_length_two_p(double cur1, double cur2, double zeta);
+	
+	
 	void bbx_center_point(vector<vector<Point2f>> all_point, vector<Point2f> &five_p);
 
 	//skeleton
