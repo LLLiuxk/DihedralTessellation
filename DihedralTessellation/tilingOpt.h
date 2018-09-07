@@ -28,7 +28,7 @@ namespace Tiling_tiles{
 		void loadTileData(string tile_data);
 		void contour_sam_cur();
 		vector<int> convex_p(int max_cur_num);                 //求轮廓上值最大的10个不临近的凸点
-		void partition_points(string imaname);  //求得用做划分的点
+		vector<int> partition_points(string imaname);  //求得用做划分的点
 		void cur_normalize();
 
 		//math tool
@@ -68,6 +68,7 @@ namespace Tiling_tiles{
 		double com_each_pair(vector<Point2f> &first_interval, vector<Point2f> &second_interval, int &flag);
 
 		void points_dividing(string imaname);
+		void one_situ_div(vector<Point2f> results);
 
 		double com_optimal_score(vector<vector<Point2f>> &proto_interval_1, vector<vector<char>> &proto_first_char, 
 			vector<vector<Point2f>> &proto_interval_2, vector<vector<char>> &proto_second_char, vector<pair<int, int>> &order_type);
@@ -114,7 +115,22 @@ namespace Tiling_tiles{
 	Point2f unit_vec(Point2f vec);
 	double cos_two_vector(Point2f &v0, Point2f &v1);
 
-	void sort_bub(vector<int> &target);
+	//void sort_bub(vector<int> &target);
+	template<typename T> 
+	  void sort_bub(vector<T> &target)  //从小到大
+	{
+		int i, j;
+		T temp;
+		for (i = 0; i < target.size() - 1; i++)
+			for (j = 0; j < target.size() - 1 - i; j++)
+				if (target[j] > target[j + 1])
+				{
+					temp = target[j];
+					target[j] = target[j + 1];
+					target[j + 1] = temp;
+
+				}
+	}
 
 	int cur_char_length(char a, char b);
 	double cur_length_two_p(double cur1, double cur2, double zeta);

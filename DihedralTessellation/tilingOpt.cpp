@@ -33,7 +33,38 @@ namespace Tiling_tiles{
 	}
 	void Tiling_opt::points_dividing(string imaname) //此处还是平均分的方法，需要做的： 优化分段的方法
 	{		
-		prototile_first->partition_points(imaname);
+		vector<int> p_p_index = prototile_first->partition_points(imaname);
+		int ppindex = p_p_index.size();
+		int margin = prototile_first->contour.size() / 8;
+		cout << "margin: " << margin << endl;
+		int count = 0;
+		for (int i = 0; i < 1; i++)
+		{
+			for (int j = 1; j % ppindex < i; j++)
+			{
+				if (abs(p_p_index[j % ppindex] - p_p_index[i]) < margin) continue;
+				count++;
+				cout << "i: " << p_p_index[i] << "   j: " << p_p_index[j% ppindex] << endl;
+				/*for (int m = j + 1; m % ppindex < j; m++)
+				{
+					if (abs(p_p_index[m % ppindex] - p_p_index[j % ppindex]) < margin) continue;
+					for (int n = m + 1; n % ppindex < m; n++)
+					{
+						if (abs(p_p_index[n % ppindex] - p_p_index[m % ppindex]) < margin) continue;
+						count++;
+						vector<Point2f> result_p;
+						result_p.push_back(prototile_first->contour[p_p_index[i]]);
+						result_p.push_back(prototile_first->contour[p_p_index[j]]);
+						result_p.push_back(prototile_first->contour[p_p_index[m]]);
+						result_p.push_back(prototile_first->contour[p_p_index[n]]);
+						one_situ_div(result_p);
+
+					}
+				}*/
+			}
+		}
+		cout << "count: "<<count << endl;
+		
 	}
 	/*
 	//每一个轮廓分成四段

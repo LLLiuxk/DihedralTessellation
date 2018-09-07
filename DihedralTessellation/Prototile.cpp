@@ -426,7 +426,7 @@ namespace Tiling_tiles{
 		return cand_points_index;
 	}
 
-	void Prototile::partition_points(string imaname)
+	vector<int> Prototile::partition_points(string imaname)
 	{
 		
 		vector<Point2f> ske_points;
@@ -441,9 +441,7 @@ namespace Tiling_tiles{
 		max_order = convex_p(cur_p_num );
 
 		int contoursize = contour.size();
-
 		vector<int> cct;
-		vector<int> cctt;
 		for (int i = 0; i < ske_points.size(); i++)
 		{
 			double dist = 1000;
@@ -459,23 +457,40 @@ namespace Tiling_tiles{
 			cct.push_back(index);
 		}
 		sort_bub(cct);
-		for (int t = 0; t < cct.size(); t++)
+		for (int t = 0; t < cct.size() - 1; t++)
 		{
-			cout << cct[t] << " ";
-			//cctt.push_back((cct[t] + cct[t + 1]) / 2);
+			max_order.push_back((cct[t] + cct[t + 1]) / 2);
 		}
 		int mid = ((cct[0] + contour.size() - cct[cct.size() - 1]) / 2 + cct[cct.size() - 1]) % contour.size();
-		cout << "mid:" << mid << endl;
-		cctt.push_back(mid);
-		//cout <<"cct num :"<< cct.size() << endl;
-		//vector<Point2f> candidate_points;
-		//// 对轮廓凸点进行第一波相近筛选
-		//for (int i = 0; i < contoursize; i++)
-		//{
-		//	int t = 1;
-		//	candidate_points.push_back(contour[max_order[i]]);
-		//	
-		//}
+		max_order.push_back(mid);
+
+		cct.swap(vector<int>());
+		cct.push_back(max_order[0]);
+		for (int i = 1; i < max_order.size(); i++)
+		{
+			int flag = 0;
+			for (vector<int>::iterator it = cct.begin(); it != cct.end(); it++)
+			{
+				double leng = length_two_point2f(contour[max_order[i]], contour[*it]);
+				if (leng < 0.01*c_length)
+				{
+					flag = 1;
+					break;
+				}
+			}
+
+			if (flag == 0)
+			{
+				cct.push_back(max_order[i]);
+			}		
+		}
+		cct.swap(max_order);
+		cout << max_order.size() << endl;
+		sort_bub(max_order);
+		for (int t = 0; t < max_order.size(); t++)
+		{
+			cout << max_order[t] << " ";
+		}
 		// show convex points
 		Mat drawing5 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 
@@ -489,20 +504,18 @@ namespace Tiling_tiles{
 		{
 			circle(drawing5, contour[max_order[j]], 4, Scalar(0, 0, 255), -1);
 		}
-		for (int j = 0; j < cctt.size(); j++)
-		{
-			circle(drawing5, contour[cctt[j]], 4, Scalar(0, 255, 0), -1);
-		}
-		for (int j = 0; j < skeleton_points.size(); j++)
-		{
-			circle(drawing5, skeleton_points[j], 1, Scalar(128, 128, 128), -1);
-
-		}
-		for (int j = 0; j < ske_points.size(); j++)
-		{
-			circle(drawing5, ske_points[j], 4, Scalar(255, 0, 0), -1);
-		}
+		
+		//for (int j = 0; j < skeleton_points.size(); j++)
+		//{
+		//	circle(drawing5, skeleton_points[j], 1, Scalar(128, 128, 128), -1);
+		//}
+		//for (int j = 0; j < ske_points.size(); j++)
+		//{
+		//	circle(drawing5, ske_points[j], 4, Scalar(255, 0, 0), -1);
+		//}
 		imshow("convex points: ", drawing5);
+
+		return max_order;
 	}
 
 	void Prototile::cur_normalize()

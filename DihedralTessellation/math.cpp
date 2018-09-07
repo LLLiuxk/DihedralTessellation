@@ -55,22 +55,8 @@ namespace Tiling_tiles{
 		return unit_vec(v0).x*unit_vec(v1).x + unit_vec(v0).y*unit_vec(v1).y;
 	}
 
-	void sort_bub(vector<int> &target)  //从小到大
-	{
-		int i, j;
-		int temp;
-		for (i = 0; i < target.size() - 1; i++)
-			for (j = 0; j < target.size() - 1 - i; j++)
-				if (target[j] > target[j + 1])
-				{
-					temp = target[j];
-					target[j] = target[j + 1];
-					target[j + 1] = temp;
-					
-				}
-	}
-
 	
+
 	double cur_length_two_p(double cur1, double cur2, double zeta)
 	{
 		double mis = (cur1 - cur2)*(cur1 - cur2)*zeta;
