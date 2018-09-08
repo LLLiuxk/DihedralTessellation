@@ -38,17 +38,17 @@ namespace Tiling_tiles{
 		int margin = prototile_first->contour.size() / 8;
 		cout << "margin: " << margin << endl;
 		int count = 0;
-		for (int i = 0; i < 1; i++)
+		for (int i = 0; i < ppindex; i++)
 		{
-			for (int j = 1; j % ppindex < i; j++)
+			for (int j = i + 1; j < ppindex + i; j++)
 			{
 				if (abs(p_p_index[j % ppindex] - p_p_index[i]) < margin) continue;
 				count++;
 				cout << "i: " << p_p_index[i] << "   j: " << p_p_index[j% ppindex] << endl;
-				/*for (int m = j + 1; m % ppindex < j; m++)
+				for (int m = j + 1; m < ppindex + i; m++)
 				{
 					if (abs(p_p_index[m % ppindex] - p_p_index[j % ppindex]) < margin) continue;
-					for (int n = m + 1; n % ppindex < m; n++)
+					for (int n = m + 1; n < ppindex + i; n++)
 					{
 						if (abs(p_p_index[n % ppindex] - p_p_index[m % ppindex]) < margin) continue;
 						count++;
