@@ -34,6 +34,7 @@ namespace Tiling_tiles{
 	void Tiling_opt::points_dividing(string imaname) //此处还是平均分的方法，需要做的： 优化分段的方法
 	{		
 		vector<int> p_p_index = prototile_first->partition_points(imaname);
+		vector<Point2f> contour_ = prototile_first->contour;
 		int ppindex = p_p_index.size();
 		int margin = prototile_first->contour.size() / 8;
 		cout << "margin: " << margin << endl;
@@ -43,8 +44,7 @@ namespace Tiling_tiles{
 			for (int j = i + 1; j < ppindex + i; j++)
 			{
 				if (abs(p_p_index[j % ppindex] - p_p_index[i]) < margin) continue;
-				count++;
-				cout << "i: " << p_p_index[i] << "   j: " << p_p_index[j% ppindex] << endl;
+				//cout << "i: " << p_p_index[i] << "   j: " << p_p_index[j% ppindex] << endl;
 				for (int m = j + 1; m < ppindex + i; m++)
 				{
 					if (abs(p_p_index[m % ppindex] - p_p_index[j % ppindex]) < margin) continue;
@@ -53,19 +53,121 @@ namespace Tiling_tiles{
 						if (abs(p_p_index[n % ppindex] - p_p_index[m % ppindex]) < margin) continue;
 						count++;
 						vector<Point2f> result_p;
-						result_p.push_back(prototile_first->contour[p_p_index[i]]);
-						result_p.push_back(prototile_first->contour[p_p_index[j]]);
-						result_p.push_back(prototile_first->contour[p_p_index[m]]);
-						result_p.push_back(prototile_first->contour[p_p_index[n]]);
-						one_situ_div(result_p);
+						result_p.push_back(contour_[p_p_index[i]]);
+						result_p.push_back(contour_[p_p_index[j % ppindex]]);
+						result_p.push_back(contour_[p_p_index[m % ppindex]]);
+						result_p.push_back(contour_[p_p_index[n % ppindex]]);
+						one_situ_div(result_p,contour_);
+						cout << "i: " << p_p_index[i] << "   j: " << p_p_index[j % ppindex] 
+							<< "   m: " << p_p_index[m % ppindex] << "    n: " << p_p_index[n % ppindex]<< endl;
+						if (count == 1) return;
 
 					}
-				}*/
+				}
 			}
 		}
 		cout << "count: "<<count << endl;
 		
 	}
+
+	int Tiling_opt::one_situ_div(vector<Point2f> results, vector<Point2f> &contour_s)
+	{
+		Point2f line1 = results[2] - results[0];
+		Point2f line2 = results[3] - results[1];
+		vector<vector<Point2f>> four_place;
+		vector<Point2f> one_loca;
+		// 目前为止只考虑正向摆放，不考虑旋转和翻转
+		four_place.push_back(contour_s);
+		for (int i = 0; i < contour_s.size(); i++)
+		{
+			one_loca.push_back(contour_s[i] + line1);
+		}
+		four_place.push_back(one_loca);
+		one_loca.swap(vector<Point2f>());
+		for (int i = 0; i < contour_s.size(); i++)
+		{
+			one_loca.push_back(contour_s[i] + line2);
+		}
+		four_place.push_back(one_loca);
+		one_loca.swap(vector<Point2f>());
+		for (int i = 0; i < contour_s.size(); i++)
+		{
+			one_loca.push_back(contour_s[i] + line1 + line2);
+		}
+		four_place.push_back(one_loca);
+		//coll_detection(four_place);
+
+		//将两个轮廓一起缩放，可用在最后显示阶段
+		/*double factor = com_scale_factor();
+		for (int i = 0; i < contour2.size(); i++)
+		{
+		contour2[i].x = contour2[i].x * factor;
+		contour2[i].y = contour2[i].y * factor;
+		}*/
+		//double scale = 0.5;
+		//for (int i = 0; i < contour1.size(); i++)
+		//{
+		//contour1[i].x = contour1[i].x * scale;
+		//contour1[i].y = contour1[i].y * scale;
+		//}
+		//for (int i = 0; i < contour2.size(); i++)
+		//{
+		//contour2[i].x = contour2[i].x * scale;
+		//contour2[i].y = contour2[i].y * scale;
+		//}
+
+		//将该proto1以及相邻四个proto2展示出来
+		Mat drawing_pro = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		//int n = contour_s.size();
+		//cout << "n: " << n << endl;
+		//Point rook_points[1][800];
+		//for (int t = 0; t < n; t++)
+		//{
+		//	rook_points[0][t] = contour_s[t];
+		//}
+		//const Point* ppt[1] = { rook_points[0] };
+		//int npt[] = { n };
+		//fillPoly(drawing_pro,
+		//	ppt,
+		//	npt,
+		//	1,
+		//	Scalar(0, 0, 0) //黑色
+		//	//Scalar(255, 255, 255) //白色
+		//	);
+		Point2f shift1 = Point2f(200, 200);
+
+		for (int i = 0; i < 4; i++)
+		{
+			vector<Point2f> four_cor = b_box(four_place[i]);
+			for (int j = 0; j < 4; j++)
+			{
+				MyLine(drawing_pro, four_cor[j] * 0.4 + shift1, four_cor[(j + 1) % 4] * 0.4 + shift1, "red");
+			}
+		}
+		//vector<Point2f> four_cor = b_box(four_place[0]);
+		
+		for (int i = 0; i < 4; i++)
+		{
+			//MyLine(drawing_pro, four_cor[i]*0.4+shift1, four_cor[(i+1)%4]*0.4+shift1, "red");
+			//prototwoAff_place.swap(vector<Point2f>());
+			for (int j = 0; j < four_place[i].size() - 1; j++)
+			{
+				MyLine(drawing_pro, four_place[i][j] * 0.4 + shift1, four_place[i][j + 1] * 0.4 + shift1, "green");
+			}
+		}
+		imshow("result_mid", drawing_pro);
+		return 0;
+	}
+
+
+	bool coll_detection(vector<vector<Point2f>> &four_place)
+	{
+		//首先通过包围盒求得粗糙的相交区域，然后通过像素相交求是否产生碰撞
+		vector<Point2f> four_cor = b_box(four_place[0]);
+
+		return true;
+	}
+
 	/*
 	//每一个轮廓分成四段
 	void Tiling_opt::com_score(string imagename1, string imagename2)

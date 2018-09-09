@@ -131,6 +131,28 @@ namespace Tiling_tiles{
 
 	}
 
+	vector<Point2f> b_box(vector<Point2f> contour)
+	{
+		vector<Point2f> four_cor;
+		double bbx_max_x = -10000;
+		double bbx_max_y = -10000;
+		double bbx_min_x = 10000;
+		double bbx_min_y = 10000;
+		for (int i = 0; i < contour.size(); i++)
+		{
+			if (contour[i].x < bbx_min_x) bbx_min_x = contour[i].x;
+			if (contour[i].x > bbx_max_x) bbx_max_x = contour[i].x;
+			if (contour[i].y < bbx_min_y) bbx_min_y = contour[i].y;
+			if (contour[i].y > bbx_max_y) bbx_max_y = contour[i].y;
+		}
+		four_cor.push_back(Point2f(bbx_min_x, bbx_max_y));
+		four_cor.push_back(Point2f(bbx_min_x, bbx_min_y));
+		four_cor.push_back(Point2f(bbx_max_x, bbx_min_y));
+		four_cor.push_back(Point2f(bbx_max_x, bbx_max_y));
+		return four_cor;
+	}
+
+
 	vector<double> Prototile::curvature_com_k(vector<Point2f> &contour_sam) //k等于角度的差值比弧长的差值（近似为三角的斜边）
 	{
 		vector<double> eachOfcurvature;

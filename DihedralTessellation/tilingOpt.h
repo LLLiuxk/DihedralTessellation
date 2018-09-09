@@ -65,10 +65,13 @@ namespace Tiling_tiles{
 		~Tiling_opt();
 		void com_score(string imagename1, string imagename2);
 		double scale_factor();
+		void points_dividing(string imaname);
+		int one_situ_div(vector<Point2f> results, vector<Point2f> &contour_s);
+		bool coll_detection(vector<vector<Point2f>>);
+		
 		double com_each_pair(vector<Point2f> &first_interval, vector<Point2f> &second_interval, int &flag);
 
-		void points_dividing(string imaname);
-		void one_situ_div(vector<Point2f> results);
+		
 
 		double com_optimal_score(vector<vector<Point2f>> &proto_interval_1, vector<vector<char>> &proto_first_char, 
 			vector<vector<Point2f>> &proto_interval_2, vector<vector<char>> &proto_second_char, vector<pair<int, int>> &order_type);
@@ -137,13 +140,15 @@ namespace Tiling_tiles{
 	
 	
 	void bbx_center_point(vector<vector<Point2f>> all_point, vector<Point2f> &five_p);
+	vector<Point2f> b_box(vector<Point2f> contour);//返回的点是从左上方逆时针
 
 	//skeleton
 	Mat thinImage(const Mat & src, const int maxIterations);
 	void filterOver(Mat thinSrc);
 	vector<cv::Point2f> getPoints(const Mat &thinSrc, unsigned int raudis, unsigned int thresholdMax, unsigned int thresholdMin);
 	vector<Point2f> get_Skeleton(string imaname, vector<Point2f> &skeleton);
-
+	
+	//
 
 }
 
