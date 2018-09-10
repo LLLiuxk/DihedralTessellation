@@ -1,68 +1,12 @@
-﻿生成启动时间为 2018/9/10 5:51:23。
-     1>项目“D:\VisualStudioProjects\DihedralTessellation\DihedralTessellation\DihedralTessellation.vcxproj”在节点 2 上(Build 个目标)。
+﻿Build started 2018/9/10 20:59:30.
+     1>Project "D:\VisualStudioProjects\DihedralTessellation\DihedralTessellation\DihedralTessellation.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /IC:\local\opencv\build\include /IC:\local\opencv\build\include\opencv /IC:\local\opencv\build\include\opencv2 /Zi /nologo /W3 /WX- /Od /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Debug\\" /Fd"x64\Debug\vc120.pdb" /Gd /TP /errorReport:prompt Prototile.cpp main.cpp math.cpp tilingOpt.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /IC:\local\opencv\build\include /IC:\local\opencv\build\include\opencv /IC:\local\opencv\build\include\opencv2 /Zi /nologo /W3 /WX- /Od /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Debug\\" /Fd"x64\Debug\vc120.pdb" /Gd /TP /errorReport:prompt tilingOpt.cpp
          tilingOpt.cpp
-     1>tilingOpt.cpp(38): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-     1>tilingOpt.cpp(39): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-         math.cpp
-     1>math.cpp(49): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(126): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(127): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(128): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(129): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(130): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(148): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(149): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(150): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(151): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(159): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-     1>math.cpp(174): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-     1>math.cpp(217): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(219): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-     1>math.cpp(243): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(244): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(248): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(249): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(270): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(271): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(275): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(276): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(307): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-     1>math.cpp(319): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-     1>math.cpp(351): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-     1>math.cpp(373): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(378): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(386): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(396): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(431): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-     1>math.cpp(478): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-     1>math.cpp(544): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(545): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(549): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(550): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(557): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(558): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(562): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(563): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(570): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(580): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>math.cpp(622): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-     1>math.cpp(643): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-     1>math.cpp(732): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-     1>math.cpp(733): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-     1>math.cpp(877): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-     1>math.cpp(878): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-         main.cpp
-         Prototile.cpp
-     1>Prototile.cpp(367): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-     1>Prototile.cpp(372): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-     1>Prototile.cpp(443): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-     1>Prototile.cpp(464): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-     1>Prototile.cpp(548): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-     1>Prototile.cpp(554): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-         正在生成代码...
-     1>d:\visualstudioprojects\dihedraltessellation\dihedraltessellation\math.cpp(95): warning C4715: “Tiling_tiles::cur_char_length”: 不是所有的控件路径都返回值
+     1>tilingOpt.cpp(38): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(39): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(114): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(178): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.exe" /INCREMENTAL /NOLOGO /LIBPATH:C:\local\opencv\build\x64\vc12\lib opencv_calib3d248d.lib opencv_contrib248d.lib opencv_core248d.lib opencv_features2d248d.lib opencv_flann248d.lib opencv_gpu248d.lib opencv_highgui248d.lib opencv_imgproc248d.lib opencv_legacy248d.lib opencv_ml248d.lib opencv_objdetect248d.lib opencv_ts248d.lib opencv_video248d.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.lib" /MACHINE:X64 x64\Debug\main.obj
          x64\Debug\math.obj
@@ -70,10 +14,10 @@
          x64\Debug\Prototile.obj
          x64\Debug\Skeleton.obj
          x64\Debug\tilingOpt.obj
-         LINK : 没有找到 D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.exe 或上一个增量链接没有生成它；正在执行完全链接
-         DihedralTessellation.vcxproj -> D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.exe
-     1>已完成生成项目“D:\VisualStudioProjects\DihedralTessellation\DihedralTessellation\DihedralTessellation.vcxproj”(Build 个目标)的操作。
+     1>tilingOpt.obj : error LNK2019: unresolved external symbol "public: bool __cdecl Tiling_tiles::Tiling_opt::coll_detection(class std::vector<class cv::Point_<float>,class std::allocator<class cv::Point_<float> > >,class std::vector<class cv::Point_<float>,class std::allocator<class cv::Point_<float> > >)" (?coll_detection@Tiling_opt@Tiling_tiles@@QEAA_NV?$vector@V?$Point_@M@cv@@V?$allocator@V?$Point_@M@cv@@@std@@@std@@0@Z) referenced in function "public: int __cdecl Tiling_tiles::Tiling_opt::one_situ_div(class std::vector<class cv::Point_<float>,class std::allocator<class cv::Point_<float> > >,class std::vector<class cv::Point_<float>,class std::allocator<class cv::Point_<float> > > &)" (?one_situ_div@Tiling_opt@Tiling_tiles@@QEAAHV?$vector@V?$Point_@M@cv@@V?$allocator@V?$Point_@M@cv@@@std@@@std@@AEAV34@@Z)
+     1>D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.exe : fatal error LNK1120: 1 unresolved externals
+     1>Done Building Project "D:\VisualStudioProjects\DihedralTessellation\DihedralTessellation\DihedralTessellation.vcxproj" (Build target(s)) -- FAILED.
 
-生成成功。
+Build FAILED.
 
-已用时间 00:00:04.83
+Time Elapsed 00:00:00.82

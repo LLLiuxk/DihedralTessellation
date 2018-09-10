@@ -60,6 +60,25 @@ namespace Tiling_tiles{
 						one_situ_div(result_p,contour_);
 						cout << "i: " << p_p_index[i] << "   j: " << p_p_index[j % ppindex] 
 							<< "   m: " << p_p_index[m % ppindex] << "    n: " << p_p_index[n % ppindex]<< endl;
+						
+						//Mat drawing6 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+
+						//for (int j = 0; j < contour_.size(); j++)
+						//{
+						//	circle(drawing6, contour_[j], 1, Scalar(0, 0, 0), -1);
+
+						//	//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
+						//}
+						//for (int j = 0; j < p_p_index.size(); j++)
+						//{
+						//	circle(drawing6, contour_[p_p_index[j]], 4, Scalar(0, 0, 255), -1);
+						//}
+						//circle(drawing6, contour_[p_p_index[i]], 4, Scalar(0, 255, 0), -1);
+						//circle(drawing6, contour_[p_p_index[j % ppindex]], 4, Scalar(0, 255, 0), -1);
+						//circle(drawing6, contour_[p_p_index[m % ppindex]], 4, Scalar(0, 255, 0), -1);
+						//circle(drawing6, contour_[p_p_index[n % ppindex]], 4, Scalar(0, 255, 0), -1);
+						//imshow("candadite points: ", drawing6);
+
 						if (count == 1) return;
 
 					}
@@ -101,7 +120,7 @@ namespace Tiling_tiles{
 		{
 			for (int j = i + 1; j < fpsize; j++)
 			{
-				coll_detection(four_place[i], four_place[j]);
+				bool llolo=coll_detection(four_place[i], four_place[j]);
 			}
 			
 		}
@@ -146,13 +165,13 @@ namespace Tiling_tiles{
 		//	);
 		Point2f shift1 = Point2f(200, 200);
 		// show bbox
-		/*for (int i = 0; i < 4; i++)
-		{
-			for (int j = 0; j < 4; j++)
-			{
-				MyLine(drawing_pro, f_f_cor[i][j] * 0.4 + shift1, f_f_cor[i][(j + 1) % 4] * 0.4 + shift1, "red");
-			}
-		}*/
+		//for (int i = 0; i < 4; i++)
+		//{
+		//	for (int j = 0; j < 4; j++)
+		//	{
+		//		MyLine(drawing_pro, f_f_cor[i][j] * 0.4 + shift1, f_f_cor[i][(j + 1) % 4] * 0.4 + shift1, "red");
+		//	}
+		//}
 
 		//show four proto
 		for (int i = 0; i < 4; i++)
@@ -169,25 +188,79 @@ namespace Tiling_tiles{
 	}
 
 
-	bool coll_detection(vector<Point2f> contour1, vector<Point2f> contour2)
+	bool Tiling_opt::coll_detection(vector<Point2f> contour1, vector<Point2f> contour2)
 	{
 		//首先通过包围盒求得粗糙的相交区域，然后通过像素相交求是否产生碰撞
 		vector<Point2f> bbox1 = b_box(contour1);
 		vector<Point2f> bbox2 = b_box(contour2);
-		vector<int> num_in;
+		vector<int> num_in1;
+		vector<int> num_in2;
 		for (int i = 0; i < 4; i++)
 		{
-			if (bbox1[i].x < bbox2[3].x && bbox1[i].x > bbox2[1].x)
-			{
-				if (bbox1[i].y < bbox2[3].y && bbox1[i].y > bbox2[1].y)
+			if (bbox1[i].x <= bbox2[3].x && bbox1[i].x >= bbox2[1].x)
+				if (bbox1[i].y <= bbox2[3].y && bbox1[i].y >= bbox2[1].y)
 				{
+					num_in1.push_back(i);
 				}
-			}
-			
 		}
+		for (int i = 0; i < 4; i++)
+		{
+			if (bbox2[i].x <= bbox1[3].x && bbox2[i].x >= bbox1[1].x)
+				if (bbox2[i].y <= bbox1[3].y && bbox2[i].y >= bbox1[1].y)
+				{
+					num_in2.push_back(i);
+				}
+		}
+		int dis = num_in1.size() - num_in2.size();
+		if (num_in1.size() == 0 && num_in2.size() == 0)
+			return false;
+		else if (num_in1.size() == 1 && num_in2.size() == 1)
+		{
+			vector<Point2f> cand_fra;
+			double bbx_max_x;
+			double bbx_max_y;
+			double bbx_min_x;
+			double bbx_min_y;
+			if (bbox1[num_in1[0]].x < bbox2[num_in2[0]].x)
+			{
+				bbx_min_x = bbox1[num_in1[0]].x;
+				bbx_max_x = bbox2[num_in2[0]].x;
+			}
+			else{
+				bbx_min_x = bbox2[num_in2[0]].x;
+				bbx_max_x = bbox1[num_in1[0]].x;
+			}
+			if (bbox1[num_in1[0]].y < bbox2[num_in2[0]].y)
+			{
+				bbx_min_y = bbox1[num_in1[0]].y;
+				bbx_max_y = bbox2[num_in2[0]].y;
+			}
+			else{
+				bbx_min_y = bbox2[num_in2[0]].y;
+				bbx_max_y = bbox1[num_in1[0]].y;
+			}
+			Point2f max_p = Point2f(bbx_max_x, bbx_max_y);
+			Point2f min_p = Point2f(bbx_min_x, bbx_min_y);
+			collision_pixel(max_p, min_p, contour1, contour1);
+		}
+		//else if (num_in1.size() == 2 && num_in2.size() == 2)
+		//{
 
-
+		//}
+		//else if ()
 		return true;
+	}
+
+	bool Tiling_opt::collision_pixel(Point2f max_p, Point2f min_p, vector<Point2f> contour1, vector<Point2f> contour2)
+	{
+		for (int i = 0; i < contour1.size(); i++)
+		{
+
+		}
+		for (int j = 0; j < contour2.size(); j++)
+		{
+
+		}
 	}
 
 	/*

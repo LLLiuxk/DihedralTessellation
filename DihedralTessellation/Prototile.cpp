@@ -505,14 +505,14 @@ namespace Tiling_tiles{
 			circle(drawing5, contour[max_order[j]], 4, Scalar(0, 0, 255), -1);
 		}
 		
-		//for (int j = 0; j < skeleton_points.size(); j++)
-		//{
-		//	circle(drawing5, skeleton_points[j], 1, Scalar(128, 128, 128), -1);
-		//}
-		//for (int j = 0; j < ske_points.size(); j++)
-		//{
-		//	circle(drawing5, ske_points[j], 4, Scalar(255, 0, 0), -1);
-		//}
+		for (int j = 0; j < skeleton_points.size(); j++)
+		{
+			circle(drawing5, skeleton_points[j], 1, Scalar(128, 128, 128), -1);
+		}
+		for (int j = 0; j < ske_points.size(); j++)
+		{
+			circle(drawing5, ske_points[j], 4, Scalar(255, 0, 0), -1);
+		}
 		imshow("convex points: ", drawing5);
 
 		return max_order;
