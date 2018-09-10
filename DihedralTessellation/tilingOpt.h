@@ -67,7 +67,7 @@ namespace Tiling_tiles{
 		double scale_factor();
 		void points_dividing(string imaname);
 		int one_situ_div(vector<Point2f> results, vector<Point2f> &contour_s);
-		bool coll_detection(vector<vector<Point2f>>);
+		bool coll_detection(vector<Point2f> contour1, vector<Point2f> contour2);
 		
 		double com_each_pair(vector<Point2f> &first_interval, vector<Point2f> &second_interval, int &flag);
 

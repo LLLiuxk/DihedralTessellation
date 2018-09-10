@@ -76,6 +76,7 @@ namespace Tiling_tiles{
 		Point2f line2 = results[3] - results[1];
 		vector<vector<Point2f>> four_place;
 		vector<Point2f> one_loca;
+
 		// 目前为止只考虑正向摆放，不考虑旋转和翻转
 		four_place.push_back(contour_s);
 		for (int i = 0; i < contour_s.size(); i++)
@@ -95,7 +96,16 @@ namespace Tiling_tiles{
 			one_loca.push_back(contour_s[i] + line1 + line2);
 		}
 		four_place.push_back(one_loca);
-		//coll_detection(four_place);
+		int fpsize = four_place.size();
+		for (int i = 0; i < fpsize; i++)
+		{
+			for (int j = i + 1; j < fpsize; j++)
+			{
+				coll_detection(four_place[i], four_place[j]);
+			}
+			
+		}
+	
 
 		//将两个轮廓一起缩放，可用在最后显示阶段
 		/*double factor = com_scale_factor();
@@ -135,17 +145,16 @@ namespace Tiling_tiles{
 		//	//Scalar(255, 255, 255) //白色
 		//	);
 		Point2f shift1 = Point2f(200, 200);
-
-		for (int i = 0; i < 4; i++)
+		// show bbox
+		/*for (int i = 0; i < 4; i++)
 		{
-			vector<Point2f> four_cor = b_box(four_place[i]);
 			for (int j = 0; j < 4; j++)
 			{
-				MyLine(drawing_pro, four_cor[j] * 0.4 + shift1, four_cor[(j + 1) % 4] * 0.4 + shift1, "red");
+				MyLine(drawing_pro, f_f_cor[i][j] * 0.4 + shift1, f_f_cor[i][(j + 1) % 4] * 0.4 + shift1, "red");
 			}
-		}
-		//vector<Point2f> four_cor = b_box(four_place[0]);
-		
+		}*/
+
+		//show four proto
 		for (int i = 0; i < 4; i++)
 		{
 			//MyLine(drawing_pro, four_cor[i]*0.4+shift1, four_cor[(i+1)%4]*0.4+shift1, "red");
@@ -160,10 +169,23 @@ namespace Tiling_tiles{
 	}
 
 
-	bool coll_detection(vector<vector<Point2f>> &four_place)
+	bool coll_detection(vector<Point2f> contour1, vector<Point2f> contour2)
 	{
 		//首先通过包围盒求得粗糙的相交区域，然后通过像素相交求是否产生碰撞
-		vector<Point2f> four_cor = b_box(four_place[0]);
+		vector<Point2f> bbox1 = b_box(contour1);
+		vector<Point2f> bbox2 = b_box(contour2);
+		vector<int> num_in;
+		for (int i = 0; i < 4; i++)
+		{
+			if (bbox1[i].x < bbox2[3].x && bbox1[i].x > bbox2[1].x)
+			{
+				if (bbox1[i].y < bbox2[3].y && bbox1[i].y > bbox2[1].y)
+				{
+				}
+			}
+			
+		}
+
 
 		return true;
 	}
