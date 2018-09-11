@@ -35,6 +35,7 @@ namespace Tiling_tiles{
 	{		
 		vector<int> p_p_index = prototile_first->partition_points(imaname);
 		vector<Point2f> contour_ = prototile_first->contour;
+
 		int ppindex = p_p_index.size();
 		int margin = prototile_first->contour.size() / 8;
 		cout << "margin: " << margin << endl;
@@ -253,14 +254,33 @@ namespace Tiling_tiles{
 
 	bool Tiling_opt::collision_pixel(Point2f max_p, Point2f min_p, vector<Point2f> contour1, vector<Point2f> contour2)
 	{
+		int flag_index[800][800] = { 0 };
 		for (int i = 0; i < contour1.size(); i++)
 		{
-
+			if (contour1[i].x < max_p.x && contour1[i].x > min_p.x)
+				if (contour1[i].y < max_p.y && contour1[i].y > min_p.y)
+				{
+					flag_index[(int)(contour1[i].x - min_p.x)][(int)(contour1[i].y - min_p.y)] = 1;
+				}
 		}
 		for (int j = 0; j < contour2.size(); j++)
 		{
-
+			if (contour2[j].x < max_p.x && contour2[j].x > min_p.x)
+				if (contour2[j].y < max_p.y && contour2[j].y > min_p.y)
+				{
+					flag_index[(int)(contour2[j].x - min_p.x)][(int)(contour2[j].y - min_p.y)]++;
+				}
 		}
+		int count = 0;
+		for (int i = 0; i < 800; i++)
+		{
+			for (int j = 0; j < 800; j++)
+			{
+				if (flag_index[i][j]>1) count++;
+			}
+		}
+		if (count>6) return true;
+		else return false;
 	}
 
 	/*
