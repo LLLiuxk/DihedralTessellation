@@ -5,7 +5,7 @@
 */
 #include "tilingOpt.h"
 
-
+//static int N = 800;
 namespace Tiling_tiles{
 
 	Tiling_opt::Tiling_opt()
@@ -35,7 +35,7 @@ namespace Tiling_tiles{
 	{		
 		vector<int> p_p_index = prototile_first->partition_points(imaname);
 		vector<Point2f> contour_ = prototile_first->contour;
-
+		
 		int ppindex = p_p_index.size();
 		int margin = prototile_first->contour.size() / 8;
 		cout << "margin: " << margin << endl;
@@ -52,33 +52,49 @@ namespace Tiling_tiles{
 					for (int n = m + 1; n < ppindex + i; n++)
 					{
 						if (abs(p_p_index[n % ppindex] - p_p_index[m % ppindex]) < margin) continue;
-						count++;
 						vector<Point2f> result_p;
 						result_p.push_back(contour_[p_p_index[i]]);
 						result_p.push_back(contour_[p_p_index[j % ppindex]]);
 						result_p.push_back(contour_[p_p_index[m % ppindex]]);
 						result_p.push_back(contour_[p_p_index[n % ppindex]]);
-						one_situ_div(result_p,contour_);
-						cout << "i: " << p_p_index[i] << "   j: " << p_p_index[j % ppindex] 
-							<< "   m: " << p_p_index[m % ppindex] << "    n: " << p_p_index[n % ppindex]<< endl;
+						/*result_p.push_back(contour_[67]);
+						result_p.push_back(contour_[137]);
+						result_p.push_back(contour_[305]);
+						result_p.push_back(contour_[430]);*/
+						cout << "i: " << p_p_index[i] << "   j: " << p_p_index[j % ppindex]
+							<< "   m: " << p_p_index[m % ppindex] << "    n: " << p_p_index[n % ppindex] << endl;
 						
-						//Mat drawing6 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+						//if(one_situ_div(result_p,contour_)) continue;
+						if (one_situ_div(result_p, contour_))
+						{
+							cout << "-------------collision-------------" << endl;
+							continue;
+						} 
+						count++;				
+						
+						Mat drawing6 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 
-						//for (int j = 0; j < contour_.size(); j++)
-						//{
-						//	circle(drawing6, contour_[j], 1, Scalar(0, 0, 0), -1);
+						for (int j = 0; j < contour_.size(); j++)
+						{
+							circle(drawing6, contour_[j], 1, Scalar(0, 0, 0), -1);
 
-						//	//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
-						//}
-						//for (int j = 0; j < p_p_index.size(); j++)
-						//{
-						//	circle(drawing6, contour_[p_p_index[j]], 4, Scalar(0, 0, 255), -1);
-						//}
-						//circle(drawing6, contour_[p_p_index[i]], 4, Scalar(0, 255, 0), -1);
-						//circle(drawing6, contour_[p_p_index[j % ppindex]], 4, Scalar(0, 255, 0), -1);
-						//circle(drawing6, contour_[p_p_index[m % ppindex]], 4, Scalar(0, 255, 0), -1);
-						//circle(drawing6, contour_[p_p_index[n % ppindex]], 4, Scalar(0, 255, 0), -1);
-						//imshow("candadite points: ", drawing6);
+							//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
+						}
+						for (int j = 0; j < p_p_index.size(); j++)
+						{
+							circle(drawing6, contour_[p_p_index[j]], 4, Scalar(0, 0, 255), -1);
+						}
+						/*circle(drawing6, contour_[137], 4, Scalar(0, 255, 0), -1);
+						circle(drawing6, contour_[284], 4, Scalar(0, 255, 0), -1);
+						circle(drawing6, contour_[430], 4, Scalar(0, 255, 0), -1);
+						circle(drawing6, contour_[497], 4, Scalar(0, 255, 0), -1); */
+						circle(drawing6, contour_[p_p_index[i]], 4, Scalar(0, 255, 0), -1);
+						circle(drawing6, contour_[p_p_index[j % ppindex]], 4, Scalar(0, 255, 0), -1);
+						circle(drawing6, contour_[p_p_index[m % ppindex]], 4, Scalar(0, 255, 0), -1);
+						circle(drawing6, contour_[p_p_index[n % ppindex]], 4, Scalar(0, 255, 0), -1);
+						imshow("candadite points: ", drawing6);
+
+
 
 						if (count == 1) return;
 
@@ -90,7 +106,7 @@ namespace Tiling_tiles{
 		
 	}
 
-	int Tiling_opt::one_situ_div(vector<Point2f> results, vector<Point2f> &contour_s)
+	bool Tiling_opt::one_situ_div(vector<Point2f> results, vector<Point2f> &contour_s)
 	{
 		Point2f line1 = results[2] - results[0];
 		Point2f line2 = results[3] - results[1];
@@ -117,16 +133,23 @@ namespace Tiling_tiles{
 		}
 		four_place.push_back(one_loca);
 		int fpsize = four_place.size();
+		//cout <<"four_place.size(): "<< four_place.size() << endl;
+		
 		for (int i = 0; i < fpsize; i++)
 		{
 			for (int j = i + 1; j < fpsize; j++)
 			{
-				bool llolo=coll_detection(four_place[i], four_place[j]);
+				if (coll_detection(four_place[i], four_place[j]))
+				{
+					return true;
+				}
+				//else {
+				//	cout << "i: " << i << "j: " << j << endl;
+				//}
 			}
 			
 		}
-	
-
+		//coll_detection(four_place[2], four_place[3]);
 		//将两个轮廓一起缩放，可用在最后显示阶段
 		/*double factor = com_scale_factor();
 		for (int i = 0; i < contour2.size(); i++)
@@ -185,7 +208,7 @@ namespace Tiling_tiles{
 			}
 		}
 		imshow("result_mid", drawing_pro);
-		return 0;
+		return false;
 	}
 
 
@@ -213,8 +236,11 @@ namespace Tiling_tiles{
 				}
 		}
 		int dis = num_in1.size() - num_in2.size();
+		cout << "num_in1.size() and num_in2.size()" << num_in1.size() << "   " << num_in2.size() << endl;
 		if (num_in1.size() == 0 && num_in2.size() == 0)
+		{			
 			return false;
+		}
 		else if (num_in1.size() == 1 && num_in2.size() == 1)
 		{
 			double bbx_max_x = max(bbox1[num_in1[0]].x, bbox2[num_in2[0]].x);
@@ -223,7 +249,8 @@ namespace Tiling_tiles{
 			double bbx_min_y = min(bbox1[num_in1[0]].y, bbox2[num_in2[0]].y);
 			Point2f max_p = Point2f(bbx_max_x, bbx_max_y);
 			Point2f min_p = Point2f(bbx_min_x, bbx_min_y);
-			collision_pixel(max_p, min_p, contour1, contour1);
+			//cout << max_p << endl << min_p << endl;
+			return collision_pixel(max_p, min_p, contour1, contour2);
 		}
 		else if (num_in1.size() == 2 && num_in2.size() == 2)
 		{
@@ -233,33 +260,100 @@ namespace Tiling_tiles{
 			double bbx_min_y = min(min(bbox1[num_in1[0]].y, bbox2[num_in2[0]].y), bbox1[num_in1[1]].x);
 			Point2f max_p = Point2f(bbx_max_x, bbx_max_y);
 			Point2f min_p = Point2f(bbx_min_x, bbx_min_y);
-			collision_pixel(max_p, min_p, contour1, contour1);
+			return collision_pixel(max_p, min_p, contour1, contour2);
 		}
 		else if (abs(dis) == 2)
 		{
-			if (num_in1.size() == 2)
-			{
-				Point2f frame_1 = bbox1[num_in1[0]];
-				Point2f frame_2 = bbox1[num_in1[1]];
-			}
-			else {
-				Point2f frame_1 = bbox2[num_in2[0]];
-				Point2f frame_2 = bbox2[num_in2[1]];
-			}
+			return true;
+
 		}
-		//else if ()
+		else if (abs(dis) == 4)
+		{
+			double bbx_max_x;
+			double bbx_max_y;
+			double bbx_min_x;
+			double bbx_min_y;
+			if (num_in1.size() == 4)
+			{
+				bbx_max_x = max(max(bbox1[num_in1[0]].x, bbox1[num_in1[1]].x), bbox1[num_in1[2]].x);
+				bbx_max_y = max(max(bbox1[num_in1[0]].y, bbox1[num_in1[1]].y), bbox1[num_in1[2]].y);
+				bbx_min_x = min(min(bbox1[num_in1[0]].x, bbox1[num_in1[1]].x), bbox1[num_in1[2]].x);
+				bbx_min_y = min(min(bbox1[num_in1[0]].y, bbox1[num_in1[1]].y), bbox1[num_in1[2]].y);
+			}
+			else if (num_in2.size() == 4)
+			{
+				bbx_max_x = max(max(bbox2[num_in2[0]].x, bbox2[num_in2[1]].x), bbox2[num_in2[2]].x);
+				bbx_max_y = max(max(bbox2[num_in2[0]].y, bbox2[num_in2[1]].y), bbox2[num_in2[2]].y);
+				bbx_min_x = min(min(bbox2[num_in2[0]].x, bbox2[num_in2[1]].x), bbox2[num_in2[2]].x);
+				bbx_min_y = min(min(bbox2[num_in2[0]].y, bbox2[num_in2[1]].y), bbox2[num_in2[2]].y);
+			}
+			Point2f max_p = Point2f(bbx_max_x, bbx_max_y);
+			Point2f min_p = Point2f(bbx_min_x, bbx_min_y);
+			return collision_pixel(max_p, min_p, contour1, contour2);
+		}
 		return true;
 	}
-
+	
 	bool Tiling_opt::collision_pixel(Point2f max_p, Point2f min_p, vector<Point2f> contour1, vector<Point2f> contour2)
 	{
-		int flag_index[800][800] = { 0 };
+		Mat drawing4 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		Point2f shift1 = Point2f(400, 400) - contour1[0]*0.4;
+
+		for (int i = 0; i < contour2.size(); i++)
+		{
+			circle(drawing4, contour1[i]*0.4+shift1, 1, Scalar(0, 0, 0), -1);
+			circle(drawing4, contour2[i]*0.4+shift1, 1, Scalar(0, 0, 0), -1);
+		}
+		MyLine(drawing4, Point2f(min_p.x, max_p.y)*0.4 + shift1, Point2f(min_p.x, min_p.y)*0.4 + shift1, "red");
+		MyLine(drawing4, Point2f(min_p.x, min_p.y)*0.4 + shift1, Point2f(max_p.x, min_p.y)*0.4 + shift1, "red");
+		MyLine(drawing4, Point2f(max_p.x, min_p.y)*0.4 + shift1, Point2f(max_p.x, max_p.y)*0.4 + shift1, "red");
+		imshow("cand_fram",drawing4);
+		
+		vector<int> flag_index;
+		for (int i = min_p.x; i < max_p.x + 1; i++)
+			for (int j = min_p.y; j < max_p.y + 1; j++)
+			{
+				flag_index.push_back(0);
+			}
+		//int flag_index[N][N] = { 0 };
+		//cout << flag_index.size() << endl;
 		for (int i = 0; i < contour1.size(); i++)
 		{
 			if (contour1[i].x < max_p.x && contour1[i].x > min_p.x)
 				if (contour1[i].y < max_p.y && contour1[i].y > min_p.y)
 				{
-					flag_index[(int)(contour1[i].x - min_p.x)][(int)(contour1[i].y - min_p.y)] = 1;
+					int dis1 = (int)contour1[i].x - (int)min_p.x;
+					int dis2 = (int)max_p.x - (int)contour1[i].x;
+					int dis3 = (int)contour1[i].y - (int)min_p.y;
+					int dis4 = (int)max_p.y - (int)contour1[i].y;
+					int index_ = (int)max_p.y - (int)min_p.y;
+					int index = (int)(dis1 * index_) + (int)contour1[i].y - (int)min_p.y;
+					if (dis1 > 0 && dis2 > 0 && dis3 > 0 && dis4 > 0)
+					{
+						flag_index[index] = 1;
+						flag_index[index + 1] = 1;
+						flag_index[index - 1] = 1;
+						flag_index[index + index_] = 1;
+						flag_index[index - index_] = 1;
+						flag_index[index + index_ + 1] = 1;
+						flag_index[index + index_ - 1] = 1;
+						flag_index[index - index_ + 1] = 1;
+						flag_index[index - index_ - 1] = 1;
+					}
+					else flag_index[index] = 1;
+
+					/*int index = (int)(contour1[i].x - min_p.x);
+					int index_ = (int)(max_p.y - min_p.y);
+					index =(int)( index * index_ + contour1[i].y -min_p.y);*/
+					/*flag_index[(int)(contour1[i].x - min_p.x)][(int)(contour1[i].y - min_p.y)] = 1;
+					flag_index[(int)(contour1[i].x - min_p.x-1)][(int)(contour1[i].y - min_p.y)] = 1;
+					flag_index[(int)(contour1[i].x - min_p.x)][(int)(contour1[i].y - min_p.y)-1] = 1;
+					flag_index[(int)(contour1[i].x - min_p.x)+1][(int)(contour1[i].y - min_p.y)] = 1;
+					flag_index[(int)(contour1[i].x - min_p.x)][(int)(contour1[i].y - min_p.y)+1] = 1;
+					flag_index[(int)(contour1[i].x - min_p.x)+1][(int)(contour1[i].y - min_p.y) + 1] = 1;
+					flag_index[(int)(contour1[i].x - min_p.x)-1][(int)(contour1[i].y - min_p.y) + 1] = 1;
+					flag_index[(int)(contour1[i].x - min_p.x)+1][(int)(contour1[i].y - min_p.y) - 1] = 1;
+					flag_index[(int)(contour1[i].x - min_p.x)-1][(int)(contour1[i].y - min_p.y) - 1] = 1;*/
 				}
 		}
 		for (int j = 0; j < contour2.size(); j++)
@@ -267,19 +361,48 @@ namespace Tiling_tiles{
 			if (contour2[j].x < max_p.x && contour2[j].x > min_p.x)
 				if (contour2[j].y < max_p.y && contour2[j].y > min_p.y)
 				{
-					flag_index[(int)(contour2[j].x - min_p.x)][(int)(contour2[j].y - min_p.y)]++;
+					int dis1 = (int)contour2[j].x - (int)min_p.x;
+					int dis2 = (int)max_p.x - (int)contour2[j].x;
+					int dis3 = (int)contour2[j].y - (int)min_p.y;
+					int dis4 = (int)max_p.y - (int)contour2[j].y;		
+					int index_ = (int)max_p.y - (int)min_p.y;
+					int index = (int)(dis1 * index_) + (int)contour2[j].y - (int)min_p.y;
+					if (dis1 > 0 && dis2 > 0 && dis3 > 0 && dis4 > 0)
+					{
+						flag_index[index]++;
+						flag_index[index + 1]++;
+						flag_index[index - 1]++;
+						flag_index[index + index_]++;
+						flag_index[index - index_]++;
+						flag_index[index + index_ + 1]++;
+						flag_index[index + index_ - 1]++;
+						flag_index[index - index_ + 1]++;
+						flag_index[index - index_ - 1]++;
+					}
+					else flag_index[index]++;
+					//flag_index[index]++;
+
+					/*int index = (int)(contour2[j].x -min_p.x);
+					int index_ = (int)(max_p.y - min_p.y);
+					index =(int)( index * index_ + contour2[j].y - min_p.y);
+					flag_index[index]++;*/
+					//flag_index[(int)(contour2[j].x - min_p.x)][(int)(contour2[j].y - min_p.y)]++;
 				}
 		}
 		int count = 0;
-		for (int i = 0; i < 800; i++)
+		for (vector<int>::iterator it=flag_index.begin(); it != flag_index.end(); it++)
 		{
-			for (int j = 0; j < 800; j++)
-			{
-				if (flag_index[i][j]>1) count++;
-			}
+			//cout << *it << " ";
+			if (*it > 1) count++;
 		}
-		if (count>6) return true;
+		//for (int i = 0; i < 800; i++)
+		//	for (int j = 0; j < 800; j++)
+		//		if (flag_index[i][j]>1) count++;
+		
+		cout << "count:  "<<count<<endl;
+		if (count>10) return true;
 		else return false;
+
 	}
 
 	/*

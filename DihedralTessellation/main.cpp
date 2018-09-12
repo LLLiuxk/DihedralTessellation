@@ -26,6 +26,22 @@ int main(int argc, char** argv)
 	if (f == 0) //ÒÑÓÐdataset
 	{
 		tiling_opt->points_dividing(imagename3);
+		/*vector<Point2f> a;
+		vector<Point2f> b;
+		a.push_back(Point2f(0.5, 0.9));
+		a.push_back(Point2f(1.2, 1.9));
+		a.push_back(Point2f(2.5, 2.9));
+		a.push_back(Point2f(3.5, 3.9));
+		a.push_back(Point2f(5.5, 4.9));
+
+		b.push_back(Point2f(0.2, 0.7));
+		b.push_back(Point2f(1.2, 1.7));
+		b.push_back(Point2f(2.2, 2.7));
+		b.push_back(Point2f(3.2, 3.7));
+		b.push_back(Point2f(5.2, 4.7));
+		if (tiling_opt->collision_pixel(Point2f(10, 10), Point2f(0, 0), a, b))
+			cout << "pengzhuang" << endl;
+		else cout << "no";*/
 
 	}
 	else if (f == 1)

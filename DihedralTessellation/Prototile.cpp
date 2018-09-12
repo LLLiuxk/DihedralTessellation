@@ -227,7 +227,7 @@ namespace Tiling_tiles{
 		//		bb = 0;
 		//	}
 		//else continue;
-		Mat drwa = Mat::zeros(800, 800, CV_8UC3);
+		/*Mat drwa = Mat::zeros(800, 800, CV_8UC3);
 		int i = 0;
 		for (; i < con_point.size() / 4; i++)
 		{
@@ -241,7 +241,7 @@ namespace Tiling_tiles{
 		{
 			circle(drwa, con_point[i], 1, Scalar(0, 0, 255), -1);
 		}
-		imshow("contour" + contourname, drwa);
+		imshow("contour" + contourname, drwa);*/
 		in.close();
 
 	}
@@ -321,39 +321,16 @@ namespace Tiling_tiles{
 
 			//_________________________show the result
 
-			//Mat drawing4 = Mat::zeros(800, 800, CV_8UC3);
-			Mat drawing4 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+			//Mat drawing4 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 
-			for (int j = 0; j < contour_sam.size(); j++)
-			{
-				circle(drawing4, contour_sam[j], 1, Scalar(0, 0, 0), -1);
-
-				//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
-			}
-			
-			//circle(drawing4, contour_sam[contour_sam.size() - 2], 1, Scalar(255, 255, 0), -1);
-			//circle(drawing4, contour_sam[contour_sam.size() - 1], 1, Scalar(255, 255, 0), -1);
-			//namedWindow("simple contour", WINDOW_AUTOSIZE);
-
-			///*	int n = contour_sam.size();
-			//	cout << "n: " << n << endl;
-			//	Point rook_points[1][600];
-			//	for (int t = 0; t < n; t++)
-			//	{
-			//		rook_points[0][t] = contour_sam[t];
-			//	}
-			//	const Point* ppt[1] = { rook_points[0] };
-			//	int npt[] = { n };
-			//	polylines(drawing4,
-			//		ppt,
-			//		npt,
-			//		1,
-			//		true,
-			//		Scalar(255, 255, 255)
-			//		);*/
-			string name = "the ";
-			name = name + char(i + 48) + " simple contour ";
-			imshow(name, drawing4);
+			//for (int j = 0; j < contour_sam.size(); j++)
+			//{
+			//	circle(drawing4, contour_sam[j], 1, Scalar(0, 0, 0), -1);
+			//	//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
+			//}
+			//string name = "the ";
+			//name = name + char(i + 48) + " simple contour ";
+			//imshow(name, drawing4);
 			//________________________ show over
 		}
 

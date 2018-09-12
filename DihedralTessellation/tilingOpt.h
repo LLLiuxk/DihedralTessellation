@@ -19,7 +19,6 @@ namespace Tiling_tiles{
 #ifndef PI
 #define PI 3.1415926535897932384626433832795
 #endif
-
 	
 
 	class Prototile{
@@ -67,10 +66,9 @@ namespace Tiling_tiles{
 		void com_score(string imagename1, string imagename2);
 		double scale_factor();
 		void points_dividing(string imaname);
-		int one_situ_div(vector<Point2f> results, vector<Point2f> &contour_s);
+		bool one_situ_div(vector<Point2f> results, vector<Point2f> &contour_s);
 		bool coll_detection(vector<Point2f> contour1, vector<Point2f> contour2);
 		bool collision_pixel(Point2f max_p, Point2f min_p, vector<Point2f> contour1, vector<Point2f> contour2);
-		
 		
 		double com_each_pair(vector<Point2f> &first_interval, vector<Point2f> &second_interval, int &flag);
 
