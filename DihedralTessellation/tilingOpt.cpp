@@ -217,37 +217,36 @@ namespace Tiling_tiles{
 			return false;
 		else if (num_in1.size() == 1 && num_in2.size() == 1)
 		{
-			vector<Point2f> cand_fra;
-			double bbx_max_x;
-			double bbx_max_y;
-			double bbx_min_x;
-			double bbx_min_y;
-			if (bbox1[num_in1[0]].x < bbox2[num_in2[0]].x)
-			{
-				bbx_min_x = bbox1[num_in1[0]].x;
-				bbx_max_x = bbox2[num_in2[0]].x;
-			}
-			else{
-				bbx_min_x = bbox2[num_in2[0]].x;
-				bbx_max_x = bbox1[num_in1[0]].x;
-			}
-			if (bbox1[num_in1[0]].y < bbox2[num_in2[0]].y)
-			{
-				bbx_min_y = bbox1[num_in1[0]].y;
-				bbx_max_y = bbox2[num_in2[0]].y;
-			}
-			else{
-				bbx_min_y = bbox2[num_in2[0]].y;
-				bbx_max_y = bbox1[num_in1[0]].y;
-			}
+			double bbx_max_x = max(bbox1[num_in1[0]].x, bbox2[num_in2[0]].x);
+			double bbx_max_y = max(bbox1[num_in1[0]].y, bbox2[num_in2[0]].y);
+			double bbx_min_x = min(bbox1[num_in1[0]].x, bbox2[num_in2[0]].x);
+			double bbx_min_y = min(bbox1[num_in1[0]].y, bbox2[num_in2[0]].y);
 			Point2f max_p = Point2f(bbx_max_x, bbx_max_y);
 			Point2f min_p = Point2f(bbx_min_x, bbx_min_y);
 			collision_pixel(max_p, min_p, contour1, contour1);
 		}
-		//else if (num_in1.size() == 2 && num_in2.size() == 2)
-		//{
-
-		//}
+		else if (num_in1.size() == 2 && num_in2.size() == 2)
+		{
+			double bbx_max_x = max(max(bbox1[num_in1[0]].x, bbox2[num_in2[0]].x), bbox1[num_in1[1]].x);
+			double bbx_max_y = max(max(bbox1[num_in1[0]].y, bbox2[num_in2[0]].y), bbox1[num_in1[1]].y);
+			double bbx_min_x = min(min(bbox1[num_in1[0]].x, bbox2[num_in2[0]].x), bbox1[num_in1[1]].x);
+			double bbx_min_y = min(min(bbox1[num_in1[0]].y, bbox2[num_in2[0]].y), bbox1[num_in1[1]].x);
+			Point2f max_p = Point2f(bbx_max_x, bbx_max_y);
+			Point2f min_p = Point2f(bbx_min_x, bbx_min_y);
+			collision_pixel(max_p, min_p, contour1, contour1);
+		}
+		else if (abs(dis) == 2)
+		{
+			if (num_in1.size() == 2)
+			{
+				Point2f frame_1 = bbox1[num_in1[0]];
+				Point2f frame_2 = bbox1[num_in1[1]];
+			}
+			else {
+				Point2f frame_1 = bbox2[num_in2[0]];
+				Point2f frame_2 = bbox2[num_in2[1]];
+			}
+		}
 		//else if ()
 		return true;
 	}
