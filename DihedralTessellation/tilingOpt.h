@@ -66,7 +66,7 @@ namespace Tiling_tiles{
 		void com_score(string imagename1, string imagename2);
 		double scale_factor();
 		void points_dividing(string imaname);
-		bool one_situ_div(vector<Point2f> results, vector<Point2f> &contour_s);
+		bool one_situ_div(vector<int> results, vector<Point2f> &contour_s);
 		bool coll_detection(vector<Point2f> contour1, vector<Point2f> contour2);
 		bool collision_pixel(Point2f max_p, Point2f min_p, vector<Point2f> contour1, vector<Point2f> contour2);
 		

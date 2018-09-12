@@ -52,11 +52,16 @@ namespace Tiling_tiles{
 					for (int n = m + 1; n < ppindex + i; n++)
 					{
 						if (abs(p_p_index[n % ppindex] - p_p_index[m % ppindex]) < margin) continue;
-						vector<Point2f> result_p;
-						result_p.push_back(contour_[p_p_index[i]]);
-						result_p.push_back(contour_[p_p_index[j % ppindex]]);
-						result_p.push_back(contour_[p_p_index[m % ppindex]]);
-						result_p.push_back(contour_[p_p_index[n % ppindex]]);
+						vector<int> result_index;
+						result_index.push_back(p_p_index[i]);
+						result_index.push_back(p_p_index[j % ppindex]);
+						result_index.push_back(p_p_index[m % ppindex]);
+						result_index.push_back(p_p_index[n % ppindex]);
+						//vector<Point2f> result_p;
+						//result_p.push_back(contour_[p_p_index[i]]);
+						//result_p.push_back(contour_[p_p_index[j % ppindex]]);
+						//result_p.push_back(contour_[p_p_index[m % ppindex]]);
+						//result_p.push_back(contour_[p_p_index[n % ppindex]]);
 						/*result_p.push_back(contour_[67]);
 						result_p.push_back(contour_[137]);
 						result_p.push_back(contour_[305]);
@@ -65,7 +70,7 @@ namespace Tiling_tiles{
 							<< "   m: " << p_p_index[m % ppindex] << "    n: " << p_p_index[n % ppindex] << endl;
 						
 						//if(one_situ_div(result_p,contour_)) continue;
-						if (one_situ_div(result_p, contour_))
+						if (one_situ_div(result_index, contour_))
 						{
 							cout << "-------------collision-------------" << endl;
 							continue;
@@ -93,8 +98,63 @@ namespace Tiling_tiles{
 						circle(drawing6, contour_[p_p_index[m % ppindex]], 4, Scalar(0, 255, 0), -1);
 						circle(drawing6, contour_[p_p_index[n % ppindex]], 4, Scalar(0, 255, 0), -1);
 						imshow("candadite points: ", drawing6);
+						vector<Point2f> inner_contour;
+						Point2f line1 = contour_[p_p_index[m % ppindex]] - contour_[p_p_index[i]];
+						Point2f line2 = contour_[p_p_index[n % ppindex]] - contour_[p_p_index[j % ppindex]];
+						vector<vector<Point2f>> four_place;
+						vector<Point2f> one_loca;
+
+						// 目前为止只考虑正向摆放，不考虑旋转和翻转
+						four_place.push_back(contour_);
+						for (int i = 0; i < contour_.size(); i++)
+						{
+							one_loca.push_back(contour_[i] + line1);
+						}
+						four_place.push_back(one_loca);
+						one_loca.swap(vector<Point2f>());
+						for (int i = 0; i < contour_.size(); i++)
+						{
+							one_loca.push_back(contour_[i] + line2);
+						}
+						four_place.push_back(one_loca);
+						one_loca.swap(vector<Point2f>());
+						for (int i = 0; i < contour_.size(); i++)
+						{
+							one_loca.push_back(contour_[i] + line1 + line2);
+						}
+						four_place.push_back(one_loca);
+						for (int t = p_p_index[n % ppindex]; t > p_p_index[m % ppindex]; t--)
+						{
+							inner_contour.push_back(contour_[t]);
+						}
+						for (int t = p_p_index[i]; t >= 0; t--)
+						{
+							inner_contour.push_back(four_place[1][t]);
+						}
+						for (int t = p_p_index[p_p_index.size() - 1]; t > p_p_index[n % ppindex]; t--)
+						{
+							inner_contour.push_back(four_place[1][t]);
+						}
+						for (int t = p_p_index[j % ppindex]; t > p_p_index[i]; t--)
+						{
+							inner_contour.push_back(four_place[3][t]);
+						}
+						for (int t = p_p_index[m % ppindex]; t > p_p_index[j % ppindex]; t--)
+						{
+							inner_contour.push_back(four_place[2][t]);
+						}
+						cout << "num: " << inner_contour.size();
 
 
+						Mat drawing7 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+						Point2f shift3 = Point2f(-200, 0);
+						for (int z = 0; z < inner_contour.size(); z++)
+						{
+							circle(drawing7, inner_contour[z]+shift3, 1, Scalar(0, 0, 0), -1);
+
+							//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
+						}
+						imshow("b:", drawing7);
 
 						if (count == 1) return;
 
@@ -106,10 +166,10 @@ namespace Tiling_tiles{
 		
 	}
 
-	bool Tiling_opt::one_situ_div(vector<Point2f> results, vector<Point2f> &contour_s)
+	bool Tiling_opt::one_situ_div(vector<int> results, vector<Point2f> &contour_s)
 	{
-		Point2f line1 = results[2] - results[0];
-		Point2f line2 = results[3] - results[1];
+		Point2f line1 = contour_s[results[2]] - contour_s[results[0]];
+		Point2f line2 = contour_s[results[3]] - contour_s[results[1]];
 		vector<vector<Point2f>> four_place;
 		vector<Point2f> one_loca;
 
