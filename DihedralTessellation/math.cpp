@@ -26,6 +26,28 @@ namespace Tiling_tiles{
 			thickness,
 			lineType);
 	}
+	void draw_polygen(string win_name,vector<Point2f> contour_s)
+	{
+		Mat drawing_pro = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		int n = contour_s.size();
+		//cout << "n: " << n << endl;
+		Point rook_points[1][800];
+		for (int t = 0; t < n; t++)
+		{
+			rook_points[0][t] = contour_s[t];
+		}
+		const Point* ppt[1] = { rook_points[0] };
+		int npt[] = { n };
+		fillPoly(drawing_pro,
+			ppt,
+			npt,
+			1,
+			Scalar(0, 0, 0) //ºÚÉ«
+			//Scalar(255, 255, 255) //°×É«
+			);
+		imshow(win_name, drawing_pro);
+
+	}
 	double contour_length(vector<Point2f> contour)
 	{
 		double length = 0;

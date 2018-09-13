@@ -13,12 +13,19 @@ namespace Tiling_tiles{
 		//vector<int> index_cos;
 		contourname = tile_data;
 		//imgtocout();
-	    readTxt(contour);
+		contour = readTxt();
 		c_length = contour_length(contour);
 		//采样并求曲率
 		contour_sam_cur();
 		
 		//cur_normalize();
+	}
+
+	void Prototile::loadPoints(vector<Point2f> con_point)
+	{
+		contour.swap(con_point);
+		c_length = contour_length(contour);
+		contour_sam_cur();
 	}
 
 	void Prototile::imgtocout(string tile_image)
@@ -139,14 +146,15 @@ namespace Tiling_tiles{
 	}
 
 
-	void Prototile::readTxt(vector<Point2f> &con_point)
+	vector<Point2f> Prototile::readTxt()
 	{
+		vector<Point2f> con_point;
 		//读取一个存有轮廓点的文件，格式对应上一步计算轮廓点保存的文件
 		ifstream in("D:\\VisualStudioProjects\\contours\\" + contourname + ".txt");
 		if (!in.is_open())
 		{
 			cout << "Error opening file" << endl;
-			return;
+			return con_point;
 		}
 		//挨个处理每个字符
 		cout << "Opening file!!!" << endl;
@@ -243,10 +251,10 @@ namespace Tiling_tiles{
 		}
 		imshow("contour" + contourname, drwa);*/
 		in.close();
+		return con_point;
 
 	}
-
-
+	
 	void Prototile::contour_sam_cur()
 	{
 		int iter_num = 0;
@@ -260,7 +268,7 @@ namespace Tiling_tiles{
 		}
 		center_point.x = center_point.x / contour.size();
 		center_point.y = center_point.y / contour.size();
-
+	
 		//sampling and computing curvature
 
 		for (int i = 3; i < 7; i++)  //确定采样点数，此处为600点
@@ -321,16 +329,16 @@ namespace Tiling_tiles{
 
 			//_________________________show the result
 
-			//Mat drawing4 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+			Mat drawing4 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 
-			//for (int j = 0; j < contour_sam.size(); j++)
-			//{
-			//	circle(drawing4, contour_sam[j], 1, Scalar(0, 0, 0), -1);
-			//	//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
-			//}
-			//string name = "the ";
-			//name = name + char(i + 48) + " simple contour ";
-			//imshow(name, drawing4);
+			for (int j = 0; j < contour_sam.size(); j++)
+			{
+				circle(drawing4, contour_sam[j], 1, Scalar(0, 0, 0), -1);
+				//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
+			}
+			string name = "the ";
+			name = name + char(i + 48) + " sample contour ";
+			imshow(name, drawing4);
 			//________________________ show over
 		}
 

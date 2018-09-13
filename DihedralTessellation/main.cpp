@@ -25,23 +25,30 @@ int main(int argc, char** argv)
 	int f = 0;
 	if (f == 0) //ÒÑÓÐdataset
 	{
-		tiling_opt->points_dividing(imagename3);
-		/*vector<Point2f> a;
-		vector<Point2f> b;
-		a.push_back(Point2f(0.5, 0.9));
-		a.push_back(Point2f(1.2, 1.9));
-		a.push_back(Point2f(2.5, 2.9));
-		a.push_back(Point2f(3.5, 3.9));
-		a.push_back(Point2f(5.5, 4.9));
-
-		b.push_back(Point2f(0.2, 0.7));
-		b.push_back(Point2f(1.2, 1.7));
-		b.push_back(Point2f(2.2, 2.7));
-		b.push_back(Point2f(3.2, 3.7));
-		b.push_back(Point2f(5.2, 4.7));
-		if (tiling_opt->collision_pixel(Point2f(10, 10), Point2f(0, 0), a, b))
-			cout << "pengzhuang" << endl;
-		else cout << "no";*/
+		//tiling_opt->points_dividing(imagename3);
+		vector<Point2d> shape1 = {
+			Point2d(0, 0),
+			Point2d(2, 0),
+			Point2d(2, 2),
+			Point2d(1, 1),
+			Point2d(0, 2),
+		};
+		vector<Point2d> shape2 = {
+			Point2d(0, 0),
+			Point2d(4, 0),
+			Point2d(4, 4),
+			Point2d(2, 2),
+			Point2d(0, 4),
+		};
+		vector<Point2d> shape3 = {
+			Point2d(0, 0),
+			Point2d(3, 0),
+			Point2d(4, 1),
+			Point2d(4, 4),
+			Point2d(2, 2),
+			Point2d(0, 4),
+		};
+		compare_shapes(shape3, shape1);
 
 	}
 	else if (f == 1)
@@ -180,6 +187,24 @@ int main(int argc, char** argv)
 	//imshow("imb",imb);
 	//imshow("imc",imc);
 
+
+	//collision
+	/*vector<Point2f> a;
+	vector<Point2f> b;
+	a.push_back(Point2f(0.5, 0.9));
+	a.push_back(Point2f(1.2, 1.9));
+	a.push_back(Point2f(2.5, 2.9));
+	a.push_back(Point2f(3.5, 3.9));
+	a.push_back(Point2f(5.5, 4.9));
+
+	b.push_back(Point2f(0.2, 0.7));
+	b.push_back(Point2f(1.2, 1.7));
+	b.push_back(Point2f(2.2, 2.7));
+	b.push_back(Point2f(3.2, 3.7));
+	b.push_back(Point2f(5.2, 4.7));
+	if (tiling_opt->collision_pixel(Point2f(10, 10), Point2f(0, 0), a, b))
+	cout << "pengzhuang" << endl;
+	else cout << "no";*/
 
 	waitKey(0);
 	getchar();

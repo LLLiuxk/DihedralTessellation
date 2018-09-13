@@ -11,6 +11,7 @@ namespace Tiling_tiles{
 	Tiling_opt::Tiling_opt()
 	{
 		prototile_first = new Prototile();
+		prototile_mid = new Prototile();
 		prototile_second = new Prototile();
 		//memset(dp, 0, sizeof(dp));
 		//memset(dp_inver, 0, sizeof(dp_inver));
@@ -20,6 +21,7 @@ namespace Tiling_tiles{
 	Tiling_opt::~Tiling_opt()
 	{
 		delete[] prototile_first;
+		delete[] prototile_mid;
 		delete[] prototile_second;
 	}
 
@@ -52,6 +54,7 @@ namespace Tiling_tiles{
 					for (int n = m + 1; n < ppindex + i; n++)
 					{
 						if (abs(p_p_index[n % ppindex] - p_p_index[m % ppindex]) < margin) continue;
+						vector<Point2f> inner_contour;
 						vector<int> result_index;
 						result_index.push_back(p_p_index[i]);
 						result_index.push_back(p_p_index[j % ppindex]);
@@ -70,13 +73,25 @@ namespace Tiling_tiles{
 							<< "   m: " << p_p_index[m % ppindex] << "    n: " << p_p_index[n % ppindex] << endl;
 						
 						//if(one_situ_div(result_p,contour_)) continue;
-						if (one_situ_div(result_index, contour_))
+						if (one_situ_div(result_index, contour_, inner_contour))
 						{
 							cout << "-------------collision-------------" << endl;
 							continue;
 						} 
-						count++;				
+						count++;
+						cout << "inner : " << inner_contour.size() << endl;
+						prototile_mid->loadPoints(inner_contour);
 						
+						// search the right image
+						/*
+						1.将周长调整为一致
+						2.搜索最相近的图案以及角度
+						3.变形
+						*/
+
+
+
+						//show the marked points
 						Mat drawing6 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 
 						for (int j = 0; j < contour_.size(); j++)
@@ -98,63 +113,8 @@ namespace Tiling_tiles{
 						circle(drawing6, contour_[p_p_index[m % ppindex]], 4, Scalar(0, 255, 0), -1);
 						circle(drawing6, contour_[p_p_index[n % ppindex]], 4, Scalar(0, 255, 0), -1);
 						imshow("candadite points: ", drawing6);
-						vector<Point2f> inner_contour;
-						Point2f line1 = contour_[p_p_index[m % ppindex]] - contour_[p_p_index[i]];
-						Point2f line2 = contour_[p_p_index[n % ppindex]] - contour_[p_p_index[j % ppindex]];
-						vector<vector<Point2f>> four_place;
-						vector<Point2f> one_loca;
-
-						// 目前为止只考虑正向摆放，不考虑旋转和翻转
-						four_place.push_back(contour_);
-						for (int i = 0; i < contour_.size(); i++)
-						{
-							one_loca.push_back(contour_[i] + line1);
-						}
-						four_place.push_back(one_loca);
-						one_loca.swap(vector<Point2f>());
-						for (int i = 0; i < contour_.size(); i++)
-						{
-							one_loca.push_back(contour_[i] + line2);
-						}
-						four_place.push_back(one_loca);
-						one_loca.swap(vector<Point2f>());
-						for (int i = 0; i < contour_.size(); i++)
-						{
-							one_loca.push_back(contour_[i] + line1 + line2);
-						}
-						four_place.push_back(one_loca);
-						for (int t = p_p_index[n % ppindex]; t > p_p_index[m % ppindex]; t--)
-						{
-							inner_contour.push_back(contour_[t]);
-						}
-						for (int t = p_p_index[i]; t >= 0; t--)
-						{
-							inner_contour.push_back(four_place[1][t]);
-						}
-						for (int t = p_p_index[p_p_index.size() - 1]; t > p_p_index[n % ppindex]; t--)
-						{
-							inner_contour.push_back(four_place[1][t]);
-						}
-						for (int t = p_p_index[j % ppindex]; t > p_p_index[i]; t--)
-						{
-							inner_contour.push_back(four_place[3][t]);
-						}
-						for (int t = p_p_index[m % ppindex]; t > p_p_index[j % ppindex]; t--)
-						{
-							inner_contour.push_back(four_place[2][t]);
-						}
-						cout << "num: " << inner_contour.size();
-
-
-						Mat drawing7 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-						Point2f shift3 = Point2f(-200, 0);
-						for (int z = 0; z < inner_contour.size(); z++)
-						{
-							circle(drawing7, inner_contour[z]+shift3, 1, Scalar(0, 0, 0), -1);
-
-							//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
-						}
-						imshow("b:", drawing7);
+						
+						
 
 						if (count == 1) return;
 
@@ -166,13 +126,13 @@ namespace Tiling_tiles{
 		
 	}
 
-	bool Tiling_opt::one_situ_div(vector<int> results, vector<Point2f> &contour_s)
+	bool Tiling_opt::one_situ_div(vector<int> results, vector<Point2f> &contour_s,vector<Point2f> &return_B)
 	{
 		Point2f line1 = contour_s[results[2]] - contour_s[results[0]];
 		Point2f line2 = contour_s[results[3]] - contour_s[results[1]];
 		vector<vector<Point2f>> four_place;
 		vector<Point2f> one_loca;
-
+		return_B.swap(vector<Point2f>());
 		// 目前为止只考虑正向摆放，不考虑旋转和翻转
 		four_place.push_back(contour_s);
 		for (int i = 0; i < contour_s.size(); i++)
@@ -209,6 +169,7 @@ namespace Tiling_tiles{
 			}
 			
 		}
+
 		//coll_detection(four_place[2], four_place[3]);
 		//将两个轮廓一起缩放，可用在最后显示阶段
 		/*double factor = com_scale_factor();
@@ -230,24 +191,8 @@ namespace Tiling_tiles{
 		//}
 
 		//将该proto1以及相邻四个proto2展示出来
-		Mat drawing_pro = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		//int n = contour_s.size();
-		//cout << "n: " << n << endl;
-		//Point rook_points[1][800];
-		//for (int t = 0; t < n; t++)
-		//{
-		//	rook_points[0][t] = contour_s[t];
-		//}
-		//const Point* ppt[1] = { rook_points[0] };
-		//int npt[] = { n };
-		//fillPoly(drawing_pro,
-		//	ppt,
-		//	npt,
-		//	1,
-		//	Scalar(0, 0, 0) //黑色
-		//	//Scalar(255, 255, 255) //白色
-		//	);
-		Point2f shift1 = Point2f(200, 200);
+		Mat drawing_pro = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));		
+		Point2f shift1 = Point2f(400 - prototile_first->center_point.x*0.4, 400 - prototile_first->center_point.y*0.4);
 		// show bbox
 		//for (int i = 0; i < 4; i++)
 		//{
@@ -268,6 +213,48 @@ namespace Tiling_tiles{
 			}
 		}
 		imshow("result_mid", drawing_pro);
+		Point2f center_p;
+		for (int t = results[3]-1; t > results[2]+1; t--)
+		{
+			return_B.push_back(four_place[0][t]);
+		}
+		for (int t = results[0]-1; t > 0; t--)
+		{
+			return_B.push_back(four_place[1][t]);
+		}
+		for (int t = four_place[1].size()-1; t > results[3]+1; t--)
+		{
+			return_B.push_back(four_place[1][t]);
+		}
+		for (int t = results[1]-1; t > results[0]+1; t--)
+		{
+			return_B.push_back(four_place[3][t]);
+		}
+		for (int t = results[2]-1; t > results[1]+1; t--)
+		{
+			return_B.push_back(four_place[2][t]);
+		}
+		cout << "num: " << return_B.size();
+
+		for (int z = 0; z < return_B.size(); z++)
+		{
+			center_p = center_p + return_B[z];
+		}
+		center_p.x = center_p.x / return_B.size();
+		center_p.y = center_p.y / return_B.size();
+		Point2f shift3 = Point2f(400, 400) - center_p;
+		for (int z = 0; z < return_B.size(); z++)
+		{
+			return_B[z] = return_B[z] + shift3;
+		}
+		Mat drawing7 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));				
+		for (int z = 0; z < return_B.size(); z++)
+		{
+			circle(drawing7, return_B[z], 1, Scalar(0, 0, 0), -1);
+			//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
+		}
+		imshow("b:", drawing7);
+		draw_polygen("B:re_show", return_B);
 		return false;
 	}
 
@@ -356,6 +343,7 @@ namespace Tiling_tiles{
 	
 	bool Tiling_opt::collision_pixel(Point2f max_p, Point2f min_p, vector<Point2f> contour1, vector<Point2f> contour2)
 	{
+		int coll_num = 10;
 		Mat drawing4 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 		Point2f shift1 = Point2f(400, 400) - contour1[0]*0.4;
 
@@ -460,7 +448,7 @@ namespace Tiling_tiles{
 		//		if (flag_index[i][j]>1) count++;
 		
 		cout << "count:  "<<count<<endl;
-		if (count>10) return true;
+		if (count>coll_num) return true;
 		else return false;
 
 	}

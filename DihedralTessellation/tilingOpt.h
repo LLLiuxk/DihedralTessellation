@@ -9,7 +9,7 @@
 #include <string>
 #include <list>
 #include "Morphing.h"
-
+#include "compare.h"
 
 using namespace cv;
 using namespace std;
@@ -38,7 +38,8 @@ namespace Tiling_tiles{
 
 		//io polygon
 		void imgtocout(string tile_image);
-		void readTxt(vector<Point2f> &con_point);
+		vector<Point2f> readTxt();
+		void loadPoints(vector<Point2f> con_point);
 
 		
 
@@ -66,7 +67,7 @@ namespace Tiling_tiles{
 		void com_score(string imagename1, string imagename2);
 		double scale_factor();
 		void points_dividing(string imaname);
-		bool one_situ_div(vector<int> results, vector<Point2f> &contour_s);
+		bool one_situ_div(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B);
 		bool coll_detection(vector<Point2f> contour1, vector<Point2f> contour2);
 		bool collision_pixel(Point2f max_p, Point2f min_p, vector<Point2f> contour1, vector<Point2f> contour2);
 		
@@ -104,6 +105,7 @@ namespace Tiling_tiles{
 		int dp[600][600];
 		int dp_inver[600][600];
 		Prototile *prototile_first;
+		Prototile *prototile_mid;
 		Prototile *prototile_second;
 	
 	};
@@ -111,7 +113,7 @@ namespace Tiling_tiles{
 
 	//draw tool
 	void MyLine(Mat img, Point2f start, Point2f end, string color1);
-
+	void draw_polygen(string win_name, vector<Point2f> contour_s);
 	//math tool
 	double contour_length(vector<Point2f> contour);
 	double length_two_point2f(Point2f &u, Point2f &v);
@@ -149,7 +151,7 @@ namespace Tiling_tiles{
 	vector<cv::Point2f> getPoints(const Mat &thinSrc, unsigned int raudis, unsigned int thresholdMax, unsigned int thresholdMin);
 	vector<Point2f> get_Skeleton(string imaname, vector<Point2f> &skeleton);
 	
-	//
+
 
 }
 
