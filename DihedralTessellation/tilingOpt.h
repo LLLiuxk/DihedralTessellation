@@ -68,9 +68,14 @@ namespace Tiling_tiles{
 		double scale_factor();
 		void points_dividing(string imaname);
 		bool one_situ_div(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B);
+
+		//collision
 		bool coll_detection(vector<Point2f> contour1, vector<Point2f> contour2);
 		bool collision_pixel(Point2f max_p, Point2f min_p, vector<Point2f> contour1, vector<Point2f> contour2);
 		
+		//load dataset
+		
+
 		double com_each_pair(vector<Point2f> &first_interval, vector<Point2f> &second_interval, int &flag);
 
 		
@@ -107,6 +112,7 @@ namespace Tiling_tiles{
 		Prototile *prototile_first;
 		Prototile *prototile_mid;
 		Prototile *prototile_second;
+		vector<vector<Point2f>> contour_dataset;
 	
 	};
 

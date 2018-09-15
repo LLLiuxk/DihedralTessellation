@@ -81,7 +81,8 @@ namespace Tiling_tiles{
 						count++;
 						cout << "inner : " << inner_contour.size() << endl;
 						prototile_mid->loadPoints(inner_contour);
-						
+						vector<Point2f> contour_mid = prototile_mid->contour_sample[0]; //选择最少的点进行比较
+						for (int can_num = 0; can_num < 201; can_num++);
 						// search the right image
 						/*
 						1.将周长调整为一致

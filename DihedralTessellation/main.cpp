@@ -28,28 +28,41 @@ int main(int argc, char** argv)
 		//tiling_opt->points_dividing(imagename3);
 		vector<Point2d> shape1 = {
 			Point2d(0, 0),
-			Point2d(2, 0),
-			Point2d(2, 2),
-			Point2d(1, 1),
-			Point2d(0, 2),
+			Point2d(200, 0),
+			Point2d(200, 200),
+			Point2d(100, 100),
+			Point2d(0, 200),
 		};
+		Mat drawing6 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		for (int i = 0; i < shape1.size()-1; i++)
+		{
+			MyLine(drawing6, shape1[i], shape1[i + 1],"red");
+		}
 		vector<Point2d> shape2 = {
 			Point2d(0, 0),
-			Point2d(4, 0),
-			Point2d(4, 4),
-			Point2d(2, 2),
-			Point2d(0, 4),
+			Point2d(400, 0),
+			Point2d(400, 400),
+			Point2d(200, 200),
+			Point2d(0, 400),
 		};
+		//for (int i = 0; i < shape2.size() - 1; i++)
+		//{
+		//	MyLine(drawing6, shape2[i], shape2[i + 1], "green");
+		//}
 		vector<Point2d> shape3 = {
 			Point2d(0, 0),
-			Point2d(3, 0),
-			Point2d(4, 1),
-			Point2d(4, 4),
-			Point2d(2, 2),
-			Point2d(0, 4),
+			Point2d(300, 0),
+			Point2d(400, 100),
+			Point2d(400, 400),
+			Point2d(200, 200),
+			Point2d(0, 400),
 		};
+		for (int i = 0; i < shape3.size() - 1; i++)
+		{
+			MyLine(drawing6, shape3[i], shape3[i + 1], "blue");
+		}
 		compare_shapes(shape3, shape1);
-
+		imshow("11111", drawing6);
 	}
 	else if (f == 1)
 	{
