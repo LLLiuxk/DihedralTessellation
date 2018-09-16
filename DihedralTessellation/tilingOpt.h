@@ -74,7 +74,7 @@ namespace Tiling_tiles{
 		bool collision_pixel(Point2f max_p, Point2f min_p, vector<Point2f> contour1, vector<Point2f> contour2);
 		
 		//load dataset
-		
+		void load_dataset();
 
 		double com_each_pair(vector<Point2f> &first_interval, vector<Point2f> &second_interval, int &flag);
 

@@ -1,101 +1,100 @@
-﻿Build started 2018/9/14 10:22:02.
-     1>Project "D:\VisualStudioProjects\DihedralTessellation\DihedralTessellation\DihedralTessellation.vcxproj" on node 2 (Build target(s)).
+﻿生成启动时间为 2018/9/16 9:52:32。
+     1>项目“D:\VisualStudioProjects\DihedralTessellation\DihedralTessellation\DihedralTessellation.vcxproj”在节点 2 上(Build 个目标)。
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /IC:\local\opencv\build\include /IC:\local\opencv\build\include\opencv /IC:\local\opencv\build\include\opencv2 /Zi /nologo /W3 /WX- /Od /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Debug\\" /Fd"x64\Debug\vc120.pdb" /Gd /TP /errorReport:prompt Prototile.cpp Skeleton.cpp compare.cpp main.cpp math.cpp tilingOpt.cpp
-         main.cpp
-         Generating Code...
-         Compiling...
          tilingOpt.cpp
-     1>tilingOpt.cpp(41): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(42): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(112): warning C4258: 'j' : definition from the for loop is ignored; the definition from the enclosing scope is used
-                 tilingOpt.cpp(103) : definition of 'j' ignored
-                 tilingOpt.cpp(47) : definition of 'j' used
-     1>tilingOpt.cpp(155): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(195): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>tilingOpt.cpp(225): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(285): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(297): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>tilingOpt.cpp(298): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>tilingOpt.cpp(308): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>tilingOpt.cpp(309): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>tilingOpt.cpp(337): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>tilingOpt.cpp(338): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>tilingOpt.cpp(361): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
-     1>tilingOpt.cpp(362): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
+     1>tilingOpt.cpp(80): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(81): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(124): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(154): warning C4258: “j”: 忽略 For 循环中的定义；使用封闭范围中的定义
+                 tilingOpt.cpp(145) : 忽略“j”的定义
+                 tilingOpt.cpp(86) : 使用“j”的定义
+     1>tilingOpt.cpp(197): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(237): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>tilingOpt.cpp(267): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(327): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(339): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>tilingOpt.cpp(340): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>tilingOpt.cpp(350): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>tilingOpt.cpp(351): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>tilingOpt.cpp(379): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>tilingOpt.cpp(380): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>tilingOpt.cpp(403): warning C4244: “初始化”: 从“float”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(404): warning C4244: “初始化”: 从“float”转换到“int”，可能丢失数据
          math.cpp
-     1>math.cpp(32): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>math.cpp(71): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(148): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(149): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(150): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(151): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(152): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(170): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(171): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(172): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(173): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(181): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>math.cpp(196): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>math.cpp(239): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(241): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>math.cpp(265): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(266): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(270): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(271): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(292): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(293): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(297): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(298): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(329): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>math.cpp(341): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>math.cpp(373): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>math.cpp(395): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(400): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(408): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(418): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(453): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>math.cpp(500): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>math.cpp(566): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(567): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(571): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(572): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(579): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(580): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(584): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(585): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(592): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(602): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>math.cpp(644): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>math.cpp(665): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>math.cpp(754): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>math.cpp(755): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>math.cpp(899): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>math.cpp(900): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>math.cpp(32): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(71): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(148): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(149): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(150): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(151): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(152): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(170): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(171): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(172): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(173): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(181): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(196): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(239): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(241): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(265): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(266): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(270): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(271): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(292): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(293): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(297): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(298): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(329): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(341): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(373): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(395): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(400): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(408): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(418): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(453): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(500): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(566): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(567): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(571): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(572): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(579): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(580): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(584): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(585): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(592): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(602): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(644): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(665): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(754): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(755): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(899): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(900): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+         main.cpp
          compare.cpp
-     1>compare.cpp(48): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>compare.cpp(65): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>compare.cpp(85): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>compare.cpp(48): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>compare.cpp(65): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>compare.cpp(85): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
      1>compare.cpp(125): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(211) : see declaration of 'fopen'
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(211) : 参见“fopen”的声明
          Skeleton.cpp
-     1>Skeleton.cpp(204): warning C4018: '<' : signed/unsigned mismatch
-     1>Skeleton.cpp(206): warning C4018: '<' : signed/unsigned mismatch
-     1>Skeleton.cpp(220): warning C4018: '>' : signed/unsigned mismatch
-     1>Skeleton.cpp(220): warning C4018: '<' : signed/unsigned mismatch
-     1>Skeleton.cpp(222): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>Skeleton.cpp(242): warning C4551: function call missing argument list
-     1>Skeleton.cpp(275): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>Skeleton.cpp(278): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Skeleton.cpp(204): warning C4018: “<”: 有符号/无符号不匹配
+     1>Skeleton.cpp(206): warning C4018: “<”: 有符号/无符号不匹配
+     1>Skeleton.cpp(220): warning C4018: “>”: 有符号/无符号不匹配
+     1>Skeleton.cpp(220): warning C4018: “<”: 有符号/无符号不匹配
+     1>Skeleton.cpp(222): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+     1>Skeleton.cpp(242): warning C4551: 缺少参数列表的函数调用
+     1>Skeleton.cpp(275): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+     1>Skeleton.cpp(278): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
          Prototile.cpp
-     1>Prototile.cpp(352): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>Prototile.cpp(357): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>Prototile.cpp(428): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>Prototile.cpp(449): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>Prototile.cpp(533): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
-     1>Prototile.cpp(539): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
-         Generating Code...
-     1>d:\visualstudioprojects\dihedraltessellation\dihedraltessellation\math.cpp(117): warning C4715: 'Tiling_tiles::cur_char_length' : not all control paths return a value
+     1>Prototile.cpp(352): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>Prototile.cpp(357): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>Prototile.cpp(428): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>Prototile.cpp(449): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>Prototile.cpp(533): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+     1>Prototile.cpp(539): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+         正在生成代码...
+     1>d:\visualstudioprojects\dihedraltessellation\dihedraltessellation\math.cpp(117): warning C4715: “Tiling_tiles::cur_char_length”: 不是所有的控件路径都返回值
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.exe" /INCREMENTAL /NOLOGO /LIBPATH:C:\local\opencv\build\x64\vc12\lib opencv_calib3d248d.lib opencv_contrib248d.lib opencv_core248d.lib opencv_features2d248d.lib opencv_flann248d.lib opencv_gpu248d.lib opencv_highgui248d.lib opencv_imgproc248d.lib opencv_legacy248d.lib opencv_ml248d.lib opencv_objdetect248d.lib opencv_ts248d.lib opencv_video248d.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.lib" /MACHINE:X64 x64\Debug\compare.obj
          x64\Debug\main.obj
@@ -104,9 +103,10 @@
          x64\Debug\Prototile.obj
          x64\Debug\Skeleton.obj
          x64\Debug\tilingOpt.obj
+         LINK : 没有找到 D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.exe 或上一个增量链接没有生成它；正在执行完全链接
          DihedralTessellation.vcxproj -> D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.exe
-     1>Done Building Project "D:\VisualStudioProjects\DihedralTessellation\DihedralTessellation\DihedralTessellation.vcxproj" (Build target(s)).
+     1>已完成生成项目“D:\VisualStudioProjects\DihedralTessellation\DihedralTessellation\DihedralTessellation.vcxproj”(Build 个目标)的操作。
 
-Build succeeded.
+生成成功。
 
-Time Elapsed 00:00:04.20
+已用时间 00:00:07.07

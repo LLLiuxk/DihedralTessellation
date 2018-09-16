@@ -25,6 +25,45 @@ namespace Tiling_tiles{
 		delete[] prototile_second;
 	}
 
+	void Tiling_opt::load_dataset()
+	{
+		for (int i = 0; i < 201; i++)
+		{
+			prototile_second->~Prototile();
+			char ch[4];
+			if (i < 100)
+			{
+				if (i / 10 == 0)
+				{
+					ch[0] = i % 10 + 48;
+					ch[1] = '\0';
+				}
+				else
+				{
+					ch[0] = i / 10 + 48;
+					ch[1] = i % 10 + 48;
+					ch[2] = '\0';
+				}
+			}
+			else
+			{
+				ch[0] = i / 100 + 48;
+				ch[1] = (i % 100) / 10 + 48;
+				ch[2] = i % 10 + 48;
+				ch[3] = '\0';
+
+			}
+			vector<Point2f> data_;
+			string image = ch;
+			prototile_second->contourname = image;
+			//imgtocout();
+			data_ = prototile_second->readTxt();
+			cout << image << endl;	
+			if (!data_.empty())
+				contour_dataset.push_back(data_);
+		}
+	}
+
 	double Tiling_opt::scale_factor()
 	{
 		double scale_factor; //   first/second
@@ -37,7 +76,7 @@ namespace Tiling_tiles{
 	{		
 		vector<int> p_p_index = prototile_first->partition_points(imaname);
 		vector<Point2f> contour_ = prototile_first->contour;
-		
+		load_dataset();
 		int ppindex = p_p_index.size();
 		int margin = prototile_first->contour.size() / 8;
 		cout << "margin: " << margin << endl;
@@ -82,7 +121,9 @@ namespace Tiling_tiles{
 						cout << "inner : " << inner_contour.size() << endl;
 						prototile_mid->loadPoints(inner_contour);
 						vector<Point2f> contour_mid = prototile_mid->contour_sample[0]; //选择最少的点进行比较
-						for (int can_num = 0; can_num < 201; can_num++);
+						int total_num = contour_dataset.size();
+						//for (int can_num = 0; can_num < total_num; can_num++);
+						cout << total_num << endl;
 						// search the right image
 						/*
 						1.将周长调整为一致
