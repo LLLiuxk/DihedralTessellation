@@ -5,12 +5,12 @@ using namespace Tiling_tiles;
 int main(int argc, char** argv)
 {
 
-	string imagename1 = "bird4"; 
-	string imagename2 = "fish3";
+	string imagename1 = "15"; 
+	string imagename2 = "19";
 	//string imagename1 = "Boat";
 	//string imagename2 = "fish8";
 	//string imagename1 = "fish5";
-	string imagename3 = "22";
+	string imagename3 = "49";
 	//string txtname = "D:/images/111.png";
 	//string txtname1 = "D:/images/fish3.png";
 
@@ -21,48 +21,49 @@ int main(int argc, char** argv)
 	tiling_opt = new Tiling_tiles::Tiling_opt();
 	Tiling_tiles::Prototile *prototile_first;
 	prototile_first = new Tiling_tiles::Prototile();
+	Tiling_tiles::Prototile *prototile_second;
+	prototile_second = new Tiling_tiles::Prototile();
+	Tiling_tiles::Prototile *prototile_third;
+	prototile_third = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
 	int f = 0;
 	if (f == 0) //ÒÑÓÐdataset
 	{
-		//tiling_opt->points_dividing(imagename3);
-		vector<Point2d> shape1 = {
-			Point2d(0, 0),
-			Point2d(200, 0),
-			Point2d(200, 200),
-			Point2d(100, 100),
-			Point2d(0, 200),
-		};
-		Mat drawing6 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		for (int i = 0; i < shape1.size()-1; i++)
+		/*prototile_first->loadTileData(imagename3);
+		vector<Point2f> con1 = prototile_first->contour_sample[0];
+		prototile_second->loadTileData(imagename2);
+		vector<Point2f> con2 = prototile_second->contour_sample[0];
+		prototile_third->loadTileData(imagename1);
+		vector<Point2f> con3 = prototile_third->contour_sample[0];
+		
+		double score[3][3];
+		cout << endl << imagename3 << " v " << imagename2 <<": "<< endl;
+		for (int i = 1; i < 4; i++)
 		{
-			MyLine(drawing6, shape1[i], shape1[i + 1],"red");
+			score[0][i-1] = matchShapes(con1, con2, i, 0);
+			cout << score[0][i - 1] << " " ;
 		}
-		vector<Point2d> shape2 = {
-			Point2d(0, 0),
-			Point2d(400, 0),
-			Point2d(400, 400),
-			Point2d(200, 200),
-			Point2d(0, 400),
-		};
-		//for (int i = 0; i < shape2.size() - 1; i++)
-		//{
-		//	MyLine(drawing6, shape2[i], shape2[i + 1], "green");
-		//}
-		vector<Point2d> shape3 = {
-			Point2d(0, 0),
-			Point2d(300, 0),
-			Point2d(400, 100),
-			Point2d(400, 400),
-			Point2d(200, 200),
-			Point2d(0, 400),
-		};
-		for (int i = 0; i < shape3.size() - 1; i++)
+		cout << endl<< imagename1 << " v " << imagename2 << ": " << endl;
+		for (int i = 1; i < 4; i++)
 		{
-			MyLine(drawing6, shape3[i], shape3[i + 1], "blue");
+			score[1][i - 1] = matchShapes(con3, con2, i, 0);
+			cout << score[1][i - 1] << " ";
 		}
-		compare_shapes(shape3, shape1);
-		imshow("11111", drawing6);
+		cout << endl << imagename3<<" v " << imagename1 << ": " << endl;
+		for (int i = 1; i < 4; i++)
+		{
+			score[2][i - 1] = matchShapes(con1, con3, i, 0);
+			cout << score[2][i - 1] << " ";
+		}*/
+		tiling_opt->points_dividing(imagename3);
+		//prototile_first->loadTileData(imagename3);
+		//vector<Point2f> con1 = prototile_first->contour_sample[0];
+		//prototile_second->loadTileData(imagename2);
+		//vector<Point2f> con2 = prototile_second->contour_sample[0];
+		//prototile_third->loadTileData(imagename1);
+		//vector<Point2f> con3 = prototile_third->contour_sample[0];
+
+		
 	}
 	else if (f == 1)
 	{

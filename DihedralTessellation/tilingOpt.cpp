@@ -83,14 +83,14 @@ namespace Tiling_tiles{
 		int count = 0;
 		for (int i = 0; i < ppindex; i++)
 		{
-			for (int j = i + 1; j < ppindex + i; j++)
+			for (int j = i + 1; j < ppindex; j++)
 			{
 				if (abs(p_p_index[j % ppindex] - p_p_index[i]) < margin) continue;
 				//cout << "i: " << p_p_index[i] << "   j: " << p_p_index[j% ppindex] << endl;
-				for (int m = j + 1; m < ppindex + i; m++)
+				for (int m = j + 1; m < ppindex; m++)
 				{
 					if (abs(p_p_index[m % ppindex] - p_p_index[j % ppindex]) < margin) continue;
-					for (int n = m + 1; n < ppindex + i; n++)
+					for (int n = m + 1; n < ppindex; n++)
 					{
 						if (abs(p_p_index[n % ppindex] - p_p_index[m % ppindex]) < margin) continue;
 						vector<Point2f> inner_contour;
@@ -122,8 +122,20 @@ namespace Tiling_tiles{
 						prototile_mid->loadPoints(inner_contour);
 						vector<Point2f> contour_mid = prototile_mid->contour_sample[0]; //选择最少的点进行比较
 						int total_num = contour_dataset.size();
-						//for (int can_num = 0; can_num < total_num; can_num++);
-						cout << total_num << endl;
+						vector<vector<double>> score_3types(3);
+						for (int can_num = 0; can_num < total_num; can_num++)
+						{
+							prototile_second->loadPoints(contour_dataset[can_num]);
+							vector<Point2f> contour_second = prototile_second->contour_sample[0];
+							for (int method_ = 1; i <= 3; i++)
+							{
+								double score;
+								score = matchShapes(contour_mid, contour_second, method_, 0);
+								score_3types[method_ - 1].push_back(score);
+							}							
+						}
+						
+						//cout << total_num << endl;
 						// search the right image
 						/*
 						1.将周长调整为一致

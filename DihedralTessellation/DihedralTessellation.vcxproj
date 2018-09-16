@@ -142,12 +142,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="compare.h" />
     <ClInclude Include="Morphing.h" />
     <ClInclude Include="tilingOpt.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="compare.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="math.cpp" />
     <ClCompile Include="morphing.cpp" />

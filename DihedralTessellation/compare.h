@@ -15,7 +15,7 @@ using namespace cv;
 
 struct Event {
 	int id;
-	double x, y;
+	double x, y; //x = len
 
 	bool operator<(const Event& rhs) const {
 		return x < rhs.x;

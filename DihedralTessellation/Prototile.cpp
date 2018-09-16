@@ -150,7 +150,7 @@ namespace Tiling_tiles{
 	{
 		vector<Point2f> con_point;
 		//读取一个存有轮廓点的文件，格式对应上一步计算轮廓点保存的文件
-		ifstream in("D:\\VisualStudioProjects\\contours\\" + contourname + ".txt");
+		ifstream in("D:\\VisualStudioProjects\\DihedralTessellation\\contours\\" + contourname + ".txt");
 		if (!in.is_open())
 		{
 			cout << "Error opening file" << endl;

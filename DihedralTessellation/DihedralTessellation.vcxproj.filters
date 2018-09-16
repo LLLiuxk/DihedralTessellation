@@ -21,9 +21,6 @@
     <ClInclude Include="Morphing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="compare.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -42,9 +39,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Skeleton.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="compare.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,5 +1,6 @@
 #include "compare.h"
 
+
 bool is_isolated(const Mat& M, int r, int c) {
 	if (M.at<uchar>(r, c) == 0)
 		return false;
@@ -144,6 +145,14 @@ void compare_shapes(vector<Point2d> shape1, vector<Point2d> shape2) {
 	}
 	vector<double> edge_len2 = edge_length(shape2);
 
+	//for (int i = 0; i < rot_angle1.size(); i++)
+	//{
+	//	cout << "1:  "<<rot_angle1[i] << "  " << edge_len1[i] << endl;
+	//}
+	//for (int i = 0; i < rot_angle2.size(); i++)
+	//{
+	//	cout << "2:  " << rot_angle2[i] << "  " << edge_len2[i] << endl;
+	//}
 	/*
 	puts("shape1");
 	for (const Point2d& p : shape1) {
@@ -164,13 +173,23 @@ void compare_shapes(vector<Point2d> shape1, vector<Point2d> shape2) {
 	*/
 
 	double dist = HUGE_VAL;
-	for (int i = 0; i < (int)shape1.size(); ++i) {
+	for (int i = 0; i < 1; ++i) {
 		double cur_dist = HUGE_VAL;
 		for (int j = 0; j < (int)shape2.size(); ++j) {
 			vector<Event> events1 = get_events(1, rot_angle1, edge_len1, i);
+			//for (int i = 0; i < events1.size(); i++)
+			//{
+			//	cout << "fun:  " << events1[i].x << "  " << events1[i].y << endl;
+			//}
+			//cout << endl;
 			vector<Event> events2 = get_events(2, rot_angle2, edge_len2, j);
 			vector<Event> func(events1.size() + events2.size());
 			merge(events1.begin(), events1.end(), events2.begin(), events2.end(), func.begin());
+			for (int i = 0; i < func.size(); i++)
+			{
+				cout << "fun:  "<<func[i].x << "  " << func[i].y << endl;
+			}
+			cout << endl;
 			/*
 			if (i == 0 && j == 0) {
 			for (const Event& e : func) {
@@ -183,10 +202,11 @@ void compare_shapes(vector<Point2d> shape1, vector<Point2d> shape2) {
 			cur_dist = min(cur_dist, ret);
 			// printf("(%d, %d)\t%.6f\n", i, j, ret);
 		}
-		printf("%d:\t%.6f\n", i, cur_dist);
+		cout << i << "  : " << cur_dist << endl;
+		//printf("%d:\t%.6f\n", i, cur_dist);
 		dist = min(dist, cur_dist);
 	}
-
+	cout << "dist= " << dist;
 	printf("dist = %.6f\n", dist);
 }
 

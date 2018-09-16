@@ -9,7 +9,7 @@
 #include <string>
 #include <list>
 #include "Morphing.h"
-#include "compare.h"
+
 
 using namespace cv;
 using namespace std;
