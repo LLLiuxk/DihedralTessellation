@@ -58,7 +58,7 @@ namespace Tiling_tiles{
 			prototile_second->contourname = image;
 			//imgtocout();
 			data_ = prototile_second->readTxt();
-			cout << image << endl;	
+			//cout << image << endl;	
 			if (!data_.empty())
 				contour_dataset.push_back(data_);
 		}
@@ -95,45 +95,47 @@ namespace Tiling_tiles{
 						if (abs(p_p_index[n % ppindex] - p_p_index[m % ppindex]) < margin) continue;
 						vector<Point2f> inner_contour;
 						vector<int> result_index;
-						result_index.push_back(p_p_index[i]);
+						/*result_index.push_back(p_p_index[i]);
 						result_index.push_back(p_p_index[j % ppindex]);
 						result_index.push_back(p_p_index[m % ppindex]);
-						result_index.push_back(p_p_index[n % ppindex]);
+						result_index.push_back(p_p_index[n % ppindex]);*/
 						//vector<Point2f> result_p;
 						//result_p.push_back(contour_[p_p_index[i]]);
 						//result_p.push_back(contour_[p_p_index[j % ppindex]]);
 						//result_p.push_back(contour_[p_p_index[m % ppindex]]);
 						//result_p.push_back(contour_[p_p_index[n % ppindex]]);
-						/*result_p.push_back(contour_[67]);
-						result_p.push_back(contour_[137]);
-						result_p.push_back(contour_[305]);
-						result_p.push_back(contour_[430]);*/
+						result_index.push_back(96);
+						result_index.push_back(220);
+						result_index.push_back(324);
+						result_index.push_back(408);
 						cout << "i: " << p_p_index[i] << "   j: " << p_p_index[j % ppindex]
 							<< "   m: " << p_p_index[m % ppindex] << "    n: " << p_p_index[n % ppindex] << endl;
 						
-						//if(one_situ_div(result_p,contour_)) continue;
+						//one_situ_div(result_index, contour_, inner_contour);
 						if (one_situ_div(result_index, contour_, inner_contour))
 						{
 							cout << "-------------collision-------------" << endl;
 							continue;
 						} 
 						count++;
-						cout << "inner : " << inner_contour.size() << endl;
-						prototile_mid->loadPoints(inner_contour);
-						vector<Point2f> contour_mid = prototile_mid->contour_sample[0]; //选择最少的点进行比较
-						int total_num = contour_dataset.size();
-						vector<vector<double>> score_3types(3);
-						for (int can_num = 0; can_num < total_num; can_num++)
-						{
-							prototile_second->loadPoints(contour_dataset[can_num]);
-							vector<Point2f> contour_second = prototile_second->contour_sample[0];
-							for (int method_ = 1; i <= 3; i++)
-							{
-								double score;
-								score = matchShapes(contour_mid, contour_second, method_, 0);
-								score_3types[method_ - 1].push_back(score);
-							}							
-						}
+						//cout << "inner : " << inner_contour.size() << endl;
+						//prototile_mid->~Prototile();
+						//prototile_mid->loadPoints(inner_contour);
+						//vector<Point2f> contour_mid = prototile_mid->contour_sample[0]; //选择最少的点进行比较
+						//int total_num = contour_dataset.size();
+						//vector<vector<double>> score_3types(3);
+						//for (int can_num = 0; can_num < total_num; can_num++)
+						//{
+						//	prototile_second->~Prototile();
+						//	prototile_second->loadPoints(contour_dataset[can_num]);
+						//	vector<Point2f> contour_second = prototile_second->contour_sample[0];
+						//	for (int method_ = 1; i <= 3; i++)
+						//	{
+						//		double score;
+						//		score = matchShapes(contour_mid, contour_second, method_, 0);
+						//		score_3types[method_ - 1].push_back(score);
+						//	}							
+						//}
 						
 						//cout << total_num << endl;
 						// search the right image
@@ -158,14 +160,14 @@ namespace Tiling_tiles{
 						{
 							circle(drawing6, contour_[p_p_index[j]], 4, Scalar(0, 0, 255), -1);
 						}
-						/*circle(drawing6, contour_[137], 4, Scalar(0, 255, 0), -1);
-						circle(drawing6, contour_[284], 4, Scalar(0, 255, 0), -1);
-						circle(drawing6, contour_[430], 4, Scalar(0, 255, 0), -1);
-						circle(drawing6, contour_[497], 4, Scalar(0, 255, 0), -1); */
-						circle(drawing6, contour_[p_p_index[i]], 4, Scalar(0, 255, 0), -1);
+						circle(drawing6, contour_[96], 4, Scalar(0, 255, 0), -1);
+						circle(drawing6, contour_[220], 4, Scalar(0, 255, 0), -1);
+						circle(drawing6, contour_[324], 4, Scalar(0, 255, 0), -1);
+						circle(drawing6, contour_[408], 4, Scalar(0, 255, 0), -1); 
+						/*circle(drawing6, contour_[p_p_index[i]], 4, Scalar(0, 255, 0), -1);
 						circle(drawing6, contour_[p_p_index[j % ppindex]], 4, Scalar(0, 255, 0), -1);
 						circle(drawing6, contour_[p_p_index[m % ppindex]], 4, Scalar(0, 255, 0), -1);
-						circle(drawing6, contour_[p_p_index[n % ppindex]], 4, Scalar(0, 255, 0), -1);
+						circle(drawing6, contour_[p_p_index[n % ppindex]], 4, Scalar(0, 255, 0), -1);*/
 						imshow("candadite points: ", drawing6);
 						
 						
@@ -176,7 +178,7 @@ namespace Tiling_tiles{
 				}
 			}
 		}
-		cout << "count: "<<count << endl;
+		cout << "succeed count: "<<count << endl;
 		
 	}
 
@@ -246,7 +248,7 @@ namespace Tiling_tiles{
 
 		//将该proto1以及相邻四个proto2展示出来
 		Mat drawing_pro = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));		
-		Point2f shift1 = Point2f(400 - prototile_first->center_point.x*0.4, 400 - prototile_first->center_point.y*0.4);
+		Point2f shift1 = Point2f(300 - prototile_first->center_point.x*0.4, 400 - prototile_first->center_point.y*0.4);
 		// show bbox
 		//for (int i = 0; i < 4; i++)
 		//{
@@ -397,7 +399,7 @@ namespace Tiling_tiles{
 	
 	bool Tiling_opt::collision_pixel(Point2f max_p, Point2f min_p, vector<Point2f> contour1, vector<Point2f> contour2)
 	{
-		int coll_num = 10;
+		int coll_num = 20;
 		Mat drawing4 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 		Point2f shift1 = Point2f(400, 400) - contour1[0]*0.4;
 
