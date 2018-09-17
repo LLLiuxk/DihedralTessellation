@@ -10,7 +10,7 @@ int main(int argc, char** argv)
 	//string imagename1 = "Boat";
 	//string imagename2 = "fish8";
 	//string imagename1 = "fish5";
-	string imagename3 = "15";
+	string imagename3 = "22";
 	//string txtname = "D:/images/111.png";
 	//string txtname1 = "D:/images/fish3.png";
 
@@ -29,6 +29,31 @@ int main(int argc, char** argv)
 	int f = 0;
 	if (f == 0) //ÒÑÓÐdataset
 	{
+		/*vector<Point2f> po;
+		po.push_back(Point2f(650, 650));
+		po.push_back(Point2f(800, 650));
+		po.push_back(Point2f(900, 750));
+		po.push_back(Point2f(750, 750));
+
+		
+		draw_polygen("win", po);*/
+		String imageName("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\22.png"); // by default
+		Mat src = imread(imageName, 1);
+		Mat src1 = src(Range(100,600), Range(0, 507));
+		/*threshold(src, src, 128, 1, cv::THRESH_BINARY);
+		for (int i = 400; i <500; i++)
+			for (int j = 400; j < 500; j++)
+			{
+				src.at<uchar>(i, j)=(int)src.at<uchar>(i, j) + 1;
+				cout << (int)src.at<uchar>(i, j)<< endl;;
+			}
+		*/
+		//threshold(src, src, 1.5, 255, cv::THRESH_BINARY);
+		//namedWindow("result", 1);
+		//threshold(src, src, 128, 255, cv::THRESH_BINARY);
+		imshow("result", src1);
+		
+		//imshow("win", src);
 		/*prototile_first->loadTileData(imagename3);
 		vector<Point2f> con1 = prototile_first->contour_sample[0];
 		prototile_second->loadTileData(imagename2);
@@ -55,7 +80,7 @@ int main(int argc, char** argv)
 			score[2][i - 1] = matchShapes(con1, con3, i, 0);
 			cout << score[2][i - 1] << " ";
 		}*/
-		tiling_opt->points_dividing(imagename3);
+		//tiling_opt->points_dividing(imagename3);
 		//prototile_first->loadTileData(imagename3);
 		//vector<Point2f> con1 = prototile_first->contour_sample[0];
 		//prototile_second->loadTileData(imagename2);

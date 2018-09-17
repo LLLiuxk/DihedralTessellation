@@ -95,19 +95,19 @@ namespace Tiling_tiles{
 						if (abs(p_p_index[n % ppindex] - p_p_index[m % ppindex]) < margin) continue;
 						vector<Point2f> inner_contour;
 						vector<int> result_index;
-						/*result_index.push_back(p_p_index[i]);
+						result_index.push_back(p_p_index[i]);
 						result_index.push_back(p_p_index[j % ppindex]);
 						result_index.push_back(p_p_index[m % ppindex]);
-						result_index.push_back(p_p_index[n % ppindex]);*/
+						result_index.push_back(p_p_index[n % ppindex]);
 						//vector<Point2f> result_p;
 						//result_p.push_back(contour_[p_p_index[i]]);
 						//result_p.push_back(contour_[p_p_index[j % ppindex]]);
 						//result_p.push_back(contour_[p_p_index[m % ppindex]]);
 						//result_p.push_back(contour_[p_p_index[n % ppindex]]);
-						result_index.push_back(96);
-						result_index.push_back(220);
-						result_index.push_back(324);
-						result_index.push_back(408);
+						//result_index.push_back(96);
+						//result_index.push_back(220);
+						//result_index.push_back(324);
+						//result_index.push_back(408);
 						cout << "i: " << p_p_index[i] << "   j: " << p_p_index[j % ppindex]
 							<< "   m: " << p_p_index[m % ppindex] << "    n: " << p_p_index[n % ppindex] << endl;
 						
@@ -160,14 +160,14 @@ namespace Tiling_tiles{
 						{
 							circle(drawing6, contour_[p_p_index[j]], 4, Scalar(0, 0, 255), -1);
 						}
-						circle(drawing6, contour_[96], 4, Scalar(0, 255, 0), -1);
-						circle(drawing6, contour_[220], 4, Scalar(0, 255, 0), -1);
-						circle(drawing6, contour_[324], 4, Scalar(0, 255, 0), -1);
-						circle(drawing6, contour_[408], 4, Scalar(0, 255, 0), -1); 
-						/*circle(drawing6, contour_[p_p_index[i]], 4, Scalar(0, 255, 0), -1);
-						circle(drawing6, contour_[p_p_index[j % ppindex]], 4, Scalar(0, 255, 0), -1);
-						circle(drawing6, contour_[p_p_index[m % ppindex]], 4, Scalar(0, 255, 0), -1);
-						circle(drawing6, contour_[p_p_index[n % ppindex]], 4, Scalar(0, 255, 0), -1);*/
+						//circle(drawing6, contour_[96], 4, Scalar(0, 255, 0), -1);
+						//circle(drawing6, contour_[220], 4, Scalar(0, 255, 0), -1);
+						//circle(drawing6, contour_[324], 4, Scalar(0, 255, 0), -1);
+						//circle(drawing6, contour_[408], 4, Scalar(0, 255, 0), -1); 
+						circle(drawing6, contour_[p_p_index[i]], 8, Scalar(0, 255, 0), -1);
+						circle(drawing6, contour_[p_p_index[j % ppindex]], 8, Scalar(0, 255, 0), -1);
+						circle(drawing6, contour_[p_p_index[m % ppindex]], 8, Scalar(0, 255, 0), -1);
+						circle(drawing6, contour_[p_p_index[n % ppindex]], 8, Scalar(0, 255, 0), -1);
 						imshow("candadite points: ", drawing6);
 						
 						
@@ -399,10 +399,10 @@ namespace Tiling_tiles{
 	
 	bool Tiling_opt::collision_pixel(Point2f max_p, Point2f min_p, vector<Point2f> contour1, vector<Point2f> contour2)
 	{
-		int coll_num = 20;
+		int coll_num = 10;
+
 		Mat drawing4 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 		Point2f shift1 = Point2f(400, 400) - contour1[0]*0.4;
-
 		for (int i = 0; i < contour2.size(); i++)
 		{
 			circle(drawing4, contour1[i]*0.4+shift1, 1, Scalar(0, 0, 0), -1);
@@ -411,8 +411,45 @@ namespace Tiling_tiles{
 		MyLine(drawing4, Point2f(min_p.x, max_p.y)*0.4 + shift1, Point2f(min_p.x, min_p.y)*0.4 + shift1, "red");
 		MyLine(drawing4, Point2f(min_p.x, min_p.y)*0.4 + shift1, Point2f(max_p.x, min_p.y)*0.4 + shift1, "red");
 		MyLine(drawing4, Point2f(max_p.x, min_p.y)*0.4 + shift1, Point2f(max_p.x, max_p.y)*0.4 + shift1, "red");
+		MyLine(drawing4, Point2f(max_p.x, max_p.y)*0.4 + shift1, Point2f(min_p.x, max_p.y)*0.4 + shift1, "red");
 		imshow("cand_fram",drawing4);
 		
+		//
+		//Mat draw2;
+		//Mat drawing_mid = Mat(1200, 1200, CV_8UC3, Scalar(255, 255, 255));
+		//int n = contour1.size();
+		//cout << "n: " << n << endl;
+		//Point rook_points[1][800];
+		//for (int t = 0; t < n; t++)
+		//{
+		//	rook_points[0][t] = contour1[t];
+		//}
+		//const Point* ppt[1] = { rook_points[0] };
+		//int npt[] = { n };
+		//fillPoly(drawing_mid,
+		//	ppt,
+		//	npt,
+		//	1,
+		//	Scalar(0, 0, 0) //ºÚÉ«
+		//	);
+		//Mat draw1(drawing_mid,Rect())
+		//Mat drawing_mid2 = Mat(1200, 1200, CV_8UC3, Scalar(255, 255, 255));
+		//int n2 = contour2.size();
+		//cout << "n: " << n << endl;
+		//Point rook_points2[1][800];
+		//for (int t = 0; t < n2; t++)
+		//{
+		//	rook_points2[0][t] = contour2[t];
+		//}
+		//const Point* ppt2[1] = { rook_points2[0] };
+		//int npt2[] = { n2 };
+		//fillPoly(drawing_mid2,
+		//	ppt2,
+		//	npt2,
+		//	1,
+		//	Scalar(0, 0, 0) //ºÚÉ«
+		//	);
+
 		vector<int> flag_index;
 		for (int i = min_p.x; i < max_p.x + 1; i++)
 			for (int j = min_p.y; j < max_p.y + 1; j++)

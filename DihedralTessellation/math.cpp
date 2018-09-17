@@ -28,7 +28,9 @@ namespace Tiling_tiles{
 	}
 	void draw_polygen(string win_name,vector<Point2f> contour_s)
 	{
-		Mat drawing_pro = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		int col = 800;
+		int row = 800;
+		Mat drawing_pro = Mat(col, row, CV_8UC3, Scalar(255, 255, 255));
 		int n = contour_s.size();
 		//cout << "n: " << n << endl;
 		Point rook_points[1][800];
@@ -46,8 +48,8 @@ namespace Tiling_tiles{
 			//Scalar(255, 255, 255) //°×É«
 			);
 		imshow(win_name, drawing_pro);
-
 	}
+
 	double contour_length(vector<Point2f> contour)
 	{
 		double length = 0;
