@@ -415,134 +415,151 @@ namespace Tiling_tiles{
 		imshow("cand_fram",drawing4);
 		
 		//
-		//Mat draw2;
-		//Mat drawing_mid = Mat(1200, 1200, CV_8UC3, Scalar(255, 255, 255));
-		//int n = contour1.size();
-		//cout << "n: " << n << endl;
-		//Point rook_points[1][800];
-		//for (int t = 0; t < n; t++)
-		//{
-		//	rook_points[0][t] = contour1[t];
-		//}
-		//const Point* ppt[1] = { rook_points[0] };
-		//int npt[] = { n };
-		//fillPoly(drawing_mid,
-		//	ppt,
-		//	npt,
-		//	1,
-		//	Scalar(0, 0, 0) //黑色
-		//	);
-		//Mat draw1(drawing_mid,Rect())
-		//Mat drawing_mid2 = Mat(1200, 1200, CV_8UC3, Scalar(255, 255, 255));
-		//int n2 = contour2.size();
-		//cout << "n: " << n << endl;
-		//Point rook_points2[1][800];
-		//for (int t = 0; t < n2; t++)
-		//{
-		//	rook_points2[0][t] = contour2[t];
-		//}
-		//const Point* ppt2[1] = { rook_points2[0] };
-		//int npt2[] = { n2 };
-		//fillPoly(drawing_mid2,
-		//	ppt2,
-		//	npt2,
-		//	1,
-		//	Scalar(0, 0, 0) //黑色
-		//	);
-
-		vector<int> flag_index;
-		for (int i = min_p.x; i < max_p.x + 1; i++)
-			for (int j = min_p.y; j < max_p.y + 1; j++)
-			{
-				flag_index.push_back(0);
-			}
-		//int flag_index[N][N] = { 0 };
-		//cout << flag_index.size() << endl;
-		for (int i = 0; i < contour1.size(); i++)
-		{
-			if (contour1[i].x < max_p.x && contour1[i].x > min_p.x)
-				if (contour1[i].y < max_p.y && contour1[i].y > min_p.y)
-				{
-					int dis1 = (int)contour1[i].x - (int)min_p.x;
-					int dis2 = (int)max_p.x - (int)contour1[i].x;
-					int dis3 = (int)contour1[i].y - (int)min_p.y;
-					int dis4 = (int)max_p.y - (int)contour1[i].y;
-					int index_ = (int)max_p.y - (int)min_p.y;
-					int index = (int)(dis1 * index_) + (int)contour1[i].y - (int)min_p.y;
-					if (dis1 > 0 && dis2 > 0 && dis3 > 0 && dis4 > 0)
-					{
-						flag_index[index] = 1;
-						flag_index[index + 1] = 1;
-						flag_index[index - 1] = 1;
-						flag_index[index + index_] = 1;
-						flag_index[index - index_] = 1;
-						flag_index[index + index_ + 1] = 1;
-						flag_index[index + index_ - 1] = 1;
-						flag_index[index - index_ + 1] = 1;
-						flag_index[index - index_ - 1] = 1;
-					}
-					else flag_index[index] = 1;
-
-					/*int index = (int)(contour1[i].x - min_p.x);
-					int index_ = (int)(max_p.y - min_p.y);
-					index =(int)( index * index_ + contour1[i].y -min_p.y);*/
-					/*flag_index[(int)(contour1[i].x - min_p.x)][(int)(contour1[i].y - min_p.y)] = 1;
-					flag_index[(int)(contour1[i].x - min_p.x-1)][(int)(contour1[i].y - min_p.y)] = 1;
-					flag_index[(int)(contour1[i].x - min_p.x)][(int)(contour1[i].y - min_p.y)-1] = 1;
-					flag_index[(int)(contour1[i].x - min_p.x)+1][(int)(contour1[i].y - min_p.y)] = 1;
-					flag_index[(int)(contour1[i].x - min_p.x)][(int)(contour1[i].y - min_p.y)+1] = 1;
-					flag_index[(int)(contour1[i].x - min_p.x)+1][(int)(contour1[i].y - min_p.y) + 1] = 1;
-					flag_index[(int)(contour1[i].x - min_p.x)-1][(int)(contour1[i].y - min_p.y) + 1] = 1;
-					flag_index[(int)(contour1[i].x - min_p.x)+1][(int)(contour1[i].y - min_p.y) - 1] = 1;
-					flag_index[(int)(contour1[i].x - min_p.x)-1][(int)(contour1[i].y - min_p.y) - 1] = 1;*/
-				}
-		}
-		for (int j = 0; j < contour2.size(); j++)
-		{
-			if (contour2[j].x < max_p.x && contour2[j].x > min_p.x)
-				if (contour2[j].y < max_p.y && contour2[j].y > min_p.y)
-				{
-					int dis1 = (int)contour2[j].x - (int)min_p.x;
-					int dis2 = (int)max_p.x - (int)contour2[j].x;
-					int dis3 = (int)contour2[j].y - (int)min_p.y;
-					int dis4 = (int)max_p.y - (int)contour2[j].y;		
-					int index_ = (int)max_p.y - (int)min_p.y;
-					int index = (int)(dis1 * index_) + (int)contour2[j].y - (int)min_p.y;
-					if (dis1 > 0 && dis2 > 0 && dis3 > 0 && dis4 > 0)
-					{
-						flag_index[index]++;
-						flag_index[index + 1]++;
-						flag_index[index - 1]++;
-						flag_index[index + index_]++;
-						flag_index[index - index_]++;
-						flag_index[index + index_ + 1]++;
-						flag_index[index + index_ - 1]++;
-						flag_index[index - index_ + 1]++;
-						flag_index[index - index_ - 1]++;
-					}
-					else flag_index[index]++;
-					//flag_index[index]++;
-
-					/*int index = (int)(contour2[j].x -min_p.x);
-					int index_ = (int)(max_p.y - min_p.y);
-					index =(int)( index * index_ + contour2[j].y - min_p.y);
-					flag_index[index]++;*/
-					//flag_index[(int)(contour2[j].x - min_p.x)][(int)(contour2[j].y - min_p.y)]++;
-				}
-		}
-		int count = 0;
-		for (vector<int>::iterator it=flag_index.begin(); it != flag_index.end(); it++)
-		{
-			//cout << *it << " ";
-			if (*it > 1) count++;
-		}
-		//for (int i = 0; i < 800; i++)
-		//	for (int j = 0; j < 800; j++)
-		//		if (flag_index[i][j]>1) count++;
 		
-		cout << "count:  "<<count<<endl;
-		if (count>coll_num) return true;
-		else return false;
+		Mat drawing_mid = Mat(1200, 1200, CV_8UC3, Scalar(255, 255, 255));
+		int n = contour1.size();
+		Point rook_points[1][800];
+		for (int t = 0; t < n; t++)
+		{
+			rook_points[0][t] = contour1[t];
+		}
+		const Point* ppt[1] = { rook_points[0] };
+		int npt[] = { n };
+		fillPoly(drawing_mid,
+			ppt,
+			npt,
+			1,
+			Scalar(0, 0, 0) //黑色
+			);
+		Mat draw1 = drawing_mid(Range(min_p.y, max_p.y), Range(min_p.x, max_p.x));
+		cvtColor(draw1, draw1, COLOR_BGR2GRAY);
+		threshold(draw1, draw1, 128, 1, cv::THRESH_BINARY);
+		Mat drawing_mid2 = Mat(1200, 1200, CV_8UC3, Scalar(255, 255, 255));
+		int n2 = contour2.size();
+		Point rook_points2[1][800];
+		for (int t = 0; t < n2; t++)
+		{
+			rook_points2[0][t] = contour2[t];
+		}
+		const Point* ppt2[1] = { rook_points2[0] };
+		int npt2[] = { n2 };
+		fillPoly(drawing_mid2,
+			ppt2,
+			npt2,
+			1,
+			Scalar(0, 0, 0) //黑色
+			);
+		Mat draw2 = drawing_mid2(Range(min_p.y,max_p.y),Range(min_p.x,max_p.x));
+		cvtColor(draw2, draw2, COLOR_BGR2GRAY);
+		threshold(draw2, draw2, 128, 1, cv::THRESH_BINARY);
+		int count = 0;
+		int rows = draw1.rows;
+		int cols = draw1.cols;
+		for (int i = 0; i <rows; i++)
+			for (int j = 0; j < cols; j++)
+			{
+				draw1.at<uchar>(i, j) = (int)draw1.at<uchar>(i, j) + (int)draw2.at<uchar>(i, j);
+				if ((int)draw1.at<uchar>(i, j) == 2) count++;
+			}
+		cout << "coli count" << count<<endl;
+		//threshold(draw1, draw1, 0.5, 255, cv::THRESH_BINARY);
+		//imshow("coli result", draw1);
+		if (count < coll_num) return false;
+		else return true;
+		
+		//vector<int> flag_index;
+		//for (int i = min_p.x; i < max_p.x + 1; i++)
+		//	for (int j = min_p.y; j < max_p.y + 1; j++)
+		//	{
+		//		flag_index.push_back(0);
+		//	}
+		////int flag_index[N][N] = { 0 };
+		////cout << flag_index.size() << endl;
+		//for (int i = 0; i < contour1.size(); i++)
+		//{
+		//	if (contour1[i].x < max_p.x && contour1[i].x > min_p.x)
+		//		if (contour1[i].y < max_p.y && contour1[i].y > min_p.y)
+		//		{
+		//			int dis1 = (int)contour1[i].x - (int)min_p.x;
+		//			int dis2 = (int)max_p.x - (int)contour1[i].x;
+		//			int dis3 = (int)contour1[i].y - (int)min_p.y;
+		//			int dis4 = (int)max_p.y - (int)contour1[i].y;
+		//			int index_ = (int)max_p.y - (int)min_p.y;
+		//			int index = (int)(dis1 * index_) + (int)contour1[i].y - (int)min_p.y;
+		//			if (dis1 > 0 && dis2 > 0 && dis3 > 0 && dis4 > 0)
+		//			{
+		//				flag_index[index] = 1;
+		//				flag_index[index + 1] = 1;
+		//				flag_index[index - 1] = 1;
+		//				flag_index[index + index_] = 1;
+		//				flag_index[index - index_] = 1;
+		//				flag_index[index + index_ + 1] = 1;
+		//				flag_index[index + index_ - 1] = 1;
+		//				flag_index[index - index_ + 1] = 1;
+		//				flag_index[index - index_ - 1] = 1;
+		//			}
+		//			else flag_index[index] = 1;
+
+		//			/*int index = (int)(contour1[i].x - min_p.x);
+		//			int index_ = (int)(max_p.y - min_p.y);
+		//			index =(int)( index * index_ + contour1[i].y -min_p.y);*/
+		//			/*flag_index[(int)(contour1[i].x - min_p.x)][(int)(contour1[i].y - min_p.y)] = 1;
+		//			flag_index[(int)(contour1[i].x - min_p.x-1)][(int)(contour1[i].y - min_p.y)] = 1;
+		//			flag_index[(int)(contour1[i].x - min_p.x)][(int)(contour1[i].y - min_p.y)-1] = 1;
+		//			flag_index[(int)(contour1[i].x - min_p.x)+1][(int)(contour1[i].y - min_p.y)] = 1;
+		//			flag_index[(int)(contour1[i].x - min_p.x)][(int)(contour1[i].y - min_p.y)+1] = 1;
+		//			flag_index[(int)(contour1[i].x - min_p.x)+1][(int)(contour1[i].y - min_p.y) + 1] = 1;
+		//			flag_index[(int)(contour1[i].x - min_p.x)-1][(int)(contour1[i].y - min_p.y) + 1] = 1;
+		//			flag_index[(int)(contour1[i].x - min_p.x)+1][(int)(contour1[i].y - min_p.y) - 1] = 1;
+		//			flag_index[(int)(contour1[i].x - min_p.x)-1][(int)(contour1[i].y - min_p.y) - 1] = 1;*/
+		//		}
+		//}
+		//for (int j = 0; j < contour2.size(); j++)
+		//{
+		//	if (contour2[j].x < max_p.x && contour2[j].x > min_p.x)
+		//		if (contour2[j].y < max_p.y && contour2[j].y > min_p.y)
+		//		{
+		//			int dis1 = (int)contour2[j].x - (int)min_p.x;
+		//			int dis2 = (int)max_p.x - (int)contour2[j].x;
+		//			int dis3 = (int)contour2[j].y - (int)min_p.y;
+		//			int dis4 = (int)max_p.y - (int)contour2[j].y;		
+		//			int index_ = (int)max_p.y - (int)min_p.y;
+		//			int index = (int)(dis1 * index_) + (int)contour2[j].y - (int)min_p.y;
+		//			if (dis1 > 0 && dis2 > 0 && dis3 > 0 && dis4 > 0)
+		//			{
+		//				flag_index[index]++;
+		//				flag_index[index + 1]++;
+		//				flag_index[index - 1]++;
+		//				flag_index[index + index_]++;
+		//				flag_index[index - index_]++;
+		//				flag_index[index + index_ + 1]++;
+		//				flag_index[index + index_ - 1]++;
+		//				flag_index[index - index_ + 1]++;
+		//				flag_index[index - index_ - 1]++;
+		//			}
+		//			else flag_index[index]++;
+		//			//flag_index[index]++;
+
+		//			/*int index = (int)(contour2[j].x -min_p.x);
+		//			int index_ = (int)(max_p.y - min_p.y);
+		//			index =(int)( index * index_ + contour2[j].y - min_p.y);
+		//			flag_index[index]++;*/
+		//			//flag_index[(int)(contour2[j].x - min_p.x)][(int)(contour2[j].y - min_p.y)]++;
+		//		}
+		//}
+		//
+		//for (vector<int>::iterator it=flag_index.begin(); it != flag_index.end(); it++)
+		//{
+		//	//cout << *it << " ";
+		//	if (*it > 1) count++;
+		//}
+		////for (int i = 0; i < 800; i++)
+		////	for (int j = 0; j < 800; j++)
+		////		if (flag_index[i][j]>1) count++;
+		//
+		//cout << "count:  "<<count<<endl;
+		//if (count>coll_num) return true;
+		//else return false;
 
 	}
 
