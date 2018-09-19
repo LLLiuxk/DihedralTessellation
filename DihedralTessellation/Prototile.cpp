@@ -360,7 +360,7 @@ namespace Tiling_tiles{
 			index_num.push_back(i);
 
 		}
-		sort_cos(cconvex, index_num);
+		sort_comb(cconvex, index_num);
 
 		vector<int> cand_points_index;
 		int t = 1;

@@ -29,13 +29,12 @@ int main(int argc, char** argv)
 	int f = 0;
 	if (f == 0) //ÒÑÓÐdataset
 	{
+		//tiling_opt->points_dividing(imagename3);
 		/*vector<Point2f> po;
 		po.push_back(Point2f(650, 650));
 		po.push_back(Point2f(800, 650));
 		po.push_back(Point2f(900, 750));
 		po.push_back(Point2f(750, 750));
-
-		
 		draw_polygen("win", po);*/
 		//String imageName("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\22.png"); // by default
 		//Mat src = imread(imageName, 0);
@@ -55,14 +54,40 @@ int main(int argc, char** argv)
 		//imshow("result", src1);
 		
 		//imshow("win", src);
-		/*prototile_first->loadTileData(imagename3);
-		vector<Point2f> con1 = prototile_first->contour_sample[0];
+		tiling_opt->load_dataset();
+		prototile_first->contourname = imagename3;
+		prototile_first->contour = prototile_first->readTxt();
+		tiling_opt->compare_shapes(prototile_first->contour);
+		
+		/*vector<double> sss;
+		vector<int> index_s;
+		prototile_first->loadTileData(imagename3);
+		vector<Point2f> contour_mid = prototile_first->contour_sample[0];
+		int total_num = tiling_opt->contour_dataset.size();
+		for (int can_num = 0; can_num < total_num; can_num++)
+		{
+			index_s.push_back(can_num);
+			prototile_second->~Prototile();
+			prototile_second->loadPoints(tiling_opt->contour_dataset[can_num]);
+			vector<Point2f> contour_second = prototile_second->contour_sample[0];
+			int method_ = 3;
+			double score;
+			score = matchShapes(contour_mid, contour_second, method_, 0);
+			sss.push_back(score);
+		}
+		sort_comb(sss,index_s);
+		for (int i = index_s.size()-1; i > 180; i--)
+		{
+			cout << index_s[i] << " " << sss[index_s[i]] << endl;
+		}*/
+		//cout << order.first << "  " << order.second << endl;
+		/*vector<Point2f> con1 = prototile_first->contour_sample[0];
 		prototile_second->loadTileData(imagename2);
 		vector<Point2f> con2 = prototile_second->contour_sample[0];
 		prototile_third->loadTileData(imagename1);
-		vector<Point2f> con3 = prototile_third->contour_sample[0];
+		vector<Point2f> con3 = prototile_third->contour_sample[0];*/
 		
-		double score[3][3];
+		/*double score[3][3];
 		cout << endl << imagename3 << " v " << imagename2 <<": "<< endl;
 		for (int i = 1; i < 4; i++)
 		{
@@ -81,7 +106,7 @@ int main(int argc, char** argv)
 			score[2][i - 1] = matchShapes(con1, con3, i, 0);
 			cout << score[2][i - 1] << " ";
 		}*/
-		tiling_opt->points_dividing(imagename3);
+
 		//prototile_first->loadTileData(imagename3);
 		//vector<Point2f> con1 = prototile_first->contour_sample[0];
 		//prototile_second->loadTileData(imagename2);

@@ -66,6 +66,23 @@ namespace Tiling_tiles{
 	{
 		return sqrt((u.x - v.x)*(u.x - v.x) + (u.y - v.y)*(u.y - v.y));
 	}
+	void sort_comb(vector<double> vect, vector<int> &index_num) //只保留下标的排序,从小到大
+	{
+		int i, j;
+		double temp;
+		int num;
+		for (i = 0; i < vect.size() - 1; i++)
+			for (j = 0; j < vect.size() - 1 - i; j++)
+				if (vect[j] < vect[j + 1])
+				{
+					temp = vect[j];
+					vect[j] = vect[j + 1];
+					vect[j + 1] = temp;
+					num = index_num[j];
+					index_num[j] = index_num[j + 1];
+					index_num[j + 1] = num;
+				}
+	}
 
 	Point2f unit_vec(Point2f vec)
 	{
@@ -209,23 +226,7 @@ namespace Tiling_tiles{
 		return eachOfcurvature;
 	}
 
-	void Prototile::sort_cos(vector<double> vect, vector<int> &index_num) //只保留下标的排序,从小到大
-	{
-		int i, j;
-		double temp;
-		int num;
-		for (i = 0; i < vect.size() - 1; i++)
-			for (j = 0; j < vect.size() - 1 - i; j++)
-				if (vect[j] < vect[j + 1])
-				{
-					temp = vect[j];
-					vect[j] = vect[j + 1];
-					vect[j + 1] = temp;
-					num = index_num[j];
-					index_num[j] = index_num[j + 1];
-					index_num[j + 1] = num;
-				}
-	}
+	
 
 
 	double Tiling_opt::warpAff_tra(vector<Point2f> &input_, vector<Point2f> &output_)

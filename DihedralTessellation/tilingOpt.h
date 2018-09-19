@@ -32,7 +32,6 @@ namespace Tiling_tiles{
 		void cur_normalize();
 
 		//math tool
-		void sort_cos(vector<double> vect, vector<int> &index_num);
 		vector<double> curvature_com_k(vector<Point2f> &contour_sam);
 		vector<double> curvature_com(vector<Point2f> &contour_sam); //¼ÇÂ¼cosÖµ
 
@@ -70,11 +69,14 @@ namespace Tiling_tiles{
 		bool one_situ_div(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B);
 
 		//collision
-		bool coll_detection(vector<Point2f> contour1, vector<Point2f> contour2);
-		bool collision_pixel(Point2f max_p, Point2f min_p, vector<Point2f> contour1, vector<Point2f> contour2);
+		bool coll_detection(Point2f shifting1, Point2f shifting2, vector<Point2f> &contour_s);
+		bool collision_pixel(vector<Point2f> dis_p, vector<Point2f> contour_s);
 		
 		//load dataset
 		void load_dataset();
+
+		//shapes comparing and candidate contour choosing
+		vector<vector<Point2f>> compare_shapes(vector<Point2f> inner_c);
 
 		double com_each_pair(vector<Point2f> &first_interval, vector<Point2f> &second_interval, int &flag);
 
@@ -105,7 +107,7 @@ namespace Tiling_tiles{
 		void printPath(double d[][50], double dp[][50], int i, int j, vector<Point2f> &first_arr, vector<Point2f> &second_arr, vector<pair<int, int>>& path);
 		double quadr_mismatch(vector<Point2f> &first_arr, vector<Point2f> &second_arr, vector<char> &first_char, vector<char> &second_char);
 
-	private:
+	//private:
 		vector<pair<int, int>> dp_path;
 		int dp[600][600];
 		int dp_inver[600][600];
@@ -123,6 +125,7 @@ namespace Tiling_tiles{
 	//math tool
 	double contour_length(vector<Point2f> contour);
 	double length_two_point2f(Point2f &u, Point2f &v);
+	void sort_comb(vector<double> vect, vector<int> &index_num);
 
 	Point2f unit_vec(Point2f vec);
 	double cos_two_vector(Point2f &v0, Point2f &v1);

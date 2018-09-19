@@ -81,6 +81,36 @@ namespace Tiling_tiles{
 		int margin = prototile_first->contour.size() / 8;
 		cout << "margin: " << margin << endl;
 		int count = 0;
+
+		//vector<Point2f> inner_contour;
+		//vector<int> result_index;
+		//result_index.push_back(67);
+		//result_index.push_back(210);
+		//result_index.push_back(327);
+		//result_index.push_back(497);
+		////one_situ_div(result_index, contour_, inner_contour);
+		//if (one_situ_div(result_index, contour_, inner_contour))
+		//{
+		//	cout << "-------------collision-------------" << endl;
+		//}
+		//count++;
+		////show the marked points
+		//Mat drawing6 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+
+		//for (int j = 0; j < contour_.size(); j++)
+		//{
+		//	circle(drawing6, contour_[j], 1, Scalar(0, 0, 0), -1);
+		//}
+		//for (int j = 0; j < p_p_index.size(); j++)
+		//{
+		//	circle(drawing6, contour_[p_p_index[j]], 4, Scalar(0, 0, 255), -1);
+		//}
+		//circle(drawing6, contour_[137], 4, Scalar(0, 255, 0), -1);
+		//circle(drawing6, contour_[210], 4, Scalar(0, 255, 0), -1);
+		//circle(drawing6, contour_[327], 4, Scalar(0, 255, 0), -1);
+		//circle(drawing6, contour_[430], 4, Scalar(0, 255, 0), -1);
+		//imshow("candadite points: ", drawing6);
+		vector<vector<Point2f>> inner_conts;
 		for (int i = 0; i < ppindex; i++)
 		{
 			for (int j = i + 1; j < ppindex; j++)
@@ -99,18 +129,10 @@ namespace Tiling_tiles{
 						result_index.push_back(p_p_index[j % ppindex]);
 						result_index.push_back(p_p_index[m % ppindex]);
 						result_index.push_back(p_p_index[n % ppindex]);
-						//vector<Point2f> result_p;
-						//result_p.push_back(contour_[p_p_index[i]]);
-						//result_p.push_back(contour_[p_p_index[j % ppindex]]);
-						//result_p.push_back(contour_[p_p_index[m % ppindex]]);
-						//result_p.push_back(contour_[p_p_index[n % ppindex]]);
-						//result_index.push_back(96);
-						//result_index.push_back(220);
-						//result_index.push_back(324);
-						//result_index.push_back(408);
-						cout << "i: " << p_p_index[i] << "   j: " << p_p_index[j % ppindex]
-							<< "   m: " << p_p_index[m % ppindex] << "    n: " << p_p_index[n % ppindex] << endl;
-						
+						cout << "  i: " << p_p_index[i]
+							<< "   j: " << p_p_index[j % ppindex]
+							<< "   m: " << p_p_index[m % ppindex]
+							<< "   n: " << p_p_index[n % ppindex] << endl;						
 						//one_situ_div(result_index, contour_, inner_contour);
 						if (one_situ_div(result_index, contour_, inner_contour))
 						{
@@ -118,34 +140,17 @@ namespace Tiling_tiles{
 							continue;
 						} 
 						count++;
-						//cout << "inner : " << inner_contour.size() << endl;
-						//prototile_mid->~Prototile();
-						//prototile_mid->loadPoints(inner_contour);
-						//vector<Point2f> contour_mid = prototile_mid->contour_sample[0]; //选择最少的点进行比较
-						//int total_num = contour_dataset.size();
-						//vector<vector<double>> score_3types(3);
-						//for (int can_num = 0; can_num < total_num; can_num++)
-						//{
-						//	prototile_second->~Prototile();
-						//	prototile_second->loadPoints(contour_dataset[can_num]);
-						//	vector<Point2f> contour_second = prototile_second->contour_sample[0];
-						//	for (int method_ = 1; i <= 3; i++)
-						//	{
-						//		double score;
-						//		score = matchShapes(contour_mid, contour_second, method_, 0);
-						//		score_3types[method_ - 1].push_back(score);
-						//	}							
-						//}
+						cout << endl<<endl<<"!!!!!!!!!-------------!!!!!!!!!succeed!!!!!!!!!!-------------!!!!!!!!!" << endl<<endl;
+						cout << "inner_contour.size : " << inner_contour.size() << endl;
 						
-						//cout << total_num << endl;
+						inner_conts.push_back(inner_contour);
+						
 						// search the right image
 						/*
 						1.将周长调整为一致
 						2.搜索最相近的图案以及角度
 						3.变形
 						*/
-
-
 
 						//show the marked points
 						Mat drawing6 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
@@ -160,25 +165,22 @@ namespace Tiling_tiles{
 						{
 							circle(drawing6, contour_[p_p_index[j]], 4, Scalar(0, 0, 255), -1);
 						}
-						//circle(drawing6, contour_[96], 4, Scalar(0, 255, 0), -1);
-						//circle(drawing6, contour_[220], 4, Scalar(0, 255, 0), -1);
-						//circle(drawing6, contour_[324], 4, Scalar(0, 255, 0), -1);
-						//circle(drawing6, contour_[408], 4, Scalar(0, 255, 0), -1); 
 						circle(drawing6, contour_[p_p_index[i]], 8, Scalar(0, 255, 0), -1);
 						circle(drawing6, contour_[p_p_index[j % ppindex]], 8, Scalar(0, 255, 0), -1);
 						circle(drawing6, contour_[p_p_index[m % ppindex]], 8, Scalar(0, 255, 0), -1);
 						circle(drawing6, contour_[p_p_index[n % ppindex]], 8, Scalar(0, 255, 0), -1);
 						imshow("candadite points: ", drawing6);
 						
-						
-
-						if (count == 1) return;
+						//if (count == 1) return;
 
 					}
 				}
 			}
 		}
 		cout << "succeed count: "<<count << endl;
+		cout << "inner_conts.size" << inner_conts.size() << endl;
+		vector<vector<Point2f>> candida_contours;
+		candida_contours = compare_shapes(inner_conts[0]);
 		
 	}
 
@@ -186,36 +188,23 @@ namespace Tiling_tiles{
 	{
 		Point2f line1 = contour_s[results[2]] - contour_s[results[0]];
 		Point2f line2 = contour_s[results[3]] - contour_s[results[1]];
-		vector<vector<Point2f>> four_place;
-		vector<Point2f> one_loca;
+		
+		vector<Point2f> shift_4;
+		shift_4.push_back(Point2f(0, 0));
+		shift_4.push_back(line1);
+		shift_4.push_back(line2);
+		shift_4.push_back(line1+line2);
+		vector<Point2f> bbox_s = b_box(contour_s);
 		return_B.swap(vector<Point2f>());
-		// 目前为止只考虑正向摆放，不考虑旋转和翻转
-		four_place.push_back(contour_s);
-		for (int i = 0; i < contour_s.size(); i++)
-		{
-			one_loca.push_back(contour_s[i] + line1);
-		}
-		four_place.push_back(one_loca);
-		one_loca.swap(vector<Point2f>());
-		for (int i = 0; i < contour_s.size(); i++)
-		{
-			one_loca.push_back(contour_s[i] + line2);
-		}
-		four_place.push_back(one_loca);
-		one_loca.swap(vector<Point2f>());
-		for (int i = 0; i < contour_s.size(); i++)
-		{
-			one_loca.push_back(contour_s[i] + line1 + line2);
-		}
-		four_place.push_back(one_loca);
-		int fpsize = four_place.size();
+		
+		int fpsize = shift_4.size();
 		//cout <<"four_place.size(): "<< four_place.size() << endl;
 		
 		for (int i = 0; i < fpsize; i++)
 		{
 			for (int j = i + 1; j < fpsize; j++)
 			{
-				if (coll_detection(four_place[i], four_place[j]))
+				if (coll_detection(shift_4[i], shift_4[j], contour_s))
 				{
 					return true;
 				}
@@ -245,6 +234,27 @@ namespace Tiling_tiles{
 		//contour2[i].x = contour2[i].x * scale;
 		//contour2[i].y = contour2[i].y * scale;
 		//}
+		vector<vector<Point2f>> four_place;
+		vector<Point2f> one_loca;
+		// 目前为止只考虑正向摆放，不考虑旋转和翻转
+		four_place.push_back(contour_s);
+		for (int i = 0; i < contour_s.size(); i++)
+		{
+			one_loca.push_back(contour_s[i] + line1);
+		}
+		four_place.push_back(one_loca);
+		one_loca.swap(vector<Point2f>());
+		for (int i = 0; i < contour_s.size(); i++)
+		{
+			one_loca.push_back(contour_s[i] + line2);
+		}
+		four_place.push_back(one_loca);
+		one_loca.swap(vector<Point2f>());
+		for (int i = 0; i < contour_s.size(); i++)
+		{
+			one_loca.push_back(contour_s[i] + line1 + line2);
+		}
+		four_place.push_back(one_loca);
 
 		//将该proto1以及相邻四个proto2展示出来
 		Mat drawing_pro = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));		
@@ -290,7 +300,7 @@ namespace Tiling_tiles{
 		{
 			return_B.push_back(four_place[2][t]);
 		}
-		cout << "num: " << return_B.size();
+		//cout << "num: " << return_B.size();
 
 		for (int z = 0; z < return_B.size(); z++)
 		{
@@ -314,12 +324,17 @@ namespace Tiling_tiles{
 		return false;
 	}
 
-
-	bool Tiling_opt::coll_detection(vector<Point2f> contour1, vector<Point2f> contour2)
+	bool Tiling_opt::coll_detection(Point2f shifting1, Point2f shifting2, vector<Point2f> &contour_s)
 	{
 		//首先通过包围盒求得粗糙的相交区域，然后通过像素相交求是否产生碰撞
-		vector<Point2f> bbox1 = b_box(contour1);
-		vector<Point2f> bbox2 = b_box(contour2);
+		vector<Point2f> bbox_s = b_box(contour_s);
+		vector<Point2f> bbox1;
+		vector<Point2f> bbox2;
+		for (int i = 0; i < bbox_s.size(); i++)
+		{
+			bbox1.push_back(bbox_s[i] + shifting1);
+			bbox2.push_back(bbox_s[i] + shifting2);
+		}
 		vector<int> num_in1;
 		vector<int> num_in2;
 		for (int i = 0; i < 4; i++)
@@ -350,10 +365,19 @@ namespace Tiling_tiles{
 			double bbx_max_y = max(bbox1[num_in1[0]].y, bbox2[num_in2[0]].y);
 			double bbx_min_x = min(bbox1[num_in1[0]].x, bbox2[num_in2[0]].x);
 			double bbx_min_y = min(bbox1[num_in1[0]].y, bbox2[num_in2[0]].y);
-			Point2f max_p = Point2f(bbx_max_x, bbx_max_y);
-			Point2f min_p = Point2f(bbx_min_x, bbx_min_y);
+			Point2f max_p = Point2f(bbx_max_x+0.5, bbx_max_y+0.5);
+			Point2f min_p = Point2f(bbx_min_x-0.5, bbx_min_y-0.5);
 			//cout << max_p << endl << min_p << endl;
-			return collision_pixel(max_p, min_p, contour1, contour2);
+			vector<Point2f> dis_p;
+			dis_p.push_back(min_p - bbox1[0]);
+			dis_p.push_back(max_p - bbox1[0]);
+			dis_p.push_back(min_p - bbox2[0]);
+			dis_p.push_back(max_p - bbox2[0]);
+			/*dis_p.push_back(Point2f(min_p.x - (int)bbox1[0].x, min_p.y - (int)bbox1[0].y));
+			dis_p.push_back(Point2f(max_p.x - (int)bbox1[0].x, max_p.y - (int)bbox1[0].y));
+			dis_p.push_back(Point2f(min_p.x - (int)bbox2[0].x, min_p.y - (int)bbox2[0].y));
+			dis_p.push_back(Point2f(max_p.x - (int)bbox2[0].x, max_p.y - (int)bbox2[0].y));*/
+			return collision_pixel(dis_p, contour_s);
 		}
 		else if (num_in1.size() == 2 && num_in2.size() == 2)
 		{
@@ -361,9 +385,14 @@ namespace Tiling_tiles{
 			double bbx_max_y = max(max(bbox1[num_in1[0]].y, bbox2[num_in2[0]].y), bbox1[num_in1[1]].y);
 			double bbx_min_x = min(min(bbox1[num_in1[0]].x, bbox2[num_in2[0]].x), bbox1[num_in1[1]].x);
 			double bbx_min_y = min(min(bbox1[num_in1[0]].y, bbox2[num_in2[0]].y), bbox1[num_in1[1]].x);
-			Point2f max_p = Point2f(bbx_max_x, bbx_max_y);
-			Point2f min_p = Point2f(bbx_min_x, bbx_min_y);
-			return collision_pixel(max_p, min_p, contour1, contour2);
+			Point2f max_p = Point2f(bbx_max_x + 0.5, bbx_max_y + 0.5);
+			Point2f min_p = Point2f(bbx_min_x - 0.5, bbx_min_y - 0.5);
+			vector<Point2f> dis_p;
+			dis_p.push_back(min_p - bbox1[0]);
+			dis_p.push_back(max_p - bbox1[0]);
+			dis_p.push_back(min_p - bbox2[0]);
+			dis_p.push_back(max_p - bbox2[0]);
+			return collision_pixel(dis_p, contour_s);
 		}
 		else if (abs(dis) == 2)
 		{
@@ -390,18 +419,78 @@ namespace Tiling_tiles{
 				bbx_min_x = min(min(bbox2[num_in2[0]].x, bbox2[num_in2[1]].x), bbox2[num_in2[2]].x);
 				bbx_min_y = min(min(bbox2[num_in2[0]].y, bbox2[num_in2[1]].y), bbox2[num_in2[2]].y);
 			}
-			Point2f max_p = Point2f(bbx_max_x, bbx_max_y);
-			Point2f min_p = Point2f(bbx_min_x, bbx_min_y);
-			return collision_pixel(max_p, min_p, contour1, contour2);
+			Point2f max_p = Point2f(bbx_max_x + 0.5, bbx_max_y + 0.5);
+			Point2f min_p = Point2f(bbx_min_x - 0.5, bbx_min_y - 0.5);
+			vector<Point2f> dis_p;
+			dis_p.push_back(min_p - bbox1[0]);
+			dis_p.push_back(max_p - bbox1[0]);
+			dis_p.push_back(min_p - bbox2[0]);
+			dis_p.push_back(max_p - bbox2[0]);
+			return collision_pixel(dis_p, contour_s);
 		}
 		return true;
 	}
 	
-	bool Tiling_opt::collision_pixel(Point2f max_p, Point2f min_p, vector<Point2f> contour1, vector<Point2f> contour2)
+	bool Tiling_opt::collision_pixel(vector<Point2f> dis_p, vector<Point2f> contour_s)
 	{
 		int coll_num = 10;
 
-		Mat drawing4 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		vector<Point2f> bbox_s = b_box(contour_s);
+		Point2f min1 = bbox_s[0] + dis_p[0];
+		Point2f max1 = bbox_s[0] + dis_p[1];
+		Mat drawing_mid = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		int n = contour_s.size();
+		Point rook_points[1][800];
+		for (int t = 0; t < n; t++)
+		{
+			rook_points[0][t] = contour_s[t];
+		}
+		const Point* ppt[1] = { rook_points[0] };
+		int npt[] = { n };
+		fillPoly(drawing_mid,
+			ppt,
+			npt,
+			1,
+			Scalar(0, 0, 0) //黑色
+			);
+		imshow("coli 1", drawing_mid);
+
+		Mat draw1 = drawing_mid(Range(min1.y, max1.y), Range(min1.x, max1.x));
+		cvtColor(draw1, draw1, COLOR_BGR2GRAY);
+		threshold(draw1, draw1, 128, 1, cv::THRESH_BINARY);
+
+		Point2f min2 = bbox_s[0] + dis_p[2];
+		Point2f max2 = bbox_s[0] + dis_p[3];
+		Mat draw2 = drawing_mid(Range(min2.y, max2.y), Range(min2.x, max2.x));
+		cvtColor(draw2, draw2, COLOR_BGR2GRAY);
+		threshold(draw2, draw2, 128, 1, cv::THRESH_BINARY);
+		
+		int count = 0;
+		int rows = draw1.rows;
+		int cols = draw1.cols;
+		//cout << "rows: " << rows << "cols: " << cols << endl;
+
+		//rows = draw2.rows;
+		//cols = draw2.cols;
+		//cout << "rows: " << rows << "cols: " << cols << endl;
+		for (int i = 0; i <rows; i++)
+			for (int j = 0; j < cols; j++)
+			{
+				draw1.at<uchar>(i, j) = (int)draw1.at<uchar>(i, j) + (int)draw2.at<uchar>(i, j);
+				if ((int)draw1.at<uchar>(i, j) == 0) count++;
+			}
+		//cout << "col num:  " << count << endl;
+
+		if (count > coll_num) return true;
+		else
+		{
+			threshold(draw1, draw1, 0.5, 255, cv::THRESH_BINARY);
+			imshow("coli result", draw1);
+			return false;
+		}
+
+
+		/*Mat drawing4 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 		Point2f shift1 = Point2f(400, 400) - contour1[0]*0.4;
 		for (int i = 0; i < contour2.size(); i++)
 		{
@@ -412,157 +501,68 @@ namespace Tiling_tiles{
 		MyLine(drawing4, Point2f(min_p.x, min_p.y)*0.4 + shift1, Point2f(max_p.x, min_p.y)*0.4 + shift1, "red");
 		MyLine(drawing4, Point2f(max_p.x, min_p.y)*0.4 + shift1, Point2f(max_p.x, max_p.y)*0.4 + shift1, "red");
 		MyLine(drawing4, Point2f(max_p.x, max_p.y)*0.4 + shift1, Point2f(min_p.x, max_p.y)*0.4 + shift1, "red");
-		imshow("cand_fram",drawing4);
+		imshow("cand_fram",drawing4);*/
 		
 		//
 		
-		Mat drawing_mid = Mat(1200, 1200, CV_8UC3, Scalar(255, 255, 255));
-		int n = contour1.size();
-		Point rook_points[1][800];
-		for (int t = 0; t < n; t++)
-		{
-			rook_points[0][t] = contour1[t];
-		}
-		const Point* ppt[1] = { rook_points[0] };
-		int npt[] = { n };
-		fillPoly(drawing_mid,
-			ppt,
-			npt,
-			1,
-			Scalar(0, 0, 0) //黑色
-			);
-		Mat draw1 = drawing_mid(Range(min_p.y, max_p.y), Range(min_p.x, max_p.x));
-		cvtColor(draw1, draw1, COLOR_BGR2GRAY);
-		threshold(draw1, draw1, 128, 1, cv::THRESH_BINARY);
-		Mat drawing_mid2 = Mat(1200, 1200, CV_8UC3, Scalar(255, 255, 255));
-		int n2 = contour2.size();
-		Point rook_points2[1][800];
-		for (int t = 0; t < n2; t++)
-		{
-			rook_points2[0][t] = contour2[t];
-		}
-		const Point* ppt2[1] = { rook_points2[0] };
-		int npt2[] = { n2 };
-		fillPoly(drawing_mid2,
-			ppt2,
-			npt2,
-			1,
-			Scalar(0, 0, 0) //黑色
-			);
-		Mat draw2 = drawing_mid2(Range(min_p.y,max_p.y),Range(min_p.x,max_p.x));
-		cvtColor(draw2, draw2, COLOR_BGR2GRAY);
-		threshold(draw2, draw2, 128, 1, cv::THRESH_BINARY);
-		int count = 0;
-		int rows = draw1.rows;
-		int cols = draw1.cols;
-		for (int i = 0; i <rows; i++)
-			for (int j = 0; j < cols; j++)
-			{
-				draw1.at<uchar>(i, j) = (int)draw1.at<uchar>(i, j) + (int)draw2.at<uchar>(i, j);
-				if ((int)draw1.at<uchar>(i, j) == 2) count++;
-			}
-		cout << "coli count" << count<<endl;
-		//threshold(draw1, draw1, 0.5, 255, cv::THRESH_BINARY);
-		//imshow("coli result", draw1);
-		if (count < coll_num) return false;
-		else return true;
-		
-		//vector<int> flag_index;
-		//for (int i = min_p.x; i < max_p.x + 1; i++)
-		//	for (int j = min_p.y; j < max_p.y + 1; j++)
-		//	{
-		//		flag_index.push_back(0);
-		//	}
-		////int flag_index[N][N] = { 0 };
-		////cout << flag_index.size() << endl;
-		//for (int i = 0; i < contour1.size(); i++)
-		//{
-		//	if (contour1[i].x < max_p.x && contour1[i].x > min_p.x)
-		//		if (contour1[i].y < max_p.y && contour1[i].y > min_p.y)
-		//		{
-		//			int dis1 = (int)contour1[i].x - (int)min_p.x;
-		//			int dis2 = (int)max_p.x - (int)contour1[i].x;
-		//			int dis3 = (int)contour1[i].y - (int)min_p.y;
-		//			int dis4 = (int)max_p.y - (int)contour1[i].y;
-		//			int index_ = (int)max_p.y - (int)min_p.y;
-		//			int index = (int)(dis1 * index_) + (int)contour1[i].y - (int)min_p.y;
-		//			if (dis1 > 0 && dis2 > 0 && dis3 > 0 && dis4 > 0)
-		//			{
-		//				flag_index[index] = 1;
-		//				flag_index[index + 1] = 1;
-		//				flag_index[index - 1] = 1;
-		//				flag_index[index + index_] = 1;
-		//				flag_index[index - index_] = 1;
-		//				flag_index[index + index_ + 1] = 1;
-		//				flag_index[index + index_ - 1] = 1;
-		//				flag_index[index - index_ + 1] = 1;
-		//				flag_index[index - index_ - 1] = 1;
-		//			}
-		//			else flag_index[index] = 1;
-
-		//			/*int index = (int)(contour1[i].x - min_p.x);
-		//			int index_ = (int)(max_p.y - min_p.y);
-		//			index =(int)( index * index_ + contour1[i].y -min_p.y);*/
-		//			/*flag_index[(int)(contour1[i].x - min_p.x)][(int)(contour1[i].y - min_p.y)] = 1;
-		//			flag_index[(int)(contour1[i].x - min_p.x-1)][(int)(contour1[i].y - min_p.y)] = 1;
-		//			flag_index[(int)(contour1[i].x - min_p.x)][(int)(contour1[i].y - min_p.y)-1] = 1;
-		//			flag_index[(int)(contour1[i].x - min_p.x)+1][(int)(contour1[i].y - min_p.y)] = 1;
-		//			flag_index[(int)(contour1[i].x - min_p.x)][(int)(contour1[i].y - min_p.y)+1] = 1;
-		//			flag_index[(int)(contour1[i].x - min_p.x)+1][(int)(contour1[i].y - min_p.y) + 1] = 1;
-		//			flag_index[(int)(contour1[i].x - min_p.x)-1][(int)(contour1[i].y - min_p.y) + 1] = 1;
-		//			flag_index[(int)(contour1[i].x - min_p.x)+1][(int)(contour1[i].y - min_p.y) - 1] = 1;
-		//			flag_index[(int)(contour1[i].x - min_p.x)-1][(int)(contour1[i].y - min_p.y) - 1] = 1;*/
-		//		}
-		//}
-		//for (int j = 0; j < contour2.size(); j++)
-		//{
-		//	if (contour2[j].x < max_p.x && contour2[j].x > min_p.x)
-		//		if (contour2[j].y < max_p.y && contour2[j].y > min_p.y)
-		//		{
-		//			int dis1 = (int)contour2[j].x - (int)min_p.x;
-		//			int dis2 = (int)max_p.x - (int)contour2[j].x;
-		//			int dis3 = (int)contour2[j].y - (int)min_p.y;
-		//			int dis4 = (int)max_p.y - (int)contour2[j].y;		
-		//			int index_ = (int)max_p.y - (int)min_p.y;
-		//			int index = (int)(dis1 * index_) + (int)contour2[j].y - (int)min_p.y;
-		//			if (dis1 > 0 && dis2 > 0 && dis3 > 0 && dis4 > 0)
-		//			{
-		//				flag_index[index]++;
-		//				flag_index[index + 1]++;
-		//				flag_index[index - 1]++;
-		//				flag_index[index + index_]++;
-		//				flag_index[index - index_]++;
-		//				flag_index[index + index_ + 1]++;
-		//				flag_index[index + index_ - 1]++;
-		//				flag_index[index - index_ + 1]++;
-		//				flag_index[index - index_ - 1]++;
-		//			}
-		//			else flag_index[index]++;
-		//			//flag_index[index]++;
-
-		//			/*int index = (int)(contour2[j].x -min_p.x);
-		//			int index_ = (int)(max_p.y - min_p.y);
-		//			index =(int)( index * index_ + contour2[j].y - min_p.y);
-		//			flag_index[index]++;*/
-		//			//flag_index[(int)(contour2[j].x - min_p.x)][(int)(contour2[j].y - min_p.y)]++;
-		//		}
-		//}
-		//
-		//for (vector<int>::iterator it=flag_index.begin(); it != flag_index.end(); it++)
-		//{
-		//	//cout << *it << " ";
-		//	if (*it > 1) count++;
-		//}
-		////for (int i = 0; i < 800; i++)
-		////	for (int j = 0; j < 800; j++)
-		////		if (flag_index[i][j]>1) count++;
-		//
-		//cout << "count:  "<<count<<endl;
-		//if (count>coll_num) return true;
-		//else return false;
-
 	}
 
+	vector<vector<Point2f>> Tiling_opt::compare_shapes(vector<Point2f> inner_c)
+	{
+		vector<vector<Point2f>> match_conts;
+		prototile_mid->~Prototile();
+		prototile_mid->loadPoints(inner_c);
+		vector<Point2f> contour_mid = prototile_mid->contour_sample[0]; //选择最少的点进行比较
+		int total_num = contour_dataset.size();
+		
+
+		vector<vector<double>> score_3types(3);
+		vector<vector<int>> index_s(3);
+		
+		int internum = 0;
+		for (int can_num = 0; can_num < total_num; can_num++)
+		{
+			prototile_second->~Prototile();
+			prototile_second->loadPoints(contour_dataset[can_num]);
+			vector<Point2f> contour_second = prototile_second->contour_sample[0];
+			for (int method_ = 1; method_ <= 3; method_++)
+			{
+				double score;
+				score = matchShapes(contour_mid, contour_second, method_, 0);
+				score_3types[method_ - 1].push_back(score);
+				index_s[method_ - 1].push_back(can_num);
+			}
+
+		}
+		
+		for (int i = 0; i < 3; i++)
+		{
+			sort_comb(score_3types[i], index_s[i]);
+			for (int t = index_s[i].size() - 1; t > 180; t--)
+			{
+				cout << index_s[i][t] << " " << score_3types[i][index_s[i][t]] << endl;
+			}
+			
+		}
+		return match_conts;
+		/*cout << "score_3types[0].size： " << score_3types[0].size() << endl;
+		for (int i = 0; i < score_3types[0].size(); i++)
+		{
+			cout << score_3types[0][i] << endl;
+		}
+		cout << "score_3types[1].size： " << score_3types[1].size() << endl;
+		for (int i = 0; i < score_3types[1].size(); i++)
+		{
+			cout << score_3types[1][i] << endl;
+		}
+		cout << "score_3types[2].size： " << score_3types[2].size() << endl;
+		for (int i = 0; i < score_3types[2].size(); i++)
+		{
+			cout << score_3types[2][i] << endl;
+		}
+		cout << internum << endl;
+*/
+	}
 	/*
 	//每一个轮廓分成四段
 	void Tiling_opt::com_score(string imagename1, string imagename2)
