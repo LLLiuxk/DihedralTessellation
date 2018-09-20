@@ -541,8 +541,28 @@ namespace Tiling_tiles{
 			for (int t = index_s[i].size() - 1; t > 180; t--)
 			{
 				cout << index_s[i][t] << " " << score_3types[i][index_s[i][t]] << endl;
+			}		
+		}
+		vector<int> order_total;
+		for (int t = 0; t < 3; t++)
+		{
+			for (int i = index_s[t].size() - 1; i > 190; i--)
+			{
+				int f = 0;
+				for (int j = 0; j < order_total.size(); j++)
+				{
+					if (index_s[t][i] == order_total[j])
+					{
+						f = 1;
+						break;
+					}
+				}
+				if (f==0) order_total.push_back(index_s[t][i]);
 			}
-			
+		}
+		for (int i = 0; i < order_total.size(); i++)
+		{
+			cout << "order_total: " << order_total[i] << endl;
 		}
 		return match_conts;
 		/*cout << "score_3types[0].size£º " << score_3types[0].size() << endl;
