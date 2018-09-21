@@ -179,7 +179,7 @@ namespace Tiling_tiles{
 		}
 		cout << "succeed count: "<<count << endl;
 		cout << "inner_conts.size" << inner_conts.size() << endl;
-		vector<vector<Point2f>> candida_contours;
+		vector<int> candida_contours;
 		candida_contours = compare_shapes(inner_conts[0]);
 		
 	}
@@ -507,9 +507,10 @@ namespace Tiling_tiles{
 		
 	}
 
-	vector<vector<Point2f>> Tiling_opt::compare_shapes(vector<Point2f> inner_c)
+	vector<int> Tiling_opt::compare_shapes(vector<Point2f> inner_c)
 	{
 		vector<vector<Point2f>> match_conts;
+		vector<int> order_total;
 		prototile_mid->~Prototile();
 		prototile_mid->loadPoints(inner_c);
 		vector<Point2f> contour_mid = prototile_mid->contour_sample[0]; //选择最少的点进行比较
@@ -543,7 +544,7 @@ namespace Tiling_tiles{
 				cout << index_s[i][t] << " " << score_3types[i][index_s[i][t]] << endl;
 			}		
 		}
-		vector<int> order_total;
+		
 		for (int t = 0; t < 3; t++)
 		{
 			for (int i = index_s[t].size() - 1; i > 190; i--)
@@ -564,7 +565,7 @@ namespace Tiling_tiles{
 		{
 			cout << "order_total: " << order_total[i] << endl;
 		}
-		return match_conts;
+		return order_total;
 		/*cout << "score_3types[0].size： " << score_3types[0].size() << endl;
 		for (int i = 0; i < score_3types[0].size(); i++)
 		{

@@ -13,8 +13,7 @@ namespace Tiling_tiles{
 		//vector<int> index_cos;
 		contourname = tile_data;
 		//imgtocout();
-		contour = readTxt();
-		c_length = contour_length(contour);
+		contour = readTxt();	
 		//采样并求曲率
 		contour_sam_cur();
 		
@@ -24,7 +23,6 @@ namespace Tiling_tiles{
 	void Prototile::loadPoints(vector<Point2f> con_point)
 	{
 		contour.swap(con_point);
-		c_length = contour_length(contour);
 		contour_sam_cur();
 	}
 
@@ -260,6 +258,7 @@ namespace Tiling_tiles{
 		int iter_num = 0;
 		double Lambda = 0;
 		int sam_num = 0;
+		c_length = contour_length(contour);
 		// center point
 		for (int j = 0; j < contour.size(); j++)
 		{
@@ -270,9 +269,9 @@ namespace Tiling_tiles{
 		center_point.y = center_point.y / contour.size();
 	
 		//sampling and computing curvature
-
 		for (int i = 3; i < 7; i++)  //确定采样点数，此处为600点
 		{			
+
 			Lambda = 0;
 			sam_num = i * 100;
 			vector<Point2f> contour_sam;
@@ -310,7 +309,6 @@ namespace Tiling_tiles{
 			contour_sample.push_back(contour_sam);
 			contour_curva.push_back(curvature_com(contour_sam));
 			
-			
 			//// invertion
 			//for (int i = contour_sam.size() - 1; i >= 0; i--)
 			//{
@@ -329,16 +327,16 @@ namespace Tiling_tiles{
 
 			//_________________________show the result
 
-			Mat drawing4 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+			//Mat drawing4 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 
-			for (int j = 0; j < contour_sam.size(); j++)
-			{
-				circle(drawing4, contour_sam[j], 1, Scalar(0, 0, 0), -1);
-				//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
-			}
-			string name = "the ";
-			name = name + char(i + 48) + " sample contour ";
-			imshow(name, drawing4);
+			//for (int j = 0; j < contour_sam.size(); j++)
+			//{
+			//	circle(drawing4, contour_sam[j], 1, Scalar(0, 0, 0), -1);
+			//	//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
+			//}
+			//string name = "the ";
+			//name = name + char(i + 48) + " sample contour ";
+			//imshow(name, drawing4);
 			//________________________ show over
 		}
 

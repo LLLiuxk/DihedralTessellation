@@ -57,8 +57,29 @@ int main(int argc, char** argv)
 		tiling_opt->load_dataset();
 		prototile_first->contourname = imagename3;
 		prototile_first->contour = prototile_first->readTxt();
-		tiling_opt->compare_shapes(prototile_first->contour);
-		
+		prototile_first->contour_sam_cur();
+		vector<Point2f> test1;
+		vector<double> test11;
+		for (int i = 0; i < 100; i++)
+		{
+			test1.push_back(prototile_first->contour_sample[0][i]);
+			test11.push_back(prototile_first->contour_curva[0][i]);
+		}
+		vector<int> order = tiling_opt->compare_shapes(prototile_first->contour);
+
+		prototile_second->loadPoints(tiling_opt->contour_dataset[order[0]]);
+		vector<Point2f> test2;
+		vector<double> test22;
+		for (int i = 0; i < 90; i++)
+		{
+			test2.push_back(prototile_second->contour_sample[0][i]);
+			test22.push_back(prototile_second->contour_curva[0][i]);
+		}
+		cout << "test1:" << test11.size()
+			<< "test2:" << test22.size() << endl;
+			
+		double re = tiling_opt->quadr_mismatch(test1, test2, test11, test22);
+		cout << re << endl;
 		/*vector<double> sss;
 		vector<int> index_s;
 		prototile_first->loadTileData(imagename3);

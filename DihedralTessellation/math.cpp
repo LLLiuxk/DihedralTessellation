@@ -896,7 +896,7 @@ namespace Tiling_tiles{
 
 	}
 
-	double Tiling_opt::quadr_mismatch(vector<Point2f> &first_arr, vector<Point2f> &second_arr, vector<char> &first_char, vector<char> &second_char)
+	double Tiling_opt::quadr_mismatch(vector<Point2f> &first_arr, vector<Point2f> &second_arr, vector<double> &first_c, vector<double> &second_c) //每次只能比较100个点以内
 	{
 		//ofstream out("D:\\VisualStudioProjects\\manual_record\\dtw.txt");
 		int first_num = first_arr.size();
@@ -904,7 +904,7 @@ namespace Tiling_tiles{
 
 		//cout << "\n        first.size: " << first_num << "  -----    chararr_size" << first_char.size() << endl;
 
-		double dis[50][50];//两组点之间的坐标差异
+		double dis[101][101];//两组点之间的坐标差异
 		for (int i = 0; i < first_num; i++)
 		{
 			for (int j = 0; j < second_num; j++)
@@ -912,18 +912,18 @@ namespace Tiling_tiles{
 				dis[i][j] = length_two_point2f(first_arr[i], second_arr[j]);
 			}
 		}
-		int dis_cur[50][50];//两组点之间的曲率差异
+		int dis_cur[101][101];//两组点之间的曲率差异
 		for (int i = 0; i < first_num; i++)
 		{
 			for (int j = 0; j < second_num; j++)
 			{
-				dis_cur[i][j] = cur_char_length(first_char[i], second_char[j]);
+				dis_cur[i][j] = cur_length_two_p(first_c[i], second_c[j],1);
 				//dis_cur[i][j] = dis_cur[i][j] * dis_cur[i][j];
 			}
 		}
 
-		double distance[100][100];
-		int step[100][100];//记录总的步数
+		double distance[101][101];
+		int step[101][101];//记录总的步数
 		for (int i = 0; i < first_num; i++)
 		{
 			for (int j = 0; j < second_num; j++)
