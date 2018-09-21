@@ -514,6 +514,7 @@ namespace Tiling_tiles{
 		prototile_mid->~Prototile();
 		prototile_mid->loadPoints(inner_c);
 		vector<Point2f> contour_mid = prototile_mid->contour_sample[0]; //选择最少的点进行比较
+		vector<double> contour_mid_c = prototile_mid->contour_curva[0];
 		int total_num = contour_dataset.size();
 		
 
@@ -566,21 +567,15 @@ namespace Tiling_tiles{
 		{
 			cout << "order_total: " << order_total[i] << endl;
 		}
-		for (int t = 0; t < ordersize; t++)
+		/*for (int t = 0; t < ordersize; t++)
 		{
 			prototile_second->~Prototile();
 			prototile_second->loadPoints(contour_dataset[order_total[t]]);
 			vector<Point2f> contour_second = prototile_second->contour_sample[0];
-			min_mismatch(contour_mid, contour_second);
-			for (int method_ = 1; method_ <= 3; method_++)
-			{
-				double score;
-				score = matchShapes(contour_mid, contour_second, method_, 0);
-				score_3types[method_ - 1].push_back(score);
-				index_s[method_ - 1].push_back(can_num);
-			}
+			vector<double> contour_second_c = prototile_second->contour_curva[0];
+			min_mismatch(contour_mid, contour_second, contour_mid_c, contour_second_c);
 
-		}
+		}*/
 
 		return order_total;
 		/*cout << "score_3types[0].size： " << score_3types[0].size() << endl;
@@ -601,6 +596,58 @@ namespace Tiling_tiles{
 		cout << internum << endl;
 */
 	}
+
+	void Tiling_opt::min_mismatch(vector<Point2f> inner, vector<Point2f> cand, vector<double> inner_c, vector<double> cand_c)
+	{
+		// 这里要保证inner和cand的size差不多，因为会出现截尾现象，如果差距太大会造成较大误差
+		int total_num = inner.size() < cand.size() ? inner.size() : cand.size();
+		int num_now = 0;
+		int each_num = 101;
+		vector<Point2f> test1;
+		vector<double> test11;
+		vector<Point2f> test2;
+		vector<double> test22;
+		double accumu_mis = 0;		
+		while (num_now < total_num)
+		{
+			test1.swap(vector<Point2f>());
+			test11.swap(vector<double>());
+			test2.swap(vector<Point2f>());
+			test22.swap(vector<double>());
+			cout << "num_now: " << num_now << endl;
+			if (total_num - num_now > each_num)
+			{
+				for (int i = num_now; i < num_now + each_num; ++i)
+				{
+					++num_now;
+					test1.push_back(inner[i]);
+					test11.push_back(inner_c[i]);
+					test2.push_back(cand[i]);
+					test22.push_back(cand_c[i]);
+				}
+			}
+			else
+			{
+				int numm = num_now;
+				for (int i = num_now; i < total_num; i++)
+				{
+					++num_now;
+					test1.push_back(inner[i]);
+					test11.push_back(inner_c[i]);
+					test2.push_back(cand[i]);
+					test22.push_back(cand_c[i]);
+				}
+			}
+			cout << "test1:" << test11.size()
+				<< "test2:" << test22.size() << endl;
+			accumu_mis += quadr_mismatch(test1, test2, test11, test22); //因为quadr函数里用的数组是100x100，所以需要截取输入
+		}
+		
+		cout << accumu_mis << endl;
+	}
+
+
+
 	/*
 	//每一个轮廓分成四段
 	void Tiling_opt::com_score(string imagename1, string imagename2)

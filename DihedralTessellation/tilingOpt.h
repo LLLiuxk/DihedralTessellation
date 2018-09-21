@@ -77,7 +77,9 @@ namespace Tiling_tiles{
 
 		//shapes comparing and candidate contour choosing
 		vector<int> compare_shapes(vector<Point2f> inner_c);
-		void min_mismatch
+		void min_mismatch(vector<Point2f> inner, vector<Point2f> cand, vector<double> inner_c, vector<double> cand_c);
+		double quadr_mismatch(vector<Point2f> first_arr, vector<Point2f> second_arr, vector<double> first_c, vector<double> second_c);
+
 
 		double com_each_pair(vector<Point2f> &first_interval, vector<Point2f> &second_interval, int &flag);
 
@@ -106,7 +108,6 @@ namespace Tiling_tiles{
 			 
 		double DTW(vector<Point2f> &first_arr, vector<Point2f> &second_arr);
 		void printPath(double d[][50], double dp[][50], int i, int j, vector<Point2f> &first_arr, vector<Point2f> &second_arr, vector<pair<int, int>>& path);
-		double quadr_mismatch(vector<Point2f> &first_arr, vector<Point2f> &second_arr, vector<double> &first_c, vector<double> &second_c);
 
 	//private:
 		vector<pair<int, int>> dp_path;

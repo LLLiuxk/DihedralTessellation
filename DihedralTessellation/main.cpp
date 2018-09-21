@@ -31,11 +31,20 @@ int main(int argc, char** argv)
 	{
 		//tiling_opt->points_dividing(imagename3);
 		/*vector<Point2f> po;
+		vector<Point2f> po1;
 		po.push_back(Point2f(650, 650));
 		po.push_back(Point2f(800, 650));
 		po.push_back(Point2f(900, 750));
 		po.push_back(Point2f(750, 750));
-		draw_polygen("win", po);*/
+		po1.push_back(Point2f(650, 650));
+		po1.push_back(Point2f(900, 750));
+		po1.push_back(Point2f(750, 750));
+		po1.push_back(Point2f(800, 650));
+		
+		vector<double>  ter(4, 0);
+		vector<double>  ter1(4, 0);
+		//tiling_opt->min_mismatch(po, po1, ter, ter1);*/
+		//draw_polygen("win", po);
 		//String imageName("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\22.png"); // by default
 		//Mat src = imread(imageName, 0);
 		//Mat src1 = src(Range(100,600), Range(0, 507));
@@ -51,9 +60,10 @@ int main(int argc, char** argv)
 		////threshold(src, src, 1.5, 255, cv::THRESH_BINARY);
 		////namedWindow("result", 1);
 		////threshold(src, src, 128, 255, cv::THRESH_BINARY);
-		//imshow("result", src1);
-		
+		//imshow("result", src1);	
 		//imshow("win", src);
+
+
 		tiling_opt->load_dataset();
 		prototile_first->contourname = imagename3;
 		prototile_first->contour = prototile_first->readTxt();
@@ -67,7 +77,7 @@ int main(int argc, char** argv)
 		}
 		vector<int> order = tiling_opt->compare_shapes(prototile_first->contour);
 
-		prototile_second->loadPoints(tiling_opt->contour_dataset[order[0]]);
+		prototile_second->loadPoints(tiling_opt->contour_dataset[order[1]]);
 		vector<Point2f> test2;
 		vector<double> test22;
 		for (int i = 0; i < 90; i++)
@@ -75,11 +85,12 @@ int main(int argc, char** argv)
 			test2.push_back(prototile_second->contour_sample[0][i]);
 			test22.push_back(prototile_second->contour_curva[0][i]);
 		}
-		cout << "test1:" << test11.size()
-			<< "test2:" << test22.size() << endl;
-			
-		double re = tiling_opt->quadr_mismatch(test1, test2, test11, test22);
-		cout << re << endl;
+		//cout << "test1:" << test11.size()
+		//	<< "test2:" << test22.size() << endl;
+		tiling_opt->min_mismatch(test1, test2, test11, test22);
+		//cout << re << endl;
+
+
 		/*vector<double> sss;
 		vector<int> index_s;
 		prototile_first->loadTileData(imagename3);

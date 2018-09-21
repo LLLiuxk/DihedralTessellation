@@ -896,7 +896,7 @@ namespace Tiling_tiles{
 
 	}
 
-	double Tiling_opt::quadr_mismatch(vector<Point2f> &first_arr, vector<Point2f> &second_arr, vector<double> &first_c, vector<double> &second_c) //每次只能比较100个点以内
+	double Tiling_opt::quadr_mismatch(vector<Point2f> first_arr, vector<Point2f> second_arr, vector<double> first_c, vector<double> second_c) //每次只能比较100个点以内
 	{
 		//ofstream out("D:\\VisualStudioProjects\\manual_record\\dtw.txt");
 		int first_num = first_arr.size();
@@ -922,8 +922,8 @@ namespace Tiling_tiles{
 			}
 		}
 
-		double distance[101][101];
-		int step[101][101];//记录总的步数
+		double distance[102][102];
+		int step[102][102];//记录总的步数
 		for (int i = 0; i < first_num; i++)
 		{
 			for (int j = 0; j < second_num; j++)
