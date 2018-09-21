@@ -77,6 +77,7 @@ namespace Tiling_tiles{
 
 		//shapes comparing and candidate contour choosing
 		vector<int> compare_shapes(vector<Point2f> inner_c);
+		void min_mismatch
 
 		double com_each_pair(vector<Point2f> &first_interval, vector<Point2f> &second_interval, int &flag);
 

@@ -561,10 +561,27 @@ namespace Tiling_tiles{
 				if (f==0) order_total.push_back(index_s[t][i]);
 			}
 		}
-		for (int i = 0; i < order_total.size(); i++)
+		int ordersize = order_total.size();
+		for (int i = 0; i < ordersize; i++)
 		{
 			cout << "order_total: " << order_total[i] << endl;
 		}
+		for (int t = 0; t < ordersize; t++)
+		{
+			prototile_second->~Prototile();
+			prototile_second->loadPoints(contour_dataset[order_total[t]]);
+			vector<Point2f> contour_second = prototile_second->contour_sample[0];
+			min_mismatch(contour_mid, contour_second);
+			for (int method_ = 1; method_ <= 3; method_++)
+			{
+				double score;
+				score = matchShapes(contour_mid, contour_second, method_, 0);
+				score_3types[method_ - 1].push_back(score);
+				index_s[method_ - 1].push_back(can_num);
+			}
+
+		}
+
 		return order_total;
 		/*cout << "score_3types[0].size£º " << score_3types[0].size() << endl;
 		for (int i = 0; i < score_3types[0].size(); i++)
