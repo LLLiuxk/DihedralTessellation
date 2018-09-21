@@ -1,6 +1,42 @@
 #include "tilingOpt.h"
 
 using namespace Tiling_tiles;
+int get_line_intersection(float p0_x, float p0_y, float p1_x, float p1_y,
+	float p2_x, float p2_y, float p3_x, float p3_y, float &i_x, float &i_y)
+{
+	
+	float s02_x, s02_y, s10_x, s10_y, s32_x, s32_y, s_numer, t_numer, denom, t;
+	s10_x = p1_x - p0_x;
+	s10_y = p1_y - p0_y;
+	s32_x = p3_x - p2_x;
+	s32_y = p3_y - p2_y;
+
+	denom = s10_x * s32_y - s32_x * s10_y;
+	if (denom == 0)//平行或共线
+		return 0; // Collinear
+	bool denomPositive = denom > 0;
+
+	s02_x = p0_x - p2_x;
+	s02_y = p0_y - p2_y;
+	s_numer = s10_x * s02_y - s10_y * s02_x;
+	if ((s_numer < 0) == denomPositive)//参数是大于等于0且小于等于1的，分子分母必须同号且分子小于等于分母
+		return 0; // No collision
+
+	t_numer = s32_x * s02_y - s32_y * s02_x;
+	if ((t_numer < 0) == denomPositive)
+		return 0; // No collision
+
+	if (fabs(s_numer) > fabs(denom) || fabs(t_numer) > fabs(denom))
+		return 0; // No collision
+	// Collision detected
+	t = t_numer / denom;
+	if (i_x != NULL)
+		i_x = p0_x + (t * s10_x);
+	if (i_y != NULL)
+		i_y = p0_y + (t * s10_y);
+
+	return 1;
+}
 
 int main(int argc, char** argv)
 {
@@ -26,7 +62,7 @@ int main(int argc, char** argv)
 	Tiling_tiles::Prototile *prototile_third;
 	prototile_third = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
-	int f = 0;
+	int f = 3;
 	if (f == 0) //已有dataset
 	{
 		//tiling_opt->points_dividing(imagename3);
@@ -64,7 +100,7 @@ int main(int argc, char** argv)
 		//imshow("win", src);
 
 
-		tiling_opt->load_dataset();
+		/*tiling_opt->load_dataset();
 		prototile_first->contourname = imagename3;
 		prototile_first->contour = prototile_first->readTxt();
 		prototile_first->contour_sam_cur();
@@ -90,7 +126,7 @@ int main(int argc, char** argv)
 		tiling_opt->min_mismatch(test1, test2, test11, test22);
 		//cout << re << endl;
 
-
+		*/
 		/*vector<double> sss;
 		vector<int> index_s;
 		prototile_first->loadTileData(imagename3);
@@ -152,7 +188,7 @@ int main(int argc, char** argv)
 	{
 		prototile_first->imgtocout(imagename3);
 	}	
-	else {  //批量读图
+	else if (f==2){  //批量读图
 		for (int i = 201; i < 205; i++)
 		{
 			prototile_first->~Prototile();
@@ -191,7 +227,13 @@ int main(int argc, char** argv)
 		}
 	
 	}
-
+	else if (f == 3)
+	{
+		float x = 0;
+		float y = 0;
+		get_line_intersection(0, 0, 10,10, 0, 10, 5, 5, x, y);
+		cout << x << " " << y<<endl;
+	}
 	//Tiling_tiles::Prototile *prototile_second;
 	//prototile_second = new Tiling_tiles::Prototile();
 	//prototile_first->loadTileData(imagename2);

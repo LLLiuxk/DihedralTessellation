@@ -83,6 +83,11 @@ namespace Tiling_tiles{
 					index_num[j + 1] = num;
 				}
 	}
+	Point2f search_cross(Point2f start1, Point2f end1, Point2f start2, Point2f end2)
+	{
+		return Point2f(0, 0);
+
+	}
 
 	Point2f unit_vec(Point2f vec)
 	{

@@ -128,6 +128,8 @@ namespace Tiling_tiles{
 	double contour_length(vector<Point2f> contour);
 	double length_two_point2f(Point2f &u, Point2f &v);
 	void sort_comb(vector<double> vect, vector<int> &index_num);
+	//cross points
+	Point2f search_cross();
 
 	Point2f unit_vec(Point2f vec);
 	double cos_two_vector(Point2f &v0, Point2f &v1);
