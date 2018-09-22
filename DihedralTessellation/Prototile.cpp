@@ -260,14 +260,8 @@ namespace Tiling_tiles{
 		int sam_num = 0;
 		c_length = contour_length(contour);
 		// center point
-		for (int j = 0; j < contour.size(); j++)
-		{
-			center_point.x += contour[j].x;
-			center_point.y += contour[j].y;
-		}
-		center_point.x = center_point.x / contour.size();
-		center_point.y = center_point.y / contour.size();
-	
+		center_point = center_p(contour);
+
 		//sampling and computing curvature
 		for (int i = 3; i < 7; i++)  //确定采样点数，此处为600点
 		{			

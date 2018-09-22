@@ -33,7 +33,7 @@ namespace Tiling_tiles{
 		Mat drawing_pro = Mat(col, row, CV_8UC3, Scalar(255, 255, 255));
 		int n = contour_s.size();
 		//cout << "n: " << n << endl;
-		Point rook_points[1][800];
+		Point rook_points[1][2000];
 		for (int t = 0; t < n; t++)
 		{
 			rook_points[0][t] = contour_s[t];
@@ -48,6 +48,12 @@ namespace Tiling_tiles{
 			//Scalar(255, 255, 255) //白色
 			);
 		imshow(win_name, drawing_pro);
+	}
+	Point2f center_p(vector<Point2f> contour_)
+	{
+		//利用轮廓的矩
+		Moments mu = moments(contour_);
+		return Point2f(mu.m10 / mu.m00, mu.m01 / mu.m00);
 	}
 
 	double contour_length(vector<Point2f> contour)
@@ -83,10 +89,53 @@ namespace Tiling_tiles{
 					index_num[j + 1] = num;
 				}
 	}
-	Point2f search_cross(Point2f start1, Point2f end1, Point2f start2, Point2f end2)
+	int line_intersection(Point2f start1, Point2f end1, Point2f start2, Point2f end2, Point2f &cross_p)
 	{
-		return Point2f(0, 0);
+		Point2f s10 = end1 - start1;
+		Point2f s32 = end2 - start2;
+		Point2f s02 = start1 - start2;
+		float s_numer, t_numer, denom, t;
 
+		denom = s10.x * s32.y - s32.x * s10.y;
+		s_numer = s10.x * s02.y - s10.y * s02.x;
+		t_numer = s32.x * s02.y - s32.y * s02.x;
+
+		if (denom == 0)//平行或共线
+		{
+			if (s_numer == 0)//Collinear,返回离end1最近的点
+			{
+				double dis1 = sqrt((start2.x - end1.x)*(start2.x - end1.x) + (start2.y - end1.y)*(start2.y - end1.y));
+				double dis2 = sqrt((end2.x - end1.x)*(end2.x - end1.x) + (end2.y - end1.y)*(end2.y - end1.y));
+				if (dis1 > dis2)
+				{
+					cross_p = end2;
+				}
+				else{
+					cross_p = start2;
+				}
+				return 2;
+			}
+			else return 0; // parallel
+			cout << "denom == 0" << endl;
+		}
+		bool denomPositive = denom > 0;
+
+		if ((s_numer < 0) == denomPositive)//参数是大于等于0且小于等于1的，分子分母必须同号且分子小于等于分母
+			return 0; // No collision
+
+
+		if ((t_numer < 0) == denomPositive)
+			return 0; // No collision
+
+		if (fabs(s_numer) > fabs(denom) || fabs(t_numer) > fabs(denom))
+			return 0; // No collision
+		// Collision detected
+		t = t_numer / denom;
+
+		cout << "t:" << t << endl;
+		cross_p.x = start1.x + t * s10.x;
+		cross_p.y = start1.y + t * s10.y;
+		return 1;
 	}
 
 	Point2f unit_vec(Point2f vec)
@@ -989,6 +1038,42 @@ namespace Tiling_tiles{
 
 		}
 		return distance[first_num - 1][second_num - 1];
+	}
+	vector<int> Tiling_opt::search_align_p(Point2f cent, Point2f end, vector<Point2f> cand_temp)
+	{
+		//保证线段足够长来求交点，将线段长度放大3倍
+		Point2f dis = end - cent;
+		Point2f endf = Point2f(cent.x + 3 * dis.x, cent.y + 3 * dis.y);
+		int ctsize = cand_temp.size();
+		vector<int> cand_index;
+		for (int i = 0; i < ctsize; i++)
+		{
+			Point2f crosP;
+			int flag = line_intersection(cent, endf, cand_temp[i], cand_temp[(i + 1) % ctsize], crosP);
+			if (flag == 0)continue;
+			else 
+			{
+				if (length_two_point2f(end, cand_temp[i]) < length_two_point2f(end, cand_temp[(i + 1) % ctsize]))
+				{
+					cand_index.push_back(i);
+				}
+				else cand_index.push_back((i + 1) % ctsize);
+			}
+		}
+		return cand_index;
+		/*double leng = 10000;
+		int min_in = 0;
+		for (int t = 0; t < cand_index.size(); t++)
+		{
+			if (length_two_point2f(cand_temp[cand_index[t]],end) < leng)
+			{
+				leng = length_two_point2f(cand_temp[cand_index[t]], end);
+				min_in = t;
+			}
+
+		}*/
+		return min_in;
+
 	}
 
 

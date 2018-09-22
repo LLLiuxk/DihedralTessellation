@@ -1,42 +1,6 @@
 #include "tilingOpt.h"
 
 using namespace Tiling_tiles;
-int get_line_intersection(float p0_x, float p0_y, float p1_x, float p1_y,
-	float p2_x, float p2_y, float p3_x, float p3_y, float &i_x, float &i_y)
-{
-	
-	float s02_x, s02_y, s10_x, s10_y, s32_x, s32_y, s_numer, t_numer, denom, t;
-	s10_x = p1_x - p0_x;
-	s10_y = p1_y - p0_y;
-	s32_x = p3_x - p2_x;
-	s32_y = p3_y - p2_y;
-
-	denom = s10_x * s32_y - s32_x * s10_y;
-	if (denom == 0)//平行或共线
-		return 0; // Collinear
-	bool denomPositive = denom > 0;
-
-	s02_x = p0_x - p2_x;
-	s02_y = p0_y - p2_y;
-	s_numer = s10_x * s02_y - s10_y * s02_x;
-	if ((s_numer < 0) == denomPositive)//参数是大于等于0且小于等于1的，分子分母必须同号且分子小于等于分母
-		return 0; // No collision
-
-	t_numer = s32_x * s02_y - s32_y * s02_x;
-	if ((t_numer < 0) == denomPositive)
-		return 0; // No collision
-
-	if (fabs(s_numer) > fabs(denom) || fabs(t_numer) > fabs(denom))
-		return 0; // No collision
-	// Collision detected
-	t = t_numer / denom;
-	if (i_x != NULL)
-		i_x = p0_x + (t * s10_x);
-	if (i_y != NULL)
-		i_y = p0_y + (t * s10_y);
-
-	return 1;
-}
 
 int main(int argc, char** argv)
 {
@@ -62,9 +26,67 @@ int main(int argc, char** argv)
 	Tiling_tiles::Prototile *prototile_third;
 	prototile_third = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
-	int f = 3;
+	int f = 0;
 	if (f == 0) //已有dataset
 	{
+		prototile_first->contourname = imagename3;
+		prototile_first->contour = prototile_first->readTxt();
+		prototile_first->contour_sam_cur();
+		//Mat img = imread("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\22.png", 0);
+		//Mat img1;
+		double leng = prototile_first->c_length;
+		vector<Point2f> a = prototile_first->contour;
+		vector<Point2f> b = prototile_first->contour_sample[1];
+		cout << center_p(b) << endl;
+		for (int i = 0; i < b.size(); i++)
+		{
+			b[i].x = b[i].x*0.8;
+			b[i].y = b[i].y*0.8;
+		}
+		cout << center_p(b) << endl;
+		//double len = arcLength(b,true);
+		//cout << "leng: " << leng
+		//	<< endl << "len: " << len << endl;
+		//vector<Point2f> b;
+		//a.push_back(Point2f(100, 100));
+		//a.push_back(Point2f(200, 100));
+		//a.push_back(Point2f(200, 200));
+		//a.push_back(Point2f(180, 200));
+		//a.push_back(Point2f(100, 200));
+		
+		/*a.push_back(Point2f(100, 200));
+			
+		draw_polygen("111", a);
+
+
+		b.push_back(Point2f(1, 1));
+		b.push_back(Point2f(2, 1));
+		b.push_back(Point2f(3, 0));
+		b.push_back(Point2f(4, 1));
+		b.push_back(Point2f(5, 1));
+		b.push_back(Point2f(5, 2));
+		b.push_back(Point2f(6, 2));
+
+		*/
+		//warpAffine(img, img1, rot_mat, Size(800,800));
+		//draw_polygen("111", a);
+		//Moments mu = moments(a);
+		//Point2f cen = Point2f(mu.m10 / mu.m00, mu.m01 / mu.m00);
+		//Mat rot_mat(2, 3, CV_32FC1);
+		////Point center = Point(300, 100);
+		//double angle = 90.0;
+		//double scale = 1;
+		//cout << center_p(a) << endl;
+		//rot_mat = getRotationMatrix2D(center_p(a), angle, scale);
+		//cv::transform(a, b, rot_mat);
+		
+		//cout << center_p << endl;
+		
+		
+		//
+		//cout << cen << endl;
+		//draw_polygen("222", a);
+		//imshow("show: ", img1);
 		//tiling_opt->points_dividing(imagename3);
 		/*vector<Point2f> po;
 		vector<Point2f> po1;
@@ -229,10 +251,10 @@ int main(int argc, char** argv)
 	}
 	else if (f == 3)
 	{
-		float x = 0;
-		float y = 0;
-		get_line_intersection(0, 0, 10,10, 0, 10, 5, 5, x, y);
-		cout << x << " " << y<<endl;
+		//Point2f xy;
+		//if (get_line_intersection(Point2f(0, 0),Point2f( 10, 10),Point2f(0, 0), Point2f(6, 6), xy) == 0)
+		//	cout << "no" << endl;
+		//cout << xy.x << " " << xy.y<<endl;
 	}
 	//Tiling_tiles::Prototile *prototile_second;
 	//prototile_second = new Tiling_tiles::Prototile();

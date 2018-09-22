@@ -29,12 +29,13 @@ namespace Tiling_tiles{
 		void contour_sam_cur();
 		vector<int> convex_p(int max_cur_num);                 //求轮廓上值最大的10个不临近的凸点
 		vector<int> partition_points(string imaname);  //求得用做划分的点
+		
 		void cur_normalize();
 
 		//math tool
 		vector<double> curvature_com_k(vector<Point2f> &contour_sam);
 		vector<double> curvature_com(vector<Point2f> &contour_sam); //记录cos值
-
+		
 		//io polygon
 		void imgtocout(string tile_image);
 		vector<Point2f> readTxt();
@@ -64,7 +65,7 @@ namespace Tiling_tiles{
 		Tiling_opt();
 		~Tiling_opt();
 		void com_score(string imagename1, string imagename2);
-		double scale_factor();
+
 		void points_dividing(string imaname);
 		bool one_situ_div(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B);
 
@@ -79,6 +80,9 @@ namespace Tiling_tiles{
 		vector<int> compare_shapes(vector<Point2f> inner_c);
 		void min_mismatch(vector<Point2f> inner, vector<Point2f> cand, vector<double> inner_c, vector<double> cand_c);
 		double quadr_mismatch(vector<Point2f> first_arr, vector<Point2f> second_arr, vector<double> first_c, vector<double> second_c);
+		vector<int> search_align_p(Point2f cent, Point2f end, vector<Point2f> cand_temp);
+
+
 
 
 		double com_each_pair(vector<Point2f> &first_interval, vector<Point2f> &second_interval, int &flag);
@@ -125,11 +129,13 @@ namespace Tiling_tiles{
 	void MyLine(Mat img, Point2f start, Point2f end, string color1);
 	void draw_polygen(string win_name, vector<Point2f> contour_s);
 	//math tool
+	Point2f center_p(vector<Point2f> contour_);
 	double contour_length(vector<Point2f> contour);
 	double length_two_point2f(Point2f &u, Point2f &v);
 	void sort_comb(vector<double> vect, vector<int> &index_num);
+	
 	//cross points
-	Point2f search_cross();
+	int line_intersection(Point2f start1, Point2f end1, Point2f start2, Point2f end2, Point2f &cross_p);
 
 	Point2f unit_vec(Point2f vec);
 	double cos_two_vector(Point2f &v0, Point2f &v1);

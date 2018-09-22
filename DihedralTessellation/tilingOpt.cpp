@@ -64,14 +64,6 @@ namespace Tiling_tiles{
 		}
 	}
 
-	double Tiling_opt::scale_factor()
-	{
-		double scale_factor; //   first/second
-		cout << "length1: " << prototile_first->c_length << "length2: " << prototile_second->c_length << endl;
-		scale_factor = prototile_first->c_length / prototile_second->c_length;
-		cout << "scale factor: " << scale_factor << endl;
-		return scale_factor;
-	}
 	void Tiling_opt::points_dividing(string imaname) //此处还是平均分的方法，需要做的： 优化分段的方法
 	{		
 		vector<int> p_p_index = prototile_first->partition_points(imaname);
@@ -279,7 +271,7 @@ namespace Tiling_tiles{
 			}
 		}
 		imshow("result_mid", drawing_pro);
-		Point2f center_p;
+		Point2f cent_p;
 		for (int t = results[3]-1; t > results[2]+1; t--)
 		{
 			return_B.push_back(four_place[0][t]);
@@ -304,11 +296,11 @@ namespace Tiling_tiles{
 
 		for (int z = 0; z < return_B.size(); z++)
 		{
-			center_p = center_p + return_B[z];
+			cent_p = cent_p + return_B[z];
 		}
-		center_p.x = center_p.x / return_B.size();
-		center_p.y = center_p.y / return_B.size();
-		Point2f shift3 = Point2f(400, 400) - center_p;
+		cent_p.x = cent_p.x / return_B.size();
+		cent_p.y = cent_p.y / return_B.size();
+		Point2f shift3 = Point2f(400, 400) - cent_p;
 		for (int z = 0; z < return_B.size(); z++)
 		{
 			return_B[z] = return_B[z] + shift3;
@@ -599,51 +591,79 @@ namespace Tiling_tiles{
 
 	void Tiling_opt::min_mismatch(vector<Point2f> inner, vector<Point2f> cand, vector<double> inner_c, vector<double> cand_c)
 	{
-		// 这里要保证inner和cand的size差不多，因为会出现截尾现象，如果差距太大会造成较大误差
+		//将两个轮廓的周长质心对齐
+		double scale = arcLength(inner, true) / arcLength(cand, true);
+		for (int i = 0; i < cand.size(); i++)
+		{
+			cand[i].x = cand[i].x * scale;
+			cand[i].y = cand[i].y * scale;
+		}
+		Point2f Ccen = center_p(inner);
+		Point2f shift = Ccen - center_p(cand);
+		for (int i = 0; i < cand.size(); i++)
+		{
+			cand[i] = cand[i] + shift;
+		}
+		//对cand进行360度的旋转
 		int total_num = inner.size() < cand.size() ? inner.size() : cand.size();
-		int num_now = 0;
 		int each_num = 101;
+		vector<Point2f> cand_tem;
+		Mat rot_mat(2, 3, CV_32FC1);
 		vector<Point2f> test1;
 		vector<double> test11;
 		vector<Point2f> test2;
 		vector<double> test22;
-		double accumu_mis = 0;		
-		while (num_now < total_num)
+		for (int angle = 0; angle < 360; angle = angle + 5)
 		{
-			test1.swap(vector<Point2f>());
-			test11.swap(vector<double>());
-			test2.swap(vector<Point2f>());
-			test22.swap(vector<double>());
-			cout << "num_now: " << num_now << endl;
-			if (total_num - num_now > each_num)
+			rot_mat = getRotationMatrix2D(Ccen, angle, 1);
+			transform(cand, cand_tem, rot_mat);
+			search_align_p();
+			int num_now = 0;
+			double accumu_mis = 0;
+			while (num_now < total_num)
 			{
-				for (int i = num_now; i < num_now + each_num; ++i)
+				test1.swap(vector<Point2f>());
+				test11.swap(vector<double>());
+				test2.swap(vector<Point2f>());
+				test22.swap(vector<double>());
+				cout << "num_now: " << num_now << endl;
+				if (total_num - num_now > each_num)
 				{
-					++num_now;
-					test1.push_back(inner[i]);
-					test11.push_back(inner_c[i]);
-					test2.push_back(cand[i]);
-					test22.push_back(cand_c[i]);
+					for (int i = num_now; i < num_now + each_num; ++i)
+					{
+						++num_now;
+						test1.push_back(inner[i]);
+						test11.push_back(inner_c[i]);
+						test2.push_back(cand[i]);
+						test22.push_back(cand_c[i]);
+					}
 				}
-			}
-			else
-			{
-				int numm = num_now;
-				for (int i = num_now; i < total_num; i++)
+				else
 				{
-					++num_now;
-					test1.push_back(inner[i]);
-					test11.push_back(inner_c[i]);
-					test2.push_back(cand[i]);
-					test22.push_back(cand_c[i]);
+					int numm = num_now;
+					for (int i = num_now; i < total_num; i++)
+					{
+						++num_now;
+						test1.push_back(inner[i]);
+						test11.push_back(inner_c[i]);
+						test2.push_back(cand[i]);
+						test22.push_back(cand_c[i]);
+					}
 				}
+				cout << "test1:" << test11.size()
+					<< "test2:" << test22.size() << endl;
+				accumu_mis += quadr_mismatch(test1, test2, test11, test22); //因为quadr函数里用的数组是100x100，所以需要截取输入
 			}
-			cout << "test1:" << test11.size()
-				<< "test2:" << test22.size() << endl;
-			accumu_mis += quadr_mismatch(test1, test2, test11, test22); //因为quadr函数里用的数组是100x100，所以需要截取输入
+			cout << accumu_mis << endl;
 		}
+		// 这里要保证inner和cand的size差不多，因为会出现截尾现象，如果差距太大会造成较大误差
 		
-		cout << accumu_mis << endl;
+		
+		
+		
+		
+		
+		
 	}
 
 
