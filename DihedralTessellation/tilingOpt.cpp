@@ -615,10 +615,16 @@ namespace Tiling_tiles{
 		vector<double> test22;
 		for (int angle = 0; angle < 360; angle = angle + 5)
 		{
-			rot_mat = getRotationMatrix2D(Ccen, angle, 1);
-			transform(cand, cand_tem, rot_mat);
+			if (angle != 0)
+			{
+				rot_mat = getRotationMatrix2D(Ccen, angle, 1);
+				transform(cand, cand_tem, rot_mat);
+			}
+			else cand_tem = cand;
 			vector<int> cand_n;
 			cand_n = search_align_p(Ccen, inner[0], cand_tem);
+			//
+
 			int num_now = 0;
 			double accumu_mis = 0;
 			while (num_now < total_num)

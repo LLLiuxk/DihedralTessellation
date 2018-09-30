@@ -1060,6 +1060,7 @@ namespace Tiling_tiles{
 				else cand_index.push_back((i + 1) % ctsize);
 			}
 		}
+		//返回对齐点，可能只有一个，可能有多个
 		return cand_index;
 		/*double leng = 10000;
 		int min_in = 0;
@@ -1072,7 +1073,7 @@ namespace Tiling_tiles{
 			}
 
 		}*/
-		return min_in;
+		//return min_in;
 
 	}
 
