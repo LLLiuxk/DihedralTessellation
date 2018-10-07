@@ -132,7 +132,7 @@ namespace Tiling_tiles{
 		// Collision detected
 		t = t_numer / denom;
 
-		cout << "t:" << t << endl;
+		//cout << "t:" << t << endl;
 		cross_p.x = start1.x + t * s10.x;
 		cross_p.y = start1.y + t * s10.y;
 		return 1;
@@ -1055,12 +1055,28 @@ namespace Tiling_tiles{
 			{
 				if (length_two_point2f(end, cand_temp[i]) < length_two_point2f(end, cand_temp[(i + 1) % ctsize]))
 				{
-					cand_index.push_back(i);
+					int flag = 0;
+					for (int j = 0; j < cand_index.size(); j++)
+					{
+						if (cand_index[j] == i) flag = 1;
+					}
+					if (flag==0) cand_index.push_back(i);
+					else break;
 				}
-				else cand_index.push_back((i + 1) % ctsize);
+				else
+				{
+					int flag = 0;
+					for (int j = 0; j < cand_index.size(); j++)
+					{
+						if (cand_index[j] == (i + 1) % ctsize) flag = 1;
+					}
+					if (flag == 0) cand_index.push_back((i + 1) % ctsize);
+					else break;
+				}
 			}
 		}
-		//返回对齐点，可能只有一个，可能有多个
+		//返回对齐点，可能只有一个，可能有多个,删掉重复点
+		
 		return cand_index;
 		/*double leng = 10000;
 		int min_in = 0;

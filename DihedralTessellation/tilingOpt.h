@@ -20,6 +20,12 @@ namespace Tiling_tiles{
 #define PI 3.1415926535897932384626433832795
 #endif
 	
+	typedef struct candPat_angle_index_error
+	{
+		int angle;
+		int index;
+		double mismatch;
+	}CandPat;
 
 	class Prototile{
 	public:
@@ -78,7 +84,7 @@ namespace Tiling_tiles{
 
 		//shapes comparing and candidate contour choosing
 		vector<int> compare_shapes(vector<Point2f> inner_c);
-		void min_mismatch(vector<Point2f> inner, vector<Point2f> cand, vector<double> inner_c, vector<double> cand_c);
+		CandPat min_mismatch(vector<Point2f> inner, vector<Point2f> cand, vector<double> inner_c, vector<double> cand_c);
 		double quadr_mismatch(vector<Point2f> first_arr, vector<Point2f> second_arr, vector<double> first_c, vector<double> second_c);
 		vector<int> search_align_p(Point2f cent, Point2f end, vector<Point2f> cand_temp);
 

@@ -29,21 +29,27 @@ int main(int argc, char** argv)
 	int f = 0;
 	if (f == 0) //ÒÑÓÐdataset
 	{
-		prototile_first->contourname = imagename3;
-		prototile_first->contour = prototile_first->readTxt();
-		prototile_first->contour_sam_cur();
-		//Mat img = imread("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\22.png", 0);
-		//Mat img1;
-		double leng = prototile_first->c_length;
-		vector<Point2f> a = prototile_first->contour;
+		prototile_first->loadTileData(imagename3);
+		////Mat img = imread("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\22.png", 0);
+		////Mat img1;
+		//double leng = prototile_first->c_length;
+		//vector<Point2f> a = prototile_first->contour;
 		vector<Point2f> b = prototile_first->contour_sample[1];
-		cout << center_p(b) << endl;
-		for (int i = 0; i < b.size(); i++)
-		{
-			b[i].x = b[i].x*0.8;
-			b[i].y = b[i].y*0.8;
-		}
-		cout << center_p(b) << endl;
+		vector<double> b_c = prototile_first->contour_curva[1];
+		prototile_second->loadTileData(imagename2);
+		vector<Point2f> con2 = prototile_second->contour_sample[1];
+		vector<double> con_c = prototile_second->contour_curva[1];
+		//if (b.size() == b_c.size()) cout << "b.size:" << b.size() << endl;
+		//if (con2.size() == con_c.size()) cout << "b.size:" << con2.size() << endl;
+		CandPat hahah=tiling_opt->min_mismatch(b, con2, b_c, con_c);
+		cout << hahah.angle << "  " << hahah.index << "  " << hahah.mismatch<<endl;
+		//cout << center_p(b) << endl;
+		//for (int i = 0; i < b.size(); i++)
+		//{
+		//	b[i].x = b[i].x*0.8;
+		//	b[i].y = b[i].y*0.8;
+		//}
+		//cout << center_p(b) << endl;
 		//double len = arcLength(b,true);
 		//cout << "leng: " << leng
 		//	<< endl << "len: " << len << endl;
@@ -54,20 +60,25 @@ int main(int argc, char** argv)
 		//a.push_back(Point2f(180, 200));
 		//a.push_back(Point2f(100, 200));
 		
-		/*a.push_back(Point2f(100, 200));
+		//a.push_back(Point2f(100, 200));
 			
-		draw_polygen("111", a);
+		//draw_polygen("111", a);
 
 
-		b.push_back(Point2f(1, 1));
-		b.push_back(Point2f(2, 1));
-		b.push_back(Point2f(3, 0));
-		b.push_back(Point2f(4, 1));
-		b.push_back(Point2f(5, 1));
-		b.push_back(Point2f(5, 2));
-		b.push_back(Point2f(6, 2));
+		//b.push_back(Point2f(300, 300));
+		//b.push_back(Point2f(400, 300));
+		//b.push_back(Point2f(400, 400));
+		//b.push_back(Point2f(300, 400));
+		//
+		//draw_polygen("hahahah",b);
+		//Point2f cen = center_p(b);
+		//vector<Point2f> c;
+		//Mat rot_mat = getRotationMatrix2D(cen, 45, 1);
+		//transform(b, c, rot_mat);
+		//		
+		//vector<int> haha=tiling_opt->search_align_p(cen, b[0], c);
+		//cout << haha[0]<<endl<<c[haha[0]] << endl;
 
-		*/
 		//warpAffine(img, img1, rot_mat, Size(800,800));
 		//draw_polygen("111", a);
 		//Moments mu = moments(a);

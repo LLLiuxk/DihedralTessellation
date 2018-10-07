@@ -532,7 +532,7 @@ namespace Tiling_tiles{
 		for (int i = 0; i < 3; i++)
 		{
 			sort_comb(score_3types[i], index_s[i]);
-			for (int t = index_s[i].size() - 1; t > 180; t--)
+			for (int t = index_s[i].size() - 1; t > total_num-20; t--)
 			{
 				cout << index_s[i][t] << " " << score_3types[i][index_s[i][t]] << endl;
 			}		
@@ -540,7 +540,7 @@ namespace Tiling_tiles{
 		
 		for (int t = 0; t < 3; t++)
 		{
-			for (int i = index_s[t].size() - 1; i > 190; i--)
+			for (int i = index_s[t].size() - 1; i > total_num-10; i--)
 			{
 				int f = 0;
 				for (int j = 0; j < order_total.size(); j++)
@@ -589,10 +589,12 @@ namespace Tiling_tiles{
 */
 	}
 
-	void Tiling_opt::min_mismatch(vector<Point2f> inner, vector<Point2f> cand, vector<double> inner_c, vector<double> cand_c)
+	//从360度里寻找使误差最小的角度及此时的误差
+	CandPat Tiling_opt::min_mismatch(vector<Point2f> inner, vector<Point2f> cand, vector<double> inner_c, vector<double> cand_c)
 	{
 		//将两个轮廓的周长质心对齐
 		double scale = arcLength(inner, true) / arcLength(cand, true);
+		cout << "scale: " << scale << endl;
 		for (int i = 0; i < cand.size(); i++)
 		{
 			cand[i].x = cand[i].x * scale;
@@ -613,7 +615,12 @@ namespace Tiling_tiles{
 		vector<double> test11;
 		vector<Point2f> test2;
 		vector<double> test22;
-		for (int angle = 0; angle < 360; angle = angle + 5)
+
+		double min_mismatch = 100000;
+		int min_angle = 0;
+		int min_index = 0;
+		
+		for (int angle = 0; angle < 20; angle = angle + 5)
 		{
 			if (angle != 0)
 			{
@@ -623,54 +630,67 @@ namespace Tiling_tiles{
 			else cand_tem = cand;
 			vector<int> cand_n;
 			cand_n = search_align_p(Ccen, inner[0], cand_tem);
-			//
-
-			int num_now = 0;
-			double accumu_mis = 0;
-			while (num_now < total_num)
+			int cand_n_s = cand_n.size();
+			int cand_tem_size = cand_tem.size();
+			cout << "num:_can" << cand_n_s << endl;
+			for (int i = 0; i < cand_n_s; i++)
 			{
-				test1.swap(vector<Point2f>());
-				test11.swap(vector<double>());
-				test2.swap(vector<Point2f>());
-				test22.swap(vector<double>());
-				cout << "num_now: " << num_now << endl;
-				if (total_num - num_now > each_num)
-				{
-					for (int i = num_now; i < num_now + each_num; ++i)
-					{
-						++num_now;
-						test1.push_back(inner[i]);
-						test11.push_back(inner_c[i]);
-						test2.push_back(cand[i]);
-						test22.push_back(cand_c[i]);
-					}
-				}
-				else
-				{
-					int numm = num_now;
-					for (int i = num_now; i < total_num; i++)
-					{
-						++num_now;
-						test1.push_back(inner[i]);
-						test11.push_back(inner_c[i]);
-						test2.push_back(cand[i]);
-						test22.push_back(cand_c[i]);
-					}
-				}
-				cout << "test1:" << test11.size()
-					<< "test2:" << test22.size() << endl;
-				accumu_mis += quadr_mismatch(test1, test2, test11, test22); //因为quadr函数里用的数组是100x100，所以需要截取输入
+				cout << cand_n[i] << endl;
 			}
-			cout << accumu_mis << endl;
+			//
+			for (int t = 0; t < cand_n_s; t++)
+			{
+				int num_now = 0;
+				double accumu_mis = 0;
+				while (num_now < total_num)
+				{
+					test1.swap(vector<Point2f>());
+					test11.swap(vector<double>());
+					test2.swap(vector<Point2f>());
+					test22.swap(vector<double>());
+					cout << "num_now: " << num_now << endl;
+					
+					if (total_num - num_now > each_num)
+					{
+						int mid_now = num_now + each_num;
+						for (int i = num_now; i < mid_now; ++i)
+						{
+							++num_now;
+							test1.push_back(inner[i]);
+							test11.push_back(inner_c[i]);
+							cout << "cand_n[t]: " << i<< endl;
+							test2.push_back(cand_tem[(i + cand_n[t]) % cand_tem_size]);
+							test22.push_back(cand_c[(i + cand_n[t]) % cand_tem_size]);
+						}
+					}
+					else
+					{
+						for (int i = num_now; i < total_num; i++)
+						{
+							test1.push_back(inner[i]);
+							test11.push_back(inner_c[i]);
+							test2.push_back(cand_tem[(i + cand_n[t]) % cand_tem_size]);
+							test22.push_back(cand_c[(i + cand_n[t]) % cand_tem_size]);
+						}
+					}
+					cout << "test1:" << test11.size()
+						<< "test2:" << test22.size() << endl;
+					accumu_mis += quadr_mismatch(test1, test2, test11, test22); //因为quadr函数里用的数组是100x100，所以需要截取输入
+				}
+				cout << accumu_mis << endl;
+				if (accumu_mis < min_mismatch)
+				{
+					min_angle = angle;
+					min_mismatch = accumu_mis;
+					min_index = cand_n[t];
+				}
+				
+			}		
 		}
-		// 这里要保证inner和cand的size差不多，因为会出现截尾现象，如果差距太大会造成较大误差
-		
-		
-		
-		
-		
-		
-		
+		// 这里要保证inner和cand的size差不多，因为会出现截尾现象，如果差距太大会造成较大误差	
+		CandPat min_pat = { min_angle, min_index, min_mismatch };
+		return min_pat;
+
 	}
 
 
