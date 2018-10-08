@@ -38,6 +38,9 @@ namespace Tiling_tiles{
 		
 		void cur_normalize();
 
+		//flipping
+		vector<Point2f> flip_contour(vector<Point2f> cont_s, int flag);
+
 		//math tool
 		vector<double> curvature_com_k(vector<Point2f> &contour_sam);
 		vector<double> curvature_com(vector<Point2f> &contour_sam); //记录cos值
@@ -53,9 +56,9 @@ namespace Tiling_tiles{
 		vector<Point2f> contour;
 		vector<double> cconvex;
 		vector<vector<Point2f>> contour_sample;
-		vector<vector<Point2f>> contour_sample_inver;
+		vector<vector<Point2f>> contour_sample_flip;
 		vector<vector<double>> contour_curva;
-		vector<vector<double>> contour_curva_inver;
+		vector<vector<double>> contour_curva_flip;
 		char cur_string[6][600];
 		//vector<vector<Point2f>> contour_saliency;  //显著性可选
 		//vector<vector<Point2f>> contour_saliency_inver;
@@ -88,7 +91,7 @@ namespace Tiling_tiles{
 		double quadr_mismatch(vector<Point2f> first_arr, vector<Point2f> second_arr, vector<double> first_c, vector<double> second_c);
 		vector<int> search_align_p(Point2f cent, Point2f end, vector<Point2f> cand_temp);
 
-
+		
 
 
 		double com_each_pair(vector<Point2f> &first_interval, vector<Point2f> &second_interval, int &flag);

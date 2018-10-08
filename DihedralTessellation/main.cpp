@@ -6,11 +6,11 @@ int main(int argc, char** argv)
 {
 
 	string imagename1 = "15"; 
-	string imagename2 = "19";
+	string imagename2 = "23";
 	//string imagename1 = "Boat";
 	//string imagename2 = "fish8";
 	//string imagename1 = "fish5";
-	string imagename3 = "22";
+	string imagename3 = "19";
 	//string txtname = "D:/images/111.png";
 	//string txtname1 = "D:/images/fish3.png";
 
@@ -29,20 +29,20 @@ int main(int argc, char** argv)
 	int f = 0;
 	if (f == 0) //ÒÑÓÐdataset
 	{
+
 		prototile_first->loadTileData(imagename3);
-		////Mat img = imread("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\22.png", 0);
 		////Mat img1;
 		//double leng = prototile_first->c_length;
 		//vector<Point2f> a = prototile_first->contour;
 		vector<Point2f> b = prototile_first->contour_sample[1];
 		vector<double> b_c = prototile_first->contour_curva[1];
-		prototile_second->loadTileData(imagename2);
+		prototile_second->loadTileData(imagename1);
 		vector<Point2f> con2 = prototile_second->contour_sample[1];
 		vector<double> con_c = prototile_second->contour_curva[1];
 		//if (b.size() == b_c.size()) cout << "b.size:" << b.size() << endl;
 		//if (con2.size() == con_c.size()) cout << "b.size:" << con2.size() << endl;
 		CandPat hahah=tiling_opt->min_mismatch(b, con2, b_c, con_c);
-		cout << hahah.angle << "  " << hahah.index << "  " << hahah.mismatch<<endl;
+		cout <<"angle: "<< hahah.angle << "  index: " << hahah.index << "  mismatch: " << hahah.mismatch<<endl;
 		//cout << center_p(b) << endl;
 		//for (int i = 0; i < b.size(); i++)
 		//{

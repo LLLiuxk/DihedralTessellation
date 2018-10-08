@@ -56,7 +56,11 @@ namespace Tiling_tiles{
 			threshold(src_gray, src_gray, 128, 255, cv::THRESH_BINARY);
 			if (imread("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\" + tile_image + "2.png", IMREAD_COLOR).empty())
 				imwrite("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\" + tile_image + "2.png", src_gray);
-			else cout << tile_image + "2.png has already exist!!!" << endl;
+			else
+			{
+				cout << tile_image + "2.png has already exist!!!" << endl;
+				imwrite("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\" + tile_image + "22.png", src_gray);
+			}
 			blur(src_gray, src_gray, Size(3, 3));
 			imshow("src_gray_blur", src_gray);
 		}
@@ -269,7 +273,7 @@ namespace Tiling_tiles{
 			Lambda = 0;
 			sam_num = i * 100;
 			vector<Point2f> contour_sam;
-			vector<Point2f> contour_sam_inver;
+			vector<Point2f> contour_sam_flip;
 			Point2f sample;
 
 			Lambda = c_length / sam_num;
@@ -302,23 +306,10 @@ namespace Tiling_tiles{
 			if (contour_sam[0] == contour_sam[contour_sam.size() - 1]) contour_sam.pop_back();
 			contour_sample.push_back(contour_sam);
 			contour_curva.push_back(curvature_com(contour_sam));
-			
-			//// invertion
-			//for (int i = contour_sam.size() - 1; i >= 0; i--)
-			//{
-			//	contour_sam_inver.push_back(contour_sam[i]);
-			//}
-			//contour_sample_inver.push_back(contour_sam_inver);
-			//contour_curva_inver.push_back(curvature_com_k(contour_sam_inver));
 
-			////求一点两个方向的曲率的均值
-			//for (int j = 0; j < contour_curva[i-1].size(); j++)
-			//{
-			//	contour_curva[i-1][j] = (contour_curva[i-1][j] + contour_curva_inver[i-1][contour_curva[i-1].size() - 1 - j]) / 2;
-			//}
-			////cout << "cur: " << contour_curva[0][i] << "  cur_inver: " << contour_curva_inver[0][i] << endl;
-
-
+			contour_sam_flip = flip_contour(contour_sam,0); //水平翻转
+			contour_sample_flip.push_back(contour_sam_flip);
+			contour_curva_flip.push_back(curvature_com(contour_sam_flip));
 			//_________________________show the result
 
 			//Mat drawing4 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
@@ -335,6 +326,41 @@ namespace Tiling_tiles{
 		}
 
 		
+	}
+
+	vector<Point2f> Prototile::flip_contour(vector<Point2f> cont_s, int flag)
+	{
+		Point2f ccen = center_p(cont_s);
+		int cont_size = cont_s.size();
+
+		//flag==0 水平翻转
+		if (flag == 0)
+		{
+			for (int i = 0; i < cont_size; i++)
+			{
+				cont_s[i].x = 2 * ccen.x - cont_s[i].x;
+			}
+			for (int i = 0; i < cont_size / 2; i++)
+			{
+				Point2f mid = cont_s[i];
+				cont_s[i] = cont_s[cont_size - 1 - i];
+				cont_s[cont_size - 1 - i] = mid;
+			}
+		}
+		else if (flag == 1)
+		{
+			for (int i = 0; i < cont_size; i++)
+			{
+				cont_s[i].y = 2 * ccen.y - cont_s[i].y;
+			}
+			for (int i = 0; i < cont_size / 2; i++)
+			{
+				Point2f mid = cont_s[i];
+				cont_s[i] = cont_s[cont_size - 1 - i];
+				cont_s[cont_size - 1 - i] = mid;
+			}
+		}
+		return cont_s;
 	}
 
 	vector<int> Prototile::convex_p(int max_cur_num)

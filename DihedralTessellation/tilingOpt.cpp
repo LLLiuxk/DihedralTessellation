@@ -593,6 +593,7 @@ namespace Tiling_tiles{
 	CandPat Tiling_opt::min_mismatch(vector<Point2f> inner, vector<Point2f> cand, vector<double> inner_c, vector<double> cand_c)
 	{
 		//将两个轮廓的周长质心对齐
+		// 这里要保证inner和cand的size差不多，因为会出现截尾现象，如果差距太大会造成较大误差
 		double scale = arcLength(inner, true) / arcLength(cand, true);
 		cout << "scale: " << scale << endl;
 		for (int i = 0; i < cand.size(); i++)
@@ -620,7 +621,7 @@ namespace Tiling_tiles{
 		int min_angle = 0;
 		int min_index = 0;
 		
-		for (int angle = 0; angle < 20; angle = angle + 5)
+		for (int angle = 0; angle < 360; angle = angle + 5)
 		{
 			if (angle != 0)
 			{
@@ -630,13 +631,16 @@ namespace Tiling_tiles{
 			else cand_tem = cand;
 			vector<int> cand_n;
 			cand_n = search_align_p(Ccen, inner[0], cand_tem);
+
 			int cand_n_s = cand_n.size();
 			int cand_tem_size = cand_tem.size();
-			cout << "num:_can" << cand_n_s << endl;
-			for (int i = 0; i < cand_n_s; i++)
-			{
-				cout << cand_n[i] << endl;
-			}
+
+			//inner质点和第一个点的连接线与cand交点的个数
+			//cout << "num:_can" << cand_n_s << endl;
+			//for (int i = 0; i < cand_n_s; i++)
+			//{
+			//	cout << cand_n[i] << endl;
+			//}
 			//
 			for (int t = 0; t < cand_n_s; t++)
 			{
@@ -648,7 +652,7 @@ namespace Tiling_tiles{
 					test11.swap(vector<double>());
 					test2.swap(vector<Point2f>());
 					test22.swap(vector<double>());
-					cout << "num_now: " << num_now << endl;
+					//cout << "num_now: " << num_now << endl;
 					
 					if (total_num - num_now > each_num)
 					{
@@ -658,7 +662,7 @@ namespace Tiling_tiles{
 							++num_now;
 							test1.push_back(inner[i]);
 							test11.push_back(inner_c[i]);
-							cout << "cand_n[t]: " << i<< endl;
+							//cout << "cand_n[t]: " << i<< endl;
 							test2.push_back(cand_tem[(i + cand_n[t]) % cand_tem_size]);
 							test22.push_back(cand_c[(i + cand_n[t]) % cand_tem_size]);
 						}
@@ -667,14 +671,15 @@ namespace Tiling_tiles{
 					{
 						for (int i = num_now; i < total_num; i++)
 						{
+							++num_now;
 							test1.push_back(inner[i]);
 							test11.push_back(inner_c[i]);
 							test2.push_back(cand_tem[(i + cand_n[t]) % cand_tem_size]);
 							test22.push_back(cand_c[(i + cand_n[t]) % cand_tem_size]);
 						}
 					}
-					cout << "test1:" << test11.size()
-						<< "test2:" << test22.size() << endl;
+					//cout << "test1:" << test11.size()
+					//	<< "test2:" << test22.size() << endl;
 					accumu_mis += quadr_mismatch(test1, test2, test11, test22); //因为quadr函数里用的数组是100x100，所以需要截取输入
 				}
 				cout << accumu_mis << endl;
@@ -687,13 +692,66 @@ namespace Tiling_tiles{
 				
 			}		
 		}
-		// 这里要保证inner和cand的size差不多，因为会出现截尾现象，如果差距太大会造成较大误差	
+
+		rot_mat = getRotationMatrix2D(Ccen, min_angle, 1);
+		transform(cand, cand_tem, rot_mat);
+		//展示旋转后的结果
+		int col = 800;
+		int row = 800;
+		Mat drawing_pro = Mat(col, row, CV_8UC3, Scalar(255, 255, 255));
+		int n = cand_tem.size();
+		//cout << "n: " << n << endl;
+		Point rook_points[1][2000];
+		for (int t = 0; t < n; t++)
+		{
+			rook_points[0][t] = cand_tem[t];
+		}
+		const Point* ppt[1] = { rook_points[0] };
+		int npt[] = { n };
+		fillPoly(drawing_pro,
+			ppt,
+			npt,
+			1,
+			Scalar(0, 0, 0) //黑色
+			//Scalar(255, 255, 255) //白色
+			);
+		circle(drawing_pro, cand_tem[0], 4, Scalar(255), 3);
+		circle(drawing_pro, cand_tem[min_index], 4, Scalar(255,0,255), 3);
+		Point2f cenpo = center_p(cand_tem);
+		circle(drawing_pro, cenpo, 4, Scalar(0, 255, 255), -1);
+		imshow("1: ", drawing_pro);
+
+
+		Mat drawing_pro1 = Mat(col, row, CV_8UC3, Scalar(255, 255, 255));
+		int n1 = inner.size();
+		//cout << "n: " << n << endl;
+		Point rook_points1[1][2000];
+		for (int t = 0; t < n1; t++)
+		{
+			rook_points1[0][t] = inner[t];
+		}
+		const Point* ppt1[1] = { rook_points1[0] };
+		int npt1[] = { n1 };
+		fillPoly(drawing_pro1,
+			ppt1,
+			npt1,
+			1,
+			Scalar(0, 0, 0) //黑色
+			//Scalar(255, 255, 255) //白色
+			);
+		circle(drawing_pro1, inner[0], 4, Scalar(255), 3);
+		circle(drawing_pro1, Ccen, 4, Scalar(255, 0, 255), -1);
+		imshow("2: ", drawing_pro1);
+
+		draw_polygen("3: ", cand);
+
+			
 		CandPat min_pat = { min_angle, min_index, min_mismatch };
 		return min_pat;
 
 	}
 
-
+	
 
 	/*
 	//每一个轮廓分成四段
