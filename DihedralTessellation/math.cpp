@@ -956,25 +956,59 @@ namespace Tiling_tiles{
 		int first_num = first_arr.size();
 		int second_num = second_arr.size();
 
-		//cout << "\n        first.size: " << first_num << "  -----    chararr_size" << first_char.size() << endl;
+		//cout << "\n        first.size: " << first_c[50] << "  -----    chararr_size" << second_c[50] << endl;
 
 		double dis[101][101];//两组点之间的坐标差异
+		double max_dis = 0;
 		for (int i = 0; i < first_num; i++)
 		{
 			for (int j = 0; j < second_num; j++)
 			{
 				dis[i][j] = length_two_point2f(first_arr[i], second_arr[j]);
+				if (dis[i][j] > max_dis) max_dis = dis[i][j];
 			}
 		}
-		int dis_cur[101][101];//两组点之间的曲率差异
+		//坐标差值归一化
+		for (int i = 0; i < first_num; i++)
+		{
+			for (int j = 0; j < second_num; j++)
+			{
+				dis[i][j] = dis[i][j] / max_dis; 
+				cout << "dis[i][j]: " << dis[i][j] << endl;
+			}
+		}
+
+		double dis_cur[101][101];//两组点之间的曲率差异
+		double max_dis_cur = 0;
 		for (int i = 0; i < first_num; i++)
 		{
 			for (int j = 0; j < second_num; j++)
 			{
 				dis_cur[i][j] = cur_length_two_p(first_c[i], second_c[j],1);
+				
+				//cout << "dis_cur[i][j]: " << dis_cur[i][j] << endl;
+				if (dis_cur[i][j]>max_dis_cur)
+				{
+					//cout << "hahah:" << endl;
+					max_dis_cur = dis_cur[i][j];
+					
+					
+				}
 				//dis_cur[i][j] = dis_cur[i][j] * dis_cur[i][j];
 			}
 		}
+		
+		//曲率差值归一化
+		cout << "max_dis_cur: " << max_dis_cur << endl;
+		for (int i = 0; i < first_num; i++)
+		{
+			for (int j = 0; j < second_num; j++)
+			{
+				dis_cur[i][j] = dis_cur[i][j] / max_dis_cur; 
+				cout << "dis_cur[i][j]: " << dis_cur[i][j] << endl;
+			}
+		}
+
 
 		double distance[102][102];
 		int step[102][102];//记录总的步数

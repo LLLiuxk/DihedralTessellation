@@ -594,6 +594,8 @@ namespace Tiling_tiles{
 	{
 		//将两个轮廓的周长质心对齐
 		// 这里要保证inner和cand的size差不多，因为会出现截尾现象，如果差距太大会造成较大误差
+		//cout << "1: " << cand.size() << "  2: " << cand_f.size()<<endl;
+		//cout << "c: " << center_p(cand) << "  d: " << center_p(cand_f) << endl;
 		double scale = arcLength(inner, true) / arcLength(cand, true);
 		cout << "scale: " << scale << endl;
 		for (int i = 0; i < cand.size(); i++)
@@ -621,7 +623,7 @@ namespace Tiling_tiles{
 		int min_angle = 0;
 		int min_index = 0;
 		
-		for (int angle = 0; angle < 360; angle = angle + 5)
+		for (int angle = 0; angle < 5; angle = angle + 5)
 		{
 			if (angle != 0)
 			{
@@ -682,7 +684,7 @@ namespace Tiling_tiles{
 					//	<< "test2:" << test22.size() << endl;
 					accumu_mis += quadr_mismatch(test1, test2, test11, test22); //因为quadr函数里用的数组是100x100，所以需要截取输入
 				}
-				cout << accumu_mis << endl;
+				cout << "angle  "<<angle<<" mismatch: "<<accumu_mis << endl;
 				if (accumu_mis < min_mismatch)
 				{
 					min_angle = angle;
@@ -693,9 +695,9 @@ namespace Tiling_tiles{
 			}		
 		}
 
-		rot_mat = getRotationMatrix2D(Ccen, min_angle, 1);
-		transform(cand, cand_tem, rot_mat);
 		//展示旋转后的结果
+		rot_mat = getRotationMatrix2D(Ccen, min_angle, 1);
+		transform(cand, cand_tem, rot_mat);		
 		int col = 800;
 		int row = 800;
 		Mat drawing_pro = Mat(col, row, CV_8UC3, Scalar(255, 255, 255));

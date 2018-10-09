@@ -36,13 +36,62 @@ int main(int argc, char** argv)
 		//vector<Point2f> a = prototile_first->contour;
 		vector<Point2f> b = prototile_first->contour_sample[1];
 		vector<double> b_c = prototile_first->contour_curva[1];
+		vector<Point2f> a = prototile_first->contour_sample_flip[1];
+		vector<double> a_c = prototile_first->contour_curva_flip[1];
+		//for (int i = 0; i < 130; i++)
+		//{
+		//	cout << "b: " <<b[i]<<" b_c[i]: "<< b_c[i] << "   a: " <<a[i]<<"  a_c: "<< a_c[a_c.size() - 1 - i] << endl;
+		//}
 		prototile_second->loadTileData(imagename1);
 		vector<Point2f> con2 = prototile_second->contour_sample[1];
 		vector<double> con_c = prototile_second->contour_curva[1];
 		//if (b.size() == b_c.size()) cout << "b.size:" << b.size() << endl;
 		//if (con2.size() == con_c.size()) cout << "b.size:" << con2.size() << endl;
-		CandPat hahah=tiling_opt->min_mismatch(b, con2, b_c, con_c);
-		cout <<"angle: "<< hahah.angle << "  index: " << hahah.index << "  mismatch: " << hahah.mismatch<<endl;
+	    CandPat hahah = tiling_opt->min_mismatch(con2, a, con_c, a_c);
+		CandPat hahah1 = tiling_opt->min_mismatch(con2, b, con_c, b_c);
+
+		Mat rot_mat = getRotationMatrix2D(center_p(con2), hahah.angle, 1);
+		vector<Point2f> d;
+		transform(a, d, rot_mat);
+		int col = 800;
+		int row = 800;
+		Mat drawing_pro = Mat(col, row, CV_8UC3, Scalar(255, 255, 255));
+		int n = d.size();
+		//cout << "n: " << n << endl;
+		Point rook_points[1][2000];
+		for (int t = 0; t < n; t++)
+		{
+			rook_points[0][t] = d[t];
+		}
+		const Point* ppt[1] = { rook_points[0] };
+		int npt[] = { n };
+		fillPoly(drawing_pro,
+			ppt,
+			npt,
+			1,
+			Scalar(0, 0, 0) //ºÚÉ«
+			//Scalar(255, 255, 255) //°×É«
+			);
+		circle(drawing_pro, d[0], 4, Scalar(255), 3);
+		circle(drawing_pro, d[hahah.index], 4, Scalar(255, 0, 255), 3);
+		Point2f cenpo = center_p(d);
+		circle(drawing_pro, cenpo, 4, Scalar(0, 255, 255), -1);
+		imshow("4: ", drawing_pro);
+
+
+		if (hahah.mismatch < hahah1.mismatch)
+		{
+			cout << "flip" << endl;
+			cout << "angle: " << hahah.angle << "  index: " << hahah.index << "  mismatch: " << hahah.mismatch << endl;
+		}
+		else
+		{
+			cout << "right" << endl;
+			cout << "angle: " << hahah1.angle << "  index: " << hahah1.index << "  mismatch: " << hahah1.mismatch << endl;
+		}
+		
+		//
+		//
 		//cout << center_p(b) << endl;
 		//for (int i = 0; i < b.size(); i++)
 		//{

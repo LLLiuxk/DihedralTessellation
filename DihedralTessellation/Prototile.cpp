@@ -307,7 +307,7 @@ namespace Tiling_tiles{
 			contour_sample.push_back(contour_sam);
 			contour_curva.push_back(curvature_com(contour_sam));
 
-			contour_sam_flip = flip_contour(contour_sam,0); //水平翻转
+			contour_sam_flip = flip_contour(contour_sam,0); //0是水平翻转
 			contour_sample_flip.push_back(contour_sam_flip);
 			contour_curva_flip.push_back(curvature_com(contour_sam_flip));
 			//_________________________show the result
@@ -565,43 +565,6 @@ namespace Tiling_tiles{
 			//	cout <<cur_string[4][i] ;
 			//}
 		}
-		//  不需要再逆向求曲率字符串
-		//for (int n = 0; n < 5; n++)
-		//{
-		//	double min = 1000;
-		//	double max = 0;
-		//	for (int i = 0; i < contour_curva_inver[n].size(); i++)
-		//	{
-		//		//cout << contour_curva_inver[n][i] << " ";
-		//		if (contour_curva_inver[n][i] < min) min = contour_curva_inver[n][i];
-		//		if (contour_curva_inver[n][i] > max) max = contour_curva_inver[n][i];
-		//	}
-
-		//	double step = (max - min) / 52;
-		//	double mid = (max + min) / 2;
-		//	cout << "step: " << step << "\n max: " << max << "\n mid: " << mid << endl;
-
-		//	//Z~A0a~z
-		//	cout << endl;
-		//	for (int i = 0; i < contour_curva_inver[n].size(); i++)
-		//	{
-		//		if (contour_curva_inver[n][i] == mid) cur_string_inver[n][i] = '0';
-		//		else if (contour_curva_inver[n][i] < mid)
-		//		{
-		//			int type = (mid - contour_curva_inver[n][i]) / step - 1;
-		//			char c = 'A' + type;
-		//			cur_string_inver[n][i] = c;
-		//		}
-		//		else if (contour_curva_inver[n][i] > mid)
-		//		{
-		//			int type = (contour_curva_inver[n][i] - mid) / step - 1;
-		//			char c = 'a' + type;
-		//			cur_string_inver[n][i] = c;
-		//		}
-		//	}
-		//}
-
-
 	}
 
 
