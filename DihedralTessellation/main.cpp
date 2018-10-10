@@ -5,7 +5,7 @@ using namespace Tiling_tiles;
 int main(int argc, char** argv)
 {
 
-	string imagename1 = "15"; 
+	string imagename1 = "22"; 
 	string imagename2 = "23";
 	//string imagename1 = "Boat";
 	//string imagename2 = "fish8";
@@ -29,67 +29,71 @@ int main(int argc, char** argv)
 	int f = 0;
 	if (f == 0) //已有dataset
 	{
+		tiling_opt->points_dividing(imagename3);
+		//------------------------
+		//测试min_mismatch函数
+		//prototile_first->loadTileData(imagename3);
+		//////Mat img1;
+		////double leng = prototile_first->c_length;
+		////vector<Point2f> a = prototile_first->contour;
+		//vector<Point2f> b = prototile_first->contour_sample[1];
+		//vector<double> b_c = prototile_first->contour_curva[1];
+		//vector<Point2f> a = prototile_first->contour_sample_flip[1];
+		//vector<double> a_c = prototile_first->contour_curva_flip[1];
+		////for (int i = 0; i < 130; i++)
+		////{
+		////	cout << "b: " <<b[i]<<" b_c[i]: "<< b_c[i] << "   a: " <<a[i]<<"  a_c: "<< a_c[a_c.size() - 1 - i] << endl;
+		////}
+		//prototile_second->loadTileData(imagename1);
+		//vector<Point2f> con2 = prototile_second->contour_sample[1];
+		//vector<double> con_c = prototile_second->contour_curva[1];
+		////if (b.size() == b_c.size()) cout << "b.size:" << b.size() << endl;
+		////if (con2.size() == con_c.size()) cout << "b.size:" << con2.size() << endl;
+	 //   CandPat hahah = tiling_opt->min_mismatch(con2, a, con_c, a_c);
+		//CandPat hahah1 = tiling_opt->min_mismatch(con2, b, con_c, b_c);
 
-		prototile_first->loadTileData(imagename3);
-		////Mat img1;
-		//double leng = prototile_first->c_length;
-		//vector<Point2f> a = prototile_first->contour;
-		vector<Point2f> b = prototile_first->contour_sample[1];
-		vector<double> b_c = prototile_first->contour_curva[1];
-		vector<Point2f> a = prototile_first->contour_sample_flip[1];
-		vector<double> a_c = prototile_first->contour_curva_flip[1];
-		//for (int i = 0; i < 130; i++)
+		//Mat rot_mat = getRotationMatrix2D(center_p(con2), hahah.angle, 1);
+		//vector<Point2f> d;
+		//transform(a, d, rot_mat);
+		//int col = 800;
+		//int row = 800;
+		//Mat drawing_pro = Mat(col, row, CV_8UC3, Scalar(255, 255, 255));
+		//int n = d.size();
+		////cout << "n: " << n << endl;
+		//Point rook_points[1][2000];
+		//for (int t = 0; t < n; t++)
 		//{
-		//	cout << "b: " <<b[i]<<" b_c[i]: "<< b_c[i] << "   a: " <<a[i]<<"  a_c: "<< a_c[a_c.size() - 1 - i] << endl;
+		//	rook_points[0][t] = d[t];
 		//}
-		prototile_second->loadTileData(imagename1);
-		vector<Point2f> con2 = prototile_second->contour_sample[1];
-		vector<double> con_c = prototile_second->contour_curva[1];
-		//if (b.size() == b_c.size()) cout << "b.size:" << b.size() << endl;
-		//if (con2.size() == con_c.size()) cout << "b.size:" << con2.size() << endl;
-	    CandPat hahah = tiling_opt->min_mismatch(con2, a, con_c, a_c);
-		CandPat hahah1 = tiling_opt->min_mismatch(con2, b, con_c, b_c);
-
-		Mat rot_mat = getRotationMatrix2D(center_p(con2), hahah.angle, 1);
-		vector<Point2f> d;
-		transform(a, d, rot_mat);
-		int col = 800;
-		int row = 800;
-		Mat drawing_pro = Mat(col, row, CV_8UC3, Scalar(255, 255, 255));
-		int n = d.size();
-		//cout << "n: " << n << endl;
-		Point rook_points[1][2000];
-		for (int t = 0; t < n; t++)
-		{
-			rook_points[0][t] = d[t];
-		}
-		const Point* ppt[1] = { rook_points[0] };
-		int npt[] = { n };
-		fillPoly(drawing_pro,
-			ppt,
-			npt,
-			1,
-			Scalar(0, 0, 0) //黑色
-			//Scalar(255, 255, 255) //白色
-			);
-		circle(drawing_pro, d[0], 4, Scalar(255), 3);
-		circle(drawing_pro, d[hahah.index], 4, Scalar(255, 0, 255), 3);
-		Point2f cenpo = center_p(d);
-		circle(drawing_pro, cenpo, 4, Scalar(0, 255, 255), -1);
-		imshow("4: ", drawing_pro);
+		//const Point* ppt[1] = { rook_points[0] };
+		//int npt[] = { n };
+		//fillPoly(drawing_pro,
+		//	ppt,
+		//	npt,
+		//	1,
+		//	Scalar(0, 0, 0) //黑色
+		//	//Scalar(255, 255, 255) //白色
+		//	);
+		//circle(drawing_pro, d[0], 4, Scalar(255), 3);
+		//circle(drawing_pro, d[hahah.index], 4, Scalar(255, 0, 255), 3);
+		//Point2f cenpo = center_p(d);
+		//circle(drawing_pro, cenpo, 4, Scalar(0, 255, 255), -1);
+		//imshow("4: ", drawing_pro);
+    	//if (hahah.mismatch < hahah1.mismatch)
+		//{
+		//	cout << "flip" << endl;
+		//	cout << "angle: " << hahah.angle << "  index: " << hahah.index << "  mismatch: " << hahah.mismatch << endl;
+		//}
+		//else
+		//{
+		//	cout << "right" << endl;
+		//	cout << "angle: " << hahah1.angle << "  index: " << hahah1.index << "  mismatch: " << hahah1.mismatch << endl;
+		//}
+		//------------------------
 
 
-		if (hahah.mismatch < hahah1.mismatch)
-		{
-			cout << "flip" << endl;
-			cout << "angle: " << hahah.angle << "  index: " << hahah.index << "  mismatch: " << hahah.mismatch << endl;
-		}
-		else
-		{
-			cout << "right" << endl;
-			cout << "angle: " << hahah1.angle << "  index: " << hahah1.index << "  mismatch: " << hahah1.mismatch << endl;
-		}
-		
+
+
 		//
 		//
 		//cout << center_p(b) << endl;
@@ -181,7 +185,8 @@ int main(int argc, char** argv)
 		//imshow("result", src1);	
 		//imshow("win", src);
 
-
+        //--------------------------------
+        //测试compare_shapes函数
 		/*tiling_opt->load_dataset();
 		prototile_first->contourname = imagename3;
 		prototile_first->contour = prototile_first->readTxt();
@@ -207,29 +212,10 @@ int main(int argc, char** argv)
 		//	<< "test2:" << test22.size() << endl;
 		tiling_opt->min_mismatch(test1, test2, test11, test22);
 		//cout << re << endl;
-
 		*/
-		/*vector<double> sss;
-		vector<int> index_s;
-		prototile_first->loadTileData(imagename3);
-		vector<Point2f> contour_mid = prototile_first->contour_sample[0];
-		int total_num = tiling_opt->contour_dataset.size();
-		for (int can_num = 0; can_num < total_num; can_num++)
-		{
-			index_s.push_back(can_num);
-			prototile_second->~Prototile();
-			prototile_second->loadPoints(tiling_opt->contour_dataset[can_num]);
-			vector<Point2f> contour_second = prototile_second->contour_sample[0];
-			int method_ = 3;
-			double score;
-			score = matchShapes(contour_mid, contour_second, method_, 0);
-			sss.push_back(score);
-		}
-		sort_comb(sss,index_s);
-		for (int i = index_s.size()-1; i > 180; i--)
-		{
-			cout << index_s[i] << " " << sss[index_s[i]] << endl;
-		}*/
+        //-------------------------------------------
+
+
 		//cout << order.first << "  " << order.second << endl;
 		/*vector<Point2f> con1 = prototile_first->contour_sample[0];
 		prototile_second->loadTileData(imagename2);
@@ -237,25 +223,6 @@ int main(int argc, char** argv)
 		prototile_third->loadTileData(imagename1);
 		vector<Point2f> con3 = prototile_third->contour_sample[0];*/
 		
-		/*double score[3][3];
-		cout << endl << imagename3 << " v " << imagename2 <<": "<< endl;
-		for (int i = 1; i < 4; i++)
-		{
-			score[0][i-1] = matchShapes(con1, con2, i, 0);
-			cout << score[0][i - 1] << " " ;
-		}
-		cout << endl<< imagename1 << " v " << imagename2 << ": " << endl;
-		for (int i = 1; i < 4; i++)
-		{
-			score[1][i - 1] = matchShapes(con3, con2, i, 0);
-			cout << score[1][i - 1] << " ";
-		}
-		cout << endl << imagename3<<" v " << imagename1 << ": " << endl;
-		for (int i = 1; i < 4; i++)
-		{
-			score[2][i - 1] = matchShapes(con1, con3, i, 0);
-			cout << score[2][i - 1] << " ";
-		}*/
 
 		//prototile_first->loadTileData(imagename3);
 		//vector<Point2f> con1 = prototile_first->contour_sample[0];

@@ -64,7 +64,7 @@ namespace Tiling_tiles{
 		}
 	}
 
-	void Tiling_opt::points_dividing(string imaname) //此处还是平均分的方法，需要做的： 优化分段的方法
+	void Tiling_opt::points_dividing(string imaname) //
 	{		
 		vector<int> p_p_index = prototile_first->partition_points(imaname);
 		vector<Point2f> contour_ = prototile_first->contour;
@@ -126,7 +126,7 @@ namespace Tiling_tiles{
 							<< "   m: " << p_p_index[m % ppindex]
 							<< "   n: " << p_p_index[n % ppindex] << endl;						
 						//one_situ_div(result_index, contour_, inner_contour);
-						if (one_situ_div(result_index, contour_, inner_contour))
+						if (!one_situ_div(result_index, contour_, inner_contour))
 						{
 							cout << "-------------collision-------------" << endl;
 							continue;
@@ -176,7 +176,7 @@ namespace Tiling_tiles{
 		
 	}
 
-	bool Tiling_opt::one_situ_div(vector<int> results, vector<Point2f> &contour_s,vector<Point2f> &return_B)
+	bool Tiling_opt::one_situ_div(vector<int> results, vector<Point2f> &contour_s,vector<Point2f> &return_B) //检测一种划分情况的结果
 	{
 		Point2f line1 = contour_s[results[2]] - contour_s[results[0]];
 		Point2f line2 = contour_s[results[3]] - contour_s[results[1]];
@@ -198,7 +198,7 @@ namespace Tiling_tiles{
 			{
 				if (coll_detection(shift_4[i], shift_4[j], contour_s))
 				{
-					return true;
+					return false;
 				}
 				//else {
 				//	cout << "i: " << i << "j: " << j << endl;
@@ -228,7 +228,7 @@ namespace Tiling_tiles{
 		//}
 		vector<vector<Point2f>> four_place;
 		vector<Point2f> one_loca;
-		// 目前为止只考虑正向摆放，不考虑旋转和翻转
+		// 提取围成的轮廓，目前为止只考虑正向摆放，不考虑旋转和翻转
 		four_place.push_back(contour_s);
 		for (int i = 0; i < contour_s.size(); i++)
 		{
@@ -271,7 +271,7 @@ namespace Tiling_tiles{
 			}
 		}
 		imshow("result_mid", drawing_pro);
-		Point2f cent_p;
+
 		for (int t = results[3]-1; t > results[2]+1; t--)
 		{
 			return_B.push_back(four_place[0][t]);
@@ -293,13 +293,7 @@ namespace Tiling_tiles{
 			return_B.push_back(four_place[2][t]);
 		}
 		//cout << "num: " << return_B.size();
-
-		for (int z = 0; z < return_B.size(); z++)
-		{
-			cent_p = cent_p + return_B[z];
-		}
-		cent_p.x = cent_p.x / return_B.size();
-		cent_p.y = cent_p.y / return_B.size();
+		Point2f cent_p = center_p(return_B);
 		Point2f shift3 = Point2f(400, 400) - cent_p;
 		for (int z = 0; z < return_B.size(); z++)
 		{
@@ -313,7 +307,7 @@ namespace Tiling_tiles{
 		}
 		imshow("b:", drawing7);
 		draw_polygen("B:re_show", return_B);
-		return false;
+		return true;
 	}
 
 	bool Tiling_opt::coll_detection(Point2f shifting1, Point2f shifting2, vector<Point2f> &contour_s)
@@ -513,7 +507,7 @@ namespace Tiling_tiles{
 		vector<vector<double>> score_3types(3);
 		vector<vector<int>> index_s(3);
 		
-		int internum = 0;
+		//int internum = 0;
 		for (int can_num = 0; can_num < total_num; can_num++)
 		{
 			prototile_second->~Prototile();
@@ -532,41 +526,55 @@ namespace Tiling_tiles{
 		for (int i = 0; i < 3; i++)
 		{
 			sort_comb(score_3types[i], index_s[i]);
+			//cout
 			for (int t = index_s[i].size() - 1; t > total_num-20; t--)
 			{
 				cout << index_s[i][t] << " " << score_3types[i][index_s[i][t]] << endl;
-			}		
-		}
-		
-		for (int t = 0; t < 3; t++)
-		{
-			for (int i = index_s[t].size() - 1; i > total_num-10; i--)
+			}	
+			//添加到order数组里
+			for (int t = index_s[i].size() - 1; t > total_num - 10; t--)
 			{
 				int f = 0;
 				for (int j = 0; j < order_total.size(); j++)
 				{
-					if (index_s[t][i] == order_total[j])
+					if (index_s[i][t] == order_total[j])
 					{
 						f = 1;
 						break;
 					}
 				}
-				if (f==0) order_total.push_back(index_s[t][i]);
+				if (f == 0) order_total.push_back(index_s[i][t]);
 			}
 		}
+		
 		int ordersize = order_total.size();
+		//cout 合并后的候选项
 		for (int i = 0; i < ordersize; i++)
 		{
 			cout << "order_total: " << order_total[i] << endl;
 		}
+
 		/*for (int t = 0; t < ordersize; t++)
 		{
 			prototile_second->~Prototile();
 			prototile_second->loadPoints(contour_dataset[order_total[t]]);
 			vector<Point2f> contour_second = prototile_second->contour_sample[0];
 			vector<double> contour_second_c = prototile_second->contour_curva[0];
-			min_mismatch(contour_mid, contour_second, contour_mid_c, contour_second_c);
+			vector<Point2f> contour_sec_f = prototile_second->contour_sample_flip[0];
+			vector<double> contour_sec_c_f = prototile_second->contour_curva_flip[0];
 
+			CandPat right_mis = min_mismatch(contour_mid, contour_second, contour_mid_c, contour_second_c);
+			CandPat flip_mis = min_mismatch(contour_mid, contour_sec_f, contour_mid_c, contour_sec_c_f);
+			if (right_mis.mismatch < flip_mis.mismatch)
+			{
+				cout << "right_mis" << endl;
+				cout << "angle: " << right_mis.angle << "  index: " << right_mis.index << "  mismatch: " << right_mis.mismatch << endl;
+			}
+			else
+			{
+				cout << "flip_mis" << endl;
+				cout << "angle: " << flip_mis.angle << "  index: " << flip_mis.index << "  mismatch: " << flip_mis.mismatch << endl;
+			}
 		}*/
 
 		return order_total;
@@ -623,7 +631,7 @@ namespace Tiling_tiles{
 		int min_angle = 0;
 		int min_index = 0;
 		
-		for (int angle = 0; angle < 5; angle = angle + 5)
+		for (int angle = 0; angle < 360; angle = angle + 5)
 		{
 			if (angle != 0)
 			{

@@ -974,9 +974,16 @@ namespace Tiling_tiles{
 			for (int j = 0; j < second_num; j++)
 			{
 				dis[i][j] = dis[i][j] / max_dis; 
-				cout << "dis[i][j]: " << dis[i][j] << endl;
+				//cout << "dis[i][j]: " << dis[i][j] << endl;
 			}
 		}
+		//for (int i = 0; i < 10; i++)
+		//{
+		//	for (int j = 0; j < 10; j++)
+		//	{
+		//		cout << "dis[i][j]: " << dis[i][j] << endl;
+		//	}
+		//}
 
 		double dis_cur[101][101];//两组点之间的曲率差异
 		double max_dis_cur = 0;
@@ -994,20 +1001,26 @@ namespace Tiling_tiles{
 					
 					
 				}
-				//dis_cur[i][j] = dis_cur[i][j] * dis_cur[i][j];
 			}
 		}
 		
 		//曲率差值归一化
-		cout << "max_dis_cur: " << max_dis_cur << endl;
+		//cout << "max_dis_cur: " << max_dis_cur << endl;
 		for (int i = 0; i < first_num; i++)
 		{
 			for (int j = 0; j < second_num; j++)
 			{
 				dis_cur[i][j] = dis_cur[i][j] / max_dis_cur; 
-				cout << "dis_cur[i][j]: " << dis_cur[i][j] << endl;
+				//cout << "dis_cur[i][j]: " << dis_cur[i][j] << endl;
 			}
 		}
+		//for (int i = 0; i < 10; i++)
+		//{
+		//	for (int j = 0; j < 10; j++)
+		//	{
+		//		cout << "dis_cur[i][j]: " << dis_cur[i][j] << endl;
+		//	}
+		//}
 
 
 		double distance[102][102];
@@ -1073,6 +1086,7 @@ namespace Tiling_tiles{
 		}
 		return distance[first_num - 1][second_num - 1];
 	}
+
 	vector<int> Tiling_opt::search_align_p(Point2f cent, Point2f end, vector<Point2f> cand_temp)
 	{
 		//保证线段足够长来求交点，将线段长度放大3倍
