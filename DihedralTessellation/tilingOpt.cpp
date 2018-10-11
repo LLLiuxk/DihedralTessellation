@@ -62,6 +62,7 @@ namespace Tiling_tiles{
 			if (!data_.empty())
 				contour_dataset.push_back(data_);
 		}
+		cout << "load over!" << endl;
 	}
 
 	void Tiling_opt::points_dividing(string imaname) //
@@ -172,7 +173,7 @@ namespace Tiling_tiles{
 		cout << "succeed count: "<<count << endl;
 		cout << "inner_conts.size" << inner_conts.size() << endl;
 		vector<int> candida_contours;
-		candida_contours = compare_shapes(inner_conts[0]);
+		candida_contours = compare_shapes(inner_conts[1]);
 		
 	}
 
@@ -495,7 +496,6 @@ namespace Tiling_tiles{
 
 	vector<int> Tiling_opt::compare_shapes(vector<Point2f> inner_c)
 	{
-		vector<vector<Point2f>> match_conts;
 		vector<int> order_total;
 		prototile_mid->~Prototile();
 		prototile_mid->loadPoints(inner_c);
@@ -527,10 +527,10 @@ namespace Tiling_tiles{
 		{
 			sort_comb(score_3types[i], index_s[i]);
 			//cout
-			for (int t = index_s[i].size() - 1; t > total_num-20; t--)
+			/*for (int t = index_s[i].size() - 1; t > total_num-20; t--)
 			{
 				cout << index_s[i][t] << " " << score_3types[i][index_s[i][t]] << endl;
-			}	
+			}	*/
 			//添加到order数组里
 			for (int t = index_s[i].size() - 1; t > total_num - 10; t--)
 			{
@@ -546,7 +546,8 @@ namespace Tiling_tiles{
 				if (f == 0) order_total.push_back(index_s[i][t]);
 			}
 		}
-		
+		vector<int> final_order;
+		vector<CandPat> score_total;
 		int ordersize = order_total.size();
 		//cout 合并后的候选项
 		for (int i = 0; i < ordersize; i++)
@@ -554,7 +555,7 @@ namespace Tiling_tiles{
 			cout << "order_total: " << order_total[i] << endl;
 		}
 
-		/*for (int t = 0; t < ordersize; t++)
+		for (int t = 0; t < ordersize; t++)  //展示所有order里的候选图案的对比结果,筛选出用min_mismatch值最小的结果
 		{
 			prototile_second->~Prototile();
 			prototile_second->loadPoints(contour_dataset[order_total[t]]);
@@ -563,19 +564,117 @@ namespace Tiling_tiles{
 			vector<Point2f> contour_sec_f = prototile_second->contour_sample_flip[0];
 			vector<double> contour_sec_c_f = prototile_second->contour_curva_flip[0];
 
-			CandPat right_mis = min_mismatch(contour_mid, contour_second, contour_mid_c, contour_second_c);
-			CandPat flip_mis = min_mismatch(contour_mid, contour_sec_f, contour_mid_c, contour_sec_c_f);
+			CandPat right_mis = min_mismatch(contour_mid, contour_second, contour_mid_c, contour_second_c, t, false);
+			CandPat flip_mis = min_mismatch(contour_mid, contour_sec_f, contour_mid_c, contour_sec_c_f, t, true);
+
+			/*int min_angle = 0;
+			int min_index = 0;
+			int isFlip = 0;
+			Mat rot_mat;
+			Point2f Ccen = center_p(contour_second);
+			Point2f Ccen1 = center_p(contour_mid);
+			vector<Point2f> cand_tem;*/
 			if (right_mis.mismatch < flip_mis.mismatch)
 			{
-				cout << "right_mis" << endl;
-				cout << "angle: " << right_mis.angle << "  index: " << right_mis.index << "  mismatch: " << right_mis.mismatch << endl;
+				score_total.push_back(right_mis);
+				//cout << "right_mis" << endl;
+				//cout << "angle: " << right_mis.angle << "  index: " << right_mis.index << "  mismatch: " << right_mis.mismatch << endl;
+				/*min_angle = right_mis.angle;
+				min_index = right_mis.index;
+				rot_mat = getRotationMatrix2D(Ccen, min_angle, 1);
+				transform(contour_second, cand_tem, rot_mat);*/
+			
 			}
 			else
 			{
-				cout << "flip_mis" << endl;
-				cout << "angle: " << flip_mis.angle << "  index: " << flip_mis.index << "  mismatch: " << flip_mis.mismatch << endl;
+				score_total.push_back(flip_mis);
+				//cout << "flip_mis" << endl;
+				//cout << "angle: " << flip_mis.angle << "  index: " << flip_mis.index << "  mismatch: " << flip_mis.mismatch << endl;
+				/*min_angle = flip_mis.angle;
+				min_index = flip_mis.index;
+				rot_mat = getRotationMatrix2D(Ccen, min_angle, 1);
+				transform(contour_sec_f, cand_tem, rot_mat);
+				isFlip = 1;*/
 			}
-		}*/
+			
+			
+			//展示旋转后的结果
+			
+			/*int col = 800;
+			int row = 800;
+			Mat drawing_pro = Mat(col, row, CV_8UC3, Scalar(255, 255, 255));
+			int n = cand_tem.size();
+			//cout << "n: " << n << endl;
+			Point rook_points[1][2000];
+			for (int t = 0; t < n; t++)
+			{
+				rook_points[0][t] = cand_tem[t];
+			}
+			const Point* ppt[1] = { rook_points[0] };
+			int npt[] = { n };
+			fillPoly(drawing_pro,
+				ppt,
+				npt,
+				1,
+				Scalar(0, 0, 0) //黑色
+				//Scalar(255, 255, 255) //白色
+				);
+			circle(drawing_pro, cand_tem[0], 4, Scalar(255), 3);
+			circle(drawing_pro, cand_tem[min_index], 4, Scalar(255, 0, 255), 3);
+			Point2f cenpo = center_p(cand_tem);
+			circle(drawing_pro, cenpo, 4, Scalar(0, 255, 255), -1);
+			imshow("final result: ", drawing_pro);
+
+
+			Mat drawing_pro1 = Mat(col, row, CV_8UC3, Scalar(255, 255, 255));
+			int n1 = contour_mid.size();
+			//cout << "n: " << n << endl;
+			Point rook_points1[1][2000];
+			for (int t = 0; t < n1; t++)
+			{
+				rook_points1[0][t] = contour_mid[t];
+			}
+			const Point* ppt1[1] = { rook_points1[0] };
+			int npt1[] = { n1 };
+			fillPoly(drawing_pro1,
+				ppt1,
+				npt1,
+				1,
+				Scalar(0, 0, 0) //黑色
+				//Scalar(255, 255, 255) //白色
+				);
+			circle(drawing_pro1, contour_mid[0], 4, Scalar(255), 3);
+			circle(drawing_pro1, Ccen1, 4, Scalar(255, 0, 255), -1);
+			imshow("inner pattern: ", drawing_pro1);
+
+			if (isFlip == 0)	draw_polygen("cand pattern: ", contour_second);
+			else draw_polygen("cand pattern: ", contour_sec_f);
+			*/
+
+		}
+
+		CandPat temp;
+		for (int i = 0; i < score_total.size() - 1; i++)
+		{
+			for (int j = 0; j < score_total.size() - 1 - i; j++)
+				if (score_total[j].mismatch > score_total[j + 1].mismatch)
+				{
+					temp = score_total[j];
+					score_total[j] = score_total[j + 1];
+					score_total[j + 1] = temp;
+
+				}
+		}
+		for (int i = 0; i < score_total.size() - 1; i++)
+		{
+			cout << score_total[i].number << "  " << score_total[i].mismatch << "  " << endl;
+		}
+		
+
+
+
+
+
 
 		return order_total;
 		/*cout << "score_3types[0].size： " << score_3types[0].size() << endl;
@@ -598,14 +697,14 @@ namespace Tiling_tiles{
 	}
 
 	//从360度里寻找使误差最小的角度及此时的误差
-	CandPat Tiling_opt::min_mismatch(vector<Point2f> inner, vector<Point2f> cand, vector<double> inner_c, vector<double> cand_c)
+	CandPat Tiling_opt::min_mismatch(vector<Point2f> inner, vector<Point2f> cand, vector<double> inner_c, vector<double> cand_c, int theone, bool isFilp)
 	{
 		//将两个轮廓的周长质心对齐
 		// 这里要保证inner和cand的size差不多，因为会出现截尾现象，如果差距太大会造成较大误差
 		//cout << "1: " << cand.size() << "  2: " << cand_f.size()<<endl;
 		//cout << "c: " << center_p(cand) << "  d: " << center_p(cand_f) << endl;
 		double scale = arcLength(inner, true) / arcLength(cand, true);
-		cout << "scale: " << scale << endl;
+		//cout << "scale: " << scale << endl;
 		for (int i = 0; i < cand.size(); i++)
 		{
 			cand[i].x = cand[i].x * scale;
@@ -692,7 +791,7 @@ namespace Tiling_tiles{
 					//	<< "test2:" << test22.size() << endl;
 					accumu_mis += quadr_mismatch(test1, test2, test11, test22); //因为quadr函数里用的数组是100x100，所以需要截取输入
 				}
-				cout << "angle  "<<angle<<" mismatch: "<<accumu_mis << endl;
+				//cout << "angle  "<<angle<<" mismatch: "<<accumu_mis << endl;
 				if (accumu_mis < min_mismatch)
 				{
 					min_angle = angle;
@@ -702,61 +801,8 @@ namespace Tiling_tiles{
 				
 			}		
 		}
-
-		//展示旋转后的结果
-		rot_mat = getRotationMatrix2D(Ccen, min_angle, 1);
-		transform(cand, cand_tem, rot_mat);		
-		int col = 800;
-		int row = 800;
-		Mat drawing_pro = Mat(col, row, CV_8UC3, Scalar(255, 255, 255));
-		int n = cand_tem.size();
-		//cout << "n: " << n << endl;
-		Point rook_points[1][2000];
-		for (int t = 0; t < n; t++)
-		{
-			rook_points[0][t] = cand_tem[t];
-		}
-		const Point* ppt[1] = { rook_points[0] };
-		int npt[] = { n };
-		fillPoly(drawing_pro,
-			ppt,
-			npt,
-			1,
-			Scalar(0, 0, 0) //黑色
-			//Scalar(255, 255, 255) //白色
-			);
-		circle(drawing_pro, cand_tem[0], 4, Scalar(255), 3);
-		circle(drawing_pro, cand_tem[min_index], 4, Scalar(255,0,255), 3);
-		Point2f cenpo = center_p(cand_tem);
-		circle(drawing_pro, cenpo, 4, Scalar(0, 255, 255), -1);
-		imshow("1: ", drawing_pro);
-
-
-		Mat drawing_pro1 = Mat(col, row, CV_8UC3, Scalar(255, 255, 255));
-		int n1 = inner.size();
-		//cout << "n: " << n << endl;
-		Point rook_points1[1][2000];
-		for (int t = 0; t < n1; t++)
-		{
-			rook_points1[0][t] = inner[t];
-		}
-		const Point* ppt1[1] = { rook_points1[0] };
-		int npt1[] = { n1 };
-		fillPoly(drawing_pro1,
-			ppt1,
-			npt1,
-			1,
-			Scalar(0, 0, 0) //黑色
-			//Scalar(255, 255, 255) //白色
-			);
-		circle(drawing_pro1, inner[0], 4, Scalar(255), 3);
-		circle(drawing_pro1, Ccen, 4, Scalar(255, 0, 255), -1);
-		imshow("2: ", drawing_pro1);
-
-		draw_polygen("3: ", cand);
-
-			
-		CandPat min_pat = { min_angle, min_index, min_mismatch };
+					
+		CandPat min_pat = { theone, isFilp, min_angle, min_index, min_mismatch };
 		return min_pat;
 
 	}

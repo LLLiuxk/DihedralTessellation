@@ -159,7 +159,7 @@ namespace Tiling_tiles{
 			return con_point;
 		}
 		//挨个处理每个字符
-		cout << "Opening file!!!" << endl;
+		//cout << "Opening file!!!" << endl;
 		vector<char> each_point;
 		int aa = 0;
 		int bb = 0;
@@ -168,7 +168,7 @@ namespace Tiling_tiles{
 		char buf[200];
 		//for ()
 		in.getline(buf, 200);
-		cout << "num: " << buf << endl;
+		//cout << "num: " << buf << endl;
 		while (!in.eof())
 		{
 			aa = 0;

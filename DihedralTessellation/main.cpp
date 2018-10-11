@@ -30,6 +30,7 @@ int main(int argc, char** argv)
 	if (f == 0) //ÒÑÓÐdataset
 	{
 		tiling_opt->points_dividing(imagename3);
+
 		//------------------------
 		//²âÊÔmin_mismatchº¯Êý
 		//prototile_first->loadTileData(imagename3);
