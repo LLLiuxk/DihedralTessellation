@@ -173,7 +173,7 @@ namespace Tiling_tiles{
 		cout << "succeed count: "<<count << endl;
 		cout << "inner_conts.size" << inner_conts.size() << endl;
 		vector<int> candida_contours;
-		candida_contours = compare_shapes(inner_conts[1]);
+		candida_contours = compare_shapes(inner_conts[2]);
 		
 	}
 
@@ -527,7 +527,8 @@ namespace Tiling_tiles{
 		{
 			sort_comb(score_3types[i], index_s[i]);
 			//cout
-			/*for (int t = index_s[i].size() - 1; t > total_num-20; t--)
+			/*cout << "3zhongpingfen" << endl;
+			for (int t = index_s[i].size() - 1; t > total_num-20; t--)
 			{
 				cout << index_s[i][t] << " " << score_3types[i][index_s[i][t]] << endl;
 			}	*/
@@ -546,14 +547,14 @@ namespace Tiling_tiles{
 				if (f == 0) order_total.push_back(index_s[i][t]);
 			}
 		}
-		vector<int> final_order;
+		vector<CandPat> final_order;
 		vector<CandPat> score_total;
 		int ordersize = order_total.size();
 		//cout 合并后的候选项
-		for (int i = 0; i < ordersize; i++)
-		{
-			cout << "order_total: " << order_total[i] << endl;
-		}
+		//for (int i = 0; i < ordersize; i++)
+		//{
+		//	cout << "order_total: " << order_total[i] << endl;
+		//}
 
 		for (int t = 0; t < ordersize; t++)  //展示所有order里的候选图案的对比结果,筛选出用min_mismatch值最小的结果
 		{
@@ -564,16 +565,8 @@ namespace Tiling_tiles{
 			vector<Point2f> contour_sec_f = prototile_second->contour_sample_flip[0];
 			vector<double> contour_sec_c_f = prototile_second->contour_curva_flip[0];
 
-			CandPat right_mis = min_mismatch(contour_mid, contour_second, contour_mid_c, contour_second_c, t, false);
-			CandPat flip_mis = min_mismatch(contour_mid, contour_sec_f, contour_mid_c, contour_sec_c_f, t, true);
-
-			/*int min_angle = 0;
-			int min_index = 0;
-			int isFlip = 0;
-			Mat rot_mat;
-			Point2f Ccen = center_p(contour_second);
-			Point2f Ccen1 = center_p(contour_mid);
-			vector<Point2f> cand_tem;*/
+			CandPat right_mis = min_mismatch(contour_mid, contour_second, contour_mid_c, contour_second_c, order_total[t], false);
+			CandPat flip_mis = min_mismatch(contour_mid, contour_sec_f, contour_mid_c, contour_sec_c_f, order_total[t], true);
 			if (right_mis.mismatch < flip_mis.mismatch)
 			{
 				score_total.push_back(right_mis);
@@ -596,61 +589,6 @@ namespace Tiling_tiles{
 				transform(contour_sec_f, cand_tem, rot_mat);
 				isFlip = 1;*/
 			}
-			
-			
-			//展示旋转后的结果
-			
-			/*int col = 800;
-			int row = 800;
-			Mat drawing_pro = Mat(col, row, CV_8UC3, Scalar(255, 255, 255));
-			int n = cand_tem.size();
-			//cout << "n: " << n << endl;
-			Point rook_points[1][2000];
-			for (int t = 0; t < n; t++)
-			{
-				rook_points[0][t] = cand_tem[t];
-			}
-			const Point* ppt[1] = { rook_points[0] };
-			int npt[] = { n };
-			fillPoly(drawing_pro,
-				ppt,
-				npt,
-				1,
-				Scalar(0, 0, 0) //黑色
-				//Scalar(255, 255, 255) //白色
-				);
-			circle(drawing_pro, cand_tem[0], 4, Scalar(255), 3);
-			circle(drawing_pro, cand_tem[min_index], 4, Scalar(255, 0, 255), 3);
-			Point2f cenpo = center_p(cand_tem);
-			circle(drawing_pro, cenpo, 4, Scalar(0, 255, 255), -1);
-			imshow("final result: ", drawing_pro);
-
-
-			Mat drawing_pro1 = Mat(col, row, CV_8UC3, Scalar(255, 255, 255));
-			int n1 = contour_mid.size();
-			//cout << "n: " << n << endl;
-			Point rook_points1[1][2000];
-			for (int t = 0; t < n1; t++)
-			{
-				rook_points1[0][t] = contour_mid[t];
-			}
-			const Point* ppt1[1] = { rook_points1[0] };
-			int npt1[] = { n1 };
-			fillPoly(drawing_pro1,
-				ppt1,
-				npt1,
-				1,
-				Scalar(0, 0, 0) //黑色
-				//Scalar(255, 255, 255) //白色
-				);
-			circle(drawing_pro1, contour_mid[0], 4, Scalar(255), 3);
-			circle(drawing_pro1, Ccen1, 4, Scalar(255, 0, 255), -1);
-			imshow("inner pattern: ", drawing_pro1);
-
-			if (isFlip == 0)	draw_polygen("cand pattern: ", contour_second);
-			else draw_polygen("cand pattern: ", contour_sec_f);
-			*/
-
 		}
 
 		CandPat temp;
@@ -665,10 +603,82 @@ namespace Tiling_tiles{
 
 				}
 		}
+		cout << "mismatch order" << endl;
 		for (int i = 0; i < score_total.size() - 1; i++)
 		{
 			cout << score_total[i].number << "  " << score_total[i].mismatch << "  " << endl;
 		}
+		/*cout << "the first three" << endl;
+		for (int i = 0; i < 3; i++)
+		{
+			final_order.push_back(score_total[i]);
+			cout << final_order[i].number << "   " << final_order[i].mismatch << endl;
+		}*/
+
+		//展示旋转后的结果
+		CandPat tem = score_total[0];
+		prototile_second->~Prototile();
+		prototile_second->loadPoints(contour_dataset[tem.number]);
+		vector<Point2f> contour_cand;
+		vector<Point2f> cand_tem;
+		if (tem.isFilp) contour_cand = prototile_second->contour_sample_flip[0];
+		else contour_cand = prototile_second->contour_sample[0];
+		Point2f Ccen = center_p(contour_cand);
+		Mat rot_mat;
+		rot_mat = getRotationMatrix2D(Ccen, tem.angle, 1);
+		transform(contour_cand, cand_tem, rot_mat);
+		
+		Point2f Ccen1 = center_p(contour_mid);
+
+		int col = 800;
+		int row = 800;
+		Mat drawing_pro = Mat(col, row, CV_8UC3, Scalar(255, 255, 255));
+		int n = cand_tem.size();
+		//cout << "n: " << n << endl;
+		Point rook_points[1][2000];
+		for (int t = 0; t < n; t++)
+		{
+		rook_points[0][t] = cand_tem[t];
+		}
+		const Point* ppt[1] = { rook_points[0] };
+		int npt[] = { n };
+		fillPoly(drawing_pro,
+		ppt,
+		npt,
+		1,
+		Scalar(0, 0, 0) //黑色
+		//Scalar(255, 255, 255) //白色
+		);
+		circle(drawing_pro, cand_tem[0], 4, Scalar(255), 3);
+		circle(drawing_pro, cand_tem[tem.index], 4, Scalar(255, 0, 255), 3);
+		Point2f cenpo = center_p(cand_tem);
+		circle(drawing_pro, cenpo, 4, Scalar(0, 255, 255), -1);
+		imshow("final result: ", drawing_pro);
+
+
+		Mat drawing_pro1 = Mat(col, row, CV_8UC3, Scalar(255, 255, 255));
+		int n1 = contour_mid.size();
+		//cout << "n: " << n << endl;
+		Point rook_points1[1][2000];
+		for (int t = 0; t < n1; t++)
+		{
+		rook_points1[0][t] = contour_mid[t];
+		}
+		const Point* ppt1[1] = { rook_points1[0] };
+		int npt1[] = { n1 };
+		fillPoly(drawing_pro1,
+		ppt1,
+		npt1,
+		1,
+		Scalar(0, 0, 0) //黑色
+		//Scalar(255, 255, 255) //白色
+		);
+		circle(drawing_pro1, contour_mid[0], 4, Scalar(255), 3);
+		circle(drawing_pro1, Ccen1, 4, Scalar(255, 0, 255), -1);
+		imshow("inner pattern: ", drawing_pro1);
+
+		draw_polygen("inner: ", inner_c);
+		draw_polygen("cand pattern: ", contour_cand);
 		
 
 
