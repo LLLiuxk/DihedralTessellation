@@ -72,7 +72,7 @@ namespace Tiling_tiles{
 	{
 		return sqrt((u.x - v.x)*(u.x - v.x) + (u.y - v.y)*(u.y - v.y));
 	}
-	void sort_comb(vector<double> vect, vector<int> &index_num) //只保留下标的排序,从小到大
+	void sort_comb(vector<double> vect, vector<int> &index_num) //将下标和数值联合排序，只保留下标的排序,从小到大
 	{
 		int i, j;
 		double temp;
@@ -149,8 +149,6 @@ namespace Tiling_tiles{
 	{
 		return unit_vec(v0).x*unit_vec(v1).x + unit_vec(v0).y*unit_vec(v1).y;
 	}
-
-	
 
 	double cur_length_two_p(double cur1, double cur2, double zeta)
 	{
@@ -280,9 +278,6 @@ namespace Tiling_tiles{
 		return eachOfcurvature;
 	}
 
-	
-
-
 	double Tiling_opt::warpAff_tra(vector<Point2f> &input_, vector<Point2f> &output_)
 	{
 
@@ -378,7 +373,6 @@ namespace Tiling_tiles{
 		//}
 		return length_two_point2f(srcTri[0], srcTri[1]) / 2;
 	}
-
 
 	double Tiling_opt::warpAff_tra_sec(vector<Point2f> &input_, vector<Point2f> &output_, vector<char>&second_char, vector<char>&second_char_out)
 	{
@@ -1141,6 +1135,133 @@ namespace Tiling_tiles{
 
 	}
 
+	vector<Point2f> morphing_2_patterns(vector<Point2f> contour1, vector<Point2f> conttour2)
+	{
+		//传统morphing是由start和end求得一系列intermediate状态，这里是通过c1和c2获得最终的变形结果
+		vector<Point2f> final_pettern;
+		//---------------------以下为morphing阶段
+		// 首先找到一一对应的点序列
+		vector<Point2f> src1_points;
+		vector<Point2f> src2_points;
+		src1_points.push_back(output_first[0]);
+		src2_points.push_back(output_second[0]);
+
+		//for (int i = 0; i < dp_path.size(); i++)
+		//{
+		//	cout << dp_path[i].first << " -- " << dp_path[i].second << endl;
+		//}
+		if (output_first.size() < output_second.size())
+		{
+			int f = 1;
+			int j = 0;
+			for (int i = 1; i < output_first.size() - 1;)
+			{
+
+				double min = 10000;
+				while (f < dp_path.size())
+				{
+
+					if ((dp_path[f].first < i) || dp_path[f].second < j) //检查下一条路径的另一端点是否已被使用
+					{
+						f++;
+						if (dp_path[f].first > i) i++;
+						continue;
+					}
+					if (dp_path[f].first == i)
+					{
+						if (length_two_point2f(output_first[dp_path[f].first], output_second[dp_path[f].second]) < min)
+						{
+							min = length_two_point2f(output_first[dp_path[f].first], output_second[dp_path[f].second]);
+							j = dp_path[f].second;
+						}
+						f++;
+					}
+					if (dp_path[f].first > i)
+					{
+						src1_points.push_back(output_first[i]);
+						src2_points.push_back(output_second[j]);
+						i++;
+						j++;
+						break;
+					}
+
+				}
+			}
+		}
+		else
+		{
+			int f = 1;
+			int j = 0;
+			for (int i = 1; i < output_second.size() - 1;)
+			{
+				double min = 10000;
+
+				while (f < dp_path.size())
+				{
+
+					if ((dp_path[f].second < i) || dp_path[f].first < j)
+					{
+
+						f++;
+						if (dp_path[f].second > i) i++;
+						continue;
+					}
+					if (dp_path[f].second == i)
+					{
+						if (length_two_point2f(output_first[dp_path[f].first], output_second[dp_path[f].second]) < min)
+						{
+							min = length_two_point2f(output_first[dp_path[f].first], output_second[dp_path[f].second]);
+							j = dp_path[f].first;
+						}
+						f++;
+					}
+					if (dp_path[f].second > i)
+					{
+						src1_points.push_back(output_first[j]);
+						src2_points.push_back(output_second[i]);
+						i++;
+						j++;
+						break;
+					}
+
+				}
+			}
+		}
+		src1_points.push_back(output_first[dp_path[dp_path.size() - 1].first]);
+		src2_points.push_back(output_second[dp_path[dp_path.size() - 1].second]);
+
+		if (src1_points.size() == src2_points.size())
+		{
+			for (int i = 0; i < src1_points.size(); i++)
+			{
+				circle(drawing_src3, src1_points[i], 1, Scalar(255, 0, 0), -1);
+				circle(drawing_src3, src2_points[i], 1, Scalar(0, 0, 255), -1);
+				MyLine(drawing_src3, src1_points[i], src2_points[i], "orange");
+				//cout << src1_points[i] << " - " << src2_points[i] << endl;
+			}
+		}
+		else cout << "num error!" << endl;
+		//调整系数改变变化程度，作为优化的变量
+		ImageMorphing(drawing_src1, src1_points, drawing_src2, src2_points, drawing_dst, output_final, 0.5);
+		//char i;
+
+		double length_final = length_two_point2f(output_final[0], output_final[output_final.size() - 1]);
+		for (int i = 0; i < output_final.size() - 1; i++)
+		{
+			MyLine(drawing_src3, output_final[i], output_final[i + 1], "red");
+		}
+
+		//imshow("drawing_src1", drawing_src1);
+		//imshow("drawing_src2", drawing_src2);
+		//imshow("drawing_dst", drawing_dst);
+
+		string name = "the ";
+		name = name + char(i + 48) + " pair: ";
+		imshow(name, drawing_src3);
+
+
+		return final_pettern;
+	}
 
 	
 }

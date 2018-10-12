@@ -88,7 +88,7 @@ namespace Tiling_tiles{
 		void load_dataset();
 
 		//shapes comparing and candidate contour choosing
-		vector<int> compare_shapes(vector<Point2f> inner_c);
+		vector<CandPat> compare_shapes(vector<Point2f> inner_c);
 		CandPat min_mismatch(vector<Point2f> inner, vector<Point2f> cand,  vector<double> inner_c, vector<double> cand_c, int theone, bool isFilp);
 		double quadr_mismatch(vector<Point2f> first_arr, vector<Point2f> second_arr, vector<double> first_c, vector<double> second_c);
 		vector<int> search_align_p(Point2f cent, Point2f end, vector<Point2f> cand_temp);
@@ -97,9 +97,6 @@ namespace Tiling_tiles{
 
 
 		double com_each_pair(vector<Point2f> &first_interval, vector<Point2f> &second_interval, int &flag);
-
-		
-
 		double com_optimal_score(vector<vector<Point2f>> &proto_interval_1, vector<vector<char>> &proto_first_char, 
 			vector<vector<Point2f>> &proto_interval_2, vector<vector<char>> &proto_second_char, vector<pair<int, int>> &order_type);
 		
@@ -135,7 +132,7 @@ namespace Tiling_tiles{
 	
 	};
 
-
+	//all kinds tools
 	//draw tool
 	void MyLine(Mat img, Point2f start, Point2f end, string color1);
 	void draw_polygen(string win_name, vector<Point2f> contour_s);
@@ -143,11 +140,14 @@ namespace Tiling_tiles{
 	Point2f center_p(vector<Point2f> contour_);
 	double contour_length(vector<Point2f> contour);
 	double length_two_point2f(Point2f &u, Point2f &v);
+	int cur_char_length(char a, char b);
+	double cur_length_two_p(double cur1, double cur2, double zeta);
 	void sort_comb(vector<double> vect, vector<int> &index_num);
 	
 	//cross points
 	int line_intersection(Point2f start1, Point2f end1, Point2f start2, Point2f end2, Point2f &cross_p);
-
+	
+	//vector and cosin
 	Point2f unit_vec(Point2f vec);
 	double cos_two_vector(Point2f &v0, Point2f &v1);
 
@@ -168,12 +168,12 @@ namespace Tiling_tiles{
 				}
 	}
 
-	int cur_char_length(char a, char b);
-	double cur_length_two_p(double cur1, double cur2, double zeta);
-	
-	
+	//bounding box
 	void bbx_center_point(vector<vector<Point2f>> all_point, vector<Point2f> &five_p);
 	vector<Point2f> b_box(vector<Point2f> contour);//返回的点是从左上方逆时针
+
+	//morphing
+	vector<Point2f> morphing_2_patterns(vector<Point2f> contour1, vector<Point2f> conttour2);
 
 	//skeleton
 	Mat thinImage(const Mat & src, const int maxIterations);

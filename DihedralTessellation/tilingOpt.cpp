@@ -104,28 +104,29 @@ namespace Tiling_tiles{
 		//circle(drawing6, contour_[430], 4, Scalar(0, 255, 0), -1);
 		//imshow("candadite points: ", drawing6);
 		vector<vector<Point2f>> inner_conts;
+		vector<vector<int>> all_situation_index;
 		for (int i = 0; i < ppindex; i++)
 		{
 			for (int j = i + 1; j < ppindex; j++)
 			{
-				if (abs(p_p_index[j % ppindex] - p_p_index[i]) < margin) continue;
+				if (abs(p_p_index[j] - p_p_index[i]) < margin) continue;
 				//cout << "i: " << p_p_index[i] << "   j: " << p_p_index[j% ppindex] << endl;
 				for (int m = j + 1; m < ppindex; m++)
 				{
-					if (abs(p_p_index[m % ppindex] - p_p_index[j % ppindex]) < margin) continue;
+					if (abs(p_p_index[m] - p_p_index[j]) < margin) continue;
 					for (int n = m + 1; n < ppindex; n++)
 					{
-						if (abs(p_p_index[n % ppindex] - p_p_index[m % ppindex]) < margin) continue;
+						if (abs(p_p_index[n] - p_p_index[m]) < margin) continue;
 						vector<Point2f> inner_contour;
 						vector<int> result_index;
 						result_index.push_back(p_p_index[i]);
-						result_index.push_back(p_p_index[j % ppindex]);
-						result_index.push_back(p_p_index[m % ppindex]);
-						result_index.push_back(p_p_index[n % ppindex]);
+						result_index.push_back(p_p_index[j]);
+						result_index.push_back(p_p_index[m]);
+						result_index.push_back(p_p_index[n]);
 						cout << "  i: " << p_p_index[i]
-							<< "   j: " << p_p_index[j % ppindex]
-							<< "   m: " << p_p_index[m % ppindex]
-							<< "   n: " << p_p_index[n % ppindex] << endl;						
+							<< "   j: " << p_p_index[j]
+							<< "   m: " << p_p_index[m]
+							<< "   n: " << p_p_index[n] << endl;						
 						//one_situ_div(result_index, contour_, inner_contour);
 						if (!one_situ_div(result_index, contour_, inner_contour))
 						{
@@ -137,43 +138,57 @@ namespace Tiling_tiles{
 						cout << "inner_contour.size : " << inner_contour.size() << endl;
 						
 						inner_conts.push_back(inner_contour);
-						
-						// search the right image
-						/*
-						1.将周长调整为一致
-						2.搜索最相近的图案以及角度
-						3.变形
-						*/
-
-						//show the marked points
-						Mat drawing6 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-
-						for (int j = 0; j < contour_.size(); j++)
-						{
-							circle(drawing6, contour_[j], 1, Scalar(0, 0, 0), -1);
-
-							//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
-						}
-						for (int j = 0; j < p_p_index.size(); j++)
-						{
-							circle(drawing6, contour_[p_p_index[j]], 4, Scalar(0, 0, 255), -1);
-						}
-						circle(drawing6, contour_[p_p_index[i]], 8, Scalar(0, 255, 0), -1);
-						circle(drawing6, contour_[p_p_index[j % ppindex]], 8, Scalar(0, 255, 0), -1);
-						circle(drawing6, contour_[p_p_index[m % ppindex]], 8, Scalar(0, 255, 0), -1);
-						circle(drawing6, contour_[p_p_index[n % ppindex]], 8, Scalar(0, 255, 0), -1);
-						imshow("candadite points: ", drawing6);
-						
+						all_situation_index.push_back(result_index);
 						//if (count == 1) return;
 
 					}
 				}
 			}
 		}
+		for (int i = 0; i < count; i++)
+		{
+
+			//show the marked points in the last time
+			Mat drawing6 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+
+			for (int j = 0; j < contour_.size(); j++)
+			{
+				circle(drawing6, contour_[j], 1, Scalar(0, 0, 0), -1);
+
+				//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
+			}
+			for (int j = 0; j < p_p_index.size(); j++)
+			{
+				circle(drawing6, contour_[p_p_index[j]], 4, Scalar(0, 0, 255), -1);
+			}
+			circle(drawing6, contour_[all_situation_index[i][0]], 8, Scalar(0, 255, 0), -1);
+			circle(drawing6, contour_[all_situation_index[i][1]], 8, Scalar(0, 255, 0), -1);
+			circle(drawing6, contour_[all_situation_index[i][2]], 8, Scalar(0, 255, 0), -1);
+			circle(drawing6, contour_[all_situation_index[i][3]], 8, Scalar(0, 255, 0), -1);
+			string name = "candadite points ";
+			name = name + char(i + 49);
+			imshow(name, drawing6);
+			//可以将one_situ_div里的排列在这里展示
+		}
 		cout << "succeed count: "<<count << endl;
-		cout << "inner_conts.size" << inner_conts.size() << endl;
-		vector<int> candida_contours;
-		candida_contours = compare_shapes(inner_conts[2]);
+		//cout << "inner_conts.size" << inner_conts.size() << endl;
+		// search the right image
+		/*
+		1.将周长调整为一致
+		2.搜索最相近的图案以及角度
+		3.变形
+		*/
+		for (int i = 0; i < 1; i++) //inner_conts.size()
+		{
+			vector<CandPat> candida_contours;
+			candida_contours = compare_shapes(inner_conts[i]);
+			for (int j = 0; j < candida_contours.size(); j++)
+			{
+				//inner and cand morph into the final pettern
+
+			}
+		}
+		
 		
 	}
 
@@ -300,14 +315,15 @@ namespace Tiling_tiles{
 		{
 			return_B[z] = return_B[z] + shift3;
 		}
-		Mat drawing7 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));				
-		for (int z = 0; z < return_B.size(); z++)
-		{
-			circle(drawing7, return_B[z], 1, Scalar(0, 0, 0), -1);
-			//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
-		}
-		imshow("b:", drawing7);
-		draw_polygen("B:re_show", return_B);
+		//show middle pattern
+		//Mat drawing7 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));				
+		//for (int z = 0; z < return_B.size(); z++)
+		//{
+		//	circle(drawing7, return_B[z], 1, Scalar(0, 0, 0), -1);
+		//	//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
+		//}
+		//imshow("b:", drawing7);
+		//draw_polygen("B:re_show", return_B);
 		return true;
 	}
 
@@ -494,7 +510,7 @@ namespace Tiling_tiles{
 		
 	}
 
-	vector<int> Tiling_opt::compare_shapes(vector<Point2f> inner_c)
+	vector<CandPat> Tiling_opt::compare_shapes(vector<Point2f> inner_c)
 	{
 		vector<int> order_total;
 		prototile_mid->~Prototile();
@@ -569,25 +585,11 @@ namespace Tiling_tiles{
 			CandPat flip_mis = min_mismatch(contour_mid, contour_sec_f, contour_mid_c, contour_sec_c_f, order_total[t], true);
 			if (right_mis.mismatch < flip_mis.mismatch)
 			{
-				score_total.push_back(right_mis);
-				//cout << "right_mis" << endl;
-				//cout << "angle: " << right_mis.angle << "  index: " << right_mis.index << "  mismatch: " << right_mis.mismatch << endl;
-				/*min_angle = right_mis.angle;
-				min_index = right_mis.index;
-				rot_mat = getRotationMatrix2D(Ccen, min_angle, 1);
-				transform(contour_second, cand_tem, rot_mat);*/
-			
+				score_total.push_back(right_mis);			
 			}
 			else
 			{
 				score_total.push_back(flip_mis);
-				//cout << "flip_mis" << endl;
-				//cout << "angle: " << flip_mis.angle << "  index: " << flip_mis.index << "  mismatch: " << flip_mis.mismatch << endl;
-				/*min_angle = flip_mis.angle;
-				min_index = flip_mis.index;
-				rot_mat = getRotationMatrix2D(Ccen, min_angle, 1);
-				transform(contour_sec_f, cand_tem, rot_mat);
-				isFlip = 1;*/
 			}
 		}
 
@@ -608,14 +610,14 @@ namespace Tiling_tiles{
 		{
 			cout << score_total[i].number << "  " << score_total[i].mismatch << "  " << endl;
 		}
-		/*cout << "the first three" << endl;
+		cout << "the first three" << endl;
 		for (int i = 0; i < 3; i++)
 		{
 			final_order.push_back(score_total[i]);
 			cout << final_order[i].number << "   " << final_order[i].mismatch << endl;
-		}*/
+		}
 
-		//展示旋转后的结果
+		//展示匹配误差最小的旋转后的结果
 		CandPat tem = score_total[0];
 		prototile_second->~Prototile();
 		prototile_second->loadPoints(contour_dataset[tem.number]);
@@ -677,33 +679,9 @@ namespace Tiling_tiles{
 		circle(drawing_pro1, Ccen1, 4, Scalar(255, 0, 255), -1);
 		imshow("inner pattern: ", drawing_pro1);
 
-		draw_polygen("inner: ", inner_c);
 		draw_polygen("cand pattern: ", contour_cand);
 		
-
-
-
-
-
-
-		return order_total;
-		/*cout << "score_3types[0].size： " << score_3types[0].size() << endl;
-		for (int i = 0; i < score_3types[0].size(); i++)
-		{
-			cout << score_3types[0][i] << endl;
-		}
-		cout << "score_3types[1].size： " << score_3types[1].size() << endl;
-		for (int i = 0; i < score_3types[1].size(); i++)
-		{
-			cout << score_3types[1][i] << endl;
-		}
-		cout << "score_3types[2].size： " << score_3types[2].size() << endl;
-		for (int i = 0; i < score_3types[2].size(); i++)
-		{
-			cout << score_3types[2][i] << endl;
-		}
-		cout << internum << endl;
-*/
+		return final_order;
 	}
 
 	//从360度里寻找使误差最小的角度及此时的误差
