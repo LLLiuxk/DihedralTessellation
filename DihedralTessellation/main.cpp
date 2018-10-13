@@ -1,10 +1,12 @@
 #include "tilingOpt.h"
-
+#include<ctime>
 using namespace Tiling_tiles;
 
 int main(int argc, char** argv)
 {
-
+	clock_t start, finish;
+	start = clock();
+	
 	string imagename1 = "22"; 
 	string imagename2 = "33";
 	//string imagename1 = "Boat";
@@ -464,9 +466,10 @@ int main(int argc, char** argv)
 	if (tiling_opt->collision_pixel(Point2f(10, 10), Point2f(0, 0), a, b))
 	cout << "pengzhuang" << endl;
 	else cout << "no";*/
-
+    finish = clock();
+    cout << (finish - start)/ CLOCKS_PER_SEC << " s " << endl;
 	waitKey(0);
-	getchar();
+	//getchar();
 	return 0;
 }
 

@@ -106,6 +106,7 @@ namespace Tiling_tiles{
 		//imshow("candadite points: ", drawing6);
 		vector<vector<Point2f>> inner_conts;
 		vector<vector<int>> all_situation_index;
+		vector<vector<int>> mid_interval_index;
 		for (int i = 0; i < ppindex; i++)
 		{
 			for (int j = i + 1; j < ppindex; j++)
@@ -120,6 +121,7 @@ namespace Tiling_tiles{
 						if (abs(p_p_index[n] - p_p_index[m]) < margin) continue;
 						vector<Point2f> inner_contour;
 						vector<int> result_index;
+						vector<int> mid_interval;
 						result_index.push_back(p_p_index[i]);
 						result_index.push_back(p_p_index[j]);
 						result_index.push_back(p_p_index[m]);
@@ -129,7 +131,7 @@ namespace Tiling_tiles{
 							<< "   m: " << p_p_index[m]
 							<< "   n: " << p_p_index[n] << endl;						
 						//one_situ_div(result_index, contour_, inner_contour);
-						if (!one_situ_div(result_index, contour_, inner_contour))
+						if (!one_situ_div(result_index, contour_, inner_contour, mid_interval))
 						{
 							cout << "-------------collision-------------" << endl;
 							continue;
@@ -140,6 +142,7 @@ namespace Tiling_tiles{
 						
 						inner_conts.push_back(inner_contour);
 						all_situation_index.push_back(result_index);
+						mid_interval_index.push_back(mid_interval);
 						//if (count == 1) return;
 
 					}
@@ -182,7 +185,9 @@ namespace Tiling_tiles{
 		for (int i = 0; i < 1; i++) //inner_conts.size()
 		{
 			vector<CandPat> candida_contours;
-			candida_contours = compare_shapes(inner_conts[i]);
+			candida_contours = compare_shapes(inner_conts[i], mid_interval_index[i]);
+			
+
 			for (int j = 0; j < 1; j++) //candida_contours.size()
 			{
 				//inner and cand morph into the final pettern
@@ -190,8 +195,17 @@ namespace Tiling_tiles{
 				prototile_mid->loadPoints(inner_conts[i]);
 				vector<Point2f> contour_inner = prototile_mid->contour_sample[0]; //选择最少的点进行比较
 				//vector<double> contour_inner_c = prototile_mid->contour_curva[0];
-				vector<Point2f> contour_cand = CandP2Contour(candida_contours[j]);				
-				morphing_2_patterns(contour_inner, contour_cand);
+				vector<Point2f> contour_cand = CandP2Contour(candida_contours[j]);	
+				vector<Point2f> inter_mid =	morphing_2_patterns(contour_inner, contour_cand);
+
+				Mat ddddd = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));;
+				ddddd = draw_polygen("???: ", inter_mid);
+				for (int t = 0; t < mid_interval_index[i].size(); t++)
+				{
+					circle(ddddd, inter_mid[mid_interval_index[i][t]], 4, Scalar(255, 0, 255), -1);
+					cout << "mid_inter: " << mid_interval_index[i][t];
+				}
+				imshow("???: ", ddddd);
 
 			}
 		}
@@ -199,7 +213,7 @@ namespace Tiling_tiles{
 		
 	}
 
-	bool Tiling_opt::one_situ_div(vector<int> results, vector<Point2f> &contour_s,vector<Point2f> &return_B) //检测一种划分情况的结果
+	bool Tiling_opt::one_situ_div(vector<int> results, vector<Point2f> contour_s,vector<Point2f> &return_B, vector<int> &return_p ) //检测一种划分情况的结果
 	{
 		Point2f line1 = contour_s[results[2]] - contour_s[results[0]];
 		Point2f line2 = contour_s[results[3]] - contour_s[results[1]];
@@ -294,23 +308,31 @@ namespace Tiling_tiles{
 			}
 		}
 		imshow("result_mid", drawing_pro);
-
+		int total_num = 0;
+		return_p.push_back(0);
 		for (int t = results[3]-1; t > results[2]+1; t--)
 		{
+			total_num++;
 			return_B.push_back(four_place[0][t]);
 		}
+		return_p.push_back(total_num);
 		for (int t = results[0]-1; t > 0; t--)
 		{
+			total_num++;
 			return_B.push_back(four_place[1][t]);
 		}
 		for (int t = four_place[1].size()-1; t > results[3]+1; t--)
 		{
+			total_num++;
 			return_B.push_back(four_place[1][t]);
 		}
+		return_p.push_back(total_num);
 		for (int t = results[1]-1; t > results[0]+1; t--)
 		{
+			total_num++;
 			return_B.push_back(four_place[3][t]);
 		}
+		return_p.push_back(total_num);
 		for (int t = results[2]-1; t > results[1]+1; t--)
 		{
 			return_B.push_back(four_place[2][t]);
@@ -517,16 +539,34 @@ namespace Tiling_tiles{
 		
 	}
 
-	vector<CandPat> Tiling_opt::compare_shapes(vector<Point2f> inner_c)
+	vector<CandPat> Tiling_opt::compare_shapes(vector<Point2f> inner_c, vector<int> &mid_index)
 	{
 		vector<int> order_total;
 		prototile_mid->~Prototile();
 		prototile_mid->loadPoints(inner_c);
 		vector<Point2f> contour_mid = prototile_mid->contour_sample[0]; //选择最少的点进行比较
 		vector<double> contour_mid_c = prototile_mid->contour_curva[0];
+		//将原始轮廓上的划分点对应到采样后的轮廓上
+		int con_midsize = contour_mid.size();
+		vector<int> mid_in;
+		for (int i = 0; i <mid_index.size(); i++)
+		{
+			int index_ = 0;
+			double dist = 10000;
+			for (int t = 0; t <con_midsize; t++)
+			{
+				if (length_two_point2f(inner_c[mid_index[i]], contour_mid[t]) < dist)
+				{
+					dist = length_two_point2f(inner_c[mid_index[i]], contour_mid[t]);
+					index_ = t;
+				}
+			}
+			mid_in.push_back(index_);
+		}
+		mid_index.swap(mid_in);
+
 		int total_num = contour_dataset.size();
 		
-
 		vector<vector<double>> score_3types(3);
 		vector<vector<int>> index_s(3);
 		

@@ -78,7 +78,7 @@ namespace Tiling_tiles{
 		void com_score(string imagename1, string imagename2);
 
 		void points_dividing(string imaname);
-		bool one_situ_div(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B);
+		bool one_situ_div(vector<int> results, vector<Point2f> contour_s, vector<Point2f> &return_B, vector<int> &return_p);
 
 		//collision
 		bool coll_detection(Point2f shifting1, Point2f shifting2, vector<Point2f> &contour_s);
@@ -88,7 +88,7 @@ namespace Tiling_tiles{
 		void load_dataset();
 
 		//shapes comparing and candidate contour choosing
-		vector<CandPat> compare_shapes(vector<Point2f> inner_c);
+		vector<CandPat> compare_shapes(vector<Point2f> inner_c, vector<int> &mid_index);
 		CandPat min_mismatch(vector<Point2f> inner, vector<Point2f> cand,  vector<double> inner_c, vector<double> cand_c, int theone, bool isFilp);
 		double quadr_mismatch(vector<Point2f> first_arr, vector<Point2f> second_arr, vector<double> first_c, vector<double> second_c);
 		vector<int> search_align_p(Point2f cent, Point2f end, vector<Point2f> cand_temp);
