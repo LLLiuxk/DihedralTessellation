@@ -69,6 +69,7 @@ namespace Tiling_tiles{
 	{		
 		vector<int> p_p_index = prototile_first->partition_points(imaname);
 		vector<Point2f> contour_ = prototile_first->contour;
+		//vector<Point2f> contour_ = prototile_first->contour;
 		load_dataset();
 		int ppindex = p_p_index.size();
 		int margin = prototile_first->contour.size() / 8;
@@ -182,9 +183,15 @@ namespace Tiling_tiles{
 		{
 			vector<CandPat> candida_contours;
 			candida_contours = compare_shapes(inner_conts[i]);
-			for (int j = 0; j < candida_contours.size(); j++)
+			for (int j = 0; j < 1; j++) //candida_contours.size()
 			{
 				//inner and cand morph into the final pettern
+				prototile_mid->~Prototile();
+				prototile_mid->loadPoints(inner_conts[i]);
+				vector<Point2f> contour_inner = prototile_mid->contour_sample[0]; //选择最少的点进行比较
+				//vector<double> contour_inner_c = prototile_mid->contour_curva[0];
+				vector<Point2f> contour_cand = CandP2Contour(candida_contours[j]);				
+				morphing_2_patterns(contour_inner, contour_cand);
 
 			}
 		}
@@ -795,7 +802,25 @@ namespace Tiling_tiles{
 
 	}
 
-	
+	vector<Point2f> Tiling_opt::CandP2Contour(CandPat candp)
+	{
+		prototile_second->~Prototile();
+		prototile_second->loadPoints(contour_dataset[candp.number]);
+		vector<Point2f> contour_cand;
+		vector<Point2f> cand_tem;
+		if (candp.isFilp) contour_cand = prototile_second->contour_sample_flip[0];
+		else contour_cand = prototile_second->contour_sample[0];
+		Point2f Ccen = center_p(contour_cand);
+		Mat rot_mat;
+		rot_mat = getRotationMatrix2D(Ccen, candp.angle, 1);
+		transform(contour_cand, contour_cand, rot_mat);
+		int sizec = contour_cand.size();
+		for (int i = 0; i < sizec; i++)
+		{
+			cand_tem.push_back(contour_cand[(i + candp.index)%sizec]);
+		}
+		return cand_tem;
+	}
 
 	/*
 	//每一个轮廓分成四段

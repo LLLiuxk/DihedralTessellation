@@ -92,7 +92,9 @@ namespace Tiling_tiles{
 		CandPat min_mismatch(vector<Point2f> inner, vector<Point2f> cand,  vector<double> inner_c, vector<double> cand_c, int theone, bool isFilp);
 		double quadr_mismatch(vector<Point2f> first_arr, vector<Point2f> second_arr, vector<double> first_c, vector<double> second_c);
 		vector<int> search_align_p(Point2f cent, Point2f end, vector<Point2f> cand_temp);
-
+		
+		//from CandPat to contour
+		vector<Point2f> CandP2Contour(CandPat candp);
 		
 
 
@@ -135,7 +137,7 @@ namespace Tiling_tiles{
 	//all kinds tools
 	//draw tool
 	void MyLine(Mat img, Point2f start, Point2f end, string color1);
-	void draw_polygen(string win_name, vector<Point2f> contour_s);
+	Mat draw_polygen(string win_name, vector<Point2f> contour_s);
 	//math tool
 	Point2f center_p(vector<Point2f> contour_);
 	double contour_length(vector<Point2f> contour);
@@ -173,7 +175,7 @@ namespace Tiling_tiles{
 	vector<Point2f> b_box(vector<Point2f> contour);//返回的点是从左上方逆时针
 
 	//morphing
-	vector<Point2f> morphing_2_patterns(vector<Point2f> contour1, vector<Point2f> conttour2);
+	vector<Point2f> morphing_2_patterns(vector<Point2f> contour1, vector<Point2f> contour2);
 
 	//skeleton
 	Mat thinImage(const Mat & src, const int maxIterations);
