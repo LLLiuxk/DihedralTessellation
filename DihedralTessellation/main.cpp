@@ -12,7 +12,7 @@ int main(int argc, char** argv)
 	//string imagename1 = "Boat";
 	//string imagename2 = "fish8";
 	//string imagename1 = "fish5";
-	string imagename3 = "19";
+	string imagename3 = "50";
 	//string txtname = "D:/images/111.png";
 	//string txtname1 = "D:/images/fish3.png";
 
@@ -32,7 +32,6 @@ int main(int argc, char** argv)
 	if (f == 0) //ÒÑÓÐdataset
 	{
 		tiling_opt->points_dividing(imagename3);
-
 		//test morphing
 		//--------------------
 		//Mat drawing_src1 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
@@ -467,7 +466,7 @@ int main(int argc, char** argv)
 	cout << "pengzhuang" << endl;
 	else cout << "no";*/
     finish = clock();
-    cout << (finish - start)/ CLOCKS_PER_SEC << " s " << endl;
+	cout << endl<< (finish - start) / CLOCKS_PER_SEC << " s " << endl;
 	waitKey(0);
 	//getchar();
 	return 0;

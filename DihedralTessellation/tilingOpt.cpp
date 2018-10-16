@@ -72,7 +72,7 @@ namespace Tiling_tiles{
 		//vector<Point2f> contour_ = prototile_first->contour;
 		load_dataset();
 		int ppindex = p_p_index.size();
-		int margin = prototile_first->contour.size() / 8;
+		int margin = prototile_first->contour.size() / 10;
 		cout << "margin: " << margin << endl;
 		int count = 0;
 
@@ -121,7 +121,7 @@ namespace Tiling_tiles{
 						if (abs(p_p_index[n] - p_p_index[m]) < margin) continue;
 						vector<Point2f> inner_contour;
 						vector<int> result_index;
-						vector<int> mid_interval;
+						vector<int> mid_interval; //mid_interval存储的是组合成的inner 的分段连接点
 						result_index.push_back(p_p_index[i]);
 						result_index.push_back(p_p_index[j]);
 						result_index.push_back(p_p_index[m]);
@@ -131,7 +131,7 @@ namespace Tiling_tiles{
 							<< "   m: " << p_p_index[m]
 							<< "   n: " << p_p_index[n] << endl;						
 						//one_situ_div(result_index, contour_, inner_contour);
-						if (!one_situ_div(result_index, contour_, inner_contour, mid_interval))
+						if (!one_situ_div(result_index, contour_, inner_contour, mid_interval)) 
 						{
 							cout << "-------------collision-------------" << endl;
 							continue;
@@ -143,11 +143,14 @@ namespace Tiling_tiles{
 						inner_conts.push_back(inner_contour);
 						all_situation_index.push_back(result_index);
 						mid_interval_index.push_back(mid_interval);
-						//if (count == 1) return;
+						//if (count == 1) break;
 
 					}
+					//if (count == 1) break;
 				}
+				//if (count == 1) break;
 			}
+			//if (count == 1) break;
 		}
 		for (int i = 0; i < count; i++)
 		{
@@ -182,13 +185,18 @@ namespace Tiling_tiles{
 		2.搜索最相近的图案以及角度
 		3.变形
 		*/
+		/*if (count == 0)
+		{
+			cout << "no right placement" << endl;
+			return;
+		}
 		for (int i = 0; i < 1; i++) //inner_conts.size()
 		{
 			vector<CandPat> candida_contours;
 			candida_contours = compare_shapes(inner_conts[i], mid_interval_index[i]);
 			
 
-			for (int j = 0; j < 1; j++) //candida_contours.size()
+			for (int j = 2; j < 3; j++) //candida_contours.size()
 			{
 				//inner and cand morph into the final pettern
 				prototile_mid->~Prototile();
@@ -197,7 +205,9 @@ namespace Tiling_tiles{
 				//vector<double> contour_inner_c = prototile_mid->contour_curva[0];
 				vector<Point2f> contour_cand = CandP2Contour(candida_contours[j]);	
 				vector<Point2f> inter_mid =	morphing_2_patterns(contour_inner, contour_cand);
-
+				//prototile_mid->~Prototile();
+				//prototile_mid->loadPoints(inter_mid);
+				//inter_mid = prototile_mid->contour_sample[0];
 				Mat ddddd = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));;
 				ddddd = draw_polygen("???: ", inter_mid);
 				for (int t = 0; t < mid_interval_index[i].size(); t++)
@@ -207,8 +217,48 @@ namespace Tiling_tiles{
 				}
 				imshow("???: ", ddddd);
 
+				Point2f line1 = inter_mid[mid_interval_index[i][2]] - inter_mid[mid_interval_index[i][0]];
+				Point2f line2 = inter_mid[mid_interval_index[i][3]] - inter_mid[mid_interval_index[i][1]];
+				Point2f cente = center_p(inter_mid);
+				vector<vector<Point2f>> four_place;
+				vector<Point2f> one_loca;
+				// 提取围成的轮廓，目前为止只考虑正向摆放，不考虑旋转和翻转
+				four_place.push_back(inter_mid);
+				for (int i = 0; i < inter_mid.size(); i++)
+				{
+					one_loca.push_back(inter_mid[i] + line1);
+				}
+				four_place.push_back(one_loca);
+				one_loca.swap(vector<Point2f>());
+				for (int i = 0; i < inter_mid.size(); i++)
+				{
+					one_loca.push_back(inter_mid[i] + line2);
+				}
+				four_place.push_back(one_loca);
+				one_loca.swap(vector<Point2f>());
+				for (int i = 0; i < inter_mid.size(); i++)
+				{
+					one_loca.push_back(inter_mid[i] + line1 + line2);
+				}
+				four_place.push_back(one_loca);
+
+				//将该proto1以及相邻四个proto2展示出来
+				Mat drawing_pro = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+				Point2f shift1 = Point2f(300 - cente.x*0.4, 400 - cente.y*0.4);
+				//show four proto
+				for (int i = 0; i < 4; i++)
+				{
+					//MyLine(drawing_pro, four_cor[i]*0.4+shift1, four_cor[(i+1)%4]*0.4+shift1, "red");
+					//prototwoAff_place.swap(vector<Point2f>());
+					for (int j = 0; j < four_place[i].size() - 1; j++)
+					{
+						MyLine(drawing_pro, four_place[i][j] * 0.4 + shift1, four_place[i][j + 1] * 0.4 + shift1, "green");
+					}
+				}
+				imshow("result_mid_show: ", drawing_pro);
+
 			}
-		}
+		}*/
 		
 		
 	}
@@ -665,7 +715,7 @@ namespace Tiling_tiles{
 		}
 
 		//展示匹配误差最小的旋转后的结果
-		CandPat tem = score_total[0];
+		CandPat tem = score_total[2];
 		prototile_second->~Prototile();
 		prototile_second->loadPoints(contour_dataset[tem.number]);
 		vector<Point2f> contour_cand;
@@ -678,11 +728,17 @@ namespace Tiling_tiles{
 		transform(contour_cand, cand_tem, rot_mat);
 		
 		Point2f Ccen1 = center_p(contour_mid);
-
+		Point2f cenpo = center_p(cand_tem);
+		Point2f shift = Point2f(400 - cenpo.x, 400 - cenpo.y);
+		int n = cand_tem.size();
+		for (int i = 0; i < n; i++)
+		{
+			cand_tem[i] = cand_tem[i] + shift;
+		}
 		int col = 800;
 		int row = 800;
 		Mat drawing_pro = Mat(col, row, CV_8UC3, Scalar(255, 255, 255));
-		int n = cand_tem.size();
+		
 		//cout << "n: " << n << endl;
 		Point rook_points[1][2000];
 		for (int t = 0; t < n; t++)
@@ -700,8 +756,8 @@ namespace Tiling_tiles{
 		);
 		circle(drawing_pro, cand_tem[0], 4, Scalar(255), 3);
 		circle(drawing_pro, cand_tem[tem.index], 4, Scalar(255, 0, 255), 3);
-		Point2f cenpo = center_p(cand_tem);
-		circle(drawing_pro, cenpo, 4, Scalar(0, 255, 255), -1);
+		
+		circle(drawing_pro, cenpo+shift, 4, Scalar(0, 255, 255), -1);
 		imshow("final result: ", drawing_pro);
 
 

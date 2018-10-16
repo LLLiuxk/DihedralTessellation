@@ -1216,7 +1216,7 @@ namespace Tiling_tiles{
 
 		drawing_src1 = draw_polygen("1:", contour1);
 		drawing_src2 = draw_polygen("2:", contour2);
-		ImageMorphing(drawing_src1, contour1, drawing_src2, contour2, drawing_dst, final_pettern, 0.5);
+		ImageMorphing(drawing_src1, contour1, drawing_src2, contour2, drawing_dst, final_pettern, 0.6);
 		imshow("4:", drawing_dst);
 		drawing_dst = draw_polygen("out1: ", final_pettern);
 		cout << "final_pettern: " << final_pettern.size() << endl;

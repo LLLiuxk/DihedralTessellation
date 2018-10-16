@@ -267,7 +267,7 @@ namespace Tiling_tiles{
 		center_point = center_p(contour);
 
 		//sampling and computing curvature
-		for (int i = 3; i < 7; i++)  //确定采样点数，此处为600点
+		for (int i = 1; i < 6; i++)  //确定采样点数，此处为500点
 		{			
 
 			Lambda = 0;
@@ -368,9 +368,9 @@ namespace Tiling_tiles{
 		//排序，找最大的max_cur_num个凹凸点
 		contour.swap(vector<Point2f>());
 		int sam_num = contour_sample.size();	
-		contour = contour_sample[sam_num - 2];
-		cconvex = contour_curva[sam_num - 2];
-		cout << "contour_sample num: " << contour_sample[sam_num - 2].size() << endl;
+		contour = contour_sample[sam_num - 1];
+		cconvex = contour_curva[sam_num - 1];
+		cout << "contour_sample num: " << contour_sample[sam_num - 1].size() << endl;
 		vector<int> index_num;
 		int contoursize = contour.size();
 		for (int i = 0; i < contoursize; i++)
@@ -431,50 +431,27 @@ namespace Tiling_tiles{
 
 	vector<int> Prototile::partition_points(string imaname)
 	{
-		
-		vector<Point2f> ske_points;
-		vector<Point2f> skeleton_points;
-		ske_points = get_Skeleton(imaname, skeleton_points);
-		cout << ske_points.size() << endl;
+		//剖除掉骨架点，增加高曲率点
+		//vector<Point2f> ske_points;
+		//vector<Point2f> skeleton_points;
+		//ske_points = get_Skeleton(imaname, skeleton_points);
+		//cout << "ske_points"<<ske_points.size() << endl;
 
-		int cur_p_num = 10;
+		int cur_p_num = 20;
 		vector<int> max_order;
 		imgtocout(imaname);
 		loadTileData(imaname);
 		max_order = convex_p(cur_p_num );
-
 		int contoursize = contour.size();
-		vector<int> cct;
-		for (int i = 0; i < ske_points.size(); i++)
-		{
-			double dist = 1000;
-			int index = 0;
-			for (int j = 0; j < max_order.size(); j++)
-			{
-				if (dist > length_two_point2f(ske_points[i], contour[max_order[j]]))
-				{
-					dist = length_two_point2f(ske_points[i], contour[max_order[j]]);
-					index = max_order[j];
-				}
-			}
-			cct.push_back(index);
-		}
-		sort_bub(cct);
-		for (int t = 0; t < cct.size() - 1; t++)
-		{
-			max_order.push_back((cct[t] + cct[t + 1]) / 2);
-		}
-		int mid = ((cct[0] + contour.size() - cct[cct.size() - 1]) / 2 + cct[cct.size() - 1]) % contour.size();
-		max_order.push_back(mid);
-
-		cct.swap(vector<int>());
-		cct.push_back(max_order[0]);
-		for (int i = 1; i < max_order.size(); i++)
+		vector<int> all_order = max_order;
+		double dist = 1000;
+		int index = 0;
+		for (int i = 0; i < contoursize; i = i + 20)
 		{
 			int flag = 0;
-			for (vector<int>::iterator it = cct.begin(); it != cct.end(); it++)
+			for (vector<int>::iterator it = max_order.begin(); it != max_order.end(); it++)
 			{
-				double leng = length_two_point2f(contour[max_order[i]], contour[*it]);
+				double leng = length_two_point2f(contour[i], contour[*it]);
 				if (leng < 0.01*c_length)
 				{
 					flag = 1;
@@ -484,16 +461,15 @@ namespace Tiling_tiles{
 
 			if (flag == 0)
 			{
-				cct.push_back(max_order[i]);
-			}		
-		}
-		cct.swap(max_order);
-		cout << max_order.size() << endl;
-		sort_bub(max_order);
-		for (int t = 0; t < max_order.size(); t++)
+				all_order.push_back(i);
+			}
+		}		
+		cout << "all_order.size:"<<all_order.size() << endl;
+		sort_bub(all_order);
+		/*for (int t = 0; t < all_order.size(); t++)
 		{
-			cout << max_order[t] << " ";
-		}
+			cout << all_order[t] << " ";
+		}*/
 		// show convex points
 		Mat drawing5 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 
@@ -505,20 +481,17 @@ namespace Tiling_tiles{
 		}
 		for (int j = 0; j < max_order.size(); j++)
 		{
-			circle(drawing5, contour[max_order[j]], 4, Scalar(0, 0, 255), -1);
+			circle(drawing5, contour[max_order[j]], 6, Scalar(0, 0, 255), -1);
 		}
 		
-		for (int j = 0; j < skeleton_points.size(); j++)
+		for (int j = 0; j < all_order.size(); j++)
 		{
-			circle(drawing5, skeleton_points[j], 1, Scalar(128, 128, 128), -1);
+			circle(drawing5, contour[all_order[j]], 3, Scalar(128, 128, 128), -1);
 		}
-		for (int j = 0; j < ske_points.size(); j++)
-		{
-			circle(drawing5, ske_points[j], 4, Scalar(255, 0, 0), -1);
-		}
+		
 		imshow("convex points: ", drawing5);
 
-		return max_order;
+		return all_order;
 	}
 
 	void Prototile::cur_normalize()
