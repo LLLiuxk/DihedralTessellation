@@ -71,11 +71,14 @@ namespace Tiling_tiles{
 		vector<Point2f> contour_ = prototile_first->contour;
 		//vector<Point2f> contour_ = prototile_first->contour;
 		load_dataset();
+		string rootname = "D:\\VisualStudioProjects\\DihedralTessellation\\result\\" + prototile_first->contourname;
+		const char *na = rootname.c_str();
+		mkdir(na);
 		int ppindex = p_p_index.size();
 		int margin = prototile_first->contour.size() / 10;
 		cout << "margin: " << margin << endl;
 		int count = 0;
-
+		
 		//vector<Point2f> inner_contour;
 		//vector<int> result_index;
 		//result_index.push_back(67);
@@ -126,14 +129,18 @@ namespace Tiling_tiles{
 						result_index.push_back(p_p_index[j]);
 						result_index.push_back(p_p_index[m]);
 						result_index.push_back(p_p_index[n]);
-						cout << "  i: " << p_p_index[i]
-							<< "   j: " << p_p_index[j]
-							<< "   m: " << p_p_index[m]
-							<< "   n: " << p_p_index[n] << endl;						
-						//one_situ_div(result_index, contour_, inner_contour);
-						if (!one_situ_div(result_index, contour_, inner_contour, mid_interval)) 
+						//cout << "  i: " << p_p_index[i]
+						//	<< "   j: " << p_p_index[j]
+						//	<< "   m: " << p_p_index[m]
+						//	<< "   n: " << p_p_index[n] << endl;						
+						////one_situ_div(result_index, contour_, inner_contour);					
+						//string image = int2string(count);
+						string conut_name = rootname + "\\placement " + int2string(count);
+						na = conut_name.c_str();
+						mkdir(na);
+						if (!one_situ_div(result_index, contour_, inner_contour, mid_interval, conut_name))
 						{
-							cout << "-------------collision-------------" << endl;
+							//cout << "-------------collision-------------" << endl;
 							continue;
 						} 
 						count++;
@@ -143,40 +150,43 @@ namespace Tiling_tiles{
 						inner_conts.push_back(inner_contour);
 						all_situation_index.push_back(result_index);
 						mid_interval_index.push_back(mid_interval);
-						//if (count == 1) break;
+						if (count == 2) break;
 
 					}
-					//if (count == 1) break;
+					if (count == 2) break;
 				}
-				//if (count == 1) break;
+				if (count == 2) break;
 			}
-			//if (count == 1) break;
+			if (count == 2) break;
 		}
-		for (int i = 0; i < count; i++)
-		{
+		//for (int i = 0; i < count; i++)
+		//{
 
-			//show the marked points in the last time
-			Mat drawing6 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		//	//show the marked points in the last time
+		//	Mat drawing6 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 
-			for (int j = 0; j < contour_.size(); j++)
-			{
-				circle(drawing6, contour_[j], 1, Scalar(0, 0, 0), -1);
+		//	for (int j = 0; j < contour_.size(); j++)
+		//	{
+		//		circle(drawing6, contour_[j], 1, Scalar(0, 0, 0), -1);
 
-				//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
-			}
-			for (int j = 0; j < p_p_index.size(); j++)
-			{
-				circle(drawing6, contour_[p_p_index[j]], 4, Scalar(0, 0, 255), -1);
-			}
-			circle(drawing6, contour_[all_situation_index[i][0]], 8, Scalar(0, 255, 0), -1);
-			circle(drawing6, contour_[all_situation_index[i][1]], 8, Scalar(0, 255, 0), -1);
-			circle(drawing6, contour_[all_situation_index[i][2]], 8, Scalar(0, 255, 0), -1);
-			circle(drawing6, contour_[all_situation_index[i][3]], 8, Scalar(0, 255, 0), -1);
-			string name = "candadite points ";
-			name = name + char(i + 49);
-			imshow(name, drawing6);
-			//可以将one_situ_div里的排列在这里展示
-		}
+		//		//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
+		//	}
+		//	for (int j = 0; j < p_p_index.size(); j++)
+		//	{
+		//		circle(drawing6, contour_[p_p_index[j]], 4, Scalar(0, 0, 255), -1);
+		//	}
+		//	circle(drawing6, contour_[all_situation_index[i][0]], 8, Scalar(0, 255, 0), -1);
+		//	circle(drawing6, contour_[all_situation_index[i][1]], 8, Scalar(0, 255, 0), -1);
+		//	circle(drawing6, contour_[all_situation_index[i][2]], 8, Scalar(0, 255, 0), -1);
+		//	circle(drawing6, contour_[all_situation_index[i][3]], 8, Scalar(0, 255, 0), -1);
+		//	string name = "D:\\VisualStudioProjects\\DihedralTessellation\\result\\" + prototile_first->contourname;
+		//	const char *na = name.c_str();
+		//	mkdir(na);
+		//	name = name + "\\candadite points "+char(i + 49)+".png";
+		//	//imshow(name, drawing6);
+		//	imwrite(name, drawing6);
+		//	//可以将one_situ_div里的排列在这里展示
+		//}
 		cout << "succeed count: "<<count << endl;
 		//cout << "inner_conts.size" << inner_conts.size() << endl;
 		// search the right image
@@ -185,85 +195,183 @@ namespace Tiling_tiles{
 		2.搜索最相近的图案以及角度
 		3.变形
 		*/
-		/*if (count == 0)
-		{
-			cout << "no right placement" << endl;
-			return;
-		}
-		for (int i = 0; i < 1; i++) //inner_conts.size()
-		{
-			vector<CandPat> candida_contours;
-			candida_contours = compare_shapes(inner_conts[i], mid_interval_index[i]);
-			
+		//if (count == 0)
+		//{
+		//	cout << "no right placement" << endl;
+		//	return;
+		//}
+		//for (int i = 0; i < 5; i++) //inner_conts.size()
+		//{		
+		//	
+		//	char ch[4];
+		//	if (i < 100)
+		//	{
+		//		if (i / 10 == 0)
+		//		{
+		//			ch[0] = i % 10 + 48;
+		//			ch[1] = '\0';
+		//		}
+		//		else
+		//		{
+		//			ch[0] = i / 10 + 48;
+		//			ch[1] = i % 10 + 48;
+		//			ch[2] = '\0';
+		//		}
+		//	}
+		//	else
+		//	{
+		//		ch[0] = i / 100 + 48;
+		//		ch[1] = (i % 100) / 10 + 48;
+		//		ch[2] = i % 10 + 48;
+		//		ch[3] = '\0';
 
-			for (int j = 2; j < 3; j++) //candida_contours.size()
-			{
-				//inner and cand morph into the final pettern
-				prototile_mid->~Prototile();
-				prototile_mid->loadPoints(inner_conts[i]);
-				vector<Point2f> contour_inner = prototile_mid->contour_sample[0]; //选择最少的点进行比较
-				//vector<double> contour_inner_c = prototile_mid->contour_curva[0];
-				vector<Point2f> contour_cand = CandP2Contour(candida_contours[j]);	
-				vector<Point2f> inter_mid =	morphing_2_patterns(contour_inner, contour_cand);
-				//prototile_mid->~Prototile();
-				//prototile_mid->loadPoints(inter_mid);
-				//inter_mid = prototile_mid->contour_sample[0];
-				Mat ddddd = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));;
-				ddddd = draw_polygen("???: ", inter_mid);
-				for (int t = 0; t < mid_interval_index[i].size(); t++)
-				{
-					circle(ddddd, inter_mid[mid_interval_index[i][t]], 4, Scalar(255, 0, 255), -1);
-					cout << "mid_inter: " << mid_interval_index[i][t];
-				}
-				imshow("???: ", ddddd);
+		//	}
+		//	string image = ch;
+		//	name = name + "\\inner_contour " + image;
+		//	const char *na = name.c_str();
+		//	mkdir(na);
+		//	
 
-				Point2f line1 = inter_mid[mid_interval_index[i][2]] - inter_mid[mid_interval_index[i][0]];
-				Point2f line2 = inter_mid[mid_interval_index[i][3]] - inter_mid[mid_interval_index[i][1]];
-				Point2f cente = center_p(inter_mid);
-				vector<vector<Point2f>> four_place;
-				vector<Point2f> one_loca;
-				// 提取围成的轮廓，目前为止只考虑正向摆放，不考虑旋转和翻转
-				four_place.push_back(inter_mid);
-				for (int i = 0; i < inter_mid.size(); i++)
-				{
-					one_loca.push_back(inter_mid[i] + line1);
-				}
-				four_place.push_back(one_loca);
-				one_loca.swap(vector<Point2f>());
-				for (int i = 0; i < inter_mid.size(); i++)
-				{
-					one_loca.push_back(inter_mid[i] + line2);
-				}
-				four_place.push_back(one_loca);
-				one_loca.swap(vector<Point2f>());
-				for (int i = 0; i < inter_mid.size(); i++)
-				{
-					one_loca.push_back(inter_mid[i] + line1 + line2);
-				}
-				four_place.push_back(one_loca);
+		//	vector<CandPat> candida_contours;
+		//	candida_contours = compare_shapes(inner_conts[i], mid_interval_index[i]);
+		//	for (int j = 0; j < 5; j++) //candida_contours.size()
+		//	{
+		//		//将所有的结果保存下来
+		//		CandPat tem = candida_contours[j];
+		//		prototile_second->~Prototile();
+		//		prototile_second->loadPoints(contour_dataset[tem.number]);
+		//		vector<Point2f> contour_cand;
+		//		vector<Point2f> cand_tem;
+		//		if (tem.isFilp) contour_cand = prototile_second->contour_sample_flip[0];
+		//		else contour_cand = prototile_second->contour_sample[0];
+		//		Point2f Ccen = center_p(contour_cand);
+		//		Mat rot_mat;
+		//		rot_mat = getRotationMatrix2D(Ccen, tem.angle, 1);
+		//		transform(contour_cand, cand_tem, rot_mat);
 
-				//将该proto1以及相邻四个proto2展示出来
-				Mat drawing_pro = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-				Point2f shift1 = Point2f(300 - cente.x*0.4, 400 - cente.y*0.4);
-				//show four proto
-				for (int i = 0; i < 4; i++)
-				{
-					//MyLine(drawing_pro, four_cor[i]*0.4+shift1, four_cor[(i+1)%4]*0.4+shift1, "red");
-					//prototwoAff_place.swap(vector<Point2f>());
-					for (int j = 0; j < four_place[i].size() - 1; j++)
-					{
-						MyLine(drawing_pro, four_place[i][j] * 0.4 + shift1, four_place[i][j + 1] * 0.4 + shift1, "green");
-					}
-				}
-				imshow("result_mid_show: ", drawing_pro);
+		//		Point2f Ccen1 = center_p(inner_conts[i]);
+		//		Point2f cenpo = center_p(cand_tem);
+		//		Point2f shift = Point2f(400 - cenpo.x, 400 - cenpo.y);
+		//		int n = cand_tem.size();
+		//		for (int i = 0; i < n; i++)
+		//		{
+		//			cand_tem[i] = cand_tem[i] + shift;
+		//		}
+		//		int col = 800;
+		//		int row = 800;
+		//		Mat drawing_pro = Mat(col, row, CV_8UC3, Scalar(255, 255, 255));
 
-			}
-		}*/
+		//		//cout << "n: " << n << endl;
+		//		Point rook_points[1][2000];
+		//		for (int t = 0; t < n; t++)
+		//		{
+		//			rook_points[0][t] = cand_tem[t];
+		//		}
+		//		const Point* ppt[1] = { rook_points[0] };
+		//		int npt[] = { n };
+		//		fillPoly(drawing_pro,
+		//			ppt,
+		//			npt,
+		//			1,
+		//			Scalar(0, 0, 0) //黑色
+		//			//Scalar(255, 255, 255) //白色
+		//			);
+		//		circle(drawing_pro, cand_tem[0], 4, Scalar(255), 3);
+		//		circle(drawing_pro, cand_tem[tem.index], 4, Scalar(255, 0, 255), 3);
+
+		//		circle(drawing_pro, cenpo + shift, 4, Scalar(0, 255, 255), -1);
+		//		//imshow("final result: ", drawing_pro);
+		//		imshow(name, drawing_pro); 
+
+		//		Mat drawing_pro1 = Mat(col, row, CV_8UC3, Scalar(255, 255, 255));
+		//		int n1 = inner_conts[i].size();
+		//		//cout << "n: " << n << endl;
+		//		Point rook_points1[1][2000];
+		//		for (int t = 0; t < n1; t++)
+		//		{
+		//			rook_points1[0][t] = inner_conts[i][t];
+		//		}
+		//		const Point* ppt1[1] = { rook_points1[0] };
+		//		int npt1[] = { n1 };
+		//		fillPoly(drawing_pro1,
+		//			ppt1,
+		//			npt1,
+		//			1,
+		//			Scalar(0, 0, 0) //黑色
+		//			//Scalar(255, 255, 255) //白色
+		//			);
+		//		circle(drawing_pro1, inner_conts[i][0], 4, Scalar(255), 3);
+		//		circle(drawing_pro1, Ccen1, 4, Scalar(255, 0, 255), -1);
+		//		imshow("inner pattern: ", drawing_pro1);
+
+		//		draw_polygen("cand pattern: ", contour_cand);
+		//		//inner and cand morph into the final pettern
+		//		prototile_mid->~Prototile();
+		//		prototile_mid->loadPoints(inner_conts[i]);
+		//		vector<Point2f> contour_inner = prototile_mid->contour_sample[0]; //选择最少的点进行比较
+		//		//vector<double> contour_inner_c = prototile_mid->contour_curva[0];
+		//		vector<Point2f> contour_cand = CandP2Contour(candida_contours[j]);
+		//		vector<Point2f> inter_mid = morphing_2_patterns(contour_inner, contour_cand);
+		//		//prototile_mid->~Prototile();
+		//		//prototile_mid->loadPoints(inter_mid);
+		//		//inter_mid = prototile_mid->contour_sample[0];
+		//		Mat ddddd = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));;
+		//		ddddd = draw_polygen("???: ", inter_mid);
+		//		for (int t = 0; t < mid_interval_index[i].size(); t++)
+		//		{
+		//			circle(ddddd, inter_mid[mid_interval_index[i][t]], 4, Scalar(255, 0, 255), -1);
+		//			cout << "mid_inter: " << mid_interval_index[i][t];
+		//		}
+		//		imshow("???: ", ddddd);
+
+		//		Point2f line1 = inter_mid[mid_interval_index[i][2]] - inter_mid[mid_interval_index[i][0]];
+		//		Point2f line2 = inter_mid[mid_interval_index[i][3]] - inter_mid[mid_interval_index[i][1]];
+		//		Point2f cente = center_p(inter_mid);
+		//		vector<vector<Point2f>> four_place;
+		//		vector<Point2f> one_loca;
+		//		// 提取围成的轮廓，目前为止只考虑正向摆放，不考虑旋转和翻转
+		//		four_place.push_back(inter_mid);
+		//		for (int i = 0; i < inter_mid.size(); i++)
+		//		{
+		//			one_loca.push_back(inter_mid[i] + line1);
+		//		}
+		//		four_place.push_back(one_loca);
+		//		one_loca.swap(vector<Point2f>());
+		//		for (int i = 0; i < inter_mid.size(); i++)
+		//		{
+		//			one_loca.push_back(inter_mid[i] + line2);
+		//		}
+		//		four_place.push_back(one_loca);
+		//		one_loca.swap(vector<Point2f>());
+		//		for (int i = 0; i < inter_mid.size(); i++)
+		//		{
+		//			one_loca.push_back(inter_mid[i] + line1 + line2);
+		//		}
+		//		four_place.push_back(one_loca);
+
+		//		//将该proto1以及相邻四个proto2展示出来
+		//		Mat drawing_pro = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		//		Point2f shift1 = Point2f(300 - cente.x*0.4, 400 - cente.y*0.4);
+		//		//show four proto
+		//		for (int i = 0; i < 4; i++)
+		//		{
+		//			//MyLine(drawing_pro, four_cor[i]*0.4+shift1, four_cor[(i+1)%4]*0.4+shift1, "red");
+		//			//prototwoAff_place.swap(vector<Point2f>());
+		//			for (int j = 0; j < four_place[i].size() - 1; j++)
+		//			{
+		//				MyLine(drawing_pro, four_place[i][j] * 0.4 + shift1, four_place[i][j + 1] * 0.4 + shift1, "green");
+		//			}
+		//		}
+		//		imshow("result_mid_show: ", drawing_pro);
+
+
+		//	}
+		//}
 		
 		
 	}
 
-	bool Tiling_opt::one_situ_div(vector<int> results, vector<Point2f> contour_s,vector<Point2f> &return_B, vector<int> &return_p ) //检测一种划分情况的结果
+	bool Tiling_opt::one_situ_div(vector<int> results, vector<Point2f> contour_s, vector<Point2f> &return_B, vector<int> &return_p, string countname) //检测一种划分情况的结果
 	{
 		Point2f line1 = contour_s[results[2]] - contour_s[results[0]];
 		Point2f line2 = contour_s[results[3]] - contour_s[results[1]];
@@ -293,26 +401,6 @@ namespace Tiling_tiles{
 			}
 			
 		}
-
-		//coll_detection(four_place[2], four_place[3]);
-		//将两个轮廓一起缩放，可用在最后显示阶段
-		/*double factor = com_scale_factor();
-		for (int i = 0; i < contour2.size(); i++)
-		{
-		contour2[i].x = contour2[i].x * factor;
-		contour2[i].y = contour2[i].y * factor;
-		}*/
-		//double scale = 0.5;
-		//for (int i = 0; i < contour1.size(); i++)
-		//{
-		//contour1[i].x = contour1[i].x * scale;
-		//contour1[i].y = contour1[i].y * scale;
-		//}
-		//for (int i = 0; i < contour2.size(); i++)
-		//{
-		//contour2[i].x = contour2[i].x * scale;
-		//contour2[i].y = contour2[i].y * scale;
-		//}
 		vector<vector<Point2f>> four_place;
 		vector<Point2f> one_loca;
 		// 提取围成的轮廓，目前为止只考虑正向摆放，不考虑旋转和翻转
@@ -358,6 +446,8 @@ namespace Tiling_tiles{
 			}
 		}
 		imshow("result_mid", drawing_pro);
+		string filename = countname + "\\placementResult.png";
+		imwrite(filename, drawing_pro);
 		int total_num = 0;
 		return_p.push_back(0);
 		for (int t = results[3]-1; t > results[2]+1; t--)
@@ -436,7 +526,7 @@ namespace Tiling_tiles{
 				}
 		}
 		int dis = num_in1.size() - num_in2.size();
-		cout << "num_in1.size() and num_in2.size()" << num_in1.size() << "   " << num_in2.size() << endl;
+		//cout << "num_in1.size() and num_in2.size()" << num_in1.size() << "   " << num_in2.size() << endl;
 		if (num_in1.size() == 0 && num_in2.size() == 0)
 		{			
 			return false;
@@ -708,81 +798,11 @@ namespace Tiling_tiles{
 			cout << score_total[i].number << "  " << score_total[i].mismatch << "  " << endl;
 		}
 		cout << "the first three" << endl;
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < 6; i++)
 		{
 			final_order.push_back(score_total[i]);
 			cout << final_order[i].number << "   " << final_order[i].mismatch << endl;
 		}
-
-		//展示匹配误差最小的旋转后的结果
-		CandPat tem = score_total[2];
-		prototile_second->~Prototile();
-		prototile_second->loadPoints(contour_dataset[tem.number]);
-		vector<Point2f> contour_cand;
-		vector<Point2f> cand_tem;
-		if (tem.isFilp) contour_cand = prototile_second->contour_sample_flip[0];
-		else contour_cand = prototile_second->contour_sample[0];
-		Point2f Ccen = center_p(contour_cand);
-		Mat rot_mat;
-		rot_mat = getRotationMatrix2D(Ccen, tem.angle, 1);
-		transform(contour_cand, cand_tem, rot_mat);
-		
-		Point2f Ccen1 = center_p(contour_mid);
-		Point2f cenpo = center_p(cand_tem);
-		Point2f shift = Point2f(400 - cenpo.x, 400 - cenpo.y);
-		int n = cand_tem.size();
-		for (int i = 0; i < n; i++)
-		{
-			cand_tem[i] = cand_tem[i] + shift;
-		}
-		int col = 800;
-		int row = 800;
-		Mat drawing_pro = Mat(col, row, CV_8UC3, Scalar(255, 255, 255));
-		
-		//cout << "n: " << n << endl;
-		Point rook_points[1][2000];
-		for (int t = 0; t < n; t++)
-		{
-		rook_points[0][t] = cand_tem[t];
-		}
-		const Point* ppt[1] = { rook_points[0] };
-		int npt[] = { n };
-		fillPoly(drawing_pro,
-		ppt,
-		npt,
-		1,
-		Scalar(0, 0, 0) //黑色
-		//Scalar(255, 255, 255) //白色
-		);
-		circle(drawing_pro, cand_tem[0], 4, Scalar(255), 3);
-		circle(drawing_pro, cand_tem[tem.index], 4, Scalar(255, 0, 255), 3);
-		
-		circle(drawing_pro, cenpo+shift, 4, Scalar(0, 255, 255), -1);
-		imshow("final result: ", drawing_pro);
-
-
-		Mat drawing_pro1 = Mat(col, row, CV_8UC3, Scalar(255, 255, 255));
-		int n1 = contour_mid.size();
-		//cout << "n: " << n << endl;
-		Point rook_points1[1][2000];
-		for (int t = 0; t < n1; t++)
-		{
-		rook_points1[0][t] = contour_mid[t];
-		}
-		const Point* ppt1[1] = { rook_points1[0] };
-		int npt1[] = { n1 };
-		fillPoly(drawing_pro1,
-		ppt1,
-		npt1,
-		1,
-		Scalar(0, 0, 0) //黑色
-		//Scalar(255, 255, 255) //白色
-		);
-		circle(drawing_pro1, contour_mid[0], 4, Scalar(255), 3);
-		circle(drawing_pro1, Ccen1, 4, Scalar(255, 0, 255), -1);
-		imshow("inner pattern: ", drawing_pro1);
-
-		draw_polygen("cand pattern: ", contour_cand);
 		
 		return final_order;
 	}

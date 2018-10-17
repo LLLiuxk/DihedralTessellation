@@ -1353,5 +1353,32 @@ namespace Tiling_tiles{
 		return final_pettern;
 	}
 
-	
+	string int2string(int number)
+	{
+		char ch[8];
+		int  divisor = 1000;
+		int index = 0;
+		if (number == 0)
+		{
+			ch[0] = '0';
+			ch[1] = '\0';
+			return ch;
+		}
+		while (divisor != 0)
+		{
+			if (number / divisor == 0)
+			{
+				divisor = divisor / 10;
+			}
+			else
+			{
+				ch[index] = number / divisor + '0';
+				index++;
+				number = number % divisor;
+				divisor = divisor / 10;
+			}
+		}
+		ch[index] = '\0';
+		return ch;
+	}
 }

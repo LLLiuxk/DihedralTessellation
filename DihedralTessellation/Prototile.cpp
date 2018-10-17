@@ -431,12 +431,6 @@ namespace Tiling_tiles{
 
 	vector<int> Prototile::partition_points(string imaname)
 	{
-		//剖除掉骨架点，增加高曲率点
-		//vector<Point2f> ske_points;
-		//vector<Point2f> skeleton_points;
-		//ske_points = get_Skeleton(imaname, skeleton_points);
-		//cout << "ske_points"<<ske_points.size() << endl;
-
 		int cur_p_num = 20;
 		vector<int> max_order;
 		imgtocout(imaname);

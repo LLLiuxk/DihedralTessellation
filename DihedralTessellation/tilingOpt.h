@@ -8,6 +8,7 @@
 #include <fstream>
 #include <string>
 #include <list>
+#include <direct.h>
 #include "Morphing.h"
 
 
@@ -78,7 +79,7 @@ namespace Tiling_tiles{
 		void com_score(string imagename1, string imagename2);
 
 		void points_dividing(string imaname);
-		bool one_situ_div(vector<int> results, vector<Point2f> contour_s, vector<Point2f> &return_B, vector<int> &return_p);
+		bool one_situ_div(vector<int> results, vector<Point2f> contour_s, vector<Point2f> &return_B, vector<int> &return_p, string countname);
 
 		//collision
 		bool coll_detection(Point2f shifting1, Point2f shifting2, vector<Point2f> &contour_s);
@@ -146,6 +147,9 @@ namespace Tiling_tiles{
 	double cur_length_two_p(double cur1, double cur2, double zeta);
 	void sort_comb(vector<double> vect, vector<int> &index_num);
 	
+	//translate tool
+	string int2string(int number);
+
 	//cross points
 	int line_intersection(Point2f start1, Point2f end1, Point2f start2, Point2f end2, Point2f &cross_p);
 	

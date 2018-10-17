@@ -31,7 +31,9 @@ int main(int argc, char** argv)
 	int f = 0;
 	if (f == 0) //ÒÑÓÐdataset
 	{
+		
 		tiling_opt->points_dividing(imagename3);
+
 		//test morphing
 		//--------------------
 		//Mat drawing_src1 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
