@@ -50,6 +50,29 @@ namespace Tiling_tiles{
 		imshow(win_name, drawing_pro);
 		return drawing_pro;
 	}
+	void draw_poly(Mat &drawing_, vector<Point2f> contour_s, Point2f center)
+	{
+		Point2f shift = center - center_p(contour_s);
+		int n = contour_s.size();
+		//cout << "n: " << n << endl;
+		Point rook_points[1][2000];
+		for (int t = 0; t < n; t++)
+		{
+			rook_points[0][t] = contour_s[t] + shift;
+		}
+		const Point* ppt[1] = { rook_points[0] };
+		int npt[] = { n };
+		fillPoly(drawing_,
+			ppt,
+			npt,
+			1,
+			Scalar(0, 0, 0) //黑色
+			//Scalar(255, 255, 255) //白色
+			);
+		circle(drawing_, contour_s[0] + shift, 4, Scalar(255), 3);
+		circle(drawing_, center, 4, Scalar(0, 255, 255), -1);
+	}
+
 	Point2f center_p(vector<Point2f> contour_)
 	{
 		//利用轮廓的矩

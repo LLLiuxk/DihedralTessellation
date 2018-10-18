@@ -79,7 +79,7 @@ namespace Tiling_tiles{
 		void com_score(string imagename1, string imagename2);
 
 		void points_dividing(string imaname);
-		bool one_situ_div(vector<int> results, vector<Point2f> contour_s, vector<Point2f> &return_B, vector<int> &return_p, string countname);
+		bool one_situ_div(vector<int> results, vector<Point2f> contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname);
 
 		//collision
 		bool coll_detection(Point2f shifting1, Point2f shifting2, vector<Point2f> &contour_s);
@@ -139,6 +139,7 @@ namespace Tiling_tiles{
 	//draw tool
 	void MyLine(Mat img, Point2f start, Point2f end, string color1);
 	Mat draw_polygen(string win_name, vector<Point2f> contour_s);
+	void draw_poly(Mat &drawing_, vector<Point2f> contour_s, Point2f center);
 	//math tool
 	Point2f center_p(vector<Point2f> contour_);
 	double contour_length(vector<Point2f> contour);

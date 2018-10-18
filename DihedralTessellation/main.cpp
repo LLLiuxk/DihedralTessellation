@@ -1,7 +1,10 @@
 #include "tilingOpt.h"
 #include<ctime>
 using namespace Tiling_tiles;
-
+void opp(Mat &ttt)
+{
+	MyLine(ttt, Point2f(100, 100), Point2f(300, 300), "red");
+}
 int main(int argc, char** argv)
 {
 	clock_t start, finish;
@@ -33,7 +36,9 @@ int main(int argc, char** argv)
 	{
 		
 		tiling_opt->points_dividing(imagename3);
-
+		//Mat drawing1 = Mat(1600, 800, CV_8UC3, Scalar(255, 255, 255));
+		//opp(drawing1);
+		//imshow("hahah", drawing1);
 		//test morphing
 		//--------------------
 		//Mat drawing_src1 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
