@@ -475,7 +475,6 @@ int main(int argc, char** argv)
     finish = clock();
 	cout << endl<< (finish - start) / CLOCKS_PER_SEC << " s " << endl;
 	waitKey(0);
-	//getchar();
 	return 0;
 }
 

@@ -47,7 +47,7 @@ namespace Tiling_tiles{
 			Scalar(0, 0, 0) //黑色
 			//Scalar(255, 255, 255) //白色
 			);
-		imshow(win_name, drawing_pro);
+		//imshow(win_name, drawing_pro);
 		return drawing_pro;
 	}
 	void draw_poly(Mat &drawing_, vector<Point2f> contour_s, Point2f center)
@@ -1203,39 +1203,6 @@ namespace Tiling_tiles{
 		Mat drawing_src2 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 		Mat drawing_src3 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 		Mat drawing_dst = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-
-		/*for (int i = 0; i < asize-1; i++)
-		{
-			MyLine(drawing_src1, a[i], a[i + 1], "red");
-			MyLine(drawing_src2, b[i], b[i + 1], "green");
-			MyLine(drawing_src3, a[i], a[i + 1], "red");
-			MyLine(drawing_src3, b[i], b[i + 1], "green");
-			
-		}
-	    
-		ImageMorphing(drawing_src1, a, drawing_src2, b, drawing_dst, final_pettern, 0.5);*/
-		//Point2f Ccen1 = center_p(contour1);
-
-		//Mat drawing_pro1 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		//int n1 = contour1.size();
-		////cout << "n: " << n << endl;
-		//Point rook_points1[1][2000];
-		//for (int t = 0; t < n1; t++)
-		//{
-		//	rook_points1[0][t] = contour1[t];
-		//}
-		//const Point* ppt1[1] = { rook_points1[0] };
-		//int npt1[] = { n1 };
-		//fillPoly(drawing_pro1,
-		//	ppt1,
-		//	npt1,
-		//	1,
-		//	Scalar(0, 0, 0) //黑色
-		//	//Scalar(255, 255, 255) //白色
-		//	);
-		//circle(drawing_pro1, contour1[0], 4, Scalar(255), 3);
-		//circle(drawing_pro1, Ccen1, 4, Scalar(255, 0, 255), -1);
-		//imshow("1: ", drawing_pro1);
 
 		drawing_src1 = draw_polygen("1:", contour1);
 		drawing_src2 = draw_polygen("2:", contour2);

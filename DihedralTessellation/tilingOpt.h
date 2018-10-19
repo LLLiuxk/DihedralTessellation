@@ -89,14 +89,15 @@ namespace Tiling_tiles{
 		void load_dataset();
 
 		//shapes comparing and candidate contour choosing
-		vector<CandPat> compare_shapes(vector<Point2f> inner_c, vector<int> &mid_index);
+		vector<CandPat> compare_shapes(vector<Point2f> inner_c,int num_c);
 		CandPat min_mismatch(vector<Point2f> inner, vector<Point2f> cand,  vector<double> inner_c, vector<double> cand_c, int theone, bool isFilp);
 		double quadr_mismatch(vector<Point2f> first_arr, vector<Point2f> second_arr, vector<double> first_c, vector<double> second_c);
 		vector<int> search_align_p(Point2f cent, Point2f end, vector<Point2f> cand_temp);
 		
 		//from CandPat to contour
-		vector<Point2f> CandP2Contour(CandPat candp);
-		
+		vector<Point2f> CandP2Contour(CandPat candp,int num);
+		//relocation
+		vector<int> joint_relocate(vector<Point2f> contour_, vector<int> joint_index, int num_c);
 
 
 		double com_each_pair(vector<Point2f> &first_interval, vector<Point2f> &second_interval, int &flag);
@@ -131,6 +132,7 @@ namespace Tiling_tiles{
 		Prototile *prototile_first;
 		Prototile *prototile_mid;
 		Prototile *prototile_second;
+		Prototile *prototile_tem;
 		vector<vector<Point2f>> contour_dataset;
 	
 	};
