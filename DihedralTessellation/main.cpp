@@ -15,7 +15,7 @@ int main(int argc, char** argv)
 	//string imagename1 = "Boat";
 	//string imagename2 = "fish8";
 	//string imagename1 = "fish5";
-	string imagename3 = "50";
+	string imagename3 = "19";
 	//string txtname = "D:/images/111.png";
 	//string txtname1 = "D:/images/fish3.png";
 
@@ -35,78 +35,85 @@ int main(int argc, char** argv)
 	if (f == 0) //ÒÑÓÐdataset
 	{
 		
-		tiling_opt->points_dividing(imagename3);
+		//tiling_opt->points_dividing(imagename3);
 		//Mat drawing1 = Mat(1600, 800, CV_8UC3, Scalar(255, 255, 255));
 		//opp(drawing1);
 		//imshow("hahah", drawing1);
 		//test morphing
 		//--------------------
-		//Mat drawing_src1 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		//Mat drawing_src2 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		//Mat drawing_src3 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		//Mat drawing_dst = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		//prototile_first->loadTileData(imagename3);
-		//prototile_second->loadTileData(imagename2);
-		//vector<Point2f> src1_points;
-		//vector<Point2f> src2_points;
-		//vector<Point2f> output_final;
+		//tiling_opt->load_dataset();
+		prototile_first->contourname = "test";
+		prototile_first->contour = prototile_first->readTxt();
+		Mat tt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));;
+		draw_poly(tt, prototile_first->contour, Point2f(400, 400));//draw_polygen("hhhh", prototile_first->contour);
+		imshow("aaa", tt); 
+		/*
+		Mat drawing_src1 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		Mat drawing_src2 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		Mat drawing_src3 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		Mat drawing_dst = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		prototile_first->loadTileData("test");
+		prototile_second->loadTileData("128");
+		vector<Point2f> src1_points;
+		vector<Point2f> src2_points;
+		vector<Point2f> output_final;
 
-		//vector<Point2f> a;
-		//vector<Point2f> b;
-		//src1_points = prototile_first->contour_sample[0];
-		//src2_points = prototile_second->contour_sample[0];
-		//src1_points.pop_back();
-		//int size = src1_points.size();
+		vector<Point2f> a;
+		vector<Point2f> b;
+		src1_points = prototile_first->contour_sample[0];
+		src2_points = prototile_second->contour_sample[0];
+		src1_points.pop_back();
+		int size = src1_points.size();
 
-		//for (int i = 100; i < 150; i++)
+		for (int i = 100; i < 150; i++)
+		{
+			a.push_back(src1_points[i]);
+			b.push_back(src2_points[i]);
+		}
+		Mat rot_mat;
+		rot_mat = getRotationMatrix2D(a[10], 45, 1);
+		transform(a, a, rot_mat);
+		int asize = a.size();
+		//for (int i = 0; i < size; i++)
 		//{
-		//	a.push_back(src1_points[i]);
-		//	b.push_back(src2_points[i]);
+		//	src1_points[i].x = src1_points[i].x +100;
+		//	src1_points[i].y = src1_points[i].y +100;
 		//}
-		//Mat rot_mat;
-		//rot_mat = getRotationMatrix2D(a[10], 45, 1);
-		//transform(a, a, rot_mat);
-		//int asize = a.size();
-		////for (int i = 0; i < size; i++)
-		////{
-		////	src1_points[i].x = src1_points[i].x +100;
-		////	src1_points[i].y = src1_points[i].y +100;
-		////}
-		////src1_points.push_back(Point2f(100, 100));
-		////src1_points.push_back(Point2f(200, 100));
-		////src1_points.push_back(Point2f(200, 200));
-		////src1_points.push_back(Point2f(150, 300));
-		////src1_points.push_back(Point2f(100, 200));
+		//src1_points.push_back(Point2f(100, 100));
+		//src1_points.push_back(Point2f(200, 100));
+		//src1_points.push_back(Point2f(200, 200));
+		//src1_points.push_back(Point2f(150, 300));
+		//src1_points.push_back(Point2f(100, 200));
 
-		////src2_points.push_back(Point2f(300, 100));
-		////src2_points.push_back(Point2f(400, 100));
-		////src2_points.push_back(Point2f(400, 200));
-		////src2_points.push_back(Point2f(350, 220));
-		////src2_points.push_back(Point2f(300, 200));
-		////cout << src1_points.size() << "   " << src2_points.size() << endl;
-		//for (int i = 0; i < asize-1; i++)
-		//{
-		//	MyLine(drawing_src1, a[i], a[i + 1], "red");
-		//	MyLine(drawing_src2, b[i], b[i + 1], "green");
-		//	MyLine(drawing_src3, a[i], a[i + 1], "red");
-		//	MyLine(drawing_src3, b[i], b[i + 1], "green");
-		//	
-		//}
-		////drawing_src1 = draw_polygen("drawing_src1", a);
-		////drawing_src2 = draw_polygen("drawing_src2", b);
-		//ImageMorphing(drawing_src1, a, drawing_src2, b, drawing_dst, output_final, 0.5);
-		//imshow("out1: ", drawing_dst);
-		//for (int i = 0; i < output_final.size()-1; i++)
-		//{
-		//	cout << output_final[i] << endl;
-		//	MyLine(drawing_dst, output_final[i], output_final[i + 1], "black");
-		//	MyLine(drawing_src3, output_final[i], output_final[i + 1], "black");
-		//}
-		////drawing_dst = draw_polygen("out: ", output_final);
-		//imshow("1: ", drawing_src1);
-		//imshow("2: ", drawing_src2);
-		//imshow("3: ", drawing_src3);
-		//imshow("out: ", drawing_dst);
+		//src2_points.push_back(Point2f(300, 100));
+		//src2_points.push_back(Point2f(400, 100));
+		//src2_points.push_back(Point2f(400, 200));
+		//src2_points.push_back(Point2f(350, 220));
+		//src2_points.push_back(Point2f(300, 200));
+		//cout << src1_points.size() << "   " << src2_points.size() << endl;
+		for (int i = 0; i < asize-1; i++)
+		{
+			MyLine(drawing_src1, a[i], a[i + 1], "red");
+			MyLine(drawing_src2, b[i], b[i + 1], "green");
+			MyLine(drawing_src3, a[i], a[i + 1], "red");
+			MyLine(drawing_src3, b[i], b[i + 1], "green");
+			
+		}
+		//drawing_src1 = draw_polygen("drawing_src1", a);
+		//drawing_src2 = draw_polygen("drawing_src2", b);
+		ImageMorphing(drawing_src1, a, drawing_src2, b, drawing_dst, output_final, 0.5);
+		imshow("out1: ", drawing_dst);
+		for (int i = 0; i < output_final.size()-1; i++)
+		{
+			cout << output_final[i] << endl;
+			MyLine(drawing_dst, output_final[i], output_final[i + 1], "black");
+			MyLine(drawing_src3, output_final[i], output_final[i + 1], "black");
+		}
+		//drawing_dst = draw_polygen("out: ", output_final);
+		imshow("1: ", drawing_src1);
+		imshow("2: ", drawing_src2);
+		imshow("3: ", drawing_src3);
+		imshow("out: ", drawing_dst);
 		//------------------------
 
 		//------------------------
@@ -167,7 +174,7 @@ int main(int argc, char** argv)
 		//{
 		//	cout << "right" << endl;
 		//	cout << "angle: " << hahah1.angle << "  index: " << hahah1.index << "  mismatch: " << hahah1.mismatch << endl;
-		//}
+		//}*/
 		//------------------------
 
 
@@ -266,33 +273,18 @@ int main(int argc, char** argv)
 
         //--------------------------------
         //²âÊÔcompare_shapesº¯Êý
-		/*tiling_opt->load_dataset();
-		prototile_first->contourname = imagename3;
-		prototile_first->contour = prototile_first->readTxt();
-		prototile_first->contour_sam_cur();
-		vector<Point2f> test1;
-		vector<double> test11;
-		for (int i = 0; i < 100; i++)
-		{
-			test1.push_back(prototile_first->contour_sample[0][i]);
-			test11.push_back(prototile_first->contour_curva[0][i]);
-		}
-		vector<int> order = tiling_opt->compare_shapes(prototile_first->contour);
-
-		prototile_second->loadPoints(tiling_opt->contour_dataset[order[1]]);
-		vector<Point2f> test2;
-		vector<double> test22;
-		for (int i = 0; i < 90; i++)
-		{
-			test2.push_back(prototile_second->contour_sample[0][i]);
-			test22.push_back(prototile_second->contour_curva[0][i]);
-		}
-		//cout << "test1:" << test11.size()
-		//	<< "test2:" << test22.size() << endl;
-		tiling_opt->min_mismatch(test1, test2, test11, test22);
-		//cout << re << endl;
-		*/
-        //-------------------------------------------
+		//tiling_opt->load_dataset();
+		//prototile_first->contourname = "test";
+		//prototile_first->contour = prototile_first->readTxt();
+		////cout << prototile_first->contour[5] << endl;
+		//
+		////prototile_first->contour_sam_cur();
+		//vector<CandPat> candida_contours;
+		//Mat tt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));;
+		//draw_poly(tt, prototile_first->contour, Point2f(400, 400));//draw_polygen("hhhh", prototile_first->contour);
+		//imshow("aaa", tt); 
+		//candida_contours = tiling_opt->compare_shapes(prototile_first->contour, 2);*/
+        ////-------------------------------------------
 
 
 		//cout << order.first << "  " << order.second << endl;

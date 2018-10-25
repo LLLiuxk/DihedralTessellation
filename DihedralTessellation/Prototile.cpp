@@ -303,7 +303,7 @@ namespace Tiling_tiles{
 					contour_sam.push_back(sample);
 				}
 			}
-			if (contour_sam[0] == contour_sam[contour_sam.size() - 1]) contour_sam.pop_back();
+			if (length_two_point2f( contour_sam[0],contour_sam[contour_sam.size() - 1])<1) contour_sam.pop_back();
 			contour_sample.push_back(contour_sam);
 			contour_curva.push_back(curvature_com(contour_sam));
 

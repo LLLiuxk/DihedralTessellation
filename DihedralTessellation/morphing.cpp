@@ -1,5 +1,6 @@
 #include "Morphing.h"
-
+#include <iostream>
+using namespace std;
 cv::Mat PointVec2HomogeneousMat(const std::vector<cv::Point2f>& pts)
 {
 	int num_pts = pts.size();

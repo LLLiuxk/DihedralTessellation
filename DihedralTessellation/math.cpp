@@ -69,8 +69,8 @@ namespace Tiling_tiles{
 			Scalar(0, 0, 0) //黑色
 			//Scalar(255, 255, 255) //白色
 			);
-		circle(drawing_, contour_s[0] + shift, 4, Scalar(255), 3);
-		circle(drawing_, center, 4, Scalar(0, 255, 255), -1);
+		//circle(drawing_, contour_s[0] + shift, 4, Scalar(255), 3);
+		//circle(drawing_, center, 4, Scalar(0, 255, 255), -1);
 	}
 
 	Point2f center_p(vector<Point2f> contour_)
@@ -285,7 +285,7 @@ namespace Tiling_tiles{
 		return eachOfcurvature;
 	}
 
-	vector<double> Prototile::curvature_com(vector<Point2f> &contour_sam) 
+	vector<double> Prototile::curvature_com(vector<Point2f> &contour_sam)
 	{
 		vector<double> eachOfcurvature;
 		int c_s = contour_sam.size();
@@ -413,7 +413,7 @@ namespace Tiling_tiles{
 			output_[j] = output_[num - j - 1];
 			output_[num - j - 1] = temp;
 		}
-		for (int t = second_char.size()-1; t >= 0; t--)
+		for (int t = second_char.size() - 1; t >= 0; t--)
 		{
 			second_char_out.push_back(second_char[t]);
 		}
@@ -444,7 +444,7 @@ namespace Tiling_tiles{
 		dstTri[0] = start;//Point2f(50, 50); 
 		//cout << "dstTri[0]: " << dstTri[0] << endl;
 		dstTri[1] = end; //Point2f(length_two_point2f(srcTri[0], srcTri[1]) + 50, 50);
-		
+
 		int half = input_.size() / 2 - 1;
 		double dis_line = input_[half].y;
 		double line_k = 0;
@@ -484,7 +484,7 @@ namespace Tiling_tiles{
 			Point2f mid;
 			if (start.x < end.x)
 			{
-				mid = start + input_[half].x*vec;				
+				mid = start + input_[half].x*vec;
 			}
 			else
 			{
@@ -492,7 +492,7 @@ namespace Tiling_tiles{
 			}
 			Point2f v = unit_vec(Point2f(1, -1 / line_k));
 			if (((start.x - end.x) *line_k)<0)  //异号，s.x<e.x且k>0 或者s.x>e.x且k<0  ,p=mid-d*v
-			{			
+			{
 				dstTri[2] = mid - dis_line * v;
 			}
 			else
@@ -500,7 +500,7 @@ namespace Tiling_tiles{
 				dstTri[2] = mid + dis_line * v;
 			}
 		}
-		
+
 		Mat warp_mat(2, 3, CV_32FC1);
 
 		/*for (int i = 0; i < 3; i++)
@@ -524,7 +524,7 @@ namespace Tiling_tiles{
 	}
 
 	double Tiling_opt::re_warp_Aff_sec(vector<Point2f> &input_, vector<Point2f> &output_, Point2f start, Point2f end)
-	{		
+	{
 		int num = input_.size();
 		for (int i = 0; i < input_.size(); i++)
 		{
@@ -541,7 +541,7 @@ namespace Tiling_tiles{
 		//{
 		//	second_char_out.push_back(second_char[t]);
 		//}
-		double shift = re_warp_Aff(input_, output_,start,end);
+		double shift = re_warp_Aff(input_, output_, start, end);
 		return shift;
 	}
 
@@ -551,14 +551,14 @@ namespace Tiling_tiles{
 		{
 			input_[i].y = -input_[i].y;
 		}
-		double shift = re_warp_Aff(input_, output_,start,end);
+		double shift = re_warp_Aff(input_, output_, start, end);
 		return shift;
 	}
 
 	double Tiling_opt::warpAff_sca(vector<Point2f> &input_, vector<Point2f> &output_, Point2f start, Point2f end)
 	{
 		if (input_[0] == start) cout << "ok!!----" << endl;
-		double scale = length_two_point2f(start, end) / length_two_point2f(input_[0], input_[input_.size()-1]);
+		double scale = length_two_point2f(start, end) / length_two_point2f(input_[0], input_[input_.size() - 1]);
 		Point2f srcTri[3];
 		Point2f dstTri[3];
 		srcTri[0] = input_[0];
@@ -566,7 +566,7 @@ namespace Tiling_tiles{
 		dstTri[0] = start;//Point2f(50, 50); 
 		//cout << "dstTri[0]: " << dstTri[0] << endl;
 		dstTri[1] = end; //Point2f(length_two_point2f(srcTri[0], srcTri[1]) + 50, 50);
-		
+
 		//先求dis_line和dis_x,在这里加上一个flag判断第三点在线的哪一侧
 		double dis_line = 0;
 		double line_k = 0;
@@ -590,7 +590,7 @@ namespace Tiling_tiles{
 			dis_x = sqrt(length_two_point2f(input_[half], srcTri[0])*length_two_point2f(input_[half], srcTri[0]) - dis_line*dis_line);
 			if (dis_line > 0)
 			{
-				if (srcTri[0].y < srcTri[1].y) 
+				if (srcTri[0].y < srcTri[1].y)
 					left = false;
 			}
 			else
@@ -819,7 +819,7 @@ namespace Tiling_tiles{
 		}
 		//imshow("out11:", drawing2);
 		//imshow("out111:", drawing3);
-		
+
 		return 0;
 	}
 
@@ -932,17 +932,17 @@ namespace Tiling_tiles{
 		}
 		cout << endl;
 		}*/
-		dp_path.swap(vector<pair<int, int>>());
-		printPath(dis, distance, first_num - 1, second_num - 1, first_arr, second_arr, dp_path);
+		//dp_path.swap(vector<pair<int, int>>());
+		//printPath(dis, distance, first_num - 1, second_num - 1, first_arr, second_arr, dp_path);
 		// show the dp_path
 		/*for (int i = 0; i < dp_path.size(); i++)
 		{
-			cout << first_arr[dp_path[i].first] << " - " << second_arr[dp_path[i].second] << endl;
+		cout << first_arr[dp_path[i].first] << " - " << second_arr[dp_path[i].second] << endl;
 		}*/
 		return distance[first_num - 1][second_num - 1];
 	}
 
-	void Tiling_opt::printPath(double d[][50], double dp[][50], int i, int j, vector<Point2f> &first_arr, vector<Point2f> &second_arr, vector<pair<int, int>>& path)
+	void Tiling_opt::printPath(double d[][102], double d_c[][102], double dp[][102], int i, int j, vector<pair<int, int>>& path)
 	{
 
 		if (i == 0 && j == 0) {
@@ -952,23 +952,23 @@ namespace Tiling_tiles{
 			//cout make_pair(i,j);
 		}
 
-		if (abs(dp[i][j] - (dp[i - 1][j - 1] + 2 * d[i][j])) < 0.1){
-			printPath(d, dp, i - 1, j - 1, first_arr, second_arr, path);
+		if (abs(dp[i][j] - (dp[i - 1][j - 1] + 2 * (d[i][j] + d_c[i][j]))) < 0.1){
+			printPath(d, d_c, dp, i - 1, j - 1, path);
 
 		}
-		else if (abs(dp[i][j] - (dp[i][j - 1] + d[i][j])) < 0.1) {
-			printPath(d, dp, i, j - 1, first_arr, second_arr, path);
+		else if (abs(dp[i][j] - (dp[i][j - 1] + d[i][j] + d_c[i][j])) < 0.1) {
+			printPath(d, d_c, dp, i, j - 1, path);
 
 		}
 		else {
-			printPath(d, dp, i - 1, j, first_arr, second_arr, path);
+			printPath(d, d_c, dp, i - 1, j, path);
 		}
 		path.push_back(make_pair(i, j));
 		//cout << first_arr[i] << " - " << second_arr[j] << endl;
 
 	}
 
-	double Tiling_opt::quadr_mismatch(vector<Point2f> first_arr, vector<Point2f> second_arr, vector<double> first_c, vector<double> second_c) //每次只能比较100个点以内
+	double Tiling_opt::quadr_mismatch(vector<Point2f> first_arr, vector<Point2f> second_arr, vector<double> first_c, vector<double> second_c, vector<pair<int, int>>& path) //每次只能比较100个点以内
 	{
 		//ofstream out("D:\\VisualStudioProjects\\manual_record\\dtw.txt");
 		int first_num = first_arr.size();
@@ -976,7 +976,7 @@ namespace Tiling_tiles{
 
 		//cout << "\n        first.size: " << first_c[50] << "  -----    chararr_size" << second_c[50] << endl;
 
-		double dis[101][101];//两组点之间的坐标差异
+		double dis[102][102];//两组点之间的坐标差异
 		double max_dis = 0;
 		for (int i = 0; i < first_num; i++)
 		{
@@ -991,7 +991,7 @@ namespace Tiling_tiles{
 		{
 			for (int j = 0; j < second_num; j++)
 			{
-				dis[i][j] = dis[i][j] / max_dis; 
+				dis[i][j] = dis[i][j] / max_dis;
 				//cout << "dis[i][j]: " << dis[i][j] << endl;
 			}
 		}
@@ -1003,32 +1003,32 @@ namespace Tiling_tiles{
 		//	}
 		//}
 
-		double dis_cur[101][101];//两组点之间的曲率差异
+		double dis_cur[102][102];//两组点之间的曲率差异
 		double max_dis_cur = 0;
 		for (int i = 0; i < first_num; i++)
 		{
 			for (int j = 0; j < second_num; j++)
 			{
-				dis_cur[i][j] = cur_length_two_p(first_c[i], second_c[j],1);
-				
+				dis_cur[i][j] = cur_length_two_p(first_c[i], second_c[j], 1);
+
 				//cout << "dis_cur[i][j]: " << dis_cur[i][j] << endl;
 				if (dis_cur[i][j]>max_dis_cur)
 				{
 					//cout << "hahah:" << endl;
 					max_dis_cur = dis_cur[i][j];
-					
-					
+
+
 				}
 			}
 		}
-		
+
 		//曲率差值归一化
 		//cout << "max_dis_cur: " << max_dis_cur << endl;
 		for (int i = 0; i < first_num; i++)
 		{
 			for (int j = 0; j < second_num; j++)
 			{
-				dis_cur[i][j] = dis_cur[i][j] / max_dis_cur; 
+				dis_cur[i][j] = dis_cur[i][j] / max_dis_cur;
 				//cout << "dis_cur[i][j]: " << dis_cur[i][j] << endl;
 			}
 		}
@@ -1102,6 +1102,12 @@ namespace Tiling_tiles{
 			}
 
 		}
+		printPath(dis, dis_cur, distance, first_num - 1, second_num - 1, path);
+		// show the dp_path
+		//for (int i = 0; i < dp_path.size(); i++)
+		//{
+		//cout << first_arr[dp_path[i].first] << " - " << second_arr[dp_path[i].second] << endl;
+		//}
 		return distance[first_num - 1][second_num - 1];
 	}
 
@@ -1117,7 +1123,7 @@ namespace Tiling_tiles{
 			Point2f crosP;
 			int flag = line_intersection(cent, endf, cand_temp[i], cand_temp[(i + 1) % ctsize], crosP);
 			if (flag == 0)continue;
-			else 
+			else
 			{
 				if (length_two_point2f(end, cand_temp[i]) < length_two_point2f(end, cand_temp[(i + 1) % ctsize]))
 				{
@@ -1126,7 +1132,7 @@ namespace Tiling_tiles{
 					{
 						if (cand_index[j] == i) flag = 1;
 					}
-					if (flag==0) cand_index.push_back(i);
+					if (flag == 0) cand_index.push_back(i);
 					else break;
 				}
 				else
@@ -1142,27 +1148,27 @@ namespace Tiling_tiles{
 			}
 		}
 		//返回对齐点，可能只有一个，可能有多个,删掉重复点
-		
+
 		return cand_index;
 		/*double leng = 10000;
 		int min_in = 0;
 		for (int t = 0; t < cand_index.size(); t++)
 		{
-			if (length_two_point2f(cand_temp[cand_index[t]],end) < leng)
-			{
-				leng = length_two_point2f(cand_temp[cand_index[t]], end);
-				min_in = t;
-			}
+		if (length_two_point2f(cand_temp[cand_index[t]],end) < leng)
+		{
+		leng = length_two_point2f(cand_temp[cand_index[t]], end);
+		min_in = t;
+		}
 
 		}*/
 		//return min_in;
 
 	}
 
-	vector<Point2f> morphing_2_patterns(vector<Point2f> contour1, vector<Point2f> contour2)
+	vector<Point2f> morphing_2_patterns(vector<Point2f> contour1, vector<Point2f> contour2, float shape_ratio)
 	{
-	    //传统morphing是由start和end求得一系列intermediate状态，这里是通过c1和c2获得最终的变形结果
-		
+		//传统morphing是由start和end求得一系列intermediate状态，这里是通过c1和c2获得最终的变形结果
+
 		vector<Point2f> final_pettern;
 		int difference = contour1.size() - contour2.size();
 		difference = abs(difference);
@@ -1182,7 +1188,7 @@ namespace Tiling_tiles{
 					contour1.pop_back();
 				}
 			}
-		}	
+		}
 		cout << contour1.size() << "   " << contour2.size() << endl;
 		double scale = arcLength(contour1, true) / arcLength(contour2, true);
 		//cout << "scale: " << scale << endl;
@@ -1195,8 +1201,8 @@ namespace Tiling_tiles{
 		vector<Point2f> b;
 		for (int i = 0; i < 50; i++)
 		{
-			a.push_back(contour1[i]);
-			b.push_back(contour2[i]);
+		a.push_back(contour1[i]);
+		b.push_back(contour2[i]);
 		}
 		int asize = a.size();*/
 		Mat drawing_src1 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
@@ -1206,7 +1212,7 @@ namespace Tiling_tiles{
 
 		drawing_src1 = draw_polygen("1:", contour1);
 		drawing_src2 = draw_polygen("2:", contour2);
-		ImageMorphing(drawing_src1, contour1, drawing_src2, contour2, drawing_dst, final_pettern, 0.6);
+		ImageMorphing(drawing_src1, contour1, drawing_src2, contour2, drawing_dst, final_pettern, shape_ratio);
 		imshow("4:", drawing_dst);
 		drawing_dst = draw_polygen("out1: ", final_pettern);
 		cout << "final_pettern: " << final_pettern.size() << endl;
@@ -1217,7 +1223,7 @@ namespace Tiling_tiles{
 		//imshow("1:", drawing_src1);
 		//imshow("2:", drawing_src2);
 		imshow("3:", drawing_src3);
-		
+
 		/*	//---------------------以下为morphing阶段
 		// 首先找到一一对应的点序列
 		vector<Point2f> src1_points;
@@ -1231,93 +1237,93 @@ namespace Tiling_tiles{
 		//}
 		if (output_first.size() < output_second.size())
 		{
-			int f = 1;
-			int j = 0;
-			for (int i = 1; i < output_first.size() - 1;)
-			{
+		int f = 1;
+		int j = 0;
+		for (int i = 1; i < output_first.size() - 1;)
+		{
 
-				double min = 10000;
-				while (f < dp_path.size())
-				{
+		double min = 10000;
+		while (f < dp_path.size())
+		{
 
-					if ((dp_path[f].first < i) || dp_path[f].second < j) //检查下一条路径的另一端点是否已被使用
-					{
-						f++;
-						if (dp_path[f].first > i) i++;
-						continue;
-					}
-					if (dp_path[f].first == i)
-					{
-						if (length_two_point2f(output_first[dp_path[f].first], output_second[dp_path[f].second]) < min)
-						{
-							min = length_two_point2f(output_first[dp_path[f].first], output_second[dp_path[f].second]);
-							j = dp_path[f].second;
-						}
-						f++;
-					}
-					if (dp_path[f].first > i)
-					{
-						src1_points.push_back(output_first[i]);
-						src2_points.push_back(output_second[j]);
-						i++;
-						j++;
-						break;
-					}
+		if ((dp_path[f].first < i) || dp_path[f].second < j) //检查下一条路径的另一端点是否已被使用
+		{
+		f++;
+		if (dp_path[f].first > i) i++;
+		continue;
+		}
+		if (dp_path[f].first == i)
+		{
+		if (length_two_point2f(output_first[dp_path[f].first], output_second[dp_path[f].second]) < min)
+		{
+		min = length_two_point2f(output_first[dp_path[f].first], output_second[dp_path[f].second]);
+		j = dp_path[f].second;
+		}
+		f++;
+		}
+		if (dp_path[f].first > i)
+		{
+		src1_points.push_back(output_first[i]);
+		src2_points.push_back(output_second[j]);
+		i++;
+		j++;
+		break;
+		}
 
-				}
-			}
+		}
+		}
 		}
 		else
 		{
-			int f = 1;
-			int j = 0;
-			for (int i = 1; i < output_second.size() - 1;)
-			{
-				double min = 10000;
+		int f = 1;
+		int j = 0;
+		for (int i = 1; i < output_second.size() - 1;)
+		{
+		double min = 10000;
 
-				while (f < dp_path.size())
-				{
+		while (f < dp_path.size())
+		{
 
-					if ((dp_path[f].second < i) || dp_path[f].first < j)
-					{
+		if ((dp_path[f].second < i) || dp_path[f].first < j)
+		{
 
-						f++;
-						if (dp_path[f].second > i) i++;
-						continue;
-					}
-					if (dp_path[f].second == i)
-					{
-						if (length_two_point2f(output_first[dp_path[f].first], output_second[dp_path[f].second]) < min)
-						{
-							min = length_two_point2f(output_first[dp_path[f].first], output_second[dp_path[f].second]);
-							j = dp_path[f].first;
-						}
-						f++;
-					}
-					if (dp_path[f].second > i)
-					{
-						src1_points.push_back(output_first[j]);
-						src2_points.push_back(output_second[i]);
-						i++;
-						j++;
-						break;
-					}
+		f++;
+		if (dp_path[f].second > i) i++;
+		continue;
+		}
+		if (dp_path[f].second == i)
+		{
+		if (length_two_point2f(output_first[dp_path[f].first], output_second[dp_path[f].second]) < min)
+		{
+		min = length_two_point2f(output_first[dp_path[f].first], output_second[dp_path[f].second]);
+		j = dp_path[f].first;
+		}
+		f++;
+		}
+		if (dp_path[f].second > i)
+		{
+		src1_points.push_back(output_first[j]);
+		src2_points.push_back(output_second[i]);
+		i++;
+		j++;
+		break;
+		}
 
-				}
-			}
+		}
+		}
 		}
 		src1_points.push_back(output_first[dp_path[dp_path.size() - 1].first]);
 		src2_points.push_back(output_second[dp_path[dp_path.size() - 1].second]);
 
 		if (src1_points.size() == src2_points.size())
 		{
-			for (int i = 0; i < src1_points.size(); i++)
-			{
-				circle(drawing_src3, src1_points[i], 1, Scalar(255, 0, 0), -1);
-				circle(drawing_src3, src2_points[i], 1, Scalar(0, 0, 255), -1);
-				MyLine(drawing_src3, src1_points[i], src2_points[i], "orange");
-				//cout << src1_points[i] << " - " << src2_points[i] << endl;
-			}
+		for (int i = 0; i < src1_points.size(); i++)
+		{
+		circle(drawing_src3, src1_points[i], 1, Scalar(255, 0, 0), -1);
+		circle(drawing_src3, src2_points[i], 1, Scalar(0, 0, 255), -1);
+		MyLine(drawing_src3, src1_points[i], src2_points[i], "orange");
+		//cout << src1_points[i] << " - " << src2_points[i] << endl;
+		}
 		}
 		else cout << "num error!" << endl;
 		//调整系数改变变化程度，作为优化的变量
@@ -1327,7 +1333,7 @@ namespace Tiling_tiles{
 		double length_final = length_two_point2f(output_final[0], output_final[output_final.size() - 1]);
 		for (int i = 0; i < output_final.size() - 1; i++)
 		{
-			MyLine(drawing_src3, output_final[i], output_final[i + 1], "red");
+		MyLine(drawing_src3, output_final[i], output_final[i + 1], "red");
 		}
 
 		//imshow("drawing_src1", drawing_src1);
