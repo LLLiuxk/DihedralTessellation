@@ -1,6 +1,8 @@
 #include "Morphing.h"
 #include <iostream>
+#include "tilingOpt.h"
 using namespace std;
+using namespace Tiling_tiles;
 cv::Mat PointVec2HomogeneousMat(const std::vector<cv::Point2f>& pts)
 {
 	int num_pts = pts.size();
@@ -227,10 +229,17 @@ void ImageMorphing(const cv::Mat& src_img1, const std::vector<cv::Point2f>& src_
 
 	// Morph points
 	std::vector<cv::Point2f> MorphedPoints;
-	MorphPoints(SrcPoints[0], SrcPoints[1], MorphedPoints, shape_ratio);
+	//MorphPoints(SrcPoints[0], SrcPoints[1], MorphedPoints, shape_ratio);
 
 	// Generate Delaunay Triangles from the morphed points
 	int num_points = MorphedPoints.size();
+	//cout << "MorphPoints: " << num_points<< endl;
+	//Mat tt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+	//for (int i = 0; i < num_points; i++)
+	//{
+	//	circle(tt, MorphedPoints[i], 2, Scalar(255, 0, 0), -1);
+	//}
+	//imshow("11", tt);
 	cv::Size MorphedImgSize(MorphedPoints[num_points - 1].x + 1, MorphedPoints[num_points - 1].y + 1);
 	cv::Subdiv2D sub_div(cv::Rect(0, 0, MorphedImgSize.width, MorphedImgSize.height));
 	sub_div.insert(MorphedPoints);

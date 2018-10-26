@@ -256,10 +256,10 @@ namespace Tiling_tiles{
 		return con_point;
 
 	}
-	
+
+
 	void Prototile::contour_sam_cur()
 	{
-		int iter_num = 0;
 		double Lambda = 0;
 		int sam_num = 0;
 		c_length = contour_length(contour);
@@ -269,41 +269,10 @@ namespace Tiling_tiles{
 		//sampling and computing curvature
 		for (int i = 1; i < 6; i++)  //确定采样点数，此处为500点
 		{			
-
-			Lambda = 0;
-			sam_num = i * 100;
 			vector<Point2f> contour_sam;
 			vector<Point2f> contour_sam_flip;
-			Point2f sample;
-
-			Lambda = c_length / sam_num;
-			contour_sam.push_back(contour[0]);
-			sample = contour[0];
-			for (int t = 1; t < contour.size(); t++)
-			{
-				double length_ = length_two_point2f(sample, contour[t]);
-				if (length_ > Lambda)
-				{
-					Point2f vec = unit_vec(contour[t] - sample);
-					sample = sample + Lambda * vec;
-					contour_sam.push_back(sample);
-					t = t - 1;
-				}
-				else if (t < contour.size() - 1)
-				{
-					while ((length_ + length_two_point2f(contour[t], contour[t + 1])) < Lambda)
-					{
-						length_ = length_ + length_two_point2f(contour[t], contour[t + 1]);
-						t++;
-						if (t >= (contour.size() - 1)) break;
-					}
-					if (t >= (contour.size() - 1)) break;
-					Point2f vec = unit_vec(contour[t + 1] - contour[t]);
-					sample = contour[t] + (Lambda - length_) * vec;
-					contour_sam.push_back(sample);
-				}
-			}
-			if (length_two_point2f( contour_sam[0],contour_sam[contour_sam.size() - 1])<1) contour_sam.pop_back();
+			contour_sam = sampling(contour,i); //点数为 i*100
+			
 			contour_sample.push_back(contour_sam);
 			contour_curva.push_back(curvature_com(contour_sam));
 
@@ -323,9 +292,7 @@ namespace Tiling_tiles{
 			//name = name + char(i + 48) + " sample contour ";
 			//imshow(name, drawing4);
 			//________________________ show over
-		}
-
-		
+		}		
 	}
 
 	vector<Point2f> Prototile::flip_contour(vector<Point2f> cont_s, int flag)
@@ -371,46 +338,9 @@ namespace Tiling_tiles{
 		contour = contour_sample[sam_num - 1];
 		cconvex = contour_curva[sam_num - 1];
 		cout << "contour_sample num: " << contour_sample[sam_num - 1].size() << endl;
-		vector<int> index_num;
-		int contoursize = contour.size();
-		for (int i = 0; i < contoursize; i++)
-		{
-			index_num.push_back(i);
-
-		}
-		sort_comb(cconvex, index_num);
-
 		vector<int> cand_points_index;
-		int t = 1;
-		cand_points_index.push_back(index_num[0]);
-		cout << "length: " << c_length << endl;
+		cand_points_index = most_convex_p(contour, cconvex, max_cur_num);
 		
-		for (int i = 1; i < contoursize; i++)
-		{
-			if (t >= max_cur_num) break;
-			else
-			{ 
-				int flag = 0;
-				for (vector<int>::iterator it = cand_points_index.begin(); it != cand_points_index.end(); it++)
-				{
-					double leng = length_two_point2f(contour[index_num[i]], contour[*it]);				
-					if (leng < 0.01*c_length)
-					{
-						flag = 1;
-						break;
-					}
-				}
-
-				if (flag == 0)
-				{
-					cand_points_index.push_back(index_num[i]);
-					t++;
-				}
-
-			}
-		}
-		
-		cout << "cand_points_index: " << cand_points_index.size()<<endl;
 		//// show convex points
 		//Mat drawing5 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 

@@ -1,10 +1,7 @@
 #include "tilingOpt.h"
 #include<ctime>
 using namespace Tiling_tiles;
-void opp(Mat &ttt)
-{
-	MyLine(ttt, Point2f(100, 100), Point2f(300, 300), "red");
-}
+
 int main(int argc, char** argv)
 {
 	clock_t start, finish;
@@ -36,17 +33,43 @@ int main(int argc, char** argv)
 	{
 		
 		//tiling_opt->points_dividing(imagename3);
-		//Mat drawing1 = Mat(1600, 800, CV_8UC3, Scalar(255, 255, 255));
-		//opp(drawing1);
-		//imshow("hahah", drawing1);
 		//test morphing
 		//--------------------
-		//tiling_opt->load_dataset();
-		prototile_first->contourname = "test";
-		prototile_first->contour = prototile_first->readTxt();
-		Mat tt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));;
-		draw_poly(tt, prototile_first->contour, Point2f(400, 400));//draw_polygen("hhhh", prototile_first->contour);
-		imshow("aaa", tt); 
+		tiling_opt->load_dataset();
+		prototile_first->loadTileData("test");
+	
+		vector<Point2f> contour_inner = prototile_first->contour_sample[1];
+		vector<CandPat> candida_contours;
+		candida_contours = tiling_opt->compare_shapes(prototile_first->contour, 1);
+		CandPat tem = candida_contours[3];
+		prototile_second->~Prototile();
+		prototile_second->loadPoints(tiling_opt->contour_dataset[tem.number]);
+		vector<Point2f> contour_cand = tiling_opt->CandP2Contour(tem, 1);
+		vector<Point2f> inter_;
+		vector<int> mid_inter;
+		inter_ = tiling_opt->morphing_2_patterns(contour_inner, contour_cand, mid_inter, 0.5);
+		//MorphPoints(contour_inner, contour_cand, inter_, 0.5);
+
+
+		Mat tt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		Mat ttt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		Mat drawing_pro1 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		Mat drawing_dst = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		Mat drawing_ = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		draw_poly(ttt, inter_, Point2f(400, 400));
+		draw_poly(drawing_pro1, contour_cand, Point2f(400, 400));
+		draw_poly(tt, contour_inner, Point2f(400, 400));//draw_polygen("hhhh", prototile_first->contour);
+		
+		imshow("only point", ttt);
+		imshow("aaab", tt);
+		imshow("aaa", drawing_pro1);
+		//vector<Point2f> inter_mid;
+		//ImageMorphing(tt, contour_inner, drawing_pro1, contour_cand, drawing_dst, inter_mid, 0.5);
+		//imshow("dst", drawing_dst);
+		//draw_poly(drawing_, inter_mid, Point2f(400, 400));
+		//imshow("dst_p", drawing_);
+		//vector<Point2f> inter_mid = morphing_2_patterns(contour_inner, contour_cand, 0.5);
+		
 		/*
 		Mat drawing_src1 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 		Mat drawing_src2 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));

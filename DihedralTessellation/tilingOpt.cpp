@@ -167,20 +167,20 @@ namespace Tiling_tiles{
 						imwrite(filename, drawing1);
 
 						count++;
-						cout << endl << endl << "!!!!!!!!!-------------!!!!!!!!!succeed!!!!!!!!!!-------------!!!!!!!!!" << endl << endl;
-						cout << "inner_contour.size : " << inner_contour.size() << endl;
+						cout << endl << count<< " succeed" ;
+						cout << "    inner_contour.size : " << inner_contour.size() << endl;
 
 						inner_conts.push_back(inner_contour);
 						all_situation_index.push_back(result_index);
 						mid_interval_index.push_back(mid_interval);
-						if (count == 2) break;
+						//if (count == 2) break;
 
 					}
-					if (count == 2) break;
+					//if (count == 2) break;
 				}
-				if (count == 2) break;
+				//if (count == 2) break;
 			}
-			if (count == 2) break;
+			//if (count == 2) break;
 		}
 
 		cout << "succeed count: " << count << endl;
@@ -198,23 +198,23 @@ namespace Tiling_tiles{
 
 		for (int i = 0; i < inner_conts.size(); i++) //inner_conts.size()
 		{
-			cout << "count: " << count << endl;
+			cout << "count: " << i<<"/"<<count << endl;
 			int num_c = 1;//选择(num_c+1)*100个点
 			vector<CandPat> candida_contours;
 
-			ofstream out("D:\\VisualStudioProjects\\DihedralTessellation\\contours\\test.txt");
-			if (out.is_open())
-			{
-				out << inner_conts[i].size() + 1 << endl;//contours[0].size()
-				for (int j = 0; j < inner_conts[i].size(); j++)
-					out << (int)inner_conts[i][j].x << "," << (int)inner_conts[i][j].y << endl;
-				out << (int)inner_conts[i][0].x << "," << (int)inner_conts[i][0].y << endl;  //首尾连起来
-			}
-			cout << "contours[0].size(): " << i << endl;
-			out.close();
+			//ofstream out("D:\\VisualStudioProjects\\DihedralTessellation\\contours\\test.txt");
+			//if (out.is_open())
+			//{
+			//	out << inner_conts[i].size() + 1 << endl;//contours[0].size()
+			//	for (int j = 0; j < inner_conts[i].size(); j++)
+			//		out << (int)inner_conts[i][j].x << "," << (int)inner_conts[i][j].y << endl;
+			//	out << (int)inner_conts[i][0].x << "," << (int)inner_conts[i][0].y << endl;  //首尾连起来
+			//}
+			//cout << "contours[0].size(): " << i << endl;
+			//out.close();
 
 			candida_contours = compare_shapes(inner_conts[i], num_c);
-			cout << "candida_contours" << candida_contours.size()<< endl;
+			//cout << "candida_contours" << candida_contours.size()<< endl;
 			string conut_name = rootname + "\\placement " + int2string(i);
 			vector<int> mid_inter = joint_relocate(inner_conts[i], mid_interval_index[i], num_c);
 			for (int j = 0; j <candida_contours.size(); j++) //candida_contours.size()
@@ -230,17 +230,15 @@ namespace Tiling_tiles{
 				vector<Point2f> contour_inner = prototile_mid->contour_sample[num_c]; //选择最少的点进行比较
 				//vector<double> contour_inner_c = prototile_mid->contour_curva[0];
 				vector<Point2f> contour_cand = CandP2Contour(tem, num_c);
-				Mat drawing_pro1 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255)); 
-				drawing_pro1=draw_polygen("aaa", contour_inner);
-				imshow("aaa", drawing_pro1);
+				
 				//inner and cand morph into the final pettern	
-				//!!!!!!在下一步中将morph改为分段
+				//!!!!!!在下一步中将morph改为分段!!!此时没有考虑中心平移和缩放倍数，因为之前是一一对应进行的变形
 				int num = 3;
 				float ratio = 3;
 				while (num-- != 0)
 				{
 					ratio = ratio + 1;
-					vector<Point2f> inter_mid = morphing_2_patterns(contour_inner, contour_cand, ratio/10);
+					vector<Point2f> inter_mid = morphing_2_patterns(contour_inner, contour_cand, mid_inter, ratio / 10);
 					
 					//show the result
 					draw_poly(drawing_pro, contour_inner, Point2f(400, 400));
@@ -929,10 +927,7 @@ namespace Tiling_tiles{
 
 	vector<int> Tiling_opt::joint_relocate(vector<Point2f> contour_, vector<int> joint_index, int num_c) //将原始轮廓上的划分点对应到采样后的轮廓上
 	{
-		prototile_tem->~Prototile();
-		prototile_tem->loadPoints(contour_);
-
-		vector<Point2f> contour_mid = prototile_mid->contour_sample[num_c]; //选择最少的点进行比较
+		vector<Point2f> contour_mid = sampling(contour_, num_c+1);//选择最少的点进行比较
 		int con_size = contour_mid.size();
 		vector<int> mid_in;
 		for (int i = 0; i <joint_index.size(); i++)

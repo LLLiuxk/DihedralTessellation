@@ -9,7 +9,7 @@
 #include <string>
 #include <list>
 #include <direct.h>
-#include "Morphing.h"
+//#include "Morphing.h"
 
 
 using namespace cv;
@@ -35,7 +35,7 @@ namespace Tiling_tiles{
 		Prototile();
 
 		void loadTileData(string tile_data);
-		void contour_sam_cur();
+		void contour_sam_cur();		
 		vector<int> convex_p(int max_cur_num);                 //求轮廓上值最大的10个不临近的凸点
 		vector<int> partition_points(string imaname);  //求得用做划分的点
 
@@ -43,10 +43,6 @@ namespace Tiling_tiles{
 
 		//flipping
 		vector<Point2f> flip_contour(vector<Point2f> cont_s, int flag);
-
-		//math tool
-		vector<double> curvature_com_k(vector<Point2f> &contour_sam);
-		vector<double> curvature_com(vector<Point2f> &contour_sam); //记录cos值
 
 		//io polygon
 		void imgtocout(string tile_image);
@@ -98,6 +94,9 @@ namespace Tiling_tiles{
 		vector<Point2f> CandP2Contour(CandPat candp, int num);
 		//relocation
 		vector<int> joint_relocate(vector<Point2f> contour_, vector<int> joint_index, int num_c);
+		
+		//morphing
+		vector<Point2f> morphing_2_patterns(vector<Point2f> contour1, vector<Point2f> contour2, vector<int> mid_inter, float shape_ratio);
 
 
 		double com_each_pair(vector<Point2f> &first_interval, vector<Point2f> &second_interval, int &flag);
@@ -149,6 +148,10 @@ namespace Tiling_tiles{
 	int cur_char_length(char a, char b);
 	double cur_length_two_p(double cur1, double cur2, double zeta);
 	void sort_comb(vector<double> vect, vector<int> &index_num);
+	vector<Point2f> sampling(vector<Point2f> contour_, int points_num);
+	vector<double> curvature_com_k(vector<Point2f> &contour_sam);
+	vector<double> curvature_com(vector<Point2f> &contour_sam); //记录cos值
+	vector<int> most_convex_p(vector<Point2f> contour_, vector<double> cont_c, int max_cur_num);
 
 	//translate tool
 	string int2string(int number);
@@ -181,9 +184,9 @@ namespace Tiling_tiles{
 	void bbx_center_point(vector<vector<Point2f>> all_point, vector<Point2f> &five_p);
 	vector<Point2f> b_box(vector<Point2f> contour);//返回的点是从左上方逆时针
 
-	//morphing
-	vector<Point2f> morphing_2_patterns(vector<Point2f> contour1, vector<Point2f> contour2, float shape_ratio);
-
+	// Morph points
+	void MorphPoints(const std::vector<cv::Point2f>& srcPts1, const std::vector<cv::Point2f>& srcPts2, std::vector<cv::Point2f>& dstPts, float s);
+	
 	//skeleton
 	Mat thinImage(const Mat & src, const int maxIterations);
 	void filterOver(Mat thinSrc);
