@@ -1270,15 +1270,127 @@ namespace Tiling_tiles{
 		vector<pair<int, int>> qmpath;
 		quadr_mismatch(cont1, cont2, cont1_c, cont2_c, qmpath);
 		
+
+
+
+
+		// 首先找到一一对应的点序列
+		vector<Point2f> src1_points;
+		vector<Point2f> src2_points;
+		src1_points.push_back(cont1[0]);
+		src2_points.push_back(cont2[0]);
+
+		//for (int i = 0; i < dp_path.size(); i++)
+		//{
+		//	cout << dp_path[i].first << " -- " << dp_path[i].second << endl;
+		//}
+		if (cont1.size() < cont2.size())
+		{
+			int f = 1;
+			int j = 0;
+			for (int i = 1; i < cont1.size() - 1;)
+			{
+
+				double min = 10000;
+				while (f < qmpath.size())
+				{
+
+					if ((qmpath[f].first < i) || qmpath[f].second < j) //检查下一条路径的另一端点是否已被使用
+					{
+						f++;
+						if (qmpath[f].first > i) i++;
+						continue;
+					}
+					if (qmpath[f].first == i)
+					{
+						if (length_two_point2f(cont1[qmpath[f].first], cont2[qmpath[f].second]) < min)
+						{
+							min = length_two_point2f(cont1[qmpath[f].first], cont2[qmpath[f].second]);
+							j = qmpath[f].second;
+						}
+						f++;
+					}
+					if (qmpath[f].first > i)
+					{
+						src1_points.push_back(cont1[i]);
+						src2_points.push_back(cont2[j]);
+						i++;
+						j++;
+						break;
+					}
+
+				}
+			}
+		}
+		else
+		{
+			int f = 1;
+			int j = 0;
+			for (int i = 1; i < cont2.size() - 1;)
+			{
+				double min = 10000;
+
+				while (f < qmpath.size())
+				{
+
+					if ((qmpath[f].second < i) || qmpath[f].first < j)
+					{
+
+						f++;
+						if (qmpath[f].second > i) i++;
+						continue;
+					}
+					if (qmpath[f].second == i)
+					{
+						if (length_two_point2f(cont1[qmpath[f].first], cont2[qmpath[f].second]) < min)
+						{
+							min = length_two_point2f(cont1[qmpath[f].first], cont2[qmpath[f].second]);
+							j = qmpath[f].first;
+						}
+						f++;
+					}
+					if (qmpath[f].second > i)
+					{
+						src1_points.push_back(cont1[j]);
+						src2_points.push_back(cont2[i]);
+						i++;
+						j++;
+						break;
+					}
+
+				}
+			}
+		}
+		src1_points.push_back(cont1[qmpath[qmpath.size() - 1].first]);
+		src2_points.push_back(cont2[qmpath[qmpath.size() - 1].second]);
+
+
+
+
+
+
+
 		Mat tt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		Mat ttt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 		for (int t = 0; t < cont1.size(); t++)
 		{
 			circle(tt, cont1[t],4,Scalar(255,0,0),-1);
+			circle(tt, cont1[t], 2, Scalar(255, 0, 255), -1);
+			
 		}
 		for (int t = 0; t < cont2.size(); t++)
 		{
 			circle(tt, cont2[t], 4, Scalar(0, 255, 0), -1);
+			circle(tt, cont2[t], 2, Scalar(0, 255, 255), -1);
 		}
+		cout << src1_points.size() << "   " << src2_points.size() << endl;
+		for (int t = 0; t < src1_points.size(); t++)
+		{
+			circle(ttt, src1_points[t], 2, Scalar(255, 0, 255), -1);
+			circle(ttt, src2_points[t], 2, Scalar(0, 255, 255), -1);
+			MyLine(ttt, src1_points[t], src2_points[t], "grey");
+		}
+		
 		for (int i = 0; i < qmpath.size(); i++)
 		{
 			cout << qmpath[i].first << "   " << qmpath[i].second << endl;
@@ -1286,9 +1398,10 @@ namespace Tiling_tiles{
 		}
 
 		imshow("???:",tt);
+		imshow("????:", ttt);
 		
 		MorphPoints(contour1, contour2, final_pettern,shape_ratio);
-		cout << "contour1: "<<contour1.size() << "  contour2: " << contour2.size() << "  final_pettern: " << final_pettern.size() << endl;
+		//cout << "contour1: "<<contour1.size() << "  contour2: " << contour2.size() << "  final_pettern: " << final_pettern.size() << endl;
 
 
 		/*	//---------------------以下为morphing阶段
