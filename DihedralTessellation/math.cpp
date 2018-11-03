@@ -30,7 +30,7 @@ namespace Tiling_tiles{
 	{
 		int col = 800;
 		int row = 800;
-		Mat drawing_pro = Mat(col, row, CV_8UC3, Scalar(255, 255, 255));
+		Mat drawing_pro = Mat(row, col, CV_8UC3, Scalar(255, 255, 255));
 		int n = contour_s.size();
 		//cout << "n: " << n << endl;
 		Point rook_points[1][2000];
@@ -1225,7 +1225,7 @@ namespace Tiling_tiles{
 		//传统morphing是由start和end求得一系列intermediate状态，这里是通过c1和c2获得最终的变形结果
 
 		vector<Point2f> final_pettern;
-		/*int difference = contour1.size() - contour2.size();
+		int difference = contour1.size() - contour2.size();
 		difference = abs(difference);
 		if (difference != 0)
 		{
@@ -1243,8 +1243,8 @@ namespace Tiling_tiles{
 					contour1.pop_back();
 				}
 			}
-		}*/
-		//cout << contour1.size() << "   " << contour2.size() << endl;
+		}
+		cout << contour1.size() << "   " << contour2.size() << endl;
 		double scale = arcLength(contour1, true) / arcLength(contour2, true);
 		//cout << "scale: " << scale << endl;
 		for (int i = 0; i < contour2.size(); i++)
@@ -1259,148 +1259,149 @@ namespace Tiling_tiles{
 			contour2[i] = contour2[i] + shift2;
 		}
 
-		//vector<int> mid_in = joint_relocate(contour1, mid_inter, 1);
-		vector<Point2f> cont1 = sampling(contour1, 1);
-		vector<Point2f> cont2 = sampling(contour2, 1);
-		vector<double> cont1_c = curvature_com(cont1);
-		vector<double> cont2_c = curvature_com(cont2);
+		////vector<int> mid_in = joint_relocate(contour1, mid_inter, 1);
+		//vector<Point2f> cont1 = sampling(contour1, 1);
+		//vector<Point2f> cont2 = sampling(contour2, 1);
+		//vector<double> cont1_c = curvature_com(cont1);
+		//vector<double> cont2_c = curvature_com(cont2);
 
-		vector<int> cand_points_index = most_convex_p(cont1, cont1_c,20);
-		sort_bub(cand_points_index);
-		vector<pair<int, int>> qmpath;
-		quadr_mismatch(cont1, cont2, cont1_c, cont2_c, qmpath);
-		
-
+		//vector<int> cand_points_index = most_convex_p(cont1, cont1_c,20);
+		//sort_bub(cand_points_index);
+		//vector<pair<int, int>> qmpath;
+		//quadr_mismatch(cont1, cont2, cont1_c, cont2_c, qmpath);
 
 
+		//// 首先找到一一对应的点序列
+		//vector<Point2f> src1_points;
+		//vector<Point2f> src2_points;
+		//src1_points.push_back(cont1[0]);
+		//src2_points.push_back(cont2[0]);
 
-		// 首先找到一一对应的点序列
-		vector<Point2f> src1_points;
-		vector<Point2f> src2_points;
-		src1_points.push_back(cont1[0]);
-		src2_points.push_back(cont2[0]);
-
-		//for (int i = 0; i < dp_path.size(); i++)
+		////for (int i = 0; i < dp_path.size(); i++)
+		////{
+		////	cout << dp_path[i].first << " -- " << dp_path[i].second << endl;
+		////}
+		//if (cont1.size() < cont2.size())
 		//{
-		//	cout << dp_path[i].first << " -- " << dp_path[i].second << endl;
+		//	int f = 1;
+		//	int j = 0;
+		//	for (int i = 1; i < cont1.size() - 1;)
+		//	{
+
+		//		double min = 10000;
+		//		while (f < qmpath.size())
+		//		{
+
+		//			if ((qmpath[f].first < i) || qmpath[f].second < j) //检查下一条路径的另一端点是否已被使用
+		//			{
+		//				f++;
+		//				if (qmpath[f].first > i) i++;
+		//				continue;
+		//			}
+		//			if (qmpath[f].first == i)
+		//			{
+		//				if (length_two_point2f(cont1[qmpath[f].first], cont2[qmpath[f].second]) < min)
+		//				{
+		//					min = length_two_point2f(cont1[qmpath[f].first], cont2[qmpath[f].second]);
+		//					j = qmpath[f].second;
+		//				}
+		//				f++;
+		//			}
+		//			if (qmpath[f].first > i)
+		//			{
+		//				src1_points.push_back(cont1[i]);
+		//				src2_points.push_back(cont2[j]);
+		//				i++;
+		//				j++;
+		//				break;
+		//			}
+
+		//		}
+		//	}
 		//}
-		if (cont1.size() < cont2.size())
-		{
-			int f = 1;
-			int j = 0;
-			for (int i = 1; i < cont1.size() - 1;)
-			{
+		//else
+		//{
+		//	int f = 1;
+		//	int j = 0;
+		//	for (int i = 1; i < cont2.size() - 1;)
+		//	{
+		//		double min = 10000;
 
-				double min = 10000;
-				while (f < qmpath.size())
-				{
+		//		while (f < qmpath.size())
+		//		{
 
-					if ((qmpath[f].first < i) || qmpath[f].second < j) //检查下一条路径的另一端点是否已被使用
-					{
-						f++;
-						if (qmpath[f].first > i) i++;
-						continue;
-					}
-					if (qmpath[f].first == i)
-					{
-						if (length_two_point2f(cont1[qmpath[f].first], cont2[qmpath[f].second]) < min)
-						{
-							min = length_two_point2f(cont1[qmpath[f].first], cont2[qmpath[f].second]);
-							j = qmpath[f].second;
-						}
-						f++;
-					}
-					if (qmpath[f].first > i)
-					{
-						src1_points.push_back(cont1[i]);
-						src2_points.push_back(cont2[j]);
-						i++;
-						j++;
-						break;
-					}
+		//			if ((qmpath[f].second < i) || qmpath[f].first < j)
+		//			{
 
-				}
-			}
-		}
-		else
-		{
-			int f = 1;
-			int j = 0;
-			for (int i = 1; i < cont2.size() - 1;)
-			{
-				double min = 10000;
+		//				f++;
+		//				if (qmpath[f].second > i) i++;
+		//				continue;
+		//			}
+		//			if (qmpath[f].second == i)
+		//			{
+		//				if (length_two_point2f(cont1[qmpath[f].first], cont2[qmpath[f].second]) < min)
+		//				{
+		//					min = length_two_point2f(cont1[qmpath[f].first], cont2[qmpath[f].second]);
+		//					j = qmpath[f].first;
+		//				}
+		//				f++;
+		//			}
+		//			if (qmpath[f].second > i)
+		//			{
+		//				src1_points.push_back(cont1[j]);
+		//				src2_points.push_back(cont2[i]);
+		//				i++;
+		//				j++;
+		//				break;
+		//			}
 
-				while (f < qmpath.size())
-				{
-
-					if ((qmpath[f].second < i) || qmpath[f].first < j)
-					{
-
-						f++;
-						if (qmpath[f].second > i) i++;
-						continue;
-					}
-					if (qmpath[f].second == i)
-					{
-						if (length_two_point2f(cont1[qmpath[f].first], cont2[qmpath[f].second]) < min)
-						{
-							min = length_two_point2f(cont1[qmpath[f].first], cont2[qmpath[f].second]);
-							j = qmpath[f].first;
-						}
-						f++;
-					}
-					if (qmpath[f].second > i)
-					{
-						src1_points.push_back(cont1[j]);
-						src2_points.push_back(cont2[i]);
-						i++;
-						j++;
-						break;
-					}
-
-				}
-			}
-		}
-		src1_points.push_back(cont1[qmpath[qmpath.size() - 1].first]);
-		src2_points.push_back(cont2[qmpath[qmpath.size() - 1].second]);
+		//		}
+		//	}
+		//}
+		//src1_points.push_back(cont1[qmpath[qmpath.size() - 1].first]);
+		//src2_points.push_back(cont2[qmpath[qmpath.size() - 1].second]);
 
 
 
 
 
 
-
-		Mat tt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		Mat ttt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		for (int t = 0; t < cont1.size(); t++)
-		{
-			circle(tt, cont1[t],4,Scalar(255,0,0),-1);
-			circle(tt, cont1[t], 2, Scalar(255, 0, 255), -1);
-			
-		}
-		for (int t = 0; t < cont2.size(); t++)
-		{
-			circle(tt, cont2[t], 4, Scalar(0, 255, 0), -1);
-			circle(tt, cont2[t], 2, Scalar(0, 255, 255), -1);
-		}
-		cout << src1_points.size() << "   " << src2_points.size() << endl;
-		for (int t = 0; t < src1_points.size(); t++)
-		{
-			circle(ttt, src1_points[t], 2, Scalar(255, 0, 255), -1);
-			circle(ttt, src2_points[t], 2, Scalar(0, 255, 255), -1);
-			MyLine(ttt, src1_points[t], src2_points[t], "grey");
-		}
+		//Mat ta = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		//Mat tt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		//Mat ttt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		//for (int t = 0; t < cont1.size(); t++)
+		//{
+		//	circle(tt, cont1[t],4,Scalar(255,0,0),-1);
+		//	circle(ta, cont1[t], 4, Scalar(255, 0, 0), -1);
+		//}
+		//for (int t = 0; t < cont2.size(); t++)
+		//{
+		//	circle(tt, cont2[t], 4, Scalar(0, 255, 0), -1);
+		//	circle(ta, cont2[t], 4, Scalar(0, 255, 0), -1);
+		//}
+		//cout << src1_points.size() << "   " << src2_points.size() << endl;
+		//for (int t = 0; t < src1_points.size(); t++)
+		//{
+		//	circle(ttt, src1_points[t], 4, Scalar(255, 120, 120), -1);
+		//	circle(tt, src1_points[t], 6, Scalar(255, 120, 120), -1);
+		//	circle(ttt, src2_points[t], 4, Scalar(120, 200, 120), -1);
+		//	circle(tt, src2_points[t], 6, Scalar(120, 200, 120), -1);
+		//	MyLine(ttt, src1_points[t], src2_points[t], "grey");
+		//	MyLine(tt, src1_points[t], src2_points[t], "grey");
+		//}
+		//
+		//for (int i = 0; i < qmpath.size(); i++)
+		//{
+		//	cout << qmpath[i].first << "   " << qmpath[i].second << endl;
+		//	MyLine(ta, cont1[qmpath[i].first], cont2[qmpath[i].second], "grey");
+		//	//MyLine(tt, cont1[qmpath[i].first], cont2[qmpath[i].second], "grey");
+		//}
+		//imshow("??:", ta);
+		//imshow("???:",tt);
+		//imshow("????:", ttt);
 		
-		for (int i = 0; i < qmpath.size(); i++)
-		{
-			cout << qmpath[i].first << "   " << qmpath[i].second << endl;
-			MyLine(tt, cont1[qmpath[i].first], cont2[qmpath[i].second], "grey");
-		}
-
-		imshow("???:",tt);
-		imshow("????:", ttt);
-		
-		MorphPoints(contour1, contour2, final_pettern,shape_ratio);
+        MorphPoints(contour1, contour2, final_pettern, shape_ratio);
+		//MorphPoints(src1_points, src2_points, final_pettern, shape_ratio);
 		//cout << "contour1: "<<contour1.size() << "  contour2: " << contour2.size() << "  final_pettern: " << final_pettern.size() << endl;
 
 
@@ -1534,18 +1535,23 @@ namespace Tiling_tiles{
 		char ch[8];
 		int  divisor = 1000;
 		int index = 0;
-		
+		if (number == 0)
+		{
+			ch[index] = '0';
+			ch[index + 1] = '\0';
+			return ch;
+		}
 		while (divisor != 0)
 		{
 			if (number / divisor == 0)
 			{
-				if (number == 0)
+				divisor = divisor / 10;
+				if (index != 0)
 				{
 					ch[index] = '0';
-					ch[index + 1] = '\0';
-					return ch;
+					index++;
 				}
-				else divisor = divisor / 10;
+
 			}
 			else
 			{

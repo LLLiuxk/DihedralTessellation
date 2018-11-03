@@ -5,12 +5,23 @@ using namespace std;
 namespace Tiling_tiles{
 	Prototile::Prototile(){
 		c_length = 0;
+		rootname = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\";
+		txtpath = "D:\\VisualStudioProjects\\DihedralTessellation\\contours\\";
+	};
+
+	Prototile::Prototile(string rname, string fpath){
+		c_length = 0;
+		rootname = rname;
+		txtpath = fpath;
 	};
 
 	void Prototile::loadTileData(string tile_data)
 	{
 		//vector<double> cos_vec_contour;
 		//vector<int> index_cos;
+		if (rootname.empty()) rootname = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\";
+		if (txtpath.empty()) txtpath = "D:\\VisualStudioProjects\\DihedralTessellation\\contours\\";
+
 		contourname = tile_data;
 		//imgtocout();
 		contour = readTxt();	
@@ -26,7 +37,7 @@ namespace Tiling_tiles{
 		contour_sam_cur();
 	}
 
-	void Prototile::imgtocout(string tile_image)
+	void Prototile::imgtocout(string tile_image, int  raw)
 	{
 		Mat src;
 		Mat src_gray;
@@ -35,7 +46,8 @@ namespace Tiling_tiles{
 		int max_thresh = 255;
 
 		//read image
-		String imageName("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\" + tile_image + ".png"); // by default
+		String imageName = rootname + tile_image + ".png"; // by default
+		cout << imageName << endl;
 		src = imread(imageName, IMREAD_COLOR);
 		if (src.empty())
 		{
@@ -47,21 +59,23 @@ namespace Tiling_tiles{
 		2.模糊，利于下一步进行筛选过滤 
 		3.转化二值图 
 		4.模糊方便提取轮廓*/
-		int raw = 0;
+		cout << raw << endl;
 		if (raw == 1)
 		{
 		    cvtColor(src, src_gray, COLOR_BGR2GRAY);
-			blur(src_gray, src_gray, Size(3, 3));
+			//blur(src_gray, src_gray, Size(3, 3));
+			GaussianBlur(src_gray, src_gray, Size(3,3), 10, 10);
 			//未经处理的图需要四步，之前处理好的用四步会处理过头
 			threshold(src_gray, src_gray, 128, 255, cv::THRESH_BINARY);
-			if (imread("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\" + tile_image + "2.png", IMREAD_COLOR).empty())
-				imwrite("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\" + tile_image + "2.png", src_gray);
+			imwrite(rootname + tile_image + ".png", src_gray);
+			/*if (imread(rootname + tile_image + "2.png", IMREAD_COLOR).empty())
+				imwrite(rootname + tile_image + "2.png", src_gray);
 			else
 			{
 				cout << tile_image + "2.png has already exist!!!" << endl;
-				imwrite("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\" + tile_image + "22.png", src_gray);
-			}
-			blur(src_gray, src_gray, Size(3, 3));
+				imwrite(rootname + tile_image + "0000.png", src_gray);
+			}*/
+			//blur(src_gray, src_gray, Size(3, 3));
 			imshow("src_gray_blur", src_gray);
 		}
 		else
@@ -134,7 +148,7 @@ namespace Tiling_tiles{
 		out.close();*/
 
 		//逆时针存储
-		ofstream out("D:\\VisualStudioProjects\\contours\\" + tile_image + ".txt");
+		ofstream out(txtpath + tile_image + ".txt");
 		if (out.is_open())
 		{
 			out << contours[0].size() + 1 << endl;//contours[0].size()
@@ -145,6 +159,7 @@ namespace Tiling_tiles{
 		cout << "contours[0].size(): " << contours[0].size() << endl;
 		out.close();
 
+
 	}
 
 
@@ -152,7 +167,8 @@ namespace Tiling_tiles{
 	{
 		vector<Point2f> con_point;
 		//读取一个存有轮廓点的文件，格式对应上一步计算轮廓点保存的文件
-		ifstream in("D:\\VisualStudioProjects\\DihedralTessellation\\contours\\" + contourname + ".txt");
+		string filepath = txtpath + contourname + ".txt";
+		ifstream in(filepath);
 		if (!in.is_open())
 		{
 			cout << "Error opening file" << endl;

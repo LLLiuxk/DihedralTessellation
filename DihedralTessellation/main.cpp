@@ -8,11 +8,11 @@ int main(int argc, char** argv)
 	start = clock();
 	
 	string imagename1 = "22"; 
-	string imagename2 = "33";
+	string imagename2 = "1";
 	//string imagename1 = "Boat";
 	//string imagename2 = "fish8";
 	//string imagename1 = "fish5";
-	string imagename3 = "19";
+	string imagename3 = "15";
 	//string txtname = "D:/images/111.png";
 	//string txtname1 = "D:/images/fish3.png";
 
@@ -28,41 +28,52 @@ int main(int argc, char** argv)
 	Tiling_tiles::Prototile *prototile_third;
 	prototile_third = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
-	int f = 0;
+	int f = 2;
 	if (f == 0) //已有dataset
 	{
 		
-		//tiling_opt->points_dividing(imagename3);
+		for (int i = 0; i < 200; i++)
+		{ 
+			string name_ = int2string(i);
+			cout << name_ << endl;
+			tiling_opt->points_dividing(name_);
+			system("cls");
+		}
+		
 		//test morphing
 		//--------------------
-		tiling_opt->load_dataset();
-		prototile_first->loadTileData("test");
+		//tiling_opt->load_dataset();
+		//prototile_first->loadTileData("test");
 	
-		vector<Point2f> contour_inner = prototile_first->contour_sample[1];
-		vector<CandPat> candida_contours;
-		candida_contours = tiling_opt->compare_shapes(prototile_first->contour, 1);
-		CandPat tem = candida_contours[3];
-		prototile_second->~Prototile();
-		prototile_second->loadPoints(tiling_opt->contour_dataset[tem.number]);
-		vector<Point2f> contour_cand = tiling_opt->CandP2Contour(tem, 1);
-		vector<Point2f> inter_;
-		vector<int> mid_inter;
-		inter_ = tiling_opt->morphing_2_patterns(contour_inner, contour_cand, mid_inter, 0.5);
-		//MorphPoints(contour_inner, contour_cand, inter_, 0.5);
+		//vector<Point2f> contour_inner = prototile_first->contour_sample[1];
+		//vector<CandPat> candida_contours;
+		//candida_contours = tiling_opt->compare_shapes(prototile_first->contour, 1);
+		//CandPat tem = candida_contours[0];
+		//prototile_second->~Prototile();
+		//prototile_second->loadPoints(tiling_opt->contour_dataset[tem.number]);
+		//vector<Point2f> contour_cand = tiling_opt->CandP2Contour(tem, 1);
+		//vector<Point2f> inter_;
+		//vector<int> mid_inter;
+		//inter_ = tiling_opt->morphing_2_patterns(contour_inner, contour_cand, mid_inter, 0.5);
+		////MorphPoints(contour_inner, contour_cand, inter_, 0.5);
 
 
-		Mat tt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		Mat ttt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		Mat drawing_pro1 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		Mat drawing_dst = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		Mat drawing_ = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		draw_poly(ttt, inter_, Point2f(400, 400));
-		draw_poly(drawing_pro1, contour_cand, Point2f(400, 400));
-		draw_poly(tt, contour_inner, Point2f(400, 400));//draw_polygen("hhhh", prototile_first->contour);
-		
-		imshow("only point", ttt);
-		imshow("aaab", tt);
-		imshow("aaa", drawing_pro1);
+		//Mat tt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		//Mat ttt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		//Mat drawing_pro1 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		//Mat drawing_dst = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		//Mat drawing_ = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		//draw_poly(ttt, inter_, Point2f(400, 400));
+		//draw_poly(drawing_pro1, contour_cand, Point2f(400, 400));
+		//draw_poly(tt, contour_inner, Point2f(400, 400));//draw_polygen("hhhh", prototile_first->contour);
+		//
+		//imshow("only point", ttt);
+		//imshow("aaab", tt);
+		//imshow("aaa", drawing_pro1);
+
+
+
+
 		//vector<Point2f> inter_mid;
 		//ImageMorphing(tt, contour_inner, drawing_pro1, contour_cand, drawing_dst, inter_mid, 0.5);
 		//imshow("dst", drawing_dst);
@@ -200,9 +211,6 @@ int main(int argc, char** argv)
 		//}*/
 		//------------------------
 
-
-
-
 		//
 		//
 		//cout << center_p(b) << endl;
@@ -329,42 +337,48 @@ int main(int argc, char** argv)
 	}
 	else if (f == 1)
 	{
-		prototile_first->imgtocout(imagename3);
+		prototile_first->~Prototile();
+		prototile_first->txtpath = "D:\\VisualStudioProjects\\images\\txt\\";
+		prototile_first->rootname = "D:\\VisualStudioProjects\\images\\bi\\";
+		prototile_first->imgtocout("135",1);
+
 	}	
 	else if (f==2){  //批量读图
-		for (int i = 201; i < 205; i++)
+		for (int i = 0; i < 1010; i++)
 		{
-			prototile_first->~Prototile();
-			char ch[4];
-			//for (int j = 0; j < 2; j++)
-			//cout << ch[j] << endl;
-			if (i < 100)
-			{
-				if (i / 10 == 0)
-				{
-					ch[0] = i % 10 + 48;
-					ch[1] = '\0';
-				}
-				else
-				{
-					ch[0] = i / 10 + 48;
-					ch[1] = i % 10 + 48;
-					ch[2] = '\0';
-				}
-			}
-			else
-			{
-				ch[0] = i / 100 + 48;
-				ch[1] = ( i % 100 ) / 10+ 48;
-				ch[2] = i % 10 + 48;
-				ch[3] = '\0';
-
-			}
-			
-
-			string image = ch;
+			string image = int2string(i);
 			cout << image << endl;
-			prototile_first->imgtocout(image);
+			//string image1 = "D:\\VisualStudioProjects\\images\\bi\\" + image + ".png";
+			//Mat src = imread(image1, IMREAD_GRAYSCALE);
+			//threshold(src, src, 128, 1, cv::THRESH_BINARY);
+			//imshow("???:", src);
+			//int rows = src.rows;
+			//int cols = src.cols;
+			//int count = 0;
+			//for (int i = 0; i <rows; i++)
+			//	for (int j = 0; j < cols; j++)
+			//	{
+			//		//cout << (int)src.at<uchar>(i, j) << endl;
+			//		//if (src.at<uchar>(i, j) == 0 || src.at<uchar>(i, j) == 255) count++;
+			//		if (src.at<uchar>(i, j) == 0)
+			//		{
+			//			count++;
+			//			src.at<uchar>(i, j) = 255;
+			//		}
+			//		else if (src.at<uchar>(i, j) == 255) src.at<uchar>(i, j) = 0;
+			//	}
+			//imshow("!!!:", src);
+			//cout << count << endl;
+			//string image2 = int2string(i+200);
+			//imwrite("D:\\VisualStudioProjects\\images\\new\\" + image2 + ".png",src);
+
+		/*	prototile_first->~Prototile();
+			prototile_first->txtpath = "D:\\VisualStudioProjects\\images\\txt\\";
+			prototile_first->rootname = "D:\\VisualStudioProjects\\images\\bi\\";
+			string image = int2string(i);
+			cout << image << endl;
+			prototile_first->imgtocout(image);*/
+
 			//if (prototile_first->contour.size() < 300)
 			//cout << image + ".png may be error" << endl;
 		}
@@ -372,10 +386,75 @@ int main(int argc, char** argv)
 	}
 	else if (f == 3)
 	{
-		//Point2f xy;
-		//if (get_line_intersection(Point2f(0, 0),Point2f( 10, 10),Point2f(0, 0), Point2f(6, 6), xy) == 0)
-		//	cout << "no" << endl;
-		//cout << xy.x << " " << xy.y<<endl;
+		for (int i = 0; i < 202; i++)
+		{
+			prototile_first->~Prototile();
+			string image = int2string(i);
+			int thresh = 100;
+			int max_thresh = 255;
+			String imageName("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\" + image + ".png");
+			cout << image << endl;
+			Mat src = imread(imageName);
+			imshow("src", src);
+			Mat src_g;
+			cvtColor(src, src_g, COLOR_BGR2GRAY);
+			blur(src_g, src_g, Size(3, 3));
+			Mat canny_output;
+			//考虑到可能有多个轮廓
+			vector<vector<Point> > contours;
+			vector<Vec4i> hierarchy;
+
+			//用candy法由灰度图求出掩码图
+			Canny(src_g, canny_output, thresh, thresh * 2, 3);
+			//imshow("canny_output", canny_output);
+			//由掩码图求出有序轮廓点
+			findContours(canny_output, contours, hierarchy, CV_RETR_EXTERNAL, CHAIN_APPROX_SIMPLE, Point(0, 0));
+			cout << "contours num:" << contours.size() << endl;
+			vector<Point2f> sampling_;
+			for (int t = 0; t < contours[0].size(); t++)
+			{
+				sampling_.push_back(contours[0][t]);
+			}
+			vector<double> sam_cur = curvature_com(sampling_);
+			int cur_p_num = 30;
+			vector<int> max_order;
+			max_order = most_convex_p(sampling_, sam_cur, cur_p_num);
+			int contoursize = sampling_.size();
+			double c_length = arcLength(sampling_,true);
+			vector<int> all_order = max_order;
+			double dist = 1000;
+			int index = 0;
+			for (int i = 0; i < contoursize; i = i + 10)
+			{
+				int flag = 0;
+				for (vector<int>::iterator it = max_order.begin(); it != max_order.end(); it++)
+				{
+					double leng = length_two_point2f(sampling_[i], sampling_[*it]);
+					if (leng < 0.005*c_length)
+					{
+						flag = 1;
+						break;
+					}
+				}
+
+				if (flag == 0)
+				{
+					all_order.push_back(i);
+				}
+			}
+			cout << "all_order.size:" << all_order.size() << endl;
+			sort_bub(all_order);
+			vector<Point2f> res;
+			for (int j = 0; j < all_order.size(); j++)
+			{
+				res.push_back(sampling_[all_order[j]]);
+			}
+			Mat tt = Mat(600, 600, CV_8UC3, Scalar(255, 255, 255));
+			draw_poly(tt, res, Point2f(300, 300));
+			imshow("??", tt);
+			imwrite("D:\\VisualStudioProjects\\DihedralTessellation\\other\\" + image + "s.png", tt);
+		}
+		
 	}
 	//Tiling_tiles::Prototile *prototile_second;
 	//prototile_second = new Tiling_tiles::Prototile();

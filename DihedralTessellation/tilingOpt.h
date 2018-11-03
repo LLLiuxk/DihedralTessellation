@@ -33,6 +33,7 @@ namespace Tiling_tiles{
 	class Prototile{
 	public:
 		Prototile();
+		Prototile(string rname,string tpath);
 
 		void loadTileData(string tile_data);
 		void contour_sam_cur();		
@@ -45,13 +46,15 @@ namespace Tiling_tiles{
 		vector<Point2f> flip_contour(vector<Point2f> cont_s, int flag);
 
 		//io polygon
-		void imgtocout(string tile_image);
+		void imgtocout(string tile_image, int raw=0);
 		vector<Point2f> readTxt();
 		void loadPoints(vector<Point2f> con_point);
 
 
 
 		string contourname;
+		string rootname;
+		string txtpath;
 		vector<Point2f> contour;
 		vector<double> cconvex;
 		vector<vector<Point2f>> contour_sample;
@@ -64,7 +67,6 @@ namespace Tiling_tiles{
 
 		double c_length;
 		Point2f center_point;
-
 	};
 
 

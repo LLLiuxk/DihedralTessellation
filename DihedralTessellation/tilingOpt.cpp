@@ -31,31 +31,8 @@ namespace Tiling_tiles{
 		for (int i = 0; i < 205; i++)
 		{
 			prototile_second->~Prototile();
-			char ch[4];
-			if (i < 100)
-			{
-				if (i / 10 == 0)
-				{
-					ch[0] = i % 10 + 48;
-					ch[1] = '\0';
-				}
-				else
-				{
-					ch[0] = i / 10 + 48;
-					ch[1] = i % 10 + 48;
-					ch[2] = '\0';
-				}
-			}
-			else
-			{
-				ch[0] = i / 100 + 48;
-				ch[1] = (i % 100) / 10 + 48;
-				ch[2] = i % 10 + 48;
-				ch[3] = '\0';
-
-			}
+			string image = int2string(i);
 			vector<Point2f> data_;
-			string image = ch;
 			prototile_second->contourname = image;
 			//imgtocout();
 			data_ = prototile_second->readTxt();
@@ -182,7 +159,8 @@ namespace Tiling_tiles{
 			}
 			//if (count == 2) break;
 		}
-
+		string conut_name = rootname + "\\placement " + int2string(count);
+		rmdir(conut_name.c_str());
 		cout << "succeed count: " << count << endl;
 		// search the right image
 		/*
