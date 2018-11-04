@@ -66,7 +66,7 @@ namespace Tiling_tiles{
 			//blur(src_gray, src_gray, Size(3, 3));
 			GaussianBlur(src_gray, src_gray, Size(3,3), 10, 10);
 			//未经处理的图需要四步，之前处理好的用四步会处理过头
-			threshold(src_gray, src_gray, 128, 255, cv::THRESH_BINARY);
+			threshold(src_gray, src_gray, 128, 255, cv::THRESH_BINARY); //255 white
 			imwrite(rootname + tile_image + ".png", src_gray);
 			/*if (imread(rootname + tile_image + "2.png", IMREAD_COLOR).empty())
 				imwrite(rootname + tile_image + "2.png", src_gray);

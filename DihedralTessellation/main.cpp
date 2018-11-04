@@ -344,11 +344,11 @@ int main(int argc, char** argv)
 
 	}	
 	else if (f==2){  //ÅúÁ¿¶ÁÍ¼
-		for (int i = 0; i < 1010; i++)
+		for (int i = 1; i < 25; i++)
 		{
-			string image = int2string(i);
-			cout << image << endl;
-			//string image1 = "D:\\VisualStudioProjects\\images\\bi\\" + image + ".png";
+			//string image = int2string(i);
+			//cout << image << endl;
+			//string image1 = "D:\\VisualStudioProjects\\images\\render\\1 (" + image + ").png";
 			//Mat src = imread(image1, IMREAD_GRAYSCALE);
 			//threshold(src, src, 128, 1, cv::THRESH_BINARY);
 			//imshow("???:", src);
@@ -372,12 +372,13 @@ int main(int argc, char** argv)
 			//string image2 = int2string(i+200);
 			//imwrite("D:\\VisualStudioProjects\\images\\new\\" + image2 + ".png",src);
 
-		/*	prototile_first->~Prototile();
+			prototile_first->~Prototile();
 			prototile_first->txtpath = "D:\\VisualStudioProjects\\images\\txt\\";
-			prototile_first->rootname = "D:\\VisualStudioProjects\\images\\bi\\";
+			prototile_first->rootname = "D:\\VisualStudioProjects\\images\\render\\";
 			string image = int2string(i);
 			cout << image << endl;
-			prototile_first->imgtocout(image);*/
+			image = "1 (" + image + ")";
+			prototile_first->imgtocout(image,1);
 
 			//if (prototile_first->contour.size() < 300)
 			//cout << image + ".png may be error" << endl;
