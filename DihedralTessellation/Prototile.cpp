@@ -5,23 +5,43 @@ using namespace std;
 namespace Tiling_tiles{
 	Prototile::Prototile(){
 		c_length = 0;
-		rootname = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\";
+		dataroot = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\";
 		txtpath = "D:\\VisualStudioProjects\\DihedralTessellation\\contours\\";
 	};
 
 	Prototile::Prototile(string rname, string fpath){
 		c_length = 0;
-		rootname = rname;
+		dataroot = rname;
 		txtpath = fpath;
 	};
+	
+	void Prototile::Pro_clear()
+	{
+		contourname.clear();
+		dataroot.clear();
+		txtpath.clear();
+		contour.swap(vector<Point2f>());
+		cconvex.swap(vector<double>());
+		contour_sample.swap(vector<vector<Point2f>>());
+		contour_sample_flip.swap(vector<vector<Point2f>>());
+		contour_curva.swap(vector<vector<double>>());
+		contour_curva_flip.swap(vector<vector<double>>());
+		c_length = 0;
+		center_point = Point2f(0,0);
+	}
+
+	void Prototile::getpath()
+	{
+		if (dataroot.empty()) dataroot = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\";
+		if (txtpath.empty()) txtpath = "D:\\VisualStudioProjects\\DihedralTessellation\\contours\\";
+
+	}
 
 	void Prototile::loadTileData(string tile_data)
 	{
+		getpath();
 		//vector<double> cos_vec_contour;
-		//vector<int> index_cos;
-		if (rootname.empty()) rootname = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\";
-		if (txtpath.empty()) txtpath = "D:\\VisualStudioProjects\\DihedralTessellation\\contours\\";
-
+		//vector<int> index_cos;		
 		contourname = tile_data;
 		//imgtocout();
 		contour = readTxt();	
@@ -39,6 +59,7 @@ namespace Tiling_tiles{
 
 	void Prototile::imgtocout(string tile_image, int  raw)
 	{
+		getpath();
 		Mat src;
 		Mat src_gray;
 		Mat src_2;
@@ -46,7 +67,7 @@ namespace Tiling_tiles{
 		int max_thresh = 255;
 
 		//read image
-		String imageName = rootname + tile_image + ".png"; // by default
+		String imageName = dataroot + tile_image + ".png"; // by default
 		cout << imageName << endl;
 		src = imread(imageName, IMREAD_COLOR);
 		if (src.empty())
@@ -59,7 +80,6 @@ namespace Tiling_tiles{
 		2.模糊，利于下一步进行筛选过滤 
 		3.转化二值图 
 		4.模糊方便提取轮廓*/
-		cout << raw << endl;
 		if (raw == 1)
 		{
 		    cvtColor(src, src_gray, COLOR_BGR2GRAY);
@@ -67,15 +87,17 @@ namespace Tiling_tiles{
 			GaussianBlur(src_gray, src_gray, Size(3,3), 10, 10);
 			//未经处理的图需要四步，之前处理好的用四步会处理过头
 			threshold(src_gray, src_gray, 128, 255, cv::THRESH_BINARY); //255 white
-			imwrite(rootname + tile_image + ".png", src_gray);
-			/*if (imread(rootname + tile_image + "2.png", IMREAD_COLOR).empty())
-				imwrite(rootname + tile_image + "2.png", src_gray);
+			//imwrite(dataroot +"new\\"+ tile_image + ".png", src_gray);
+			imwrite(dataroot + tile_image + ".png", src_gray);
+
+			/*if (imread(dataroot + tile_image + "2.png", IMREAD_COLOR).empty())
+				imwrite(dataroot + tile_image + "2.png", src_gray);
 			else
 			{
 				cout << tile_image + "2.png has already exist!!!" << endl;
-				imwrite(rootname + tile_image + "0000.png", src_gray);
+				imwrite(dataroot + tile_image + "0000.png", src_gray);
 			}*/
-			//blur(src_gray, src_gray, Size(3, 3));
+			blur(src_gray, src_gray, Size(3, 3));
 			imshow("src_gray_blur", src_gray);
 		}
 		else
@@ -97,7 +119,7 @@ namespace Tiling_tiles{
 		cout << "contours num:" << contours.size() << endl;
 		
 		
-		Mat drwa = Mat::zeros(800, 800, CV_8UC3);
+		/*Mat drwa = Mat::zeros(800, 800, CV_8UC3);
 		int i = 0;
 		for (; i < contours[0].size() / 4; i++)
 		{
@@ -111,7 +133,7 @@ namespace Tiling_tiles{
 		{
 			circle(drwa, contours[0][i], 1, Scalar(0, 0, 255), -1);
 		}
-		imshow("contour" + tile_image, drwa);
+		imshow("contour" + tile_image, drwa);*/
 
 		//output two 
 		//namedWindow("contour one", WINDOW_AUTOSIZE);
@@ -171,6 +193,7 @@ namespace Tiling_tiles{
 		ifstream in(filepath);
 		if (!in.is_open())
 		{
+			cout << filepath << endl;
 			cout << "Error opening file" << endl;
 			return con_point;
 		}
@@ -434,51 +457,51 @@ namespace Tiling_tiles{
 		return all_order;
 	}
 
-	void Prototile::cur_normalize()
-	{
-		for (int n = 0; n < 5; n++)
-		{
-			double min = 100;
-			double max = 0;
-			for (int i = 0; i < contour_curva[n].size(); i++)
-			{
-				//cout << contour_curva[n][i] << " ";
-				if (contour_curva[n][i]>100) continue;
-				if (contour_curva[n][i] < min) min = contour_curva[n][i];
-				if (contour_curva[n][i] > max) max = contour_curva[n][i];
-			}
+	//void Prototile::cur_normalize()
+	//{
+	//	for (int n = 0; n < 5; n++)
+	//	{
+	//		double min = 100;
+	//		double max = 0;
+	//		for (int i = 0; i < contour_curva[n].size(); i++)
+	//		{
+	//			//cout << contour_curva[n][i] << " ";
+	//			if (contour_curva[n][i]>100) continue;
+	//			if (contour_curva[n][i] < min) min = contour_curva[n][i];
+	//			if (contour_curva[n][i] > max) max = contour_curva[n][i];
+	//		}
 
-			///////////
-			double step = (max - min) / 52;
-			double mid = (max + min) / 2;
-			//cout << "step: " << step << "\n max: " << max << "\n mid: " << mid << endl;
+	//		///////////
+	//		double step = (max - min) / 52;
+	//		double mid = (max + min) / 2;
+	//		//cout << "step: " << step << "\n max: " << max << "\n mid: " << mid << endl;
 
-			//Z~A0a~z
-			cout << endl;
-			for (int i = 0; i < contour_curva[n].size(); i++)
-			{
-				if (contour_curva[n][i]>max) cur_string[n][i] = 'z';
-				if (contour_curva[n][i] == mid) cur_string[n][i] = '0';
-				else if (contour_curva[n][i] < mid)
-				{
-					int type = (mid - contour_curva[n][i]) / step - 1;
-					char c = 'A' + type;
-					cur_string[n][i] = c;
-				}
-				else if (contour_curva[n][i] > mid)
-				{
-					int type = (contour_curva[n][i] - mid) / step - 1;
-					char c = 'a' + type;
-					cur_string[n][i] = c;
-				}
-			}
-			//cout << endl;
-			//for (int i = 0; i < contour_curva[4].size(); i++)
-			//{
-			//	cout <<cur_string[4][i] ;
-			//}
-		}
-	}
+	//		//Z~A0a~z
+	//		cout << endl;
+	//		for (int i = 0; i < contour_curva[n].size(); i++)
+	//		{
+	//			if (contour_curva[n][i]>max) cur_string[n][i] = 'z';
+	//			if (contour_curva[n][i] == mid) cur_string[n][i] = '0';
+	//			else if (contour_curva[n][i] < mid)
+	//			{
+	//				int type = (mid - contour_curva[n][i]) / step - 1;
+	//				char c = 'A' + type;
+	//				cur_string[n][i] = c;
+	//			}
+	//			else if (contour_curva[n][i] > mid)
+	//			{
+	//				int type = (contour_curva[n][i] - mid) / step - 1;
+	//				char c = 'a' + type;
+	//				cur_string[n][i] = c;
+	//			}
+	//		}
+	//		//cout << endl;
+	//		//for (int i = 0; i < contour_curva[4].size(); i++)
+	//		//{
+	//		//	cout <<cur_string[4][i] ;
+	//		//}
+	//	}
+	//}
 
 
 }

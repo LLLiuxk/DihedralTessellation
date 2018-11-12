@@ -34,13 +34,15 @@ namespace Tiling_tiles{
 	public:
 		Prototile();
 		Prototile(string rname,string tpath);
+		void Pro_clear();
 
+		void getpath();
 		void loadTileData(string tile_data);
 		void contour_sam_cur();		
 		vector<int> convex_p(int max_cur_num);                 //求轮廓上值最大的10个不临近的凸点
 		vector<int> partition_points(string imaname);  //求得用做划分的点
 
-		void cur_normalize();
+		//void cur_normalize();
 
 		//flipping
 		vector<Point2f> flip_contour(vector<Point2f> cont_s, int flag);
@@ -53,7 +55,7 @@ namespace Tiling_tiles{
 
 
 		string contourname;
-		string rootname;
+		string dataroot;
 		string txtpath;
 		vector<Point2f> contour;
 		vector<double> cconvex;
@@ -61,7 +63,7 @@ namespace Tiling_tiles{
 		vector<vector<Point2f>> contour_sample_flip;
 		vector<vector<double>> contour_curva;
 		vector<vector<double>> contour_curva_flip;
-		char cur_string[6][600];
+		//char cur_string[6][600];
 		//vector<vector<Point2f>> contour_saliency;  //显著性可选
 		//vector<vector<Point2f>> contour_saliency_inver;
 
@@ -74,6 +76,7 @@ namespace Tiling_tiles{
 	public:
 		Tiling_opt();
 		~Tiling_opt();
+		void Tiling_clear();
 		void com_score(string imagename1, string imagename2);
 
 		void points_dividing(string imaname);
@@ -99,7 +102,8 @@ namespace Tiling_tiles{
 		
 		//morphing
 		vector<Point2f> morphing_2_patterns(vector<Point2f> contour1, vector<Point2f> contour2, vector<int> mid_inter, float shape_ratio);
-
+		//simulation
+		vector<Point2f> simulation_mid(string imaname, int inner_one, int cand_one);
 
 		double com_each_pair(vector<Point2f> &first_interval, vector<Point2f> &second_interval, int &flag);
 		double com_optimal_score(vector<vector<Point2f>> &proto_interval_1, vector<vector<char>> &proto_first_char,
@@ -130,6 +134,7 @@ namespace Tiling_tiles{
 		//vector<pair<int, int>> dp_path;
 		int dp[600][600];
 		int dp_inver[600][600];
+		int all_types;
 		Prototile *prototile_first;
 		Prototile *prototile_mid;
 		Prototile *prototile_second;
@@ -143,6 +148,7 @@ namespace Tiling_tiles{
 	void MyLine(Mat img, Point2f start, Point2f end, string color1);
 	Mat draw_polygen(string win_name, vector<Point2f> contour_s);
 	void draw_poly(Mat &drawing_, vector<Point2f> contour_s, Point2f center);
+	void draw_allplane();
 	//math tool
 	Point2f center_p(vector<Point2f> contour_);
 	double contour_length(vector<Point2f> contour);

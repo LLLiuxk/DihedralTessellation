@@ -12,7 +12,7 @@ int main(int argc, char** argv)
 	//string imagename1 = "Boat";
 	//string imagename2 = "fish8";
 	//string imagename1 = "fish5";
-	string imagename3 = "15";
+	string imagename3 = "19";
 	//string txtname = "D:/images/111.png";
 	//string txtname1 = "D:/images/fish3.png";
 
@@ -28,12 +28,13 @@ int main(int argc, char** argv)
 	Tiling_tiles::Prototile *prototile_third;
 	prototile_third = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
-	int f = 2;
+	int f = 3;
 	if (f == 0) //已有dataset
 	{
-		
-		for (int i = 0; i < 200; i++)
+
+		for (int i = 404; i < 409; i++)
 		{ 
+			tiling_opt->Tiling_clear();
 			string name_ = int2string(i);
 			cout << name_ << endl;
 			tiling_opt->points_dividing(name_);
@@ -337,125 +338,155 @@ int main(int argc, char** argv)
 	}
 	else if (f == 1)
 	{
-		prototile_first->~Prototile();
-		prototile_first->txtpath = "D:\\VisualStudioProjects\\images\\txt\\";
-		prototile_first->rootname = "D:\\VisualStudioProjects\\images\\bi\\";
-		prototile_first->imgtocout("135",1);
+		//int i = 2;
+		//while (i-- != 0)
+		//{
+			prototile_first->imgtocout("13");
+			prototile_first->~Prototile();
+			cout << prototile_first->contourname << endl;
+			if (prototile_first->contour.empty())
+			{
+				cout << prototile_first->contour.size() << endl;
+				cout << "empty" << endl;
+			}
+			else cout << "no empty" << prototile_first->contour.size() << endl;
+		//}
+		//prototile_first->txtpath = "D:\\VisualStudioProjects\\images\\txt\\";
+		//prototile_first->dataroot = "D:\\VisualStudioProjects\\images\\scr\\";
+		//prototile_first->imgtocout("13",1);
 
 	}	
 	else if (f==2){  //批量读图
-		for (int i = 1; i < 25; i++)
-		{
+		//int iii[] = {63};
+		//for (int i = 1; i < 74; i++)
+		//{
 			//string image = int2string(i);
 			//cout << image << endl;
-			//string image1 = "D:\\VisualStudioProjects\\images\\render\\1 (" + image + ").png";
-			//Mat src = imread(image1, IMREAD_GRAYSCALE);
-			//threshold(src, src, 128, 1, cv::THRESH_BINARY);
-			//imshow("???:", src);
-			//int rows = src.rows;
-			//int cols = src.cols;
-			//int count = 0;
-			//for (int i = 0; i <rows; i++)
-			//	for (int j = 0; j < cols; j++)
-			//	{
-			//		//cout << (int)src.at<uchar>(i, j) << endl;
-			//		//if (src.at<uchar>(i, j) == 0 || src.at<uchar>(i, j) == 255) count++;
-			//		if (src.at<uchar>(i, j) == 0)
-			//		{
-			//			count++;
-			//			src.at<uchar>(i, j) = 255;
-			//		}
-			//		else if (src.at<uchar>(i, j) == 255) src.at<uchar>(i, j) = 0;
-			//	}
-			//imshow("!!!:", src);
-			//cout << count << endl;
-			//string image2 = int2string(i+200);
-			//imwrite("D:\\VisualStudioProjects\\images\\new\\" + image2 + ".png",src);
+			string image1 = "D:\\VisualStudioProjects\\p16.png";
+			//string image1 = "D:\\VisualStudioProjects\\images\\scr\\new\\" + image+".png";
 
-			prototile_first->~Prototile();
-			prototile_first->txtpath = "D:\\VisualStudioProjects\\images\\txt\\";
-			prototile_first->rootname = "D:\\VisualStudioProjects\\images\\render\\";
-			string image = int2string(i);
-			cout << image << endl;
-			image = "1 (" + image + ")";
-			prototile_first->imgtocout(image,1);
+			Mat src = imread(image1, IMREAD_GRAYSCALE);
+
+
+			threshold(src, src, 128, 255, cv::THRESH_BINARY);
+			//imshow("???:", src);
+			int rows = src.rows;
+			int cols = src.cols;
+			//////int count = 0;
+			for (int i = 0; i <rows; i++)
+				for (int j = 0; j < cols; j++)
+				{
+					//cout << (int)src.at<uchar>(i, j) << " ";
+			//		//if (src.at<uchar>(i, j) == 0 || src.at<uchar>(i, j) == 255) count++;
+					if (src.at<uchar>(i, j) == 0)
+					{
+			//			count++;
+						src.at<uchar>(i, j) = 255;
+					}
+					else if (src.at<uchar>(i, j) == 255) src.at<uchar>(i, j) = 0;
+				}
+			imshow("!!!:", src);
+			//////cout << count << endl;
+
+
+		    //string image2 = int2string(i+534);
+			//imwrite("D:\\VisualStudioProjects\\images\\new\\" + image2 + ".png",src);
+			imwrite("D:\\VisualStudioProjects\\p16.png", src);
+			//prototile_first->Pro_clear();
+			//prototile_first->txtpath = "D:\\VisualStudioProjects\\images\\txt\\";
+			//prototile_first->dataroot = "D:\\VisualStudioProjects\\images\\scr\\new\\";
+			//////
+			//////string image = int2string(i);
+			//////cout << image << endl;
+			//image = "3 (" + image + ")";
+			//prototile_first->imgtocout(image);
+
+
+			//prototile_first->contourname = image;
+			//prototile_first->contour = prototile_first->readTxt();
+			
 
 			//if (prototile_first->contour.size() < 300)
 			//cout << image + ".png may be error" << endl;
-		}
+		//}
 	
 	}
 	else if (f == 3)
 	{
-		for (int i = 0; i < 202; i++)
-		{
-			prototile_first->~Prototile();
-			string image = int2string(i);
-			int thresh = 100;
-			int max_thresh = 255;
-			String imageName("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\" + image + ".png");
-			cout << image << endl;
-			Mat src = imread(imageName);
-			imshow("src", src);
-			Mat src_g;
-			cvtColor(src, src_g, COLOR_BGR2GRAY);
-			blur(src_g, src_g, Size(3, 3));
-			Mat canny_output;
-			//考虑到可能有多个轮廓
-			vector<vector<Point> > contours;
-			vector<Vec4i> hierarchy;
+		tiling_opt->Tiling_clear();
+		vector<Point2f> sim_mid = tiling_opt->simulation_mid(imagename3,12,0);
 
-			//用candy法由灰度图求出掩码图
-			Canny(src_g, canny_output, thresh, thresh * 2, 3);
-			//imshow("canny_output", canny_output);
-			//由掩码图求出有序轮廓点
-			findContours(canny_output, contours, hierarchy, CV_RETR_EXTERNAL, CHAIN_APPROX_SIMPLE, Point(0, 0));
-			cout << "contours num:" << contours.size() << endl;
-			vector<Point2f> sampling_;
-			for (int t = 0; t < contours[0].size(); t++)
-			{
-				sampling_.push_back(contours[0][t]);
-			}
-			vector<double> sam_cur = curvature_com(sampling_);
-			int cur_p_num = 30;
-			vector<int> max_order;
-			max_order = most_convex_p(sampling_, sam_cur, cur_p_num);
-			int contoursize = sampling_.size();
-			double c_length = arcLength(sampling_,true);
-			vector<int> all_order = max_order;
-			double dist = 1000;
-			int index = 0;
-			for (int i = 0; i < contoursize; i = i + 10)
-			{
-				int flag = 0;
-				for (vector<int>::iterator it = max_order.begin(); it != max_order.end(); it++)
-				{
-					double leng = length_two_point2f(sampling_[i], sampling_[*it]);
-					if (leng < 0.005*c_length)
-					{
-						flag = 1;
-						break;
-					}
-				}
 
-				if (flag == 0)
-				{
-					all_order.push_back(i);
-				}
-			}
-			cout << "all_order.size:" << all_order.size() << endl;
-			sort_bub(all_order);
-			vector<Point2f> res;
-			for (int j = 0; j < all_order.size(); j++)
-			{
-				res.push_back(sampling_[all_order[j]]);
-			}
-			Mat tt = Mat(600, 600, CV_8UC3, Scalar(255, 255, 255));
-			draw_poly(tt, res, Point2f(300, 300));
-			imshow("??", tt);
-			imwrite("D:\\VisualStudioProjects\\DihedralTessellation\\other\\" + image + "s.png", tt);
-		}
-		
+
+		//for (int i = 0; i < 202; i++)
+		//{
+		//	prototile_first->~Prototile();
+		//	string image = int2string(i);
+		//	int thresh = 100;
+		//	int max_thresh = 255;
+		//	String imageName("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\" + image + ".png");
+		//	cout << image << endl;
+		//	Mat src = imread(imageName);
+		//	imshow("src", src);
+		//	Mat src_g;
+		//	cvtColor(src, src_g, COLOR_BGR2GRAY);
+		//	blur(src_g, src_g, Size(3, 3));
+		//	Mat canny_output;
+		//	//考虑到可能有多个轮廓
+		//	vector<vector<Point> > contours;
+		//	vector<Vec4i> hierarchy;
+
+		//	//用candy法由灰度图求出掩码图
+		//	Canny(src_g, canny_output, thresh, thresh * 2, 3);
+		//	//imshow("canny_output", canny_output);
+		//	//由掩码图求出有序轮廓点
+		//	findContours(canny_output, contours, hierarchy, CV_RETR_EXTERNAL, CHAIN_APPROX_SIMPLE, Point(0, 0));
+		//	cout << "contours num:" << contours.size() << endl;
+		//	vector<Point2f> sampling_;
+		//	for (int t = 0; t < contours[0].size(); t++)
+		//	{
+		//		sampling_.push_back(contours[0][t]);
+		//	}
+		//	vector<double> sam_cur = curvature_com(sampling_);
+		//	int cur_p_num = 30;
+		//	vector<int> max_order;
+		//	max_order = most_convex_p(sampling_, sam_cur, cur_p_num);
+		//	int contoursize = sampling_.size();
+		//	double c_length = arcLength(sampling_,true);
+		//	vector<int> all_order = max_order;
+		//	double dist = 1000;
+		//	int index = 0;
+		//	for (int i = 0; i < contoursize; i = i + 10)
+		//	{
+		//		int flag = 0;
+		//		for (vector<int>::iterator it = max_order.begin(); it != max_order.end(); it++)
+		//		{
+		//			double leng = length_two_point2f(sampling_[i], sampling_[*it]);
+		//			if (leng < 0.005*c_length)
+		//			{
+		//				flag = 1;
+		//				break;
+		//			}
+		//		}
+
+		//		if (flag == 0)
+		//		{
+		//			all_order.push_back(i);
+		//		}
+		//	}
+		//	cout << "all_order.size:" << all_order.size() << endl;
+		//	sort_bub(all_order);
+		//	vector<Point2f> res;
+		//	for (int j = 0; j < all_order.size(); j++)
+		//	{
+		//		res.push_back(sampling_[all_order[j]]);
+		//	}
+		//	Mat tt = Mat(600, 600, CV_8UC3, Scalar(255, 255, 255));
+		//	draw_poly(tt, res, Point2f(300, 300));
+		//	imshow("??", tt);
+		//	imwrite("D:\\VisualStudioProjects\\DihedralTessellation\\other\\" + image + "s.png", tt);
+		//}
+		//
 	}
 	//Tiling_tiles::Prototile *prototile_second;
 	//prototile_second = new Tiling_tiles::Prototile();
