@@ -73,6 +73,74 @@ namespace Tiling_tiles{
 		//circle(drawing_, center, 4, Scalar(0, 255, 255), -1);
 	}
 
+	void draw_allplane(Mat &drawing_, vector<Point2f> contour_, vector<int> vec_, int type, double scale)
+	{
+		int drawrow = drawing_.rows;
+		int drawcol = drawing_.cols;
+		int border = 300 * scale;
+		int con_size = contour_.size();
+		if (scale != 1)
+		{
+			for (int i = 0; i < con_size; i++)
+			{
+				contour_[i] = scale*contour_[i];
+			}
+		}
+		Point2f center = center_p(contour_);
+		vector<Point2f> allcent_in_plane;
+		//vector<vector<Point2f>> four_place;
+		//vector<Point2f> one_loca;
+		if (type == 0) //translation
+		{
+			stack<Point2f> cent_stack;
+			Point2f step[6];
+			step[0] = contour_[vec_[2]] - contour_[vec_[0]];
+			step[1] = contour_[vec_[3]] - contour_[vec_[1]];
+			step[2] = step[0] + step[1];
+			step[3] = -step[0];
+			step[4] = -step[1];
+			step[5] = -step[2];
+			Point2f cenp = Point2f(drawrow / 2, drawcol/2);
+			draw_poly(drawing_, contour_, cenp);
+			cent_stack.push(cenp);
+			while (!cent_stack.empty())
+			{
+				Point2f top_p = cent_stack.top();
+				cent_stack.pop();
+				for (int i = 0; i < 6; i++)
+				{
+					cenp = top_p + step[i];
+					if ((cenp.x<drawcol + border) && (cenp.x>-border) && (cenp.y<drawrow + border) && (cenp.y>-border))
+					{
+						int flag = 0;
+						for (vector<Point2f>::iterator it = allcent_in_plane.begin(); it != allcent_in_plane.end(); it++)
+						{
+							double leng = length_two_point2f(cenp, *it);
+							if (leng < 10)
+							{
+								flag = 1;
+								break;
+							}
+						}
+						if (flag == 0)
+						{
+							cent_stack.push(cenp);
+							allcent_in_plane.push_back(cenp);
+							draw_poly(drawing_, contour_, cenp);
+						}
+
+						
+					}
+				}
+			}
+			
+		}
+		else if (type == 1) //rotation
+		{
+			cout << "no";
+		}
+	}
+
 	Point2f center_p(vector<Point2f> contour_)
 	{
 		//利用轮廓的矩
@@ -341,6 +409,66 @@ namespace Tiling_tiles{
 		}
 		cout << "cand_points_index: " << cand_points_index.size() << endl;
 		return cand_points_index;
+	}
+
+	vector<Point2f> extract_contour(vector<Point2f> contour_, vector<int> mark_p, vector<int> &midmark_p)
+	{
+		Point2f line1 = contour_[mark_p[2]] - contour_[mark_p[0]];
+		Point2f line2 = contour_[mark_p[3]] - contour_[mark_p[1]];
+		//Point2f cente = center_p(inter_mid);
+		int csize = contour_.size();
+		vector<vector<Point2f>> four_place;
+		vector<Point2f> one_loca;
+		// 提取围成的轮廓，目前为止只考虑正向摆放，不考虑旋转和翻转
+		four_place.push_back(contour_);
+		for (int i = 0; i < csize; i++)
+		{
+			one_loca.push_back(contour_[i] + line1);
+		}
+		four_place.push_back(one_loca);
+		one_loca.swap(vector<Point2f>());
+		for (int i = 0; i < csize; i++)
+		{
+			one_loca.push_back(contour_[i] + line2);
+		}
+		four_place.push_back(one_loca);
+		one_loca.swap(vector<Point2f>());
+		for (int i = 0; i < csize; i++)
+		{
+			one_loca.push_back(contour_[i] + line1 + line2);
+		}
+		four_place.push_back(one_loca);
+		int total_num = 0;
+		midmark_p.push_back(0);
+		vector<Point2f> morphed_B;
+		for (int t = mark_p[3]; t > mark_p[2]; t--)
+		{
+			total_num++;
+			morphed_B.push_back(four_place[0][t]);
+		}
+		midmark_p.push_back(total_num);
+		for (int t = mark_p[0]; t >= 0; t--)
+		{
+			total_num++;
+			morphed_B.push_back(four_place[1][t]);
+		}
+		for (int t = csize - 1; t > mark_p[3]; t--)
+		{
+			total_num++;
+			morphed_B.push_back(four_place[1][t]);
+		}
+		midmark_p.push_back(total_num);
+		for (int t = mark_p[1]; t > mark_p[0]; t--)
+		{
+			total_num++;
+			morphed_B.push_back(four_place[3][t]);
+		}
+		midmark_p.push_back(total_num);
+		for (int t = mark_p[2]; t > mark_p[1]; t--)
+		{
+			morphed_B.push_back(four_place[2][t]);
+		}
+		return morphed_B;
 	}
 
 	double Tiling_opt::warpAff_tra(vector<Point2f> &input_, vector<Point2f> &output_)

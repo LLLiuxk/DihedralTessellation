@@ -57,7 +57,7 @@ namespace Tiling_tiles{
 		contour_sam_cur();
 	}
 
-	void Prototile::imgtocout(string tile_image, int  raw)
+	void Prototile::imgtocout(string tile_image, int raw)
 	{
 		getpath();
 		Mat src;

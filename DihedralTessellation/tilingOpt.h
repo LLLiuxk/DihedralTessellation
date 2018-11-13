@@ -7,6 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <stack>
 #include <list>
 #include <direct.h>
 //#include "Morphing.h"
@@ -148,7 +149,7 @@ namespace Tiling_tiles{
 	void MyLine(Mat img, Point2f start, Point2f end, string color1);
 	Mat draw_polygen(string win_name, vector<Point2f> contour_s);
 	void draw_poly(Mat &drawing_, vector<Point2f> contour_s, Point2f center);
-	void draw_allplane();
+	void draw_allplane(Mat &drawing_, vector<Point2f> contour_, vector<int> vec_, int type, double scale = 1);
 	//math tool
 	Point2f center_p(vector<Point2f> contour_);
 	double contour_length(vector<Point2f> contour);
@@ -160,7 +161,7 @@ namespace Tiling_tiles{
 	vector<double> curvature_com_k(vector<Point2f> &contour_sam);
 	vector<double> curvature_com(vector<Point2f> &contour_sam); //¼ÇÂ¼cosÖµ
 	vector<int> most_convex_p(vector<Point2f> contour_, vector<double> cont_c, int max_cur_num);
-
+	vector<Point2f> extract_contour(vector<Point2f> contour_, vector<int> mark_p, vector<int> &midmark_p);
 	//translate tool
 	string int2string(int number);
 

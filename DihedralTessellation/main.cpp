@@ -341,15 +341,19 @@ int main(int argc, char** argv)
 		//int i = 2;
 		//while (i-- != 0)
 		//{
-			prototile_first->imgtocout("13");
-			prototile_first->~Prototile();
-			cout << prototile_first->contourname << endl;
-			if (prototile_first->contour.empty())
-			{
-				cout << prototile_first->contour.size() << endl;
-				cout << "empty" << endl;
-			}
-			else cout << "no empty" << prototile_first->contour.size() << endl;
+			prototile_first->imgtocout("777");
+			prototile_first->loadTileData("777");
+			Mat show = Mat(800, 2400, CV_8UC3, Scalar(255, 255, 255));
+			vector<int> tt;
+			vector<Point2f> ccc = prototile_first->contour_sample[3];
+			tt.push_back(0);
+			tt.push_back(100);
+			tt.push_back(150);
+			tt.push_back(200);
+
+			draw_allplane(show, prototile_first->contour, tt, 0,0.5);
+			//circle(show, center_p(prototile_first->contour),4,Scalar(255,0,0),-1);
+			imshow("777", show);
 		//}
 		//prototile_first->txtpath = "D:\\VisualStudioProjects\\images\\txt\\";
 		//prototile_first->dataroot = "D:\\VisualStudioProjects\\images\\scr\\";

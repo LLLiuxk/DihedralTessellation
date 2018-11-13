@@ -448,7 +448,7 @@ namespace Tiling_tiles{
 
 		vector<int> mid_inter = joint_relocate(inner_conts[inner_one], mid_interval_index[inner_one], num_c);
 		//将所有的结果保存下来
-		Mat drawing_pro = Mat(800, 3200, CV_8UC3, Scalar(255, 255, 255));
+		Mat drawing_pro = Mat(800, 2400, CV_8UC3, Scalar(255, 255, 255));
 		CandPat tem = candida_contours[cand_one];
 		prototile_second->Pro_clear();
 		prototile_second->loadPoints(contour_dataset[tem.number]);
@@ -467,126 +467,30 @@ namespace Tiling_tiles{
 		{
 			ratio = ratio + 1;
 			vector<Point2f> inter_mid = morphing_2_patterns(contour_inner, contour_cand, mid_inter, ratio / 10);
-
 			//show the result
 			draw_poly(drawing_pro, contour_inner, Point2f(400, 400));
 			draw_poly(drawing_pro, contour_cand, Point2f(1200, 400));
 			draw_poly(drawing_pro, inter_mid, Point2f(2000, 400));
-			//draw_polygen("cand pattern: ", contour_cand);
+
+			Mat drawing_mid = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+			Mat drawing_mA = Mat(1600, 2400, CV_8UC3, Scalar(255, 255, 255));
+
+			draw_allplane(drawing_mid, inter_mid, mid_inter, 0, 0.4);
 
 			//将该proto1以及相邻四个proto2展示出来
-			Point2f line1 = inter_mid[mid_inter[2]] - inter_mid[mid_inter[0]];
-			Point2f line2 = inter_mid[mid_inter[3]] - inter_mid[mid_inter[1]];
 			Point2f cente = center_p(inter_mid);
-			vector<vector<Point2f>> four_place;
-			vector<Point2f> one_loca;
-			// 提取围成的轮廓，目前为止只考虑正向摆放，不考虑旋转和翻转
-			four_place.push_back(inter_mid);
-			for (int i = 0; i < inter_mid.size(); i++)
-			{
-				one_loca.push_back(inter_mid[i] + line1);
-			}
-			four_place.push_back(one_loca);
-			one_loca.swap(vector<Point2f>());
-			for (int i = 0; i < inter_mid.size(); i++)
-			{
-				one_loca.push_back(inter_mid[i] + line2);
-			}
-			four_place.push_back(one_loca);
-			one_loca.swap(vector<Point2f>());
-			for (int i = 0; i < inter_mid.size(); i++)
-			{
-				one_loca.push_back(inter_mid[i] + line1 + line2);
-			}
-			four_place.push_back(one_loca);
-			int total_num = 0;
-			vector<int> return_p;// 
-			return_p.push_back(0);
-			vector<Point2f> morphed_B;
-			for (int t = mid_inter[3] - 1; t > mid_inter[2] + 1; t--)
-			{
-				total_num++;
-				morphed_B.push_back(four_place[0][t]);
-			}
-			return_p.push_back(total_num);
-			for (int t = mid_inter[0] - 1; t > 0; t--)
-			{
-				total_num++;
-				morphed_B.push_back(four_place[1][t]);
-			}
-			for (int t = four_place[1].size() - 1; t > mid_inter[3] + 1; t--)
-			{
-				total_num++;
-				morphed_B.push_back(four_place[1][t]);
-			}
-			return_p.push_back(total_num);
-			for (int t = mid_inter[1] - 1; t > mid_inter[0] + 1; t--)
-			{
-				total_num++;
-				morphed_B.push_back(four_place[3][t]);
-			}
-			return_p.push_back(total_num);
-			for (int t = mid_inter[2] - 1; t > mid_inter[1] + 1; t--)
-			{
-				morphed_B.push_back(four_place[2][t]);
-			}
-			Mat drawing_pro2 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-			Point2f line3 = morphed_B[return_p[2]] - morphed_B[return_p[0]];
-			Point2f line4 = morphed_B[return_p[3]] - morphed_B[return_p[1]];
-			vector<vector<Point2f>> four_place1;
-			vector<Point2f> one_loca1;
-			four_place1.push_back(morphed_B);
-			//circle(drawing_pro2, morphed_B[return_p[2]], 4, Scalar(255, 0, 255), -1);
-			//circle(drawing_pro2, morphed_B[return_p[0]], 4, Scalar(0, 255, 0), -1);
-			//draw_poly(drawing_pro2, morphed_B, center_p(morphed_B));
-			for (int i = 0; i < morphed_B.size(); i++)
-			{
-				one_loca1.push_back(morphed_B[i] + line3);
-			}
-			//draw_poly(drawing_pro2, one_loca1, center_p(one_loca1));
-			four_place1.push_back(one_loca1);
-			one_loca1.swap(vector<Point2f>());
-			for (int i = 0; i < morphed_B.size(); i++)
-			{
-				one_loca1.push_back(morphed_B[i] + line4);
-			}
-			four_place1.push_back(one_loca1);
-			one_loca1.swap(vector<Point2f>());
-			for (int i = 0; i < morphed_B.size(); i++)
-			{
-				one_loca1.push_back(morphed_B[i] + line3 + line4);
-			}
-			four_place1.push_back(one_loca1);
+			vector<int> return_p;
+			vector<Point2f> morphed_A = extract_contour(inter_mid, mid_inter, return_p);
 
+			draw_allplane(drawing_mA, morphed_A, return_p,0,0.4);
 
-			Mat drawing_pro1 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-			Point2f shift1 = Point2f(300 - cente.x*0.4, 400 - cente.y*0.4);
-			Point2f shift3 = Point2f(2800, 400) - (0.4*center_p(morphed_B) + 0.2*line3 + 0.2*line4);
-
-
-			//show four proto
-			for (int i = 0; i < 4; i++)
-			{
-
-				vector<Point2f> ttt;
-				for (int t = 0; t <four_place1[i].size(); t++)
-				{
-					ttt.push_back(four_place1[i][t] * 0.4 + shift3);
-				}
-				draw_poly(drawing_pro, ttt, center_p(ttt));
-				//MyLine(drawing_pro, four_cor[i]*0.4+shift1, four_cor[(i+1)%4]*0.4+shift1, "red");
-				//prototwoAff_place.swap(vector<Point2f>());
-				for (int j = 0; j < four_place[i].size() - 1; j++)
-				{
-					MyLine(drawing_pro1, four_place[i][j] * 0.4 + shift1, four_place[i][j + 1] * 0.4 + shift1, "green");
-				}
-			}
 			string filename = rootname + "\\0.";
+			string file2 = filename + char(ratio + 48) + "_Cand_" + int2string(cand_one) + "tiling.png";
 			filename = filename + char(ratio + 48) + "_Candidate_" + int2string(cand_one) + ".png";
+			
 			imwrite(filename, drawing_pro);
-
-			imshow("result_mid_show: ", drawing_pro1);
-			imshow("result_mid: ", drawing_pro2);
+			imwrite(file2, drawing_mA);
+			imshow("result_mid_show: ", drawing_mid);
 			
 		}
 		return contour_inner;
