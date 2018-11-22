@@ -164,6 +164,34 @@ namespace Tiling_tiles{
 	{
 		return sqrt((u.x - v.x)*(u.x - v.x) + (u.y - v.y)*(u.y - v.y));
 	}
+
+	double area_poly(vector<Point2f> &cont)
+	{
+		int csize = cont.size();
+		if (csize < 3) return 0;
+		double sum = 0;
+		for (int i = 0; i < csize; i++)
+			sum += cont[i].x * cont[(i + 1) % csize].y - cont[i].y * cont[(i + 1) % csize].x;
+		return fabs(sum / 2.0);
+	}
+	//double area_p_pixel(vector<Point2f> &cont)
+	//{
+	//	int csize = cont.size();
+	//	if (csize < 3) return 0;
+	//	double sum = 0;
+	//	Mat drawing = Mat(600, 600, CV_8UC3, Scalar(255, 255, 255));
+	//	draw_poly(drawing, cont, Point2f(300, 300));
+	//	cvtColor(drawing, drawing, CV_BGR2GRAY);
+	//	threshold(drawing, drawing, 128, 255, cv::THRESH_BINARY);
+	//	for (int i = 0; i < 600; i++)
+	//		for (int j = 0; j < 600; j++)
+	//		{
+	//			//cout << drawing.at<uchar>(i, j) << endl;
+	//			if (drawing.at<uchar>(i, j) == 0) sum++;
+	//		}
+	//	return fabs(sum);
+	//}
+
 	void sort_comb(vector<double> vect, vector<int> &index_num) //将下标和数值联合排序，只保留下标的排序,从小到大
 	{
 		int i, j;

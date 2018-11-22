@@ -28,7 +28,7 @@ int main(int argc, char** argv)
 	Tiling_tiles::Prototile *prototile_third;
 	prototile_third = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
-	int f = 3;
+	int f = 2;
 	if (f == 0) //已有dataset
 	{
 
@@ -361,65 +361,102 @@ int main(int argc, char** argv)
 
 	}	
 	else if (f==2){  //批量读图
-		//int iii[] = {63};
-		//for (int i = 1; i < 74; i++)
-		//{
-			//string image = int2string(i);
+		//int iii[] = {610,614,618,636,637,638};
+		int t =  54;
+		//int i = 308;
+		for (int i = 12*(t-1); i < 12*t; i++)
+		{
+			string image = int2string(i);
 			//cout << image << endl;
-			string image1 = "D:\\VisualStudioProjects\\p16.png";
-			//string image1 = "D:\\VisualStudioProjects\\images\\scr\\new\\" + image+".png";
+			//string image1 = "C:\\Users\\liuxk\\Desktop\\shape\\new\\" + image + ".png";
+			////string image1 = "D:\\VisualStudioProjects\\images\\scr\\new\\" + image+".png";
 
-			Mat src = imread(image1, IMREAD_GRAYSCALE);
+			//Mat src = imread(image1, IMREAD_GRAYSCALE);
 
-
-			threshold(src, src, 128, 255, cv::THRESH_BINARY);
+			//像素点操作
+			//threshold(src, src, 128, 255, cv::THRESH_BINARY);
 			//imshow("???:", src);
-			int rows = src.rows;
-			int cols = src.cols;
-			//////int count = 0;
-			for (int i = 0; i <rows; i++)
-				for (int j = 0; j < cols; j++)
-				{
-					//cout << (int)src.at<uchar>(i, j) << " ";
-			//		//if (src.at<uchar>(i, j) == 0 || src.at<uchar>(i, j) == 255) count++;
-					if (src.at<uchar>(i, j) == 0)
-					{
-			//			count++;
-						src.at<uchar>(i, j) = 255;
-					}
-					else if (src.at<uchar>(i, j) == 255) src.at<uchar>(i, j) = 0;
-				}
-			imshow("!!!:", src);
+			//int rows = src.rows;
+			//int cols = src.cols;
+			////////int count = 0;
+			//for (int i = 0; i <rows; i++)
+			//	for (int j = 0; j < cols; j++)
+			//	{
+			//		//cout << (int)src.at<uchar>(i, j) << " ";
+			////		//if (src.at<uchar>(i, j) == 0 || src.at<uchar>(i, j) == 255) count++;
+			//		if (src.at<uchar>(i, j) == 0)
+			//		{
+			////			count++;
+			//			src.at<uchar>(i, j) = 255;
+			//		}
+			//		else if (src.at<uchar>(i, j) == 255) src.at<uchar>(i, j) = 0;
+			//	}
+			//imshow("!!!:", src);
 			//////cout << count << endl;
 
 
 		    //string image2 = int2string(i+534);
 			//imwrite("D:\\VisualStudioProjects\\images\\new\\" + image2 + ".png",src);
-			imwrite("D:\\VisualStudioProjects\\p16.png", src);
-			//prototile_first->Pro_clear();
-			//prototile_first->txtpath = "D:\\VisualStudioProjects\\images\\txt\\";
-			//prototile_first->dataroot = "D:\\VisualStudioProjects\\images\\scr\\new\\";
+			//imwrite("D:\\VisualStudioProjects\\p16.png", src);
+			prototile_first->Pro_clear();
+			prototile_first->txtpath = "D:\\VisualStudioProjects\\DihedralTessellation\\contours\\";
+			prototile_first->dataroot = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\";
+			//prototile_first->txtpath =  "C:\\Users\\liuxk\\Desktop\\shape\\txt\\";
+			//prototile_first->dataroot = "C:\\Users\\liuxk\\Desktop\\shape\\new\\";
+			prototile_first->imgtocout(image);
 			//////
 			//////string image = int2string(i);
 			//////cout << image << endl;
 			//image = "3 (" + image + ")";
-			//prototile_first->imgtocout(image);
-
-
-			//prototile_first->contourname = image;
-			//prototile_first->contour = prototile_first->readTxt();
-			
 
 			//if (prototile_first->contour.size() < 300)
 			//cout << image + ".png may be error" << endl;
-		//}
-	
+		}
 	}
 	else if (f == 3)
+	{
+		// 将txt文件保存为黑色图像
+		for (int i = 1; i < 35; i++)
+		{
+			string image = int2string(i);
+			prototile_first->Pro_clear();
+			prototile_first->txtpath = "C:\\Users\\liuxk\\Desktop\\shape\\txt\\";
+			prototile_first->dataroot = "C:\\Users\\liuxk\\Desktop\\shape\\new\\";
+			prototile_first->contourname = image;
+			prototile_first->contour = prototile_first->readTxt();
+			Mat drawing_ = Mat(600, 600, CV_8UC3, Scalar(255, 255, 255));
+			draw_poly(drawing_, prototile_first->contour, Point2f(300, 300));
+
+			string image2 = int2string(i + 606);
+			imwrite("C:\\Users\\liuxk\\Desktop\\shape\\new\\" + image2 + ".png", drawing_);
+		}
+	}
+	else if (f == 4)
 	{
 		tiling_opt->Tiling_clear();
 		vector<Point2f> sim_mid = tiling_opt->simulation_mid(imagename3,12,0);
 
+		//test compute area
+		/*
+		for (int i = 1; i < 74; i++)
+		{
+			string image = int2string(i);
+			prototile_first->Pro_clear();
+			prototile_first->loadTileData(image);
+			cout << prototile_first->contourname << "  size: " << prototile_first->contour.size() << "  ";
+			Mat show = Mat(600, 600, CV_8UC3, Scalar(255, 255, 255));
+			vector<Point2f> ccc = prototile_first->contour_sample[3];
+			draw_poly(show, ccc, Point2f(300, 300));
+			imshow("hah", show);
+			//vector<Point2f> t;
+			//t.push_back(Point2f(50, 50));
+			//t.push_back(Point2f(150, 50));
+			//t.push_back(Point2f(150, 150));
+			//t.push_back(Point2f(50, 150));
+			double area = area_p_pixel(ccc);
+			//double area = area_poly(ccc);
+			cout << area << endl;
+		}*/
 
 
 		//for (int i = 0; i < 202; i++)

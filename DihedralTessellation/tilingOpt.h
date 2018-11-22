@@ -154,6 +154,9 @@ namespace Tiling_tiles{
 	Point2f center_p(vector<Point2f> contour_);
 	double contour_length(vector<Point2f> contour);
 	double length_two_point2f(Point2f &u, Point2f &v);
+	double area_poly(vector<Point2f> &cont);
+	//double area_p_pixel(vector<Point2f> &cont);
+
 	int cur_char_length(char a, char b);
 	double cur_length_two_p(double cur1, double cur2, double zeta);
 	void sort_comb(vector<double> vect, vector<int> &index_num);
