@@ -7,17 +7,6 @@ int main(int argc, char** argv)
 	clock_t start, finish;
 	start = clock();
 	
-	string imagename1 = "22"; 
-	string imagename2 = "1";
-	//string imagename1 = "Boat";
-	//string imagename2 = "fish8";
-	//string imagename1 = "fish5";
-	string imagename3 = "19";
-	//string txtname = "D:/images/111.png";
-	//string txtname1 = "D:/images/fish3.png";
-
-	//vector<Point2f> ske_points;
-	//ske_points = get_Skeleon(imagename1);
 
 	Tiling_tiles::Tiling_opt *tiling_opt;
 	tiling_opt = new Tiling_tiles::Tiling_opt();
@@ -71,8 +60,6 @@ int main(int argc, char** argv)
 		//imshow("only point", ttt);
 		//imshow("aaab", tt);
 		//imshow("aaa", drawing_pro1);
-
-
 
 
 		//vector<Point2f> inter_mid;
@@ -336,7 +323,7 @@ int main(int argc, char** argv)
 
 		
 	}
-	else if (f == 1)
+	else if (f == 1)   //test draw_allplane
 	{
 		//int i = 2;
 		//while (i-- != 0)
@@ -361,11 +348,12 @@ int main(int argc, char** argv)
 
 	}	
 	else if (f==2){  //批量读图
-		//int iii[] = {610,614,618,636,637,638};
-		int t =  54;
+		//int iii[] = {660,680,678,685};// {610, 614, 618, 636, 637, 638};
+		//int t =  54;
 		//int i = 308;
-		for (int i = 12*(t-1); i < 12*t; i++)
+		for (int i = 0; i < 685; i++)
 		{
+			//string image = int2string(iii[i]);
 			string image = int2string(i);
 			//cout << image << endl;
 			//string image1 = "C:\\Users\\liuxk\\Desktop\\shape\\new\\" + image + ".png";
@@ -413,10 +401,9 @@ int main(int argc, char** argv)
 			//cout << image + ".png may be error" << endl;
 		}
 	}
-	else if (f == 3)
-	{
-		// 将txt文件保存为黑色图像
-		for (int i = 1; i < 35; i++)
+	else if (f == 3) // 将txt文件保存为黑色图像
+	{		
+		for (int i = 35; i < 89; i++)
 		{
 			string image = int2string(i);
 			prototile_first->Pro_clear();
@@ -427,14 +414,14 @@ int main(int argc, char** argv)
 			Mat drawing_ = Mat(600, 600, CV_8UC3, Scalar(255, 255, 255));
 			draw_poly(drawing_, prototile_first->contour, Point2f(300, 300));
 
-			string image2 = int2string(i + 606);
+			string image2 = int2string(i + 605);
 			imwrite("C:\\Users\\liuxk\\Desktop\\shape\\new\\" + image2 + ".png", drawing_);
 		}
 	}
-	else if (f == 4)
+	else if (f == 4)  //simulation of one tiling
 	{
 		tiling_opt->Tiling_clear();
-		vector<Point2f> sim_mid = tiling_opt->simulation_mid(imagename3,12,0);
+		//vector<Point2f> sim_mid = tiling_opt->simulation_mid(imagename3,12,0);
 
 		//test compute area
 		/*
@@ -528,6 +515,46 @@ int main(int argc, char** argv)
 		//	imwrite("D:\\VisualStudioProjects\\DihedralTessellation\\other\\" + image + "s.png", tt);
 		//}
 		//
+	}
+	else if (f == 5)
+	{
+		tiling_opt->load_dataset();
+		tiling_opt->check_Repetitive_pattern();
+		//double test[3] = { 0.05, 0.2, 0.05 };
+		//for (int i = 801; i < 819; i++)
+		//{
+		//	string name = int2string(i);
+		//	prototile_second->Pro_clear();
+		//	prototile_second->loadTileData(name);
+		//	vector<Point2f> contour_sec = prototile_second->contour_sample[2];
+		//	double score[3] = { 10000, 10000, 10000 };
+		//	int samey[3] = {0,0,0};
+		//	for (int j = 801; j < 819; j++)
+		//	{
+		//		if (j == i) continue;
+		//		string name1 = int2string(j);
+		//		prototile_third->Pro_clear();
+		//		prototile_third->loadTileData(name1);
+		//		vector<Point2f> contour_tem = prototile_third->contour_sample[2];
+		//		for (int t = 0; t < 3; t++)
+		//		{
+		//			double score1 = matchShapes(contour_sec, contour_tem, t+1, 0);
+		//			if (score1 < score[t])
+		//			{
+		//				score[t] = score1;
+		//				samey[t] = j;
+		//			}
+		//		}
+		//		
+		//		//cout << "similar score: " << i << " and " << samey<<" : "<<score1<<endl;
+		//		
+		//	}
+		//	for (int t = 0; t < 3; t++)
+		//	{
+		//		if (score[t] < test[t]) cout << i << "Probably similar" << t + 1 << ": " << i << " and " << samey[t] << " : " << score[t] << endl;
+		//	}
+
+		//}
 	}
 	//Tiling_tiles::Prototile *prototile_second;
 	//prototile_second = new Tiling_tiles::Prototile();

@@ -14,7 +14,7 @@ namespace Tiling_tiles{
 		prototile_mid = new Prototile();
 		prototile_second = new Prototile();
 		prototile_tem = new Prototile();
-		all_types = 409;
+		all_types = 693;
 		//memset(dp, 0, sizeof(dp));
 		//memset(dp_inver, 0, sizeof(dp_inver));
 
@@ -54,6 +54,33 @@ namespace Tiling_tiles{
 		}
 		cout << "load over!" << endl;
 	}
+	void Tiling_opt::check_Repetitive_pattern()
+	{
+		for (int i = 0; i < all_types; i++)
+		{
+			prototile_second->Pro_clear();
+			prototile_second->loadPoints(contour_dataset[i]);
+			vector<Point2f> contour_sec = prototile_second->contour_sample[2];
+			double score = 10000;
+			int samey = 0;
+			for (int j = 0; j < all_types; j++)
+			{
+				if (j == i) continue;
+				prototile_tem->Pro_clear();
+				prototile_tem->loadPoints(contour_dataset[j]);
+				vector<Point2f> contour_tem = prototile_tem->contour_sample[2];
+				double score1 = matchShapes(contour_sec, contour_tem, 1, 0);
+				if (score1 < score)
+				{
+					score = score1;
+					samey = j;
+				}
+			}
+			if (score < 0.02) cout << i << " Probably similar with " << samey << " : " << score << endl;
+
+		}
+	}
+
 
 	void Tiling_opt::points_dividing(string imaname) //
 	{
@@ -1037,6 +1064,202 @@ namespace Tiling_tiles{
 
 	}
 
+	double Tiling_opt::quadr_mismatch(vector<Point2f> first_arr, vector<Point2f> second_arr, vector<double> first_c, vector<double> second_c, vector<pair<int, int>>& path) //每次只能比较100个点以内
+	{
+		//ofstream out("D:\\VisualStudioProjects\\manual_record\\dtw.txt");
+		int first_num = first_arr.size();
+		int second_num = second_arr.size();
+
+		//cout << "\n        first.size: " << first_c[50] << "  -----    chararr_size" << second_c[50] << endl;
+
+		double dis[102][102];//两组点之间的坐标差异
+		double max_dis = 0;
+		for (int i = 0; i < first_num; i++)
+		{
+			for (int j = 0; j < second_num; j++)
+			{
+				dis[i][j] = length_two_point2f(first_arr[i], second_arr[j]);
+				if (dis[i][j] > max_dis) max_dis = dis[i][j];
+			}
+		}
+		//坐标差值归一化
+		for (int i = 0; i < first_num; i++)
+		{
+			for (int j = 0; j < second_num; j++)
+			{
+				dis[i][j] = dis[i][j] / max_dis;
+				//cout << "dis[i][j]: " << dis[i][j] << endl;
+			}
+		}
+		//for (int i = 0; i < 10; i++)
+		//{
+		//	for (int j = 0; j < 10; j++)
+		//	{
+		//		cout << "dis[i][j]: " << dis[i][j] << endl;
+		//	}
+		//}
+
+		double dis_cur[102][102];//两组点之间的曲率差异
+		double max_dis_cur = 0;
+		for (int i = 0; i < first_num; i++)
+		{
+			for (int j = 0; j < second_num; j++)
+			{
+				dis_cur[i][j] = cur_length_two_p(first_c[i], second_c[j], 1);
+
+				//cout << "dis_cur[i][j]: " << dis_cur[i][j] << endl;
+				if (dis_cur[i][j]>max_dis_cur)
+				{
+					//cout << "hahah:" << endl;
+					max_dis_cur = dis_cur[i][j];
+
+
+				}
+			}
+		}
+
+		//曲率差值归一化
+		//cout << "max_dis_cur: " << max_dis_cur << endl;
+		for (int i = 0; i < first_num; i++)
+		{
+			for (int j = 0; j < second_num; j++)
+			{
+				dis_cur[i][j] = dis_cur[i][j] / max_dis_cur;
+				//cout << "dis_cur[i][j]: " << dis_cur[i][j] << endl;
+			}
+		}
+		//for (int i = 0; i < 10; i++)
+		//{
+		//	for (int j = 0; j < 10; j++)
+		//	{
+		//		cout << "dis_cur[i][j]: " << dis_cur[i][j] << endl;
+		//	}
+		//}
+
+
+		double distance[102][102];
+		int step[102][102];//记录总的步数
+		for (int i = 0; i < first_num; i++)
+		{
+			for (int j = 0; j < second_num; j++)
+			{
+				distance[i][j] = 0;
+				step[i][j] = 0;
+			}
+		}
+		distance[0][0] = (double)2 * (dis[0][0] + dis_cur[0][0]);
+		step[0][0] = 0;
+
+		for (int i = 1; i < first_num; i++)
+		{
+			distance[i][0] = distance[i - 1][0] + (dis[i][0] + dis_cur[i][0]);
+			step[i][0] = step[i - 1][0] + 1;
+		}
+		for (int i = 1; i < second_num; i++)
+		{
+			distance[0][i] = distance[0][i - 1] + (dis[0][i] + dis_cur[0][i]);
+			step[0][i] = step[0][i - 1] + 1;
+		}
+
+		for (int j = 1; j < second_num; j++)
+		{
+
+			for (int i = 1; i < first_num; i++)//(int i = istart; i <= imax; i++)
+			{
+				double g1 = distance[i - 1][j] + dis[i][j] + dis_cur[i][j];// +kappa;
+				double g2 = distance[i - 1][j - 1] + 2 * (dis[i][j] + dis_cur[i][j]);
+				double g3 = distance[i][j - 1] + dis[i][j] + dis_cur[i][j];// +kappa;
+				if (g1 < g2)
+				{
+					if (g1 < g3)
+					{
+						distance[i][j] = g1;
+						step[i][j] = step[i - 1][j] + 1;
+					}
+					else
+					{
+						distance[i][j] = g3;
+						step[i][j] = step[i][j - 1] + 1;
+					}
+				}
+				else
+				{
+					if (g2 < g3)
+					{
+						distance[i][j] = g2;
+						step[i][j] = step[i - 1][j - 1];
+					}
+					else
+					{
+						distance[i][j] = g3;
+						step[i][j] = step[i][j - 1] + 1;
+					}
+				}
+			}
+
+		}
+		printPath(dis, dis_cur, distance, first_num - 1, second_num - 1, path);
+		// show the dp_path
+		//for (int i = 0; i < dp_path.size(); i++)
+		//{
+		//cout << first_arr[dp_path[i].first] << " - " << second_arr[dp_path[i].second] << endl;
+		//}
+		return distance[first_num - 1][second_num - 1];
+	}
+
+	vector<int> Tiling_opt::search_align_p(Point2f cent, Point2f end, vector<Point2f> cand_temp)
+	{
+		//保证线段足够长来求交点，将线段长度放大3倍
+		Point2f dis = end - cent;
+		Point2f endf = Point2f(cent.x + 3 * dis.x, cent.y + 3 * dis.y);
+		int ctsize = cand_temp.size();
+		vector<int> cand_index;
+		for (int i = 0; i < ctsize; i++)
+		{
+			Point2f crosP;
+			int flag = line_intersection(cent, endf, cand_temp[i], cand_temp[(i + 1) % ctsize], crosP);
+			if (flag == 0)continue;
+			else
+			{
+				if (length_two_point2f(end, cand_temp[i]) < length_two_point2f(end, cand_temp[(i + 1) % ctsize]))
+				{
+					int flag = 0;
+					for (int j = 0; j < cand_index.size(); j++)
+					{
+						if (cand_index[j] == i) flag = 1;
+					}
+					if (flag == 0) cand_index.push_back(i);
+					else break;
+				}
+				else
+				{
+					int flag = 0;
+					for (int j = 0; j < cand_index.size(); j++)
+					{
+						if (cand_index[j] == (i + 1) % ctsize) flag = 1;
+					}
+					if (flag == 0) cand_index.push_back((i + 1) % ctsize);
+					else break;
+				}
+			}
+		}
+		//返回对齐点，可能只有一个，可能有多个,删掉重复点
+
+		return cand_index;
+		/*double leng = 10000;
+		int min_in = 0;
+		for (int t = 0; t < cand_index.size(); t++)
+		{
+		if (length_two_point2f(cand_temp[cand_index[t]],end) < leng)
+		{
+		leng = length_two_point2f(cand_temp[cand_index[t]], end);
+		min_in = t;
+		}
+
+		}*/
+		//return min_in;
+
+	}
 	vector<Point2f> Tiling_opt::CandP2Contour(CandPat candp, int num)
 	{
 		prototile_second->Pro_clear();
@@ -1078,6 +1301,330 @@ namespace Tiling_tiles{
 		}
 		return mid_in;
 	}
+
+	vector<Point2f> Tiling_opt::morphing_2_patterns(vector<Point2f> contour1, vector<Point2f> contour2, vector<int> mid_inter, float shape_ratio)
+	{
+		//传统morphing是由start和end求得一系列intermediate状态，这里是通过c1和c2获得最终的变形结果
+
+		vector<Point2f> final_pettern;
+		int difference = contour1.size() - contour2.size();
+		difference = abs(difference);
+		if (difference != 0)
+		{
+			if (contour1.size() < contour2.size())
+			{
+				for (int i = 0; i < difference; i++)
+				{
+					contour2.pop_back();
+				}
+			}
+			else if (contour1.size() > contour2.size())
+			{
+				for (int i = 0; i < difference; i++)
+				{
+					contour1.pop_back();
+				}
+			}
+		}
+		cout << contour1.size() << "   " << contour2.size() << endl;
+		double scale = arcLength(contour1, true) / arcLength(contour2, true);
+		//cout << "scale: " << scale << endl;
+		for (int i = 0; i < contour2.size(); i++)
+		{
+			contour2[i] = contour2[i] * scale;
+		}
+		Point2f cen1 = center_p(contour1);
+		Point2f cen2 = center_p(contour2);
+		Point2f shift2 = cen1 - cen2;
+		for (int i = 0; i < contour2.size(); i++)
+		{
+			contour2[i] = contour2[i] + shift2;
+		}
+
+		////vector<int> mid_in = joint_relocate(contour1, mid_inter, 1);
+		//vector<Point2f> cont1 = sampling(contour1, 1);
+		//vector<Point2f> cont2 = sampling(contour2, 1);
+		//vector<double> cont1_c = curvature_com(cont1);
+		//vector<double> cont2_c = curvature_com(cont2);
+
+		//vector<int> cand_points_index = most_convex_p(cont1, cont1_c,20);
+		//sort_bub(cand_points_index);
+		//vector<pair<int, int>> qmpath;
+		//quadr_mismatch(cont1, cont2, cont1_c, cont2_c, qmpath);
+
+
+		//// 首先找到一一对应的点序列
+		//vector<Point2f> src1_points;
+		//vector<Point2f> src2_points;
+		//src1_points.push_back(cont1[0]);
+		//src2_points.push_back(cont2[0]);
+
+		////for (int i = 0; i < dp_path.size(); i++)
+		////{
+		////	cout << dp_path[i].first << " -- " << dp_path[i].second << endl;
+		////}
+		//if (cont1.size() < cont2.size())
+		//{
+		//	int f = 1;
+		//	int j = 0;
+		//	for (int i = 1; i < cont1.size() - 1;)
+		//	{
+
+		//		double min = 10000;
+		//		while (f < qmpath.size())
+		//		{
+
+		//			if ((qmpath[f].first < i) || qmpath[f].second < j) //检查下一条路径的另一端点是否已被使用
+		//			{
+		//				f++;
+		//				if (qmpath[f].first > i) i++;
+		//				continue;
+		//			}
+		//			if (qmpath[f].first == i)
+		//			{
+		//				if (length_two_point2f(cont1[qmpath[f].first], cont2[qmpath[f].second]) < min)
+		//				{
+		//					min = length_two_point2f(cont1[qmpath[f].first], cont2[qmpath[f].second]);
+		//					j = qmpath[f].second;
+		//				}
+		//				f++;
+		//			}
+		//			if (qmpath[f].first > i)
+		//			{
+		//				src1_points.push_back(cont1[i]);
+		//				src2_points.push_back(cont2[j]);
+		//				i++;
+		//				j++;
+		//				break;
+		//			}
+
+		//		}
+		//	}
+		//}
+		//else
+		//{
+		//	int f = 1;
+		//	int j = 0;
+		//	for (int i = 1; i < cont2.size() - 1;)
+		//	{
+		//		double min = 10000;
+
+		//		while (f < qmpath.size())
+		//		{
+
+		//			if ((qmpath[f].second < i) || qmpath[f].first < j)
+		//			{
+
+		//				f++;
+		//				if (qmpath[f].second > i) i++;
+		//				continue;
+		//			}
+		//			if (qmpath[f].second == i)
+		//			{
+		//				if (length_two_point2f(cont1[qmpath[f].first], cont2[qmpath[f].second]) < min)
+		//				{
+		//					min = length_two_point2f(cont1[qmpath[f].first], cont2[qmpath[f].second]);
+		//					j = qmpath[f].first;
+		//				}
+		//				f++;
+		//			}
+		//			if (qmpath[f].second > i)
+		//			{
+		//				src1_points.push_back(cont1[j]);
+		//				src2_points.push_back(cont2[i]);
+		//				i++;
+		//				j++;
+		//				break;
+		//			}
+
+		//		}
+		//	}
+		//}
+		//src1_points.push_back(cont1[qmpath[qmpath.size() - 1].first]);
+		//src2_points.push_back(cont2[qmpath[qmpath.size() - 1].second]);
+
+
+
+
+
+
+		//Mat ta = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		//Mat tt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		//Mat ttt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		//for (int t = 0; t < cont1.size(); t++)
+		//{
+		//	circle(tt, cont1[t],4,Scalar(255,0,0),-1);
+		//	circle(ta, cont1[t], 4, Scalar(255, 0, 0), -1);
+		//}
+		//for (int t = 0; t < cont2.size(); t++)
+		//{
+		//	circle(tt, cont2[t], 4, Scalar(0, 255, 0), -1);
+		//	circle(ta, cont2[t], 4, Scalar(0, 255, 0), -1);
+		//}
+		//cout << src1_points.size() << "   " << src2_points.size() << endl;
+		//for (int t = 0; t < src1_points.size(); t++)
+		//{
+		//	circle(ttt, src1_points[t], 4, Scalar(255, 120, 120), -1);
+		//	circle(tt, src1_points[t], 6, Scalar(255, 120, 120), -1);
+		//	circle(ttt, src2_points[t], 4, Scalar(120, 200, 120), -1);
+		//	circle(tt, src2_points[t], 6, Scalar(120, 200, 120), -1);
+		//	MyLine(ttt, src1_points[t], src2_points[t], "grey");
+		//	MyLine(tt, src1_points[t], src2_points[t], "grey");
+		//}
+		//
+		//for (int i = 0; i < qmpath.size(); i++)
+		//{
+		//	cout << qmpath[i].first << "   " << qmpath[i].second << endl;
+		//	MyLine(ta, cont1[qmpath[i].first], cont2[qmpath[i].second], "grey");
+		//	//MyLine(tt, cont1[qmpath[i].first], cont2[qmpath[i].second], "grey");
+		//}
+		//imshow("??:", ta);
+		//imshow("???:",tt);
+		//imshow("????:", ttt);
+
+		MorphPoints(contour1, contour2, final_pettern, shape_ratio);
+		//MorphPoints(src1_points, src2_points, final_pettern, shape_ratio);
+		//cout << "contour1: "<<contour1.size() << "  contour2: " << contour2.size() << "  final_pettern: " << final_pettern.size() << endl;
+
+
+		/*	//---------------------以下为morphing阶段
+		// 首先找到一一对应的点序列
+		vector<Point2f> src1_points;
+		vector<Point2f> src2_points;
+		src1_points.push_back(output_first[0]);
+		src2_points.push_back(output_second[0]);
+
+		//for (int i = 0; i < dp_path.size(); i++)
+		//{
+		//	cout << dp_path[i].first << " -- " << dp_path[i].second << endl;
+		//}
+		if (output_first.size() < output_second.size())
+		{
+		int f = 1;
+		int j = 0;
+		for (int i = 1; i < output_first.size() - 1;)
+		{
+
+		double min = 10000;
+		while (f < dp_path.size())
+		{
+
+		if ((dp_path[f].first < i) || dp_path[f].second < j) //检查下一条路径的另一端点是否已被使用
+		{
+		f++;
+		if (dp_path[f].first > i) i++;
+		continue;
+		}
+		if (dp_path[f].first == i)
+		{
+		if (length_two_point2f(output_first[dp_path[f].first], output_second[dp_path[f].second]) < min)
+		{
+		min = length_two_point2f(output_first[dp_path[f].first], output_second[dp_path[f].second]);
+		j = dp_path[f].second;
+		}
+		f++;
+		}
+		if (dp_path[f].first > i)
+		{
+		src1_points.push_back(output_first[i]);
+		src2_points.push_back(output_second[j]);
+		i++;
+		j++;
+		break;
+		}
+
+		}
+		}
+		}
+		else
+		{
+		int f = 1;
+		int j = 0;
+		for (int i = 1; i < output_second.size() - 1;)
+		{
+		double min = 10000;
+
+		while (f < dp_path.size())
+		{
+
+		if ((dp_path[f].second < i) || dp_path[f].first < j)
+		{
+
+		f++;
+		if (dp_path[f].second > i) i++;
+		continue;
+		}
+		if (dp_path[f].second == i)
+		{
+		if (length_two_point2f(output_first[dp_path[f].first], output_second[dp_path[f].second]) < min)
+		{
+		min = length_two_point2f(output_first[dp_path[f].first], output_second[dp_path[f].second]);
+		j = dp_path[f].first;
+		}
+		f++;
+		}
+		if (dp_path[f].second > i)
+		{
+		src1_points.push_back(output_first[j]);
+		src2_points.push_back(output_second[i]);
+		i++;
+		j++;
+		break;
+		}
+
+		}
+		}
+		}
+		src1_points.push_back(output_first[dp_path[dp_path.size() - 1].first]);
+		src2_points.push_back(output_second[dp_path[dp_path.size() - 1].second]);
+
+		if (src1_points.size() == src2_points.size())
+		{
+		for (int i = 0; i < src1_points.size(); i++)
+		{
+		circle(drawing_src3, src1_points[i], 1, Scalar(255, 0, 0), -1);
+		circle(drawing_src3, src2_points[i], 1, Scalar(0, 0, 255), -1);
+		MyLine(drawing_src3, src1_points[i], src2_points[i], "orange");
+		//cout << src1_points[i] << " - " << src2_points[i] << endl;
+		}
+		}
+		else cout << "num error!" << endl;
+		//调整系数改变变化程度，作为优化的变量
+		ImageMorphing(drawing_src1, src1_points, drawing_src2, src2_points, drawing_dst, output_final, 0.5);
+		//char i;
+
+		double length_final = length_two_point2f(output_final[0], output_final[output_final.size() - 1]);
+		for (int i = 0; i < output_final.size() - 1; i++)
+		{
+		MyLine(drawing_src3, output_final[i], output_final[i + 1], "red");
+		}
+
+		//imshow("drawing_src1", drawing_src1);
+		//imshow("drawing_src2", drawing_src2);
+		//imshow("drawing_dst", drawing_dst);
+
+		string name = "the ";
+		name = name + char(i + 48) + " pair: ";
+		imshow(name, drawing_src3);
+
+		*/
+
+		return final_pettern;
+	}
+
+	double evalua_deformation(vector<vector<Point2f>> contour, vector<vector<double>> curvature)
+	{
+		//储存顺序为 mid sec result
+		double score_mid_r = 0;
+		double score_sec_r = 0;
+		score_mid_r = area_poly(contour[2]) / area_poly(contour[0]);
+		score_sec_r = area_poly(contour[1]) / area_poly(contour[0]);
+
+	}
+
+
+
+
 
 	/*
 	//每一个轮廓分成四段

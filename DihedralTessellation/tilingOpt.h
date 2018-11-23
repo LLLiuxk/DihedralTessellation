@@ -89,6 +89,7 @@ namespace Tiling_tiles{
 
 		//load dataset
 		void load_dataset();
+		void check_Repetitive_pattern();
 
 		//shapes comparing and candidate contour choosing
 		vector<CandPat> compare_shapes(vector<Point2f> inner_c, int num_c);
