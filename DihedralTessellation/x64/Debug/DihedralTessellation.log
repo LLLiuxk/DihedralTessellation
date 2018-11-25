@@ -1,13 +1,67 @@
-﻿Build started 2018/11/23 19:30:00.
+﻿Build started 2018/11/25 22:17:56.
      1>Project "D:\VisualStudioProjects\DihedralTessellation\DihedralTessellation\DihedralTessellation.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /IC:\local\opencv\build\include /IC:\local\opencv\build\include\opencv /IC:\local\opencv\build\include\opencv2 /Zi /nologo /W3 /WX- /Od /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Debug\\" /Fd"x64\Debug\vc120.pdb" /Gd /TP /errorReport:prompt Prototile.cpp main.cpp
-         main.cpp
-         Prototile.cpp
-     1>Prototile.cpp(340): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>Prototile.cpp(376): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>Prototile.cpp(408): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-         Generating Code...
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /IC:\local\opencv\build\include /IC:\local\opencv\build\include\opencv /IC:\local\opencv\build\include\opencv2 /Zi /nologo /W3 /WX- /Od /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Debug\\" /Fd"x64\Debug\vc120.pdb" /Gd /TP /errorReport:prompt math.cpp
+         math.cpp
+     1>math.cpp(34): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>math.cpp(56): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>math.cpp(80): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
+     1>math.cpp(81): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>math.cpp(103): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>math.cpp(148): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(170): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>math.cpp(264): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(344): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(345): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(346): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(347): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(348): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(366): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(367): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(368): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(369): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(377): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>math.cpp(392): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>math.cpp(410): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>math.cpp(423): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>math.cpp(472): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>math.cpp(537): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(539): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>math.cpp(563): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(564): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(568): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(569): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(590): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(591): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(595): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(596): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(626): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>math.cpp(638): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>math.cpp(670): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>math.cpp(692): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(697): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(705): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(715): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(750): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>math.cpp(797): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>math.cpp(863): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(864): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(868): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(869): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(876): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(877): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(881): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(882): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(889): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(899): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(941): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>math.cpp(962): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>math.cpp(1051): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>math.cpp(1052): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>math.cpp(1201): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>math.cpp(1205): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>math.cpp(1206): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>d:\visualstudioprojects\dihedraltessellation\dihedraltessellation\math.cpp(313): warning C4715: 'Tiling_tiles::cur_char_length' : not all control paths return a value
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.exe" /INCREMENTAL /NOLOGO /LIBPATH:C:\local\opencv\build\x64\vc12\lib opencv_calib3d248d.lib opencv_contrib248d.lib opencv_core248d.lib opencv_features2d248d.lib opencv_flann248d.lib opencv_gpu248d.lib opencv_highgui248d.lib opencv_imgproc248d.lib opencv_legacy248d.lib opencv_ml248d.lib opencv_objdetect248d.lib opencv_ts248d.lib opencv_video248d.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.lib" /MACHINE:X64 x64\Debug\main.obj
          x64\Debug\math.obj
@@ -18,4 +72,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:02.13
+Time Elapsed 00:00:01.37

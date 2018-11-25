@@ -1615,11 +1615,12 @@ namespace Tiling_tiles{
 	double evalua_deformation(vector<vector<Point2f>> contour, vector<vector<double>> curvature)
 	{
 		//´¢´æË³ÐòÎª mid sec result
+		double total_score = 0;
 		double score_mid_r = 0;
 		double score_sec_r = 0;
 		score_mid_r = area_poly(contour[2]) / area_poly(contour[0]);
 		score_sec_r = area_poly(contour[1]) / area_poly(contour[0]);
-
+		return total_score;
 	}
 
 

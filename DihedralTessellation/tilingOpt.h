@@ -104,6 +104,8 @@ namespace Tiling_tiles{
 		
 		//morphing
 		vector<Point2f> morphing_2_patterns(vector<Point2f> contour1, vector<Point2f> contour2, vector<int> mid_inter, float shape_ratio);
+		double evalua_deformation(vector<vector<Point2f>> contour, vector<vector<double>> curvature);
+		
 		//simulation
 		vector<Point2f> simulation_mid(string imaname, int inner_one, int cand_one);
 
@@ -172,9 +174,11 @@ namespace Tiling_tiles{
 	//cross points
 	int line_intersection(Point2f start1, Point2f end1, Point2f start2, Point2f end2, Point2f &cross_p);
 
-	//vector and cosin
+	//vector and cosin/ sin
 	Point2f unit_vec(Point2f vec);
 	double cos_two_vector(Point2f &v0, Point2f &v1);
+	double sin_2vector_convexc(Point2f &v0, Point2f &v1);
+	vector<double> recover_consin(vector<double> &former);
 
 	//void sort_bub(vector<int> &target);
 	template<typename T>

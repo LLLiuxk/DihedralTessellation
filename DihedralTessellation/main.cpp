@@ -17,18 +17,46 @@ int main(int argc, char** argv)
 	Tiling_tiles::Prototile *prototile_third;
 	prototile_third = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
-	int f = 2;
+	int f = 0;
 	if (f == 0) //ÒÑÓÐdataset
 	{
+		prototile_first->partition_points("22");
+	/*	prototile_first->contour = prototile_first->readTxt();
+		prototile_first->contour_sam_cur();
+		vector<Point2f> a = prototile_first->contour_sample[0];
+		vector<double> d = prototile_first->contour_curva[0];
+		vector<Point2f> b;
+		vector<double> dd;
+		Mat drawing4 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 
-		for (int i = 404; i < 409; i++)
+		
+		for (int i = 0; i < 50; i++)
+		{
+			b.push_back(a[i]);
+			dd.push_back(d[i]);
+			if (d[i] > 0) cout << d[i] << "   " << a[(i+49)%50]<<" "<<a[i]<<" "<<a[(i+1)%50] << endl;
+			circle(drawing4, a[i], 1, Scalar(0, 0, 0), -1);
+		}
+		imshow("??", drawing4);*/
+		//most_convex_p(b,dd,10);
+		/*vector<Point2f> a;
+		a.push_back(Point2f(10,10));
+		a.push_back(Point2f(30,10));
+		a.push_back(Point2f(30,30));
+		a.push_back(Point2f(20,20));
+		a.push_back(Point2f(10,30));
+		vector<double> b = curvature_com(a);
+		vector<int> c = most_convex_p(a, b, 3);
+		for (int i = 0; i < 3; i++)
+			cout << c[i] << endl;*/
+		/*for (int i = 404; i < 409; i++)
 		{ 
 			tiling_opt->Tiling_clear();
 			string name_ = int2string(i);
 			cout << name_ << endl;
 			tiling_opt->points_dividing(name_);
 			system("cls");
-		}
+		}*/
 		
 		//test morphing
 		//--------------------

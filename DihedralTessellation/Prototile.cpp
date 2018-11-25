@@ -118,8 +118,8 @@ namespace Tiling_tiles{
 		findContours(canny_output, contours, hierarchy, CV_RETR_EXTERNAL, CHAIN_APPROX_SIMPLE, Point(0, 0));
 		cout << "contours num:" << contours.size() << endl;
 		
-		/*
-		Mat drwa = Mat::zeros(800, 800, CV_8UC3);
+		
+		/*Mat drwa = Mat::zeros(800, 800, CV_8UC3);
 		int i = 0;
 		for (; i < contours[0].size() / 4; i++)
 		{
@@ -400,22 +400,23 @@ namespace Tiling_tiles{
 
 	vector<int> Prototile::partition_points(string imaname)
 	{
-		int cur_p_num = 20;
+		int cur_p_num = 20;   //cur_p_num 个不相邻的最大cos值点
+		int margin = 12;      //margin个点的采样间隔
+		double ratio = 0.012; //筛选间隔与周长之比
 		vector<int> max_order;
 		imgtocout(imaname);
 		loadTileData(imaname);
 		max_order = convex_p(cur_p_num );
 		int contoursize = contour.size();
 		vector<int> all_order = max_order;
-		double dist = 1000;
-		int index = 0;
-		for (int i = 0; i < contoursize; i = i + 20)
+
+		for (int i = 0; i < contoursize; i = i + margin)
 		{
 			int flag = 0;
 			for (vector<int>::iterator it = max_order.begin(); it != max_order.end(); it++)
 			{
 				double leng = length_two_point2f(contour[i], contour[*it]);
-				if (leng < 0.01*c_length)
+				if (leng < ratio*c_length)
 				{
 					flag = 1;
 					break;
