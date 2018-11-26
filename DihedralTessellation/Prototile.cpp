@@ -3,6 +3,7 @@
 using namespace std;
 
 namespace Tiling_tiles{
+
 	Prototile::Prototile(){
 		c_length = 0;
 		dataroot = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\";

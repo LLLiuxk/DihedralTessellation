@@ -165,32 +165,16 @@ namespace Tiling_tiles{
 		return sqrt((u.x - v.x)*(u.x - v.x) + (u.y - v.y)*(u.y - v.y));
 	}
 
-	double area_poly(vector<Point2f> &cont)
-	{
-		int csize = cont.size();
-		if (csize < 3) return 0;
-		double sum = 0;
-		for (int i = 0; i < csize; i++)
-			sum += cont[i].x * cont[(i + 1) % csize].y - cont[i].y * cont[(i + 1) % csize].x;
-		return fabs(sum / 2.0);
-	}
-	//double area_p_pixel(vector<Point2f> &cont)
+	//double area_poly(vector<Point2f> &cont)
 	//{
 	//	int csize = cont.size();
 	//	if (csize < 3) return 0;
 	//	double sum = 0;
-	//	Mat drawing = Mat(600, 600, CV_8UC3, Scalar(255, 255, 255));
-	//	draw_poly(drawing, cont, Point2f(300, 300));
-	//	cvtColor(drawing, drawing, CV_BGR2GRAY);
-	//	threshold(drawing, drawing, 128, 255, cv::THRESH_BINARY);
-	//	for (int i = 0; i < 600; i++)
-	//		for (int j = 0; j < 600; j++)
-	//		{
-	//			//cout << drawing.at<uchar>(i, j) << endl;
-	//			if (drawing.at<uchar>(i, j) == 0) sum++;
-	//		}
-	//	return fabs(sum);
+	//	for (int i = 0; i < csize; i++)
+	//		sum += cont[i].x * cont[(i + 1) % csize].y - cont[i].y * cont[(i + 1) % csize].x;
+	//	return fabs(sum / 2.0);
 	//}
+	
 
 	void sort_comb(vector<double> vect, vector<int> &index_num) //将下标和数值联合排序，只保留下标的排序,从大到小
 	{
@@ -209,8 +193,12 @@ namespace Tiling_tiles{
 					index_num[j + 1] = num;
 				}
 	}
-	int line_intersection(Point2f start1, Point2f end1, Point2f start2, Point2f end2, Point2f &cross_p)
+	int line_intersection(Line_Seg line1, Line_Seg line2, Point2f &cross_p)
 	{
+		Point2f start1 = line1.start;
+		Point2f end1 = line1.end;
+		Point2f start2 = line2.start;
+		Point2f end2 = line2.end;
 		Point2f s10 = end1 - start1;
 		Point2f s32 = end2 - start2;
 		Point2f s02 = start1 - start2;
@@ -258,6 +246,42 @@ namespace Tiling_tiles{
 		return 1;
 	}
 
+	bool seif_intersect(vector<Point2f> &contour_)
+	{
+		int sizec = contour_.size();
+		for (int i = 0; i < sizec-2; i++)
+		{
+			if (i == 0)
+			{
+				for (int j = 2; j < sizec-1; j++)
+				{
+					Point2f crossp;
+					Line_Seg line1(contour_[i], contour_[i + 1]);
+					Line_Seg line2(contour_[j], contour_[j + 1]);
+					if (line_intersection(line1, line2, crossp)==1)
+					{
+						//cout << i << "  " << j << endl;
+						return true;
+					}
+				}
+			}
+			else{
+				for (int j = i + 2; j < sizec; j++)
+				{
+					Point2f crossp;
+					Line_Seg line1(contour_[i], contour_[i + 1]);
+					Line_Seg line2(contour_[j], contour_[(j + 1) % sizec]);
+					if (line_intersection(line1, line2, crossp)==1)
+					{
+						//cout << i << "  " << j << endl;
+						return true;
+					}
+				}		
+			}	
+		}
+		return false;
+	}
+
 	Point2f unit_vec(Point2f vec)
 	{
 		double fenmu = sqrt(vec.x*vec.x + vec.y*vec.y);
@@ -277,9 +301,20 @@ namespace Tiling_tiles{
 
 	double cur_length_two_p(double cur1, double cur2, double zeta)
 	{
-		double mis = (cur1 - cur2)*(cur1 - cur2)*zeta;
+		double mis = 0;
+		if ((cur1 < 0 && cur2 < 0) || (cur1>0 && cur2>0))
+		{
+			mis = (cur1 - cur2)*(cur1 - cur2)*zeta;
+		}
+		else 
+		{
+			double factor = cur1 + cur2 + 2;
+			if (factor > 2.45) factor = 2.45;
+			mis = factor*factor*zeta;
+		}		
 		return mis;
 	}
+
 	int cur_char_length(char a, char b)
 	{
 		if (a > 'A'&&a < 'Z')

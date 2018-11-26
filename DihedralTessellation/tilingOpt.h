@@ -31,12 +31,24 @@ namespace Tiling_tiles{
 		double mismatch;
 	}CandPat;
 
+	class Line_Seg{
+	public:
+		Line_Seg();
+		Line_Seg(Point2f a, Point2f b)
+		{
+			start = a;
+			end = b;
+		}
+		Point2f start;
+		Point2f end;
+	};
+
 	class Prototile{
 	public:
 		Prototile();
 		Prototile(string rname,string tpath);
 		void Pro_clear();
-
+		
 		void getpath();
 		void loadTileData(string tile_data);
 		void contour_sam_cur();		
@@ -157,7 +169,7 @@ namespace Tiling_tiles{
 	Point2f center_p(vector<Point2f> contour_);
 	double contour_length(vector<Point2f> contour);
 	double length_two_point2f(Point2f &u, Point2f &v);
-	double area_poly(vector<Point2f> &cont);
+	//double area_poly(vector<Point2f> &cont);
 	//double area_p_pixel(vector<Point2f> &cont);
 
 	int cur_char_length(char a, char b);
@@ -172,7 +184,8 @@ namespace Tiling_tiles{
 	string int2string(int number);
 
 	//cross points
-	int line_intersection(Point2f start1, Point2f end1, Point2f start2, Point2f end2, Point2f &cross_p);
+	int line_intersection(Line_Seg line1, Line_Seg line2, Point2f &cross_p);
+	bool seif_intersect(vector<Point2f> &contour_);
 
 	//vector and cosin/ sin
 	Point2f unit_vec(Point2f vec);

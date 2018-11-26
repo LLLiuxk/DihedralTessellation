@@ -14,7 +14,7 @@ namespace Tiling_tiles{
 		prototile_mid = new Prototile();
 		prototile_second = new Prototile();
 		prototile_tem = new Prototile();
-		all_types = 693;
+		all_types = 684;
 		//memset(dp, 0, sizeof(dp));
 		//memset(dp_inver, 0, sizeof(dp_inver));
 
@@ -879,7 +879,7 @@ namespace Tiling_tiles{
 			cout << index_s[i][t] << " " << score_3types[i][index_s[i][t]] << endl;
 			}	*/
 			//添加到order数组里
-			for (int t = index_s[i].size() - 1; t > total_num - 10; t--)
+			for (int t = index_s[i].size() - 1; t > total_num - 15; t--)
 			{
 				int f = 0;
 				for (int j = 0; j < order_total.size(); j++)
@@ -897,11 +897,11 @@ namespace Tiling_tiles{
 		vector<CandPat> score_total;
 		int ordersize = order_total.size();
 		//cout 合并后的候选项
-		/*cout << "ordersize: " << ordersize << endl;
+		cout << "ordersize: " << ordersize << endl;
 		for (int i = 0; i < ordersize; i++)
 		{
 	    	cout << "order_total: " << order_total[i] << endl;
-		}*/
+		}
 
 		for (int t = 0; t < ordersize; t++)  //展示所有order里的候选图案的对比结果,筛选出用min_mismatch值最小的结果
 		{
@@ -996,7 +996,6 @@ namespace Tiling_tiles{
 			else cand_tem = cand;
 			vector<int> cand_n;
 			cand_n = search_align_p(Ccen, inner[0], cand_tem);
-
 			int cand_n_s = cand_n.size();
 			int cand_tem_size = cand_tem.size();
 
@@ -1211,15 +1210,14 @@ namespace Tiling_tiles{
 	{
 		//保证线段足够长来求交点，将线段长度放大3倍
 		Point2f dis = end - cent;
-		Point2f endf = Point2f(cent.x + 3 * dis.x, cent.y + 3 * dis.y);
+		Point2f endf = Point2f(cent.x + 2 * dis.x, cent.y + 2 * dis.y);
 		int ctsize = cand_temp.size();
 		vector<int> cand_index;
 		for (int i = 0; i < ctsize; i++)
 		{
 			Point2f crosP;
-			int flag = line_intersection(cent, endf, cand_temp[i], cand_temp[(i + 1) % ctsize], crosP);
-			if (flag == 0)continue;
-			else
+			if (line_intersection(Line_Seg(endf, cent), Line_Seg(cand_temp[i], cand_temp[(i + 1) % ctsize]), crosP) == 0) continue;
+			else 
 			{
 				if (length_two_point2f(end, cand_temp[i]) < length_two_point2f(end, cand_temp[(i + 1) % ctsize]))
 				{
@@ -1242,6 +1240,7 @@ namespace Tiling_tiles{
 					else break;
 				}
 			}
+			
 		}
 		//返回对齐点，可能只有一个，可能有多个,删掉重复点
 
@@ -1618,8 +1617,8 @@ namespace Tiling_tiles{
 		double total_score = 0;
 		double score_mid_r = 0;
 		double score_sec_r = 0;
-		score_mid_r = area_poly(contour[2]) / area_poly(contour[0]);
-		score_sec_r = area_poly(contour[1]) / area_poly(contour[0]);
+		score_mid_r = contourArea(contour[2]) / contourArea(contour[0]);
+		score_sec_r = contourArea(contour[1]) / contourArea(contour[0]);
 		return total_score;
 	}
 
