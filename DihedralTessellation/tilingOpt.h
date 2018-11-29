@@ -144,12 +144,16 @@ namespace Tiling_tiles{
 		double Aff_place(vector<Point2f> &input1, vector<Point2f> &input2, vector<vector<Point2f>> &prototwo, vector<Point2f> &protoAff, int flag);
 
 		double DTW(vector<Point2f> &first_arr, vector<Point2f> &second_arr);
-		void printPath(double d[][102], double d_c[][102], double dp[][102], int i, int j, vector<pair<int, int>>& path);
+		void printPath(double d[][202], double d_c[][202], double dp[][202], int i, int j, vector<pair<int, int>>& path);
 
 		//private:
 		//vector<pair<int, int>> dp_path;
-		int dp[600][600];
-		int dp_inver[600][600];
+		//int dp[600][600];
+		//int dp_inver[600][600];
+		double dis[202][202];//两组点之间的坐标差异
+		double dis_cur[202][202];//两组点之间的曲率差异
+		double distance[202][202];
+		int step[202][202];//记录总的步数
 		int all_types;
 		Prototile *prototile_first;
 		Prototile *prototile_mid;
@@ -209,7 +213,8 @@ namespace Tiling_tiles{
 
 				}
 	}
-
+	//file cout
+	void fileout(string filepath, vector<Point> contour_);
 	//bounding box
 	void bbx_center_point(vector<vector<Point2f>> all_point, vector<Point2f> &five_p);
 	vector<Point2f> b_box(vector<Point2f> contour);//返回的点是从左上方逆时针

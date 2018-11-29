@@ -347,6 +347,20 @@ namespace Tiling_tiles{
 
 	}
 
+	void fileout(string filepath, vector<Point> contour_)
+	{
+		ofstream out(filepath);
+		if (out.is_open())
+		{
+			out << contour_.size() + 1 << endl;//contours[0].size()
+			for (int j = 0; j < contour_.size(); j++)
+				out << contour_[j].x << "," << contour_[j].y << endl;
+			out << contour_[0].x << "," << contour_[0].y << endl;  //首尾连起来
+		}
+		cout << "contours[0].size(): " << contour_.size() << endl;
+		out.close();
+	}
+
 	void bbx_center_point(vector<vector<Point2f>> all_point, vector<Point2f> &five_p)
 	{
 		five_p.swap(vector<Point2f>());
@@ -480,7 +494,7 @@ namespace Tiling_tiles{
 				for (vector<int>::iterator it = cand_points_index.begin(); it != cand_points_index.end(); it++)
 				{
 					double leng = length_two_point2f(contour_[index_num[i]], contour_[*it]);
-					if (leng < 0.01*length)
+					if (leng < 0.008*length)
 					{
 						flag = 1;
 						break;
@@ -1199,33 +1213,7 @@ namespace Tiling_tiles{
 		return distance[first_num - 1][second_num - 1];
 	}
 
-	void Tiling_opt::printPath(double d[][102], double d_c[][102], double dp[][102], int i, int j, vector<pair<int, int>>& path)
-	{
-
-		if (i == 0 && j == 0) {
-			//cout << first_arr[i] << " - " << second_arr[j] << endl;
-			path.push_back(make_pair(i, j));
-			return;
-			//cout make_pair(i,j);
-		}
-
-		if (abs(dp[i][j] - (dp[i - 1][j - 1] + 2 * (d[i][j] + d_c[i][j]))) < 0.1){
-			printPath(d, d_c, dp, i - 1, j - 1, path);
-
-		}
-		else if (abs(dp[i][j] - (dp[i][j - 1] + d[i][j] + d_c[i][j])) < 0.1) {
-			printPath(d, d_c, dp, i, j - 1, path);
-
-		}
-		else {
-			printPath(d, d_c, dp, i - 1, j, path);
-		}
-		path.push_back(make_pair(i, j));
-		//cout << first_arr[i] << " - " << second_arr[j] << endl;
-
-	}
-
-	
+		
 
 	
 	// Morph points

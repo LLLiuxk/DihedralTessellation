@@ -171,17 +171,8 @@ namespace Tiling_tiles{
 		out.close();*/
 
 		//逆时针存储
-		ofstream out(txtpath + tile_image + ".txt");
-		if (out.is_open())
-		{
-			out << contours[0].size() + 1 << endl;//contours[0].size()
-			for (int j = 0; j < contours[0].size(); j++)
-				out << contours[0][j].x << "," << contours[0][j].y << endl;
-			out << contours[0][0].x << "," << contours[0][0].y << endl;  //首尾连起来
-		}
-		cout << "contours[0].size(): " << contours[0].size() << endl;
-		out.close();
-
+		string filepath = txtpath + tile_image + ".txt";
+		fileout(filepath, contours[0]);
 
 	}
 

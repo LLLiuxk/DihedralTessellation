@@ -14,7 +14,7 @@ namespace Tiling_tiles{
 		prototile_mid = new Prototile();
 		prototile_second = new Prototile();
 		prototile_tem = new Prototile();
-		all_types = 684;
+		all_types = 686;
 		//memset(dp, 0, sizeof(dp));
 		//memset(dp_inver, 0, sizeof(dp_inver));
 
@@ -26,8 +26,10 @@ namespace Tiling_tiles{
 
 	void Tiling_opt::Tiling_clear()
 	{
-		memset(dp, 0, sizeof(dp));
-		memset(dp_inver, 0, sizeof(dp_inver));
+		memset(dis, 0, sizeof(dis));
+		memset(dis_cur, 0, sizeof(dis_cur));
+		memset(distance, 0, sizeof(distance));
+		memset(step, 0, sizeof(step));
 		prototile_first->Pro_clear();
 		prototile_mid->Pro_clear();
 		prototile_second->Pro_clear();
@@ -38,7 +40,7 @@ namespace Tiling_tiles{
 	void Tiling_opt::load_dataset()
 	{
 		if (!contour_dataset.empty()) contour_dataset.swap(vector<vector<Point2f>>());
-		for (int i = 0; i < all_types; i++)
+		for (int i = 0; i <= all_types; i++)
 		{
 			prototile_second->Pro_clear();
 			prototile_second->getpath();
@@ -56,7 +58,7 @@ namespace Tiling_tiles{
 	}
 	void Tiling_opt::check_Repetitive_pattern()
 	{
-		for (int i = 0; i < all_types; i++)
+		for (int i = 0; i <= all_types; i++)
 		{
 			prototile_second->Pro_clear();
 			prototile_second->loadPoints(contour_dataset[i]);
@@ -456,6 +458,12 @@ namespace Tiling_tiles{
 		imwrite(conut_name, drawing1);
 		
 		cout << "inner_one: " << inner_one  << endl;
+		string filepathname = "D:\\VisualStudioProjects\\DihedralTessellation\\contours\\test" + int2string(inner_one)+".txt";
+		vector<Point> con;
+		for (int i = 0; i < inner_conts[inner_one].size(); i++)
+			con.push_back((Point)inner_conts[inner_one][i]);
+		fileout(filepathname, con);
+
 		int num_c = 1;//选择(num_c+1)*100个点
 		vector<CandPat> candida_contours;
 
@@ -1071,7 +1079,7 @@ namespace Tiling_tiles{
 
 		//cout << "\n        first.size: " << first_c[50] << "  -----    chararr_size" << second_c[50] << endl;
 
-		double dis[102][102];//两组点之间的坐标差异
+		//double dis[202][202];//两组点之间的坐标差异
 		double max_dis = 0;
 		for (int i = 0; i < first_num; i++)
 		{
@@ -1098,7 +1106,7 @@ namespace Tiling_tiles{
 		//	}
 		//}
 
-		double dis_cur[102][102];//两组点之间的曲率差异
+		//double dis_cur[202][202];//两组点之间的曲率差异
 		double max_dis_cur = 0;
 		for (int i = 0; i < first_num; i++)
 		{
@@ -1136,8 +1144,8 @@ namespace Tiling_tiles{
 		//}
 
 
-		double distance[102][102];
-		int step[102][102];//记录总的步数
+		//double distance[202][202];
+		//int step[202][202];//记录总的步数
 		for (int i = 0; i < first_num; i++)
 		{
 			for (int j = 0; j < second_num; j++)
@@ -1204,6 +1212,32 @@ namespace Tiling_tiles{
 		//cout << first_arr[dp_path[i].first] << " - " << second_arr[dp_path[i].second] << endl;
 		//}
 		return distance[first_num - 1][second_num - 1];
+	}
+
+	void Tiling_opt::printPath(double d[][202], double d_c[][202], double dp[][202], int i, int j, vector<pair<int, int>>& path)
+	{
+
+		if (i == 0 && j == 0) {
+			//cout << first_arr[i] << " - " << second_arr[j] << endl;
+			path.push_back(make_pair(i, j));
+			return;
+			//cout make_pair(i,j);
+		}
+
+		if (abs(dp[i][j] - (dp[i - 1][j - 1] + 2 * (d[i][j] + d_c[i][j]))) < 0.1){
+			printPath(d, d_c, dp, i - 1, j - 1, path);
+
+		}
+		else if (abs(dp[i][j] - (dp[i][j - 1] + d[i][j] + d_c[i][j])) < 0.1) {
+			printPath(d, d_c, dp, i, j - 1, path);
+
+		}
+		else {
+			printPath(d, d_c, dp, i - 1, j, path);
+		}
+		path.push_back(make_pair(i, j));
+		//cout << first_arr[i] << " - " << second_arr[j] << endl;
+
 	}
 
 	vector<int> Tiling_opt::search_align_p(Point2f cent, Point2f end, vector<Point2f> cand_temp)
@@ -1306,7 +1340,7 @@ namespace Tiling_tiles{
 		//传统morphing是由start和end求得一系列intermediate状态，这里是通过c1和c2获得最终的变形结果
 
 		vector<Point2f> final_pettern;
-		int difference = contour1.size() - contour2.size();
+		/*int difference = contour1.size() - contour2.size();
 		difference = abs(difference);
 		if (difference != 0)
 		{
@@ -1324,7 +1358,7 @@ namespace Tiling_tiles{
 					contour1.pop_back();
 				}
 			}
-		}
+		}*/
 		cout << contour1.size() << "   " << contour2.size() << endl;
 		double scale = arcLength(contour1, true) / arcLength(contour2, true);
 		//cout << "scale: " << scale << endl;
