@@ -65,12 +65,14 @@ int main(int argc, char** argv)
 		prototile_first->loadTileData("test1");
 		//imgtocout();
 		vector<Point2f> contour_inner = prototile_first->contour_sample[1];
+		vector<double> coninner_cur = curvature_com(contour_inner); //prototile_first->contour_curva[1];
 		vector<CandPat> candida_contours;
 		candida_contours = tiling_opt->compare_shapes(prototile_first->contour, 1);
 		CandPat tem = candida_contours[0];
-		prototile_second->Pro_clear();
-		prototile_second->loadPoints(tiling_opt->contour_dataset[tem.number]);
+		//prototile_second->Pro_clear();
+		//prototile_second->loadPoints(tiling_opt->contour_dataset[tem.number]);
 		vector<Point2f> contour_cand = tiling_opt->CandP2Contour(tem, 1);
+		vector<double> concand_cur = curvature_com(contour_cand);
 		vector<Point2f> inter_;
 		vector<int> mid_inter;
 		mid_inter.push_back(0);
@@ -78,7 +80,8 @@ int main(int argc, char** argv)
 		mid_inter.push_back(100);
 		mid_inter.push_back(150);
 
-		inter_ = tiling_opt->morphing_2_patterns(contour_inner, contour_cand, mid_inter, 0.5);
+		inter_ = tiling_opt->morphing_2_patterns(contour_inner, contour_cand, coninner_cur, concand_cur, mid_inter, 0.5);
+		cout <<"inter_: "<< inter_.size() << endl;
 		//MorphPoints(contour_inner, contour_cand, inter_, 0.5);
 		Mat tt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 	    Mat ttt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));

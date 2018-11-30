@@ -74,8 +74,8 @@ namespace Tiling_tiles{
 		vector<double> cconvex;
 		vector<vector<Point2f>> contour_sample;
 		vector<vector<Point2f>> contour_sample_flip;
-		vector<vector<double>> contour_curva;
-		vector<vector<double>> contour_curva_flip;
+		//vector<vector<double>> contour_curva;
+		//vector<vector<double>> contour_curva_flip;
 		//char cur_string[6][600];
 		//vector<vector<Point2f>> contour_saliency;  //显著性可选
 		//vector<vector<Point2f>> contour_saliency_inver;
@@ -115,7 +115,7 @@ namespace Tiling_tiles{
 		vector<int> joint_relocate(vector<Point2f> contour_, vector<int> joint_index, int num_c);
 		
 		//morphing
-		vector<Point2f> morphing_2_patterns(vector<Point2f> contour1, vector<Point2f> contour2, vector<int> mid_inter, float shape_ratio);
+		vector<Point2f> morphing_2_patterns(vector<Point2f> &contour1, vector<Point2f> &contour2, vector<double> &concur1, vector<double> &concur2, vector<int> mid_inter, float shape_ratio);
 		double evalua_deformation(vector<vector<Point2f>> contour, vector<vector<double>> curvature);
 		
 		//simulation
@@ -181,7 +181,7 @@ namespace Tiling_tiles{
 	void sort_comb(vector<double> vect, vector<int> &index_num);
 	vector<Point2f> sampling(vector<Point2f> contour_, int points_num);
 	vector<double> curvature_com_k(vector<Point2f> &contour_sam);
-	vector<double> curvature_com(vector<Point2f> &contour_sam); //记录cos值
+	vector<double> curvature_com(const vector<Point2f> &contour_sam); //记录cos值
 	vector<int> most_convex_p(vector<Point2f> contour_, vector<double> cont_c, int max_cur_num);
 	vector<Point2f> extract_contour(vector<Point2f> contour_, vector<int> mark_p, vector<int> &midmark_p);
 	//translate tool
@@ -195,7 +195,7 @@ namespace Tiling_tiles{
 	Point2f unit_vec(Point2f vec);
 	double cos_two_vector(Point2f &v0, Point2f &v1);
 	double sin_2vector_convexc(Point2f &v0, Point2f &v1);
-	vector<double> recover_consin(vector<double> &former);
+	vector<double> recover_consin(const vector<double> &former);
 
 	//void sort_bub(vector<int> &target);
 	template<typename T>

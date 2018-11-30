@@ -25,8 +25,8 @@ namespace Tiling_tiles{
 		cconvex.swap(vector<double>());
 		contour_sample.swap(vector<vector<Point2f>>());
 		contour_sample_flip.swap(vector<vector<Point2f>>());
-		contour_curva.swap(vector<vector<double>>());
-		contour_curva_flip.swap(vector<vector<double>>());
+		//contour_curva.swap(vector<vector<double>>());
+		//contour_curva_flip.swap(vector<vector<double>>());
 		c_length = 0;
 		center_point = Point2f(0,0);
 	}
@@ -305,11 +305,11 @@ namespace Tiling_tiles{
 			contour_sam = sampling(contour,i); //点数为 i*100
 			
 			contour_sample.push_back(contour_sam);
-			contour_curva.push_back(curvature_com(contour_sam));
+			//contour_curva.push_back(curvature_com(contour_sam));
 
 			contour_sam_flip = flip_contour(contour_sam,0); //0是水平翻转
 			contour_sample_flip.push_back(contour_sam_flip);
-			contour_curva_flip.push_back(curvature_com(contour_sam_flip));
+			//contour_curva_flip.push_back(curvature_com(contour_sam_flip));
 			//_________________________show the result
 
 			//Mat drawing4 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
@@ -367,7 +367,7 @@ namespace Tiling_tiles{
 		contour.swap(vector<Point2f>());
 		int sam_num = contour_sample.size();	
 		contour = contour_sample[sam_num - 1];
-		cconvex = contour_curva[sam_num - 1];
+		cconvex = curvature_com(contour_sample[sam_num - 1]);
 		cout << "contour_sample num: " << contour_sample[sam_num - 1].size() << endl;
 		vector<int> cand_points_index;
 		cand_points_index = most_convex_p(contour, cconvex, max_cur_num);

@@ -219,9 +219,9 @@ namespace Tiling_tiles{
 				prototile_mid->loadPoints(inner_conts[i]);
 
 				vector<Point2f> contour_inner = prototile_mid->contour_sample[num_c]; //选择最少的点进行比较
-				//vector<double> contour_inner_c = prototile_mid->contour_curva[0];
+				vector<double> contour_inner_c = curvature_com(contour_inner);// prototile_mid->contour_curva[0];
 				vector<Point2f> contour_cand = CandP2Contour(tem, num_c);
-				
+				vector<double> contour_cand_c = curvature_com(contour_cand);
 				//inner and cand morph into the final pettern	
 				//!!!!!!在下一步中将morph改为分段!!!此时没有考虑中心平移和缩放倍数，因为之前是一一对应进行的变形
 				int num = 3;
@@ -229,7 +229,7 @@ namespace Tiling_tiles{
 				while (num-- != 0)
 				{
 					ratio = ratio + 1;
-					vector<Point2f> inter_mid = morphing_2_patterns(contour_inner, contour_cand, mid_inter, ratio / 10);
+					vector<Point2f> inter_mid = morphing_2_patterns(contour_inner, contour_cand, contour_inner_c, contour_cand_c, mid_inter, ratio / 10);
 					
 					//show the result
 					draw_poly(drawing_pro, contour_inner, Point2f(400, 400));
@@ -491,8 +491,9 @@ namespace Tiling_tiles{
 		prototile_mid->loadPoints(inner_conts[inner_one]);
 
 		vector<Point2f> contour_inner = prototile_mid->contour_sample[num_c]; //选择最少的点进行比较
-		//vector<double> contour_inner_c = prototile_mid->contour_curva[0];
+		vector<double> contour_inner_c = curvature_com(contour_inner);// prototile_mid->contour_curva[0];
 		vector<Point2f> contour_cand = CandP2Contour(tem, num_c);
+		vector<double> contour_cand_c = curvature_com(contour_cand);
 
 		//inner and cand morph into the final pettern	
 		//!!!!!!在下一步中将morph改为分段!!!此时没有考虑中心平移和缩放倍数，因为之前是一一对应进行的变形
@@ -501,7 +502,7 @@ namespace Tiling_tiles{
 		while (num-- != 0)
 		{
 			ratio = ratio + 1;
-			vector<Point2f> inter_mid = morphing_2_patterns(contour_inner, contour_cand, mid_inter, ratio / 10);
+			vector<Point2f> inter_mid = morphing_2_patterns(contour_inner, contour_cand, contour_inner_c, contour_cand_c, mid_inter, ratio / 10);
 			//show the result
 			draw_poly(drawing_pro, contour_inner, Point2f(400, 400));
 			draw_poly(drawing_pro, contour_cand, Point2f(1200, 400));
@@ -855,7 +856,7 @@ namespace Tiling_tiles{
 		prototile_mid->Pro_clear();
 		prototile_mid->loadPoints(inner_c);
 		vector<Point2f> contour_mid = prototile_mid->contour_sample[num_c]; //选择最少的点进行比较
-		vector<double> contour_mid_c = prototile_mid->contour_curva[num_c];
+		vector<double> contour_mid_c = curvature_com(contour_mid);
 
 		int total_num = contour_dataset.size();
 		cout << "total_num:" << total_num << endl;
@@ -916,9 +917,9 @@ namespace Tiling_tiles{
 			prototile_second->Pro_clear();
 			prototile_second->loadPoints(contour_dataset[order_total[t]]);
 			vector<Point2f> contour_second = prototile_second->contour_sample[num_c];
-			vector<double> contour_second_c = prototile_second->contour_curva[num_c];
+			vector<double> contour_second_c = curvature_com(contour_second); //prototile_second->contour_curva[num_c];
 			vector<Point2f> contour_sec_f = prototile_second->contour_sample_flip[num_c];
-			vector<double> contour_sec_c_f = prototile_second->contour_curva_flip[num_c];
+			vector<double> contour_sec_c_f = curvature_com(contour_sec_f); //prototile_second->contour_curva_flip[num_c];
 			//cout << "t: " <<t<< endl;
 			CandPat right_mis = min_mismatch(contour_mid, contour_second, contour_mid_c, contour_second_c, order_total[t], false);
 			CandPat flip_mis = min_mismatch(contour_mid, contour_sec_f, contour_mid_c, contour_sec_c_f, order_total[t], true);
@@ -982,7 +983,7 @@ namespace Tiling_tiles{
 		}
 		//对cand进行360度的旋转
 		int total_num = inner.size() < cand.size() ? inner.size() : cand.size();
-		int each_num = 101;
+		int each_num = 201;
 		vector<Point2f> cand_tem;
 		Mat rot_mat(2, 3, CV_32FC1);
 		vector<Point2f> test1;
@@ -1335,7 +1336,7 @@ namespace Tiling_tiles{
 		return mid_in;
 	}
 
-	vector<Point2f> Tiling_opt::morphing_2_patterns(vector<Point2f> contour1, vector<Point2f> contour2, vector<int> mid_inter, float shape_ratio)
+	vector<Point2f> Tiling_opt::morphing_2_patterns(vector<Point2f> &contour1, vector<Point2f> &contour2, vector<double> &concur1, vector<double> &concur2, vector<int> mid_inter, float shape_ratio)
 	{
 		//传统morphing是由start和end求得一系列intermediate状态，这里是通过c1和c2获得最终的变形结果
 
@@ -1372,6 +1373,20 @@ namespace Tiling_tiles{
 		for (int i = 0; i < contour2.size(); i++)
 		{
 			contour2[i] = contour2[i] + shift2;
+		}
+
+		vector<pair<int, int>> dppath;
+		double accumu_mis = quadr_mismatch(contour1, contour2, concur1, concur2, dppath);
+		vector<double> concur11 = recover_consin(concur1);
+		vector<double> concur22 = recover_consin(concur2);
+		int psize = dppath.size();
+		for (int i = 0; i < psize; i++)
+		{
+			int first = dppath[i].first;
+			int sec = dppath[i].second; 
+			double ratios = (concur11[first] + 2) / ((concur11[first] + 2) + (concur22[sec] + 2));
+			Point2f fin = ratios * contour1[first] + (1.0 - ratios) * contour2[sec];
+			final_pettern.push_back(fin);
 		}
 
 		////vector<int> mid_in = joint_relocate(contour1, mid_inter, 1);
@@ -1476,11 +1491,6 @@ namespace Tiling_tiles{
 		//src1_points.push_back(cont1[qmpath[qmpath.size() - 1].first]);
 		//src2_points.push_back(cont2[qmpath[qmpath.size() - 1].second]);
 
-
-
-
-
-
 		//Mat ta = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 		//Mat tt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 		//Mat ttt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
@@ -1515,7 +1525,9 @@ namespace Tiling_tiles{
 		//imshow("???:",tt);
 		//imshow("????:", ttt);
 
-		MorphPoints(contour1, contour2, final_pettern, shape_ratio);
+		//MorphPoints(contour1, contour2, final_pettern, shape_ratio);
+
+
 		//MorphPoints(src1_points, src2_points, final_pettern, shape_ratio);
 		//cout << "contour1: "<<contour1.size() << "  contour2: " << contour2.size() << "  final_pettern: " << final_pettern.size() << endl;
 

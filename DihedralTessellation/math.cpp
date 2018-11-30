@@ -308,7 +308,7 @@ namespace Tiling_tiles{
 		}
 		else 
 		{
-			double factor = cur1 + cur2 + 2;
+			double factor = cur1 + cur2 + 2;//
 			if (factor > 2.45) factor = 2.45;
 			mis = factor*factor*zeta;
 		}		
@@ -435,7 +435,7 @@ namespace Tiling_tiles{
 		return eachOfcurvature;
 	}
 
-	vector<double> curvature_com(vector<Point2f> &contour_sam)
+	vector<double> curvature_com(const vector<Point2f> &contour_sam)
 	{
 		vector<double> eachOfcurvature;
 		int c_s = contour_sam.size();
@@ -453,7 +453,7 @@ namespace Tiling_tiles{
 		return eachOfcurvature;
 	}
 
-	vector<double> recover_consin(vector<double> &former)
+	vector<double> recover_consin(const vector<double> &former)
 	{
 		vector<double> real_cos;
 		int size_f = former.size();
