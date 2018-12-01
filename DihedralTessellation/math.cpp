@@ -299,18 +299,18 @@ namespace Tiling_tiles{
 		return unit_vec(v0).x*unit_vec(v1).y - unit_vec(v0).y*unit_vec(v1).x;
 	}
 
-	double cur_length_two_p(double cur1, double cur2, double zeta)
+	double cur_length_two_p(double cur1, double cur2)
 	{
 		double mis = 0;
 		if ((cur1 < 0 && cur2 < 0) || (cur1>0 && cur2>0))
 		{
-			mis = (cur1 - cur2)*(cur1 - cur2)*zeta;
+			mis = (cur1 - cur2)*(cur1 - cur2);
 		}
 		else 
 		{
 			double factor = cur1 + cur2 + 2;//
 			if (factor > 2.45) factor = 2.45;
-			mis = factor*factor*zeta;
+			mis = factor*factor;
 		}		
 		return mis;
 	}
@@ -1230,7 +1230,6 @@ namespace Tiling_tiles{
 		}
 	}
 
-	
 
 	string int2string(int number)
 	{
@@ -1267,7 +1266,7 @@ namespace Tiling_tiles{
 		return ch;
 	}
 
-	vector<Point2f> sampling(vector<Point2f> contour_, int points_num)
+	vector<Point2f> sampling(vector<Point2f> &contour_, int points_num)
 	{
 		double length = contour_length(contour_);
 		int sam_num = points_num * 100;

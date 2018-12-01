@@ -497,7 +497,7 @@ namespace Tiling_tiles{
 
 		//inner and cand morph into the final pettern	
 		//!!!!!!在下一步中将morph改为分段!!!此时没有考虑中心平移和缩放倍数，因为之前是一一对应进行的变形
-		int num = 5;
+		int num = 1;
 		float ratio = 2;
 		while (num-- != 0)
 		{
@@ -1072,7 +1072,7 @@ namespace Tiling_tiles{
 
 	}
 
-	double Tiling_opt::quadr_mismatch(vector<Point2f> first_arr, vector<Point2f> second_arr, vector<double> first_c, vector<double> second_c, vector<pair<int, int>>& path) //每次只能比较100个点以内
+	double Tiling_opt::quadr_mismatch(vector<Point2f> first_arr, vector<Point2f> second_arr, vector<double> first_c, vector<double> second_c, vector<pair<int, int>>& path, double zeta) //每次只能比较100个点以内
 	{
 		//ofstream out("D:\\VisualStudioProjects\\manual_record\\dtw.txt");
 		int first_num = first_arr.size();
@@ -1113,7 +1113,7 @@ namespace Tiling_tiles{
 		{
 			for (int j = 0; j < second_num; j++)
 			{
-				dis_cur[i][j] = cur_length_two_p(first_c[i], second_c[j], 1);
+				dis_cur[i][j] = cur_length_two_p(first_c[i], second_c[j]);
 
 				//cout << "dis_cur[i][j]: " << dis_cur[i][j] << endl;
 				if (dis_cur[i][j]>max_dis_cur)
@@ -1132,7 +1132,7 @@ namespace Tiling_tiles{
 		{
 			for (int j = 0; j < second_num; j++)
 			{
-				dis_cur[i][j] = dis_cur[i][j] / max_dis_cur;
+				dis_cur[i][j] = zeta * dis_cur[i][j] / max_dis_cur;
 				//cout << "dis_cur[i][j]: " << dis_cur[i][j] << endl;
 			}
 		}
@@ -1336,11 +1336,106 @@ namespace Tiling_tiles{
 		return mid_in;
 	}
 
-	vector<Point2f> Tiling_opt::morphing_2_patterns(vector<Point2f> &contour1, vector<Point2f> &contour2, vector<double> &concur1, vector<double> &concur2, vector<int> mid_inter, float shape_ratio)
+	vector<Point2f> Tiling_opt::morphing_patterns_iter(vector<Point2f> contour1, vector<Point2f> contour2, vector<double> concur1, vector<double> concur2, float shape_ratio)//, vector<int> mid_inter, float shape_ratio)
+	{
+		vector<Point2f> final_pettern;
+		cout << contour1.size() << "   " << contour2.size() << endl;
+		double scale = arcLength(contour1, true) / arcLength(contour2, true);
+		//cout << "scale: " << scale << endl;
+		for (int i = 0; i < contour2.size(); i++)
+		{
+			contour2[i] = contour2[i] * scale;
+		}
+		Point2f cen1 = center_p(contour1);
+		Point2f cen2 = center_p(contour2);
+		Point2f shift2 = cen1 - cen2;
+		for (int i = 0; i < contour2.size(); i++)
+		{
+			contour2[i] = contour2[i] + shift2;
+		}
+
+		int count = 100;
+		while (count > 5)
+		{
+			count = 0;
+			vector<pair<int, int>> dppath;
+			double accumu_mis = quadr_mismatch(contour1, contour2, concur1, concur2, dppath, 10);
+			vector<double> concur11 = recover_consin(concur1);
+			vector<double> concur22 = recover_consin(concur2);
+			int psize = dppath.size();
+			int first = -1;
+			int sec = -1;
+			for (int i = 0; i < psize; i++)
+			{
+				if (first == dppath[i].first || sec == dppath[i].second) continue;
+				else{
+					first = dppath[i].first;
+					sec = dppath[i].second;
+					double ratios = (concur11[first] + 2) / ((concur11[first] + 2) + (concur22[sec] + 2));
+
+					if (length_two_point2f(contour2[sec], contour1[first])> 0.2)
+					{
+						count++;
+						Point2f vec = contour2[sec] - contour1[first];
+						contour1[first] += shape_ratio * (1 - ratios)*vec;
+						contour2[sec] += shape_ratio * ratios * (-vec);
+					}
+				}
+				//Point2f fin = ratios * contour1[first] + (1.0 - ratios) * contour2[sec];
+				//final_pettern.push_back(fin);
+			}
+			concur1 = curvature_com(contour1);
+			concur2 = curvature_com(contour2);
+		}
+
+		Mat ta = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		Mat tt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		Mat ttt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		for (int t = 0; t < contour1.size(); t++)
+		{
+			circle(tt, contour1[t], 3, Scalar(255, 0, 0), -1);
+			circle(ttt, contour1[t], 3, Scalar(255, 0, 0), -1);
+			circle(ta, contour1[t], 3, Scalar(255, 0, 0), -1);
+		}
+		for (int t = 0; t < contour2.size(); t++)
+		{
+			circle(tt, contour2[t], 3, Scalar(0, 255, 0), -1);
+			circle(ttt, contour2[t], 3, Scalar(0, 255, 0), -1);
+			circle(ta, contour2[t], 3, Scalar(0, 255, 0), -1);
+		}
+		cout << contour1.size() << "   " << contour2.size() << endl;
+		//for (int t = 0; t < psize; t++)
+		//{
+		//	//circle(ttt, src1_points[t], 4, Scalar(255, 120, 120), -1);
+		//	circle(ta, final_pettern[t], 3, Scalar(255, 120, 120), -1);
+		//	//circle(ttt, src2_points[t], 4, Scalar(120, 200, 120), -1);
+		//	//circle(tt, src2_points[t], 6, Scalar(120, 200, 120), -1);
+		//	//MyLine(ttt, src1_points[t], src2_points[t], "grey");
+		//	MyLine(tt, contour1[dppath[t].first], contour2[dppath[t].second], "grey");
+		//}
+		final_pettern = sampling(contour1,2);// sampling(final_pettern, 2);
+		for (int i = 0; i < final_pettern.size(); i++)
+		{
+			circle(ttt, final_pettern[i], 3, Scalar(0, 0, 255), -1);
+		}
+		//for (int i = 0; i < qmpath.size(); i++)
+		//{
+		//	cout << qmpath[i].first << "   " << qmpath[i].second << endl;
+		//	MyLine(ta, cont1[qmpath[i].first], cont2[qmpath[i].second], "grey");
+		//	//MyLine(tt, cont1[qmpath[i].first], cont2[qmpath[i].second], "grey");
+		//}
+		imshow("??:", ta);
+		imshow("???:", tt);
+		imshow("????:", ttt);
+		return final_pettern;
+	}
+	
+	vector<Point2f> Tiling_opt::morphing_2_patterns(vector<Point2f> &contour1, vector<Point2f> &contour2, vector<double> &concur1, vector<double> &concur2, vector<int> &mid_inter, float shape_ratio)
 	{
 		//传统morphing是由start和end求得一系列intermediate状态，这里是通过c1和c2获得最终的变形结果
 
 		vector<Point2f> final_pettern;
+		vector<int> mid_inter_new;
 		/*int difference = contour1.size() - contour2.size();
 		difference = abs(difference);
 		if (difference != 0)
@@ -1376,19 +1471,71 @@ namespace Tiling_tiles{
 		}
 
 		vector<pair<int, int>> dppath;
-		double accumu_mis = quadr_mismatch(contour1, contour2, concur1, concur2, dppath);
+
+		double accumu_mis = quadr_mismatch(contour1, contour2, concur1, concur2, dppath,10);
 		vector<double> concur11 = recover_consin(concur1);
 		vector<double> concur22 = recover_consin(concur2);
+		/*for (int i = 0; i < mid_inter.size(); i++)
+		{
+			concur11[mid_inter[i]] += 10;
+		}*/
 		int psize = dppath.size();
 		for (int i = 0; i < psize; i++)
 		{
+			int t = 0;
 			int first = dppath[i].first;
 			int sec = dppath[i].second; 
 			double ratios = (concur11[first] + 2) / ((concur11[first] + 2) + (concur22[sec] + 2));
 			Point2f fin = ratios * contour1[first] + (1.0 - ratios) * contour2[sec];
 			final_pettern.push_back(fin);
+			if (t<4 && first == mid_inter[t])
+			{
+				t++;
+				mid_inter_new.push_back(i);
+			}
 		}
 
+		Mat ta = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		Mat tt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		Mat ttt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		for (int t = 0; t < contour1.size(); t++)
+		{
+			circle(tt, contour1[t], 3, Scalar(255, 0, 0), -1);
+			circle(ttt, contour1[t], 3, Scalar(255, 0, 0), -1);
+			circle(ta, contour1[t], 3, Scalar(255, 0, 0), -1);
+		}
+		for (int t = 0; t < contour2.size(); t++)
+		{
+			circle(tt, contour2[t], 3, Scalar(0, 255, 0), -1);
+			circle(ttt, contour2[t], 3, Scalar(0, 255, 0), -1);
+			circle(ta, contour2[t], 3, Scalar(0, 255, 0), -1);
+		}
+		cout << contour1.size() << "   " << contour2.size() << endl;
+		for (int t = 0; t < psize; t++)
+		{
+			//circle(ttt, src1_points[t], 4, Scalar(255, 120, 120), -1);
+			circle(ta, final_pettern[t], 3, Scalar(255, 120, 120), -1);
+			//circle(ttt, src2_points[t], 4, Scalar(120, 200, 120), -1);
+			//circle(tt, src2_points[t], 6, Scalar(120, 200, 120), -1);
+			//MyLine(ttt, src1_points[t], src2_points[t], "grey");
+			MyLine(tt, contour1[dppath[t].first], contour2[dppath[t].second], "grey");
+		}
+		mid_inter_new = joint_relocate(final_pettern, mid_inter_new,1);
+		mid_inter = mid_inter_new;
+		final_pettern = sampling(final_pettern,2);
+		for (int i = 0; i < final_pettern.size(); i++)
+		{
+			circle(ttt, final_pettern[i], 3, Scalar(0, 0, 255), -1);
+		}
+		//for (int i = 0; i < qmpath.size(); i++)
+		//{
+		//	cout << qmpath[i].first << "   " << qmpath[i].second << endl;
+		//	MyLine(ta, cont1[qmpath[i].first], cont2[qmpath[i].second], "grey");
+		//	//MyLine(tt, cont1[qmpath[i].first], cont2[qmpath[i].second], "grey");
+		//}
+		imshow("??:", ta);
+		imshow("???:",tt);
+		imshow("????:", ttt);
 		////vector<int> mid_in = joint_relocate(contour1, mid_inter, 1);
 		//vector<Point2f> cont1 = sampling(contour1, 1);
 		//vector<Point2f> cont2 = sampling(contour2, 1);
@@ -1491,39 +1638,7 @@ namespace Tiling_tiles{
 		//src1_points.push_back(cont1[qmpath[qmpath.size() - 1].first]);
 		//src2_points.push_back(cont2[qmpath[qmpath.size() - 1].second]);
 
-		//Mat ta = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		//Mat tt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		//Mat ttt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		//for (int t = 0; t < cont1.size(); t++)
-		//{
-		//	circle(tt, cont1[t],4,Scalar(255,0,0),-1);
-		//	circle(ta, cont1[t], 4, Scalar(255, 0, 0), -1);
-		//}
-		//for (int t = 0; t < cont2.size(); t++)
-		//{
-		//	circle(tt, cont2[t], 4, Scalar(0, 255, 0), -1);
-		//	circle(ta, cont2[t], 4, Scalar(0, 255, 0), -1);
-		//}
-		//cout << src1_points.size() << "   " << src2_points.size() << endl;
-		//for (int t = 0; t < src1_points.size(); t++)
-		//{
-		//	circle(ttt, src1_points[t], 4, Scalar(255, 120, 120), -1);
-		//	circle(tt, src1_points[t], 6, Scalar(255, 120, 120), -1);
-		//	circle(ttt, src2_points[t], 4, Scalar(120, 200, 120), -1);
-		//	circle(tt, src2_points[t], 6, Scalar(120, 200, 120), -1);
-		//	MyLine(ttt, src1_points[t], src2_points[t], "grey");
-		//	MyLine(tt, src1_points[t], src2_points[t], "grey");
-		//}
-		//
-		//for (int i = 0; i < qmpath.size(); i++)
-		//{
-		//	cout << qmpath[i].first << "   " << qmpath[i].second << endl;
-		//	MyLine(ta, cont1[qmpath[i].first], cont2[qmpath[i].second], "grey");
-		//	//MyLine(tt, cont1[qmpath[i].first], cont2[qmpath[i].second], "grey");
-		//}
-		//imshow("??:", ta);
-		//imshow("???:",tt);
-		//imshow("????:", ttt);
+		
 
 		//MorphPoints(contour1, contour2, final_pettern, shape_ratio);
 

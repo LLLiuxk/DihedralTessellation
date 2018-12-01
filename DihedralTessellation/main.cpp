@@ -17,7 +17,7 @@ int main(int argc, char** argv)
 	Tiling_tiles::Prototile *prototile_third;
 	prototile_third = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
-	int f = 0;
+	int f = 4;
 	if (f == 0) //ÒÑÓÐdataset
 	{
 		//prototile_first->partition_points("22");
@@ -76,11 +76,12 @@ int main(int argc, char** argv)
 		vector<Point2f> inter_;
 		vector<int> mid_inter;
 		mid_inter.push_back(0);
-		mid_inter.push_back(50);
-		mid_inter.push_back(100);
-		mid_inter.push_back(150);
+		mid_inter.push_back(60);
+		mid_inter.push_back(120);
+		mid_inter.push_back(175);
 
 		inter_ = tiling_opt->morphing_2_patterns(contour_inner, contour_cand, coninner_cur, concand_cur, mid_inter, 0.5);
+		//inter_ = tiling_opt->morphing_patterns_iter(contour_inner, contour_cand, coninner_cur, concand_cur, 0.25);
 		cout <<"inter_: "<< inter_.size() << endl;
 		//MorphPoints(contour_inner, contour_cand, inter_, 0.5);
 		Mat tt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));

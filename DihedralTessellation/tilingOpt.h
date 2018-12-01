@@ -106,7 +106,7 @@ namespace Tiling_tiles{
 		//shapes comparing and candidate contour choosing
 		vector<CandPat> compare_shapes(vector<Point2f> inner_c, int num_c);
 		CandPat min_mismatch(vector<Point2f> inner, vector<Point2f> cand, vector<double> inner_c, vector<double> cand_c, int theone, bool isFilp);
-		double quadr_mismatch(vector<Point2f> first_arr, vector<Point2f> second_arr, vector<double> first_c, vector<double> second_c, vector<pair<int, int>>& path);
+		double quadr_mismatch(vector<Point2f> first_arr, vector<Point2f> second_arr, vector<double> first_c, vector<double> second_c, vector<pair<int, int>>& path, double zeta=1.0);//zeta 是曲率值权重与距离值权重的倍数
 		vector<int> search_align_p(Point2f cent, Point2f end, vector<Point2f> cand_temp);
 
 		//from CandPat to contour
@@ -115,7 +115,11 @@ namespace Tiling_tiles{
 		vector<int> joint_relocate(vector<Point2f> contour_, vector<int> joint_index, int num_c);
 		
 		//morphing
-		vector<Point2f> morphing_2_patterns(vector<Point2f> &contour1, vector<Point2f> &contour2, vector<double> &concur1, vector<double> &concur2, vector<int> mid_inter, float shape_ratio);
+		//提高cos值权重+重采样
+		vector<Point2f> morphing_2_patterns(vector<Point2f> &contour1, vector<Point2f> &contour2, vector<double> &concur1, vector<double> &concur2, vector<int> &mid_inter, float shape_ratio);
+		//迭代morph
+		vector<Point2f> morphing_patterns_iter(vector<Point2f> contour1, vector<Point2f> contour2, vector<double> concur1, vector<double> concur2, float shape_ratio);//, vector<int> mid_inter, float shape_ratio);
+
 		double evalua_deformation(vector<vector<Point2f>> contour, vector<vector<double>> curvature);
 		
 		//simulation
@@ -177,9 +181,9 @@ namespace Tiling_tiles{
 	//double area_p_pixel(vector<Point2f> &cont);
 
 	int cur_char_length(char a, char b);
-	double cur_length_two_p(double cur1, double cur2, double zeta);
+	double cur_length_two_p(double cur1, double cur2);
 	void sort_comb(vector<double> vect, vector<int> &index_num);
-	vector<Point2f> sampling(vector<Point2f> contour_, int points_num);
+	vector<Point2f> sampling(vector<Point2f> &contour_, int points_num);
 	vector<double> curvature_com_k(vector<Point2f> &contour_sam);
 	vector<double> curvature_com(const vector<Point2f> &contour_sam); //记录cos值
 	vector<int> most_convex_p(vector<Point2f> contour_, vector<double> cont_c, int max_cur_num);
@@ -221,6 +225,7 @@ namespace Tiling_tiles{
 
 	// Morph points
 	void MorphPoints(const std::vector<cv::Point2f>& srcPts1, const std::vector<cv::Point2f>& srcPts2, std::vector<cv::Point2f>& dstPts, float s);
+	//void merge_close_p(vector<Point2f> &contour_);
 	
 	//skeleton
 	Mat thinImage(const Mat & src, const int maxIterations);
