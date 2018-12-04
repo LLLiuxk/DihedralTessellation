@@ -51,7 +51,8 @@ namespace Tiling_tiles{
 		
 		void getpath();
 		void loadTileData(string tile_data);
-		void contour_sam_cur();		
+		void contour_sam_cur();	
+
 		vector<int> convex_p(int max_cur_num);                 //求轮廓上值最大的10个不临近的凸点
 		vector<int> partition_points(string imaname);  //求得用做划分的点
 
@@ -187,6 +188,7 @@ namespace Tiling_tiles{
 	vector<double> curvature_com_k(vector<Point2f> &contour_sam);
 	vector<double> curvature_com(const vector<Point2f> &contour_sam); //记录cos值
 	vector<int> most_convex_p(vector<Point2f> contour_, vector<double> cont_c, int max_cur_num);
+	vector<int> feature_points(vector<Point2f> contour_, double dmin, double dmax, double angle_cos);//amax 165; dmin 0.015Ls
 	vector<Point2f> extract_contour(vector<Point2f> contour_, vector<int> mark_p, vector<int> &midmark_p);
 	//translate tool
 	string int2string(int number);
@@ -197,6 +199,7 @@ namespace Tiling_tiles{
 
 	//vector and cosin/ sin
 	Point2f unit_vec(Point2f vec);
+	double cos_3edges(double l1,double l2,double l3);
 	double cos_two_vector(Point2f &v0, Point2f &v1);
 	double sin_2vector_convexc(Point2f &v0, Point2f &v1);
 	vector<double> recover_consin(const vector<double> &former);

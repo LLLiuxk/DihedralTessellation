@@ -17,29 +17,43 @@ int main(int argc, char** argv)
 	Tiling_tiles::Prototile *prototile_third;
 	prototile_third = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
-	int f = 4;
+	int f = 0;
 	if (f == 0) //ÒÑÓÐdataset
 	{
-		//prototile_first->partition_points("22");
-
-	/*	prototile_first->contour = prototile_first->readTxt();
-		prototile_first->contour_sam_cur();
-		vector<Point2f> a = prototile_first->contour_sample[0];
-		vector<double> d = prototile_first->contour_curva[0];
-		vector<Point2f> b;
-		vector<double> dd;
-		Mat drawing4 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-
+		/*int iii[20] = {384,432,439,474,496,511,524,606,621,654,652,670};
+		for (int i = 0; i < 12;i++)
+			tiling_opt->points_dividing(int2string(iii[i]));
+		*/
 		
-		for (int i = 0; i < 50; i++)
+
+		//prototile_first->partition_points("685");
+
+		prototile_first->loadTileData("19");
+		vector<Point2f> a = prototile_first->contour_sample[1];
+		vector<double> b = curvature_com(a);
+		cout << a.size() << endl;
+		vector<int> c = most_convex_p(a, b, 20);
+		vector<int> d = feature_points(a, 0.015, 0.03, -0.866025);
+		//cout << d.size() << endl;
+		//vector<Point2f> b;
+		Mat drawing3 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		Mat drawing4 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		
+		for (int i = 0; i < a.size(); i++)
 		{
-			b.push_back(a[i]);
-			dd.push_back(d[i]);
-			if (d[i] > 0) cout << d[i] << "   " << a[(i+49)%50]<<" "<<a[i]<<" "<<a[(i+1)%50] << endl;
-			circle(drawing4, a[i], 1, Scalar(0, 0, 0), -1);
+			circle(drawing3, a[i], 2, Scalar(0, 0, 0), -1);
+			circle(drawing4, a[i], 2, Scalar(0, 0, 0), -1);
 		}
-		imshow("??", drawing4);*/
-		//most_convex_p(b,dd,10);
+		for (int j = 0; j < d.size(); j++)
+		{
+			circle(drawing3, a[d[j]], 4, Scalar(0, 255, 0), -1);
+		}
+		for (int j = 0; j < c.size(); j++)
+		{
+			circle(drawing4, a[c[j]], 4, Scalar(0, 255, 0), -1);
+		}
+		imshow("fea", drawing3);
+		imshow("most", drawing4);
 		/*vector<Point2f> a;
 		a.push_back(Point2f(10,10));
 		a.push_back(Point2f(30,10));
@@ -61,45 +75,45 @@ int main(int argc, char** argv)
 		
 		//test morphing
 		//--------------------
-		tiling_opt->load_dataset();
-		prototile_first->loadTileData("test1");
-		//imgtocout();
-		vector<Point2f> contour_inner = prototile_first->contour_sample[1];
-		vector<double> coninner_cur = curvature_com(contour_inner); //prototile_first->contour_curva[1];
-		vector<CandPat> candida_contours;
-		candida_contours = tiling_opt->compare_shapes(prototile_first->contour, 1);
-		CandPat tem = candida_contours[0];
-		//prototile_second->Pro_clear();
-		//prototile_second->loadPoints(tiling_opt->contour_dataset[tem.number]);
-		vector<Point2f> contour_cand = tiling_opt->CandP2Contour(tem, 1);
-		vector<double> concand_cur = curvature_com(contour_cand);
-		vector<Point2f> inter_;
-		vector<int> mid_inter;
-		mid_inter.push_back(0);
-		mid_inter.push_back(60);
-		mid_inter.push_back(120);
-		mid_inter.push_back(175);
+		//tiling_opt->load_dataset();
+		//prototile_first->loadTileData("test1");
+		////imgtocout();
+		//vector<Point2f> contour_inner = prototile_first->contour_sample[1];
+		//vector<double> coninner_cur = curvature_com(contour_inner); //prototile_first->contour_curva[1];
+		//vector<CandPat> candida_contours;
+		//candida_contours = tiling_opt->compare_shapes(prototile_first->contour, 1);
+		//CandPat tem = candida_contours[0];
+		////prototile_second->Pro_clear();
+		////prototile_second->loadPoints(tiling_opt->contour_dataset[tem.number]);
+		//vector<Point2f> contour_cand = tiling_opt->CandP2Contour(tem, 1);
+		//vector<double> concand_cur = curvature_com(contour_cand);
+		//vector<Point2f> inter_;
+		//vector<int> mid_inter;
+		//mid_inter.push_back(0);
+		//mid_inter.push_back(60);
+		//mid_inter.push_back(120);
+		//mid_inter.push_back(175);
 
-		inter_ = tiling_opt->morphing_2_patterns(contour_inner, contour_cand, coninner_cur, concand_cur, mid_inter, 0.5);
-		//inter_ = tiling_opt->morphing_patterns_iter(contour_inner, contour_cand, coninner_cur, concand_cur, 0.25);
-		cout <<"inter_: "<< inter_.size() << endl;
-		//MorphPoints(contour_inner, contour_cand, inter_, 0.5);
-		Mat tt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-	    Mat ttt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		Mat drawing_pro1 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		//Mat drawing_dst = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		//Mat drawing_ = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-	    draw_poly(ttt, inter_, Point2f(400, 400));
-		draw_poly(drawing_pro1, contour_cand, Point2f(400, 400));
-		draw_poly(tt, contour_inner, Point2f(400, 400));//draw_polygen("hhhh", prototile_first->contour);
-		for (int i = 0; i < 4; i++)
-		{
-			circle(tt, contour_inner[mid_inter[i]], 5, Scalar(255, 0, 0), -1);
-		}
-		//
-		imshow("only point", ttt);
-	    imshow("aaab", tt);
-		imshow("aaa", drawing_pro1);
+		//inter_ = tiling_opt->morphing_2_patterns(contour_inner, contour_cand, coninner_cur, concand_cur, mid_inter, 0.5);
+		////inter_ = tiling_opt->morphing_patterns_iter(contour_inner, contour_cand, coninner_cur, concand_cur, 0.25);
+		//cout <<"inter_: "<< inter_.size() << endl;
+		////MorphPoints(contour_inner, contour_cand, inter_, 0.5);
+		//Mat tt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+	 //   Mat ttt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		//Mat drawing_pro1 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		////Mat drawing_dst = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		////Mat drawing_ = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+	 //   draw_poly(ttt, inter_, Point2f(400, 400));
+		//draw_poly(drawing_pro1, contour_cand, Point2f(400, 400));
+		//draw_poly(tt, contour_inner, Point2f(400, 400));//draw_polygen("hhhh", prototile_first->contour);
+		//for (int i = 0; i < 4; i++)
+		//{
+		//	circle(tt, contour_inner[mid_inter[i]], 5, Scalar(255, 0, 0), -1);
+		//}
+		////
+		//imshow("only point", ttt);
+	 //   imshow("aaab", tt);
+		//imshow("aaa", drawing_pro1);
 
 
 		//vector<Point2f> inter_mid;
@@ -344,8 +358,9 @@ int main(int argc, char** argv)
 
         //--------------------------------
         //²âÊÔcompare_shapesº¯Êý
+
 		//tiling_opt->load_dataset();
-		//prototile_first->contourname = "test";
+		//prototile_first->contourname = "643";
 		//prototile_first->contour = prototile_first->readTxt();
 		////cout << prototile_first->contour[5] << endl;
 		//
@@ -354,7 +369,7 @@ int main(int argc, char** argv)
 		//Mat tt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));;
 		//draw_poly(tt, prototile_first->contour, Point2f(400, 400));//draw_polygen("hhhh", prototile_first->contour);
 		//imshow("aaa", tt); 
-		//candida_contours = tiling_opt->compare_shapes(prototile_first->contour, 2);*/
+		//candida_contours = tiling_opt->compare_shapes(prototile_first->contour, 2);
         ////-------------------------------------------
 
 
@@ -434,7 +449,7 @@ int main(int argc, char** argv)
 		//int iii[] = {660,680,678,685};// {610, 614, 618, 636, 637, 638};
 		//int t =  54;
 		//int i = 308;
-		for (int i = 686; i < 687; i++)
+		for (int i = 643; i < 644; i++)
 		{
 			//string image = int2string(iii[i]);
 			string image = int2string(i);
@@ -503,10 +518,10 @@ int main(int argc, char** argv)
 	}
 	else if (f == 4)  //simulation of one tiling
 	{
-		//for (int i = 40; i < 60; i++)
+		//for (int i = 0; i < 60; i++)
 		{
 			tiling_opt->Tiling_clear();
-			vector<Point2f> sim_mid = tiling_opt->simulation_mid("685", 47, 0);
+			vector<Point2f> sim_mid = tiling_opt->simulation_mid("384", 20, 0);
 		}
 
 		//test compute area

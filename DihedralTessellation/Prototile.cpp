@@ -120,7 +120,7 @@ namespace Tiling_tiles{
 		cout << "contours num:" << contours.size() << endl;
 		
 		
-		/*Mat drwa = Mat::zeros(800, 800, CV_8UC3);
+		Mat drwa = Mat::zeros(800, 800, CV_8UC3);
 		int i = 0;
 		for (; i < contours[0].size() / 4; i++)
 		{
@@ -134,7 +134,7 @@ namespace Tiling_tiles{
 		{
 			circle(drwa, contours[0][i], 1, Scalar(0, 0, 255), -1);
 		}
-		imshow("contour" + tile_image, drwa);*/
+		imshow("contour" + tile_image, drwa);
 
 		//output two 
 		//namedWindow("contour one", WINDOW_AUTOSIZE);

@@ -126,16 +126,16 @@ namespace Tiling_tiles{
 						//	<< "   n: " << p_p_index[n] << endl;	
 						////one_situ_div(result_index, contour_, inner_contour);					
 						//string image = int2string(count);
-						string conut_name = rootname + "\\placement " + int2string(count);
+						/*string conut_name = rootname + "\\placement " + int2string(count);
 						na = conut_name.c_str();
-						mkdir(na);
+						mkdir(na);*/
 						Mat drawing1 = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
 						if (!one_situ_div(result_index, contour_, inner_contour, mid_interval, drawing1))
 						{
 							//cout << "-------------collision-------------" << endl;
 							continue;
 						}
-
+						count++;
 						//show the marked points
 						Point2f shift2 = Point2f(400, 400) - center_p(contour_);
 						for (int j = 0; j < contour_.size(); j++)
@@ -153,10 +153,10 @@ namespace Tiling_tiles{
 						circle(drawing1, contour_[result_index[2]] + shift2, 8, Scalar(0, 255, 0), -1);
 						circle(drawing1, contour_[result_index[3]] + shift2, 8, Scalar(0, 255, 0), -1);
 						//imshow("result_mid", drawing1);
-						string filename = conut_name + "\\0PlacingResult.png";
+						string filename = rootname + "\\" + int2string(count-1)+ "PlacingResult.png";
 						imwrite(filename, drawing1);
 
-						count++;
+						
 						cout << endl << count<< " succeed" ;
 						cout << "    inner_contour.size : " << inner_contour.size() << endl;
 
@@ -172,8 +172,8 @@ namespace Tiling_tiles{
 			}
 			//if (count == 2) break;
 		}
-		string conut_name = rootname + "\\placement " + int2string(count);
-		rmdir(conut_name.c_str());
+		//string conut_name = rootname + "\\placement " + int2string(count);
+		//rmdir(conut_name.c_str());
 		cout << "succeed count: " << count << endl;
 		// search the right image
 		/*
@@ -189,7 +189,7 @@ namespace Tiling_tiles{
 
 		for (int i = 0; i < inner_conts.size(); i++) //inner_conts.size()
 		{
-			cout << "count: " << i<<"/"<<count << endl;
+			cout << "count: " << i<<"/"<<count-1 << endl;
 			int num_c = 1;//选择(num_c+1)*100个点
 			vector<CandPat> candida_contours;
 
@@ -206,7 +206,7 @@ namespace Tiling_tiles{
 
 			candida_contours = compare_shapes(inner_conts[i], num_c);
 			//cout << "candida_contours" << candida_contours.size()<< endl;
-			string conut_name = rootname + "\\placement " + int2string(i);
+			//string conut_name = rootname + "\\placement " + int2string(i);
 			vector<int> mid_inter = joint_relocate(inner_conts[i], mid_interval_index[i], num_c);
 			for (int j = 0; j <candida_contours.size(); j++) //candida_contours.size()
 			{
@@ -224,12 +224,13 @@ namespace Tiling_tiles{
 				vector<double> contour_cand_c = curvature_com(contour_cand);
 				//inner and cand morph into the final pettern	
 				//!!!!!!在下一步中将morph改为分段!!!此时没有考虑中心平移和缩放倍数，因为之前是一一对应进行的变形
-				int num = 3;
-				float ratio = 3;
+				int num = 1;
+				float ratio = 4;
 				while (num-- != 0)
 				{
+					vector<int> mid_inter_new = mid_inter;
 					ratio = ratio + 1;
-					vector<Point2f> inter_mid = morphing_2_patterns(contour_inner, contour_cand, contour_inner_c, contour_cand_c, mid_inter, ratio / 10);
+					vector<Point2f> inter_mid = morphing_2_patterns(contour_inner, contour_cand, contour_inner_c, contour_cand_c, mid_inter_new, ratio / 10);
 					
 					//show the result
 					draw_poly(drawing_pro, contour_inner, Point2f(400, 400));
@@ -238,8 +239,8 @@ namespace Tiling_tiles{
 					//draw_polygen("cand pattern: ", contour_cand);
 					
 					//将该proto1以及相邻四个proto2展示出来
-					Point2f line1 = inter_mid[mid_inter[2]] - inter_mid[mid_inter[0]];
-					Point2f line2 = inter_mid[mid_inter[3]] - inter_mid[mid_inter[1]];
+					Point2f line1 = inter_mid[mid_inter_new[2]] - inter_mid[mid_inter_new[0]];
+					Point2f line2 = inter_mid[mid_inter_new[3]] - inter_mid[mid_inter_new[1]];
 					Point2f cente = center_p(inter_mid);
 					vector<vector<Point2f>> four_place;
 					vector<Point2f> one_loca;
@@ -266,30 +267,30 @@ namespace Tiling_tiles{
 					vector<int> return_p;// 
 					return_p.push_back(0);
 					vector<Point2f> morphed_B;
-					for (int t = mid_inter[3] - 1; t > mid_inter[2] + 1; t--)
+					for (int t = mid_inter_new[3] - 1; t > mid_inter_new[2] + 1; t--)
 					{
 						total_num++;
 						morphed_B.push_back(four_place[0][t]);
 					}
 					return_p.push_back(total_num);
-					for (int t = mid_inter[0] - 1; t > 0; t--)
+					for (int t = mid_inter_new[0] - 1; t > 0; t--)
 					{
 						total_num++;
 						morphed_B.push_back(four_place[1][t]);
 					}
-					for (int t = four_place[1].size() - 1; t > mid_inter[3] + 1; t--)
+					for (int t = four_place[1].size() - 1; t > mid_inter_new[3] + 1; t--)
 					{
 						total_num++;
 						morphed_B.push_back(four_place[1][t]);
 					}
 					return_p.push_back(total_num);
-					for (int t = mid_inter[1] - 1; t > mid_inter[0] + 1; t--)
+					for (int t = mid_inter_new[1] - 1; t > mid_inter_new[0] + 1; t--)
 					{
 						total_num++;
 						morphed_B.push_back(four_place[3][t]);
 					}
 					return_p.push_back(total_num);
-					for (int t = mid_inter[2] - 1; t > mid_inter[1] + 1; t--)
+					for (int t = mid_inter_new[2] - 1; t > mid_inter_new[1] + 1; t--)
 					{
 						morphed_B.push_back(four_place[2][t]);
 					}
@@ -344,8 +345,8 @@ namespace Tiling_tiles{
 							MyLine(drawing_pro1, four_place[i][j] * 0.4 + shift1, four_place[i][j + 1] * 0.4 + shift1, "green");
 						}
 					}
-					string filename = conut_name + "\\0.";
-					filename = filename+ char(ratio + 48) + "_Candidate_" + int2string(j) + ".png";
+					string filename = rootname + "\\";
+					filename = filename + int2string(i) + "_Candidate_" + int2string(j) + ".png";
 					imwrite(filename, drawing_pro);
 
 					imshow("result_mid_show: ", drawing_pro1);
@@ -517,7 +518,7 @@ namespace Tiling_tiles{
 			Point2f cente = center_p(inter_mid);
 			vector<int> return_p;
 			vector<Point2f> morphed_A = extract_contour(inter_mid, mid_inter, return_p);
-
+			//evalua_deformation();
 			draw_allplane(drawing_mA, morphed_A, return_p,0,0.4);
 
 			string filename = rootname + "\\0.";
@@ -793,17 +794,21 @@ namespace Tiling_tiles{
 		fillPoly(drawing_mid,
 			ppt,
 			npt,
-			1,
+			1,	
 			Scalar(0, 0, 0) //黑色
 			);
 		imshow("coli 1", drawing_mid);
-
+		//cout << "zahuishia " << endl;
+		if (min1.y<0||  max1.y<0 || min1.x<0|| max1.x<0) return true;
+		//cout << "min1.y " << min1.y << "  max1.y " << max1.y << " min1.x " << min1.x << " max1.x" << max1.x<<endl;
 		Mat draw1 = drawing_mid(Range(min1.y, max1.y), Range(min1.x, max1.x));
 		cvtColor(draw1, draw1, COLOR_BGR2GRAY);
 		threshold(draw1, draw1, 128, 1, cv::THRESH_BINARY);
-
+		
 		Point2f min2 = bbox_s[0] + dis_p[2];
 		Point2f max2 = bbox_s[0] + dis_p[3];
+		if (min2.y<0|| max2.y<0 || min2.x<0 || max2.x<0) return true;
+		//cout << "min2.y " << min2.y << "  max2.y " << max2.y << " min2.x " << min2.x << " max2.x" << max2.x<<endl;
 		Mat draw2 = drawing_mid(Range(min2.y, max2.y), Range(min2.x, max2.x));
 		cvtColor(draw2, draw2, COLOR_BGR2GRAY);
 		threshold(draw2, draw2, 128, 1, cv::THRESH_BINARY);
@@ -1480,11 +1485,12 @@ namespace Tiling_tiles{
 			concur11[mid_inter[i]] += 10;
 		}*/
 		int psize = dppath.size();
+		int t = 0;
 		for (int i = 0; i < psize; i++)
 		{
-			int t = 0;
 			int first = dppath[i].first;
 			int sec = dppath[i].second; 
+			//cout << "first: " << first << " sec: " << sec  << endl;
 			double ratios = (concur11[first] + 2) / ((concur11[first] + 2) + (concur22[sec] + 2));
 			Point2f fin = ratios * contour1[first] + (1.0 - ratios) * contour2[sec];
 			final_pettern.push_back(fin);
@@ -1494,7 +1500,7 @@ namespace Tiling_tiles{
 				mid_inter_new.push_back(i);
 			}
 		}
-
+		//cout << "mid_inter_new: " << mid_inter_new.size() << endl;
 		Mat ta = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 		Mat tt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 		Mat ttt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));

@@ -294,6 +294,12 @@ namespace Tiling_tiles{
 		return unit_vec(v0).x*unit_vec(v1).x + unit_vec(v0).y*unit_vec(v1).y;
 	}
 
+	double cos_3edges(double l1, double l2, double l3)
+	{
+		//l1,l2分别为左右两边,l3为对边
+		return (l1 * l1 + l2 * l2 - l3 * l3) / (2 * l1 * l2);
+	}
+
 	double sin_2vector_convexc(Point2f &v0, Point2f &v1)
 	{
 		return unit_vec(v0).x*unit_vec(v1).y - unit_vec(v0).y*unit_vec(v1).x;
@@ -474,9 +480,9 @@ namespace Tiling_tiles{
 		{
 			index_num.push_back(i);
 		}
-		vector<double> cont_c1 = recover_consin(cont_c);
+		vector<double> cont_c1 = recover_consin(cont_c);//确定是否加上凹点
 		//sort_comb(cont_c1, index_num);
-		sort_comb(cont_c, index_num);
+		sort_comb(cont_c1, index_num);
 		//for (int i = 0; i < 50; i++)
 		//	cout << cont_c[i] << endl;
 
@@ -511,6 +517,75 @@ namespace Tiling_tiles{
 		if (cand_points_index.size()<max_cur_num)
 			cout << "cand_points_index: " << cand_points_index.size() <<"  <max_cur_num" <<endl;
 		return cand_points_index;
+	}
+
+	vector<int> feature_points(vector<Point2f> contour_, double dmin, double dmax, double angle_cos)
+	{
+		vector<int> index_num;
+		double angle_back = 2; //顶部对应点的值
+		int contoursize = contour_.size();
+		double arl = arcLength(contour_, true);
+		dmin = dmin*arl;
+		dmax = dmax*arl;
+
+		for (int i = 0; i < contoursize; i++)
+		{
+			int k = 1;
+			double length_l = length_two_point2f(contour_[i], contour_[(i + contoursize - k) % contoursize]);
+			double length_r = length_two_point2f(contour_[i], contour_[(i + k) % contoursize]);
+			while (length_l < dmin || length_r < dmin)
+			{
+				k++;
+				length_l = length_two_point2f(contour_[i], contour_[(i + contoursize - k) % contoursize]);
+				length_r = length_two_point2f(contour_[i], contour_[(i + k) % contoursize]);
+			}
+			//cout << "ok" << endl;
+			double length_op = 0;
+			double angle = 2; 
+			int f = 0;
+			while (length_l < dmax && length_r < dmax)
+			{
+				length_op = length_two_point2f(contour_[(i + contoursize - k) % contoursize], contour_[(i + k) % contoursize]);
+				double angle1 = cos_3edges(length_l, length_r, length_op);
+				if (angle1 < angle_cos)
+				{
+					f == 1;
+					break;
+				}
+				else
+				{
+					if (angle1 < angle) angle = angle1;
+					k++;
+					length_l = length_two_point2f(contour_[i], contour_[(i + contoursize - k) % contoursize]);
+					length_r = length_two_point2f(contour_[i], contour_[(i + k) % contoursize]);
+				}
+			}
+			if (f == 0 && angle != 2)
+			{
+				if (index_num.empty()) 
+				{
+					index_num.push_back(i);
+				}
+				else
+				{
+					if (length_two_point2f(contour_[index_num.back()], contour_[i]) > dmax)
+					{
+						angle_back = angle;
+						index_num.push_back(i);
+					}
+					else 
+					{
+						if (angle > angle_back)
+						{
+							index_num.pop_back();
+							angle_back = angle;
+							index_num.push_back(i);
+						}
+					}	
+				}	
+			}
+		}	
+		return index_num;
 	}
 
 	vector<Point2f> extract_contour(vector<Point2f> contour_, vector<int> mark_p, vector<int> &midmark_p)
