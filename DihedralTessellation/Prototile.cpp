@@ -361,17 +361,49 @@ namespace Tiling_tiles{
 		return cont_s;
 	}
 
+	vector<vector<double>> Prototile::compute_TAR(vector<Point2f> &contour_)
+	{
+		vector<vector<double>> all_tar;
+		int consize = contour_.size();
+		int tar_num = consize / 2 - 1;
+		cout << "consize: " << consize << " tar_num: " << tar_num << endl;
+		vector<double> maxtar(tar_num, 0);
+		for (int i = 0; i < consize; i++)
+		{
+			vector<double> one_p_tar;
+			for (int j = 0; j < tar_num; j++)
+			{
+				Point2f vpsubts_vp = contour_[(i - j - 1 + consize) % consize] - contour_[i];
+				Point2f vpplusts_vp = contour_[(i + j + 1) % consize] - contour_[i];
+				double tar = 0.5 * tar_sin_2vector(vpplusts_vp,vpsubts_vp);
+				//cout << vpsubts_vp << "  " << vpplusts_vp << endl;
+				one_p_tar.push_back(tar);
+				if (abs(tar) > maxtar[j]) maxtar[j] = abs(tar);
+			}
+			all_tar.push_back(one_p_tar);
+		}
+		for (int i = 0; i < consize; i++)
+		{
+			for (int j = 0; j < tar_num; j++)
+			{
+				all_tar[i][j] = all_tar[i][j] / maxtar[j];
+			}
+		}
+		cout << all_tar[0].size() << endl;
+		return all_tar;
+	}
+
 	vector<int> Prototile::convex_p(int max_cur_num)
 	{
 		//排序，找最大的max_cur_num个凹凸点
 		contour.swap(vector<Point2f>());
 		int sam_num = contour_sample.size();	
 		contour = contour_sample[sam_num - 1];
-		cconvex = curvature_com(contour_sample[sam_num - 1]);
+		cconvex = curvature_com(contour);
 		cout << "contour_sample num: " << contour_sample[sam_num - 1].size() << endl;
 		vector<int> cand_points_index;
-		cand_points_index = most_convex_p(contour, cconvex, max_cur_num);
-		
+		//cand_points_index = most_convex_p(contour, cconvex, max_cur_num);
+		cand_points_index = feature_points(contour, 1, 3, cos(PI * 160 / 180));
 		//// show convex points
 		//Mat drawing5 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 

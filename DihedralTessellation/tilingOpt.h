@@ -52,6 +52,7 @@ namespace Tiling_tiles{
 		void getpath();
 		void loadTileData(string tile_data);
 		void contour_sam_cur();	
+		vector<vector<double>> compute_TAR(vector<Point2f> &contour_);
 
 		vector<int> convex_p(int max_cur_num);                 //求轮廓上值最大的10个不临近的凸点
 		vector<int> partition_points(string imaname);  //求得用做划分的点
@@ -107,7 +108,9 @@ namespace Tiling_tiles{
 		//shapes comparing and candidate contour choosing
 		vector<CandPat> compare_shapes(vector<Point2f> inner_c, int num_c);
 		CandPat min_mismatch(vector<Point2f> inner, vector<Point2f> cand, vector<double> inner_c, vector<double> cand_c, int theone, bool isFilp);
-		double quadr_mismatch(vector<Point2f> first_arr, vector<Point2f> second_arr, vector<double> first_c, vector<double> second_c, vector<pair<int, int>>& path, double zeta=1.0);//zeta 是曲率值权重与距离值权重的倍数
+		double quadr_mismatch(vector<Point2f> first_arr, vector<Point2f> second_arr, vector<double> first_c, vector<double> second_c, vector<pair<int, int>>& path, double zeta = 1.0);//zeta 是曲率值权重与距离值权重的倍数
+		double tar_mismatch(vector<vector<double>> first_arr, vector<vector<double>> second_arr, vector<pair<int, int>>& path, int width = 4);//点对应匹配的筛选框宽度
+		void print_TAR_Path(double d[][202], double dp[][202], int i, int j, vector<pair<int, int>>& path);
 		vector<int> search_align_p(Point2f cent, Point2f end, vector<Point2f> cand_temp);
 
 		//from CandPat to contour
@@ -178,6 +181,7 @@ namespace Tiling_tiles{
 	Point2f center_p(vector<Point2f> contour_);
 	double contour_length(vector<Point2f> contour);
 	double length_two_point2f(Point2f &u, Point2f &v);
+	double length_two_point_tar(vector<double> &p1,vector<double> &p2);
 	//double area_poly(vector<Point2f> &cont);
 	//double area_p_pixel(vector<Point2f> &cont);
 
@@ -202,6 +206,7 @@ namespace Tiling_tiles{
 	double cos_3edges(double l1,double l2,double l3);
 	double cos_two_vector(Point2f &v0, Point2f &v1);
 	double sin_2vector_convexc(Point2f &v0, Point2f &v1);
+	double tar_sin_2vector(Point2f &v0, Point2f &v1);
 	vector<double> recover_consin(const vector<double> &former);
 
 	//void sort_bub(vector<int> &target);

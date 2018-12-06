@@ -165,6 +165,24 @@ namespace Tiling_tiles{
 		return sqrt((u.x - v.x)*(u.x - v.x) + (u.y - v.y)*(u.y - v.y));
 	}
 
+	double length_two_point_tar(vector<double> &p1, vector<double> &p2)
+	{
+		int Ts = p1.size();
+		if (Ts != p2.size())
+		{
+			cout << "point number not equal" << endl;
+			return 0;
+		}
+		
+		double result = 0;
+		for (int i = 0; i < Ts; i++)
+		{
+			result += abs(p1[i] - p2[i]);
+		}
+		//cout << "test: "<<result << endl;
+		return result/Ts;
+	}
+
 	//double area_poly(vector<Point2f> &cont)
 	//{
 	//	int csize = cont.size();
@@ -175,7 +193,6 @@ namespace Tiling_tiles{
 	//	return fabs(sum / 2.0);
 	//}
 	
-
 	void sort_comb(vector<double> vect, vector<int> &index_num) //将下标和数值联合排序，只保留下标的排序,从大到小
 	{
 		int i, j;
@@ -303,6 +320,11 @@ namespace Tiling_tiles{
 	double sin_2vector_convexc(Point2f &v0, Point2f &v1)
 	{
 		return unit_vec(v0).x*unit_vec(v1).y - unit_vec(v0).y*unit_vec(v1).x;
+	}
+
+	double tar_sin_2vector(Point2f &v0, Point2f &v1)
+	{
+		return v0.x*v1.y - v0.y*v1.x;
 	}
 
 	double cur_length_two_p(double cur1, double cur2)
@@ -523,10 +545,11 @@ namespace Tiling_tiles{
 	{
 		vector<int> index_num;
 		double angle_back = 2; //顶部对应点的值
+		double angle_start = 2; //起始点对应的值
 		int contoursize = contour_.size();
 		double arl = arcLength(contour_, true);
-		dmin = dmin*arl;
-		dmax = dmax*arl;
+		dmin = dmin * arl / contoursize;
+		dmax = dmax * arl / contoursize;
 
 		for (int i = 0; i < contoursize; i++)
 		{
@@ -564,6 +587,7 @@ namespace Tiling_tiles{
 			{
 				if (index_num.empty()) 
 				{
+					angle_start = angle;
 					index_num.push_back(i);
 				}
 				else
@@ -585,6 +609,14 @@ namespace Tiling_tiles{
 				}	
 			}
 		}	
+		if (length_two_point2f(contour_[index_num.back()], contour_[index_num[0]]) < dmax)
+		{
+			if (angle_back > angle_start)
+			{
+				index_num[0] = index_num.back();
+			}
+			index_num.pop_back();			
+		}
 		return index_num;
 	}
 

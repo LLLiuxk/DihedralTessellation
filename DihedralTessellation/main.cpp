@@ -24,57 +24,89 @@ int main(int argc, char** argv)
 		for (int i = 0; i < 12;i++)
 			tiling_opt->points_dividing(int2string(iii[i]));
 		*/
-		
-
+	
 		//prototile_first->partition_points("685");
+		
+		// ________________feature_points___________________________
 
+		//prototile_first->loadTileData("685");
+		//vector<Point2f> a = prototile_first->contour_sample[prototile_first->contour_sample.size()-1];
+		//vector<double> b = curvature_com(a);
+		//cout << a.size() << endl;
+		//vector<int> c = most_convex_p(a, b, 20);
+		//cout << "most num:  "<<c.size() << endl;
+		//Mat drawing4 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		//for (int i = 0; i < a.size(); i++)
+		//{
+		//	circle(drawing4, a[i], 2, Scalar(0, 0, 0), -1);
+		//}
+		//for (int j = 0; j < c.size(); j++)
+		//{
+		//	circle(drawing4, a[c[j]], 4, Scalar(0, 0, 255), -1);
+		//}
+		//imshow("most", drawing4);
+		//vector<int> d = feature_points(a, 1, 3, cos(PI * 160 / 180)); //dmin ,dmax 指点的数目,200个点每个点之间距离约为0.005
+		//cout <<"feature:  "<< d.size() << endl;
+		//Mat drawing3 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		//for (int i = 0; i < a.size(); i++)
+		//{
+		//	circle(drawing3, a[i], 2, Scalar(0, 0, 0), -1);
+		//}
+		//for (int j = 0; j < d.size(); j++)
+		//{
+		//	circle(drawing3, a[d[j]], 4, Scalar(255, 0, 0), -1);
+		//}
+		//imshow("fea", drawing3);
+
+		//-----------------test compute_TAR----------------------
+		
+		//vector<Point2f> a;
+		//a.push_back(Point2f(100,10));
+		//a.push_back(Point2f(150, 10));
+		//a.push_back(Point2f(150, 60));
+		//a.push_back(Point2f(200, 60));
+		//a.push_back(Point2f(210, 50));
+		//a.push_back(Point2f(200, 80));
+		//a.push_back(Point2f(100, 120));
+		//a.push_back(Point2f(100, 110));
+		//a.push_back(Point2f(50, 110));
+		//a.push_back(Point2f(50,60));
+		//a.push_back(Point2f(100, 60));
+		//Mat drawing_ = Mat(300, 300, CV_8UC3, Scalar(255,255,255));
+		//draw_poly(drawing_,a,Point2f(150,150));
+		//vector<vector<double>> tar_all = prototile_first->compute_TAR(a);
+		////double b = sin_2vector_convexc(Point2f(5,0), Point2f(0,5));
+		////cout << b << endl;
+		//for (int i = 0; i < tar_all.size(); i++)
+		//{
+		//	cout << tar_all[i][0] << "  ";
+		//}
+		//imshow("aaaa", drawing_);
+		
+		//-------------------test tar_mismatch函数--------------------
 		prototile_first->loadTileData("19");
 		vector<Point2f> a = prototile_first->contour_sample[1];
-		vector<double> b = curvature_com(a);
-		cout << a.size() << endl;
-		vector<int> c = most_convex_p(a, b, 20);
-		vector<int> d = feature_points(a, 0.015, 0.03, -0.866025);
-		//cout << d.size() << endl;
-		//vector<Point2f> b;
-		Mat drawing3 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		Mat drawing4 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		
-		for (int i = 0; i < a.size(); i++)
+		vector<vector<double>> tar_all = prototile_first->compute_TAR(a);
+		prototile_second->loadTileData("19");
+		vector<Point2f> b = prototile_second->contour_sample[1];
+		vector<vector<double>> tar_all1 = prototile_second->compute_TAR(b);
+		vector<pair<int, int>> path;
+		//cout << "tar_all.size" << tar_all1.size() << "  tar_all[0]size" << tar_all1[0].size() << "  " << tar_all1[0][5]<<endl;
+		//double re = length_two_point_tar(tar_all[0], tar_all1[0]);
+		double re = tiling_opt->tar_mismatch(tar_all, tar_all1, path);//点对应匹配的筛选框宽度
+		cout << "result: "<<re << endl;
+		//cout << path.size() << endl;
+		for (int i = 0; i < path.size(); i++)
 		{
-			circle(drawing3, a[i], 2, Scalar(0, 0, 0), -1);
-			circle(drawing4, a[i], 2, Scalar(0, 0, 0), -1);
+			cout << path[i].first << "--"<<path[i].second << endl;
 		}
-		for (int j = 0; j < d.size(); j++)
-		{
-			circle(drawing3, a[d[j]], 4, Scalar(0, 255, 0), -1);
-		}
-		for (int j = 0; j < c.size(); j++)
-		{
-			circle(drawing4, a[c[j]], 4, Scalar(0, 255, 0), -1);
-		}
-		imshow("fea", drawing3);
-		imshow("most", drawing4);
-		/*vector<Point2f> a;
-		a.push_back(Point2f(10,10));
-		a.push_back(Point2f(30,10));
-		a.push_back(Point2f(30,30));
-		a.push_back(Point2f(20,20));
-		a.push_back(Point2f(10,30));
-		vector<double> b = curvature_com(a);
-		vector<int> c = most_convex_p(a, b, 3);
-		for (int i = 0; i < 3; i++)
-			cout << c[i] << endl;
-		for (int i = 404; i < 409; i++)
-		{ 
-			tiling_opt->Tiling_clear();
-			string name_ = int2string(i);
-			cout << name_ << endl;
-			tiling_opt->points_dividing(name_);
-			system("cls");
-		}*/
-		
-		//test morphing
-		//--------------------
+
+
+
+
+
+		//--------------------test morphing------------
+
 		//tiling_opt->load_dataset();
 		//prototile_first->loadTileData("test1");
 		////imgtocout();
@@ -93,7 +125,6 @@ int main(int argc, char** argv)
 		//mid_inter.push_back(60);
 		//mid_inter.push_back(120);
 		//mid_inter.push_back(175);
-
 		//inter_ = tiling_opt->morphing_2_patterns(contour_inner, contour_cand, coninner_cur, concand_cur, mid_inter, 0.5);
 		////inter_ = tiling_opt->morphing_patterns_iter(contour_inner, contour_cand, coninner_cur, concand_cur, 0.25);
 		//cout <<"inter_: "<< inter_.size() << endl;
@@ -217,7 +248,8 @@ int main(int argc, char** argv)
 		//cout <<hahah.angle<<" : "<< hahah.mismatch << endl;
 		//cout << hahah1.angle << " no: " << hahah1.mismatch << endl;
 
-        //------------test quadr_mismatch
+        //------------test quadr_mismatch-----------------
+
 		//prototile_first->loadTileData("685");
 		//////Mat img1;
 		////double leng = prototile_first->c_length;
@@ -356,8 +388,7 @@ int main(int argc, char** argv)
 		//imshow("result", src1);	
 		//imshow("win", src);
 
-        //--------------------------------
-        //测试compare_shapes函数
+        //------------------测试compare_shapes函数---------------
 
 		//tiling_opt->load_dataset();
 		//prototile_first->contourname = "643";
@@ -371,14 +402,6 @@ int main(int argc, char** argv)
 		//imshow("aaa", tt); 
 		//candida_contours = tiling_opt->compare_shapes(prototile_first->contour, 2);
         ////-------------------------------------------
-
-
-		//cout << order.first << "  " << order.second << endl;
-		/*vector<Point2f> con1 = prototile_first->contour_sample[0];
-		prototile_second->loadTileData(imagename2);
-		vector<Point2f> con2 = prototile_second->contour_sample[0];
-		prototile_third->loadTileData(imagename1);
-		vector<Point2f> con3 = prototile_third->contour_sample[0];*/
 		
 
 		//prototile_first->loadTileData(imagename3);

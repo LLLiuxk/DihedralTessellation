@@ -129,7 +129,7 @@ namespace Tiling_tiles{
 						/*string conut_name = rootname + "\\placement " + int2string(count);
 						na = conut_name.c_str();
 						mkdir(na);*/
-						Mat drawing1 = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
+						Mat drawing1 = Mat(800, 1600, CV_8UC3, CV_8UC3);
 						if (!one_situ_div(result_index, contour_, inner_contour, mid_interval, drawing1))
 						{
 							//cout << "-------------collision-------------" << endl;
@@ -1074,7 +1074,96 @@ namespace Tiling_tiles{
 		//cout << min_mismatch << endl;
 		CandPat min_pat = { theone, isFilp, min_angle, min_index, min_mismatch };
 		return min_pat;
+	}
 
+	double Tiling_opt::tar_mismatch(vector<vector<double>> first_arr, vector<vector<double>> second_arr, vector<pair<int, int>>& path, int width) //点对应匹配的筛选框宽度
+	{
+		int first_num = first_arr.size();
+		int second_num = second_arr.size(); //first 作为y轴 ,second为x轴
+		if (first_num != second_num)
+		{
+			cout << "The sampling points of two contours are not equal " << endl;
+			return 0;
+		}
+		int each_pnum = first_num / 2 - 1;
+		//double distance[202][202];
+		//int step[202][202];//记录总的步数
+		for (int i = 0; i < first_num; i++)
+		{
+			for (int j = 0; j < second_num; j++)
+			{
+				dis[i][j] = 0;
+				if (max(0, i - width) <= j && j <= min(first_num - 1, i + width))
+				{
+					distance[i][j] = 0;
+				}
+				else distance[i][j] = 100000;
+
+			}
+		}
+	    //distance[0][0]记录的是对齐的第一个点
+		dis[0][0] = length_two_point_tar(first_arr[0], second_arr[0]);//
+		distance[0][0] = dis[0][0];
+
+		for (int i = 1; i < first_num; i++)
+		{
+			if (distance[i][0] == 100000) continue;
+			dis[i][0] = length_two_point_tar(first_arr[i], second_arr[0]);
+			distance[i][0] = distance[i - 1][0] + dis[i][0];
+		}
+		for (int i = 1; i < second_num; i++)
+		{
+			if (distance[0][i] == 100000) continue;
+			dis[0][i] = length_two_point_tar(first_arr[0], second_arr[i]);
+			distance[0][i] = distance[0][i - 1] + dis[0][i];
+		}
+
+		for (int i = 1; i < first_num; i++)			
+		{
+			for (int j = 1; j < second_num; j++)
+			//(int i = istart; i <= imax; i++)
+			{
+				if (distance[i][j] == 100000) continue;
+				dis[i][j] = length_two_point_tar(first_arr[i], second_arr[j]);
+				double g1 = distance[i - 1][j] + dis[i][j];
+				double g2 = distance[i - 1][j - 1] + dis[i][j];
+				double g3 = distance[i][j - 1] + dis[i][j];
+				if (g1 < g2)
+				{
+					if (g1 < g3) distance[i][j] = g1;
+					else distance[i][j] = g3;
+				}
+				else
+				{
+					if (g2 < g3) distance[i][j] = g2;
+					else distance[i][j] = g3;
+				}
+			}
+
+		}
+		print_TAR_Path(dis, distance, first_num - 1, second_num - 1, path);
+		return distance[first_num - 1][second_num - 1];
+	}
+	void Tiling_opt::print_TAR_Path(double d[][202], double dp[][202], int i, int j, vector<pair<int, int>>& path)
+	{
+		if (i == 0 && j == 0) {
+			//cout << first_arr[i] << " - " << second_arr[j] << endl;
+			path.push_back(make_pair(i, j));
+			return;
+		}
+
+		if (abs(dp[i][j] - (dp[i - 1][j - 1] + dis[i][j])) < 0.1){
+			print_TAR_Path(d, dp, i - 1, j - 1, path);
+
+		}
+		else if (abs(dp[i][j] - (dp[i][j - 1] + dis[i][j])) < 0.1) {
+			print_TAR_Path(d, dp, i, j - 1, path);
+
+		}
+		else {
+			print_TAR_Path(d, dp, i - 1, j, path);
+		}
+		path.push_back(make_pair(i, j));
 	}
 
 	double Tiling_opt::quadr_mismatch(vector<Point2f> first_arr, vector<Point2f> second_arr, vector<double> first_c, vector<double> second_c, vector<pair<int, int>>& path, double zeta) //每次只能比较100个点以内
@@ -1130,7 +1219,6 @@ namespace Tiling_tiles{
 				}
 			}
 		}
-
 		//曲率差值归一化
 		//cout << "max_dis_cur: " << max_dis_cur << endl;
 		for (int i = 0; i < first_num; i++)
@@ -1141,15 +1229,6 @@ namespace Tiling_tiles{
 				//cout << "dis_cur[i][j]: " << dis_cur[i][j] << endl;
 			}
 		}
-		//for (int i = 0; i < 10; i++)
-		//{
-		//	for (int j = 0; j < 10; j++)
-		//	{
-		//		cout << "dis_cur[i][j]: " << dis_cur[i][j] << endl;
-		//	}
-		//}
-
-
 		//double distance[202][202];
 		//int step[202][202];//记录总的步数
 		for (int i = 0; i < first_num; i++)
@@ -1157,21 +1236,21 @@ namespace Tiling_tiles{
 			for (int j = 0; j < second_num; j++)
 			{
 				distance[i][j] = 0;
-				step[i][j] = 0;
+				//step[i][j] = 0;
 			}
 		}
 		distance[0][0] = (double)2 * (dis[0][0] + dis_cur[0][0]);
-		step[0][0] = 0;
+		//step[0][0] = 0;
 
 		for (int i = 1; i < first_num; i++)
 		{
 			distance[i][0] = distance[i - 1][0] + (dis[i][0] + dis_cur[i][0]);
-			step[i][0] = step[i - 1][0] + 1;
+			//step[i][0] = step[i - 1][0] + 1;
 		}
 		for (int i = 1; i < second_num; i++)
 		{
 			distance[0][i] = distance[0][i - 1] + (dis[0][i] + dis_cur[0][i]);
-			step[0][i] = step[0][i - 1] + 1;
+			//step[0][i] = step[0][i - 1] + 1;
 		}
 
 		for (int j = 1; j < second_num; j++)
@@ -1187,12 +1266,12 @@ namespace Tiling_tiles{
 					if (g1 < g3)
 					{
 						distance[i][j] = g1;
-						step[i][j] = step[i - 1][j] + 1;
+						//step[i][j] = step[i - 1][j] + 1;
 					}
 					else
 					{
 						distance[i][j] = g3;
-						step[i][j] = step[i][j - 1] + 1;
+						//step[i][j] = step[i][j - 1] + 1;
 					}
 				}
 				else
@@ -1200,12 +1279,12 @@ namespace Tiling_tiles{
 					if (g2 < g3)
 					{
 						distance[i][j] = g2;
-						step[i][j] = step[i - 1][j - 1];
+						//step[i][j] = step[i - 1][j - 1];
 					}
 					else
 					{
 						distance[i][j] = g3;
-						step[i][j] = step[i][j - 1] + 1;
+						//step[i][j] = step[i][j - 1] + 1;
 					}
 				}
 			}
