@@ -103,13 +103,15 @@ namespace Tiling_tiles{
 
 		//load dataset
 		void load_dataset();
+		void com_all_TARs(int num_c);
 		void check_Repetitive_pattern();
 
 		//shapes comparing and candidate contour choosing
 		vector<CandPat> compare_shapes(vector<Point2f> inner_c, int num_c);
+		vector<int> compare_choose_TAR(vector<Point2f> inner_c);
 		CandPat min_mismatch(vector<Point2f> inner, vector<Point2f> cand, vector<double> inner_c, vector<double> cand_c, int theone, bool isFilp);
 		double quadr_mismatch(vector<Point2f> first_arr, vector<Point2f> second_arr, vector<double> first_c, vector<double> second_c, vector<pair<int, int>>& path, double zeta = 1.0);//zeta 是曲率值权重与距离值权重的倍数
-		double tar_mismatch(vector<vector<double>> first_arr, vector<vector<double>> second_arr, vector<pair<int, int>>& path, int width = 4);//点对应匹配的筛选框宽度
+		double tar_mismatch(vector<vector<double>> first_arr, vector<vector<double>> second_arr, vector<pair<int, int>>& path, int &sec_shift, int width = 4);//点对应匹配的筛选框宽度
 		void print_TAR_Path(double d[][202], double dp[][202], int i, int j, vector<pair<int, int>>& path);
 		vector<int> search_align_p(Point2f cent, Point2f end, vector<Point2f> cand_temp);
 
@@ -168,7 +170,7 @@ namespace Tiling_tiles{
 		Prototile *prototile_second;
 		Prototile *prototile_tem;
 		vector<vector<Point2f>> contour_dataset;
-
+		vector<vector<vector<double>>> all_con_tars;
 	};
 
 	//all kinds tools
@@ -187,7 +189,6 @@ namespace Tiling_tiles{
 
 	int cur_char_length(char a, char b);
 	double cur_length_two_p(double cur1, double cur2);
-	void sort_comb(vector<double> vect, vector<int> &index_num);
 	vector<Point2f> sampling(vector<Point2f> &contour_, int points_num);
 	vector<double> curvature_com_k(vector<Point2f> &contour_sam);
 	vector<double> curvature_com(const vector<Point2f> &contour_sam); //记录cos值
@@ -209,6 +210,7 @@ namespace Tiling_tiles{
 	double tar_sin_2vector(Point2f &v0, Point2f &v1);
 	vector<double> recover_consin(const vector<double> &former);
 
+	void sort_comb(vector<double> vect, vector<int> &index_num);
 	//void sort_bub(vector<int> &target);
 	template<typename T>
 	void sort_bub(vector<T> &target)  //从小到大

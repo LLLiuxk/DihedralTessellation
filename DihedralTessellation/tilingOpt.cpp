@@ -14,7 +14,7 @@ namespace Tiling_tiles{
 		prototile_mid = new Prototile();
 		prototile_second = new Prototile();
 		prototile_tem = new Prototile();
-		all_types = 686;
+		all_types = 695;
 		//memset(dp, 0, sizeof(dp));
 		//memset(dp_inver, 0, sizeof(dp_inver));
 
@@ -56,6 +56,24 @@ namespace Tiling_tiles{
 		}
 		cout << "load over!" << endl;
 	}
+
+	void Tiling_opt::com_all_TARs(int num_c)
+	{
+		if (!all_con_tars.empty()) 
+		{
+			cout << "the TARs have been exist" << endl;
+			return;
+		}
+		for (int i = 0; i <= all_types; i++)
+		{
+			prototile_second->Pro_clear();
+			prototile_second->loadPoints(contour_dataset[i]);
+			vector<vector<double>> tar_all = prototile_second->compute_TAR(prototile_second->contour_sample[num_c]);//(num_c+1)*100 points
+			all_con_tars.push_back(tar_all);
+		}
+		cout << "all TARs of contours have been computed" << endl;
+	}
+
 	void Tiling_opt::check_Repetitive_pattern()
 	{
 		for (int i = 0; i <= all_types; i++)
@@ -855,12 +873,39 @@ namespace Tiling_tiles{
 
 	}
 
+	vector<int> Tiling_opt::compare_choose_TAR(vector<Point2f> inner_c)
+	{
+		vector<int> all_total;
+		vector<double> all_result;
+		int total_num = contour_dataset.size();
+		prototile_mid->Pro_clear();
+		prototile_mid->loadPoints(inner_c);
+		vector<Point2f> contour_mid = prototile_mid->contour_sample[1];
+		vector<vector<double>> tar_mid = prototile_mid->compute_TAR(contour_mid);
+		for (int can_num = 0; can_num < total_num; can_num++)
+		{
+			vector<vector<double>> tar_sec = all_con_tars[can_num];
+			vector<pair<int, int>> path;
+			int shift = 0;
+			double re = tar_mismatch(tar_mid, tar_sec, path, shift,2);
+			all_result.push_back(re);
+			all_total.push_back(can_num);
+		}
+		sort_comb(all_result, all_total);
+		for (int t = all_total.size() - 1; t > total_num - 15; t--)
+		{
+			cout << "order: " << all_total[t] << endl;
+		}
+		return all_total;
+	}
+
 	vector<CandPat> Tiling_opt::compare_shapes(vector<Point2f> inner_c, int num_c)
 	{
 		vector<int> order_total;
 		prototile_mid->Pro_clear();
 		prototile_mid->loadPoints(inner_c);
 		vector<Point2f> contour_mid = prototile_mid->contour_sample[num_c]; //选择最少的点进行比较
+		cout << "contour_mid.size()"<<contour_mid.size() << endl;
 		vector<double> contour_mid_c = curvature_com(contour_mid);
 
 		int total_num = contour_dataset.size();
@@ -1076,7 +1121,7 @@ namespace Tiling_tiles{
 		return min_pat;
 	}
 
-	double Tiling_opt::tar_mismatch(vector<vector<double>> first_arr, vector<vector<double>> second_arr, vector<pair<int, int>>& path, int width) //点对应匹配的筛选框宽度
+	double Tiling_opt::tar_mismatch(vector<vector<double>> first_arr, vector<vector<double>> second_arr, vector<pair<int, int>>& path, int &sec_shift, int width) //点对应匹配的筛选框宽度
 	{
 		int first_num = first_arr.size();
 		int second_num = second_arr.size(); //first 作为y轴 ,second为x轴
@@ -1086,64 +1131,76 @@ namespace Tiling_tiles{
 			return 0;
 		}
 		int each_pnum = first_num / 2 - 1;
+		double min_mis = 10000;
+		vector<pair<int, int>> path_min;
 		//double distance[202][202];
 		//int step[202][202];//记录总的步数
-		for (int i = 0; i < first_num; i++)
+		for (int shift = 0; shift < second_num; shift++) //将first固定，分别对齐second的起点
 		{
-			for (int j = 0; j < second_num; j++)
+			for (int i = 0; i < first_num; i++)
 			{
-				dis[i][j] = 0;
-				if (max(0, i - width) <= j && j <= min(first_num - 1, i + width))
+				for (int j = 0; j < second_num; j++)
 				{
-					distance[i][j] = 0;
-				}
-				else distance[i][j] = 100000;
+					dis[i][j] = 0;
+					if (max(0, i - width) <= j && j <= min(first_num - 1, i + width))
+					{
+						distance[i][j] = 0;
+					}
+					else distance[i][j] = 100000;
 
-			}
-		}
-	    //distance[0][0]记录的是对齐的第一个点
-		dis[0][0] = length_two_point_tar(first_arr[0], second_arr[0]);//
-		distance[0][0] = dis[0][0];
-
-		for (int i = 1; i < first_num; i++)
-		{
-			if (distance[i][0] == 100000) continue;
-			dis[i][0] = length_two_point_tar(first_arr[i], second_arr[0]);
-			distance[i][0] = distance[i - 1][0] + dis[i][0];
-		}
-		for (int i = 1; i < second_num; i++)
-		{
-			if (distance[0][i] == 100000) continue;
-			dis[0][i] = length_two_point_tar(first_arr[0], second_arr[i]);
-			distance[0][i] = distance[0][i - 1] + dis[0][i];
-		}
-
-		for (int i = 1; i < first_num; i++)			
-		{
-			for (int j = 1; j < second_num; j++)
-			//(int i = istart; i <= imax; i++)
-			{
-				if (distance[i][j] == 100000) continue;
-				dis[i][j] = length_two_point_tar(first_arr[i], second_arr[j]);
-				double g1 = distance[i - 1][j] + dis[i][j];
-				double g2 = distance[i - 1][j - 1] + dis[i][j];
-				double g3 = distance[i][j - 1] + dis[i][j];
-				if (g1 < g2)
-				{
-					if (g1 < g3) distance[i][j] = g1;
-					else distance[i][j] = g3;
-				}
-				else
-				{
-					if (g2 < g3) distance[i][j] = g2;
-					else distance[i][j] = g3;
 				}
 			}
+			//distance[0][0]记录的是对齐的第一个点
+			dis[0][0] = length_two_point_tar(first_arr[0], second_arr[shift]);//
+			distance[0][0] = dis[0][0];
 
+			for (int i = 1; i < first_num; i++)
+			{
+				if (distance[i][0] == 100000) continue;
+				dis[i][0] = length_two_point_tar(first_arr[i], second_arr[shift]);
+				distance[i][0] = distance[i - 1][0] + dis[i][0];
+			}
+			for (int i = 1; i < second_num; i++)
+			{
+				if (distance[0][i] == 100000) continue;
+				dis[0][i] = length_two_point_tar(first_arr[0], second_arr[(i + shift)%second_num]);
+				distance[0][i] = distance[0][i - 1] + dis[0][i];
+			}
+
+			for (int i = 1; i < first_num; i++)
+			{
+				for (int j = 1; j < second_num; j++)
+					//(int i = istart; i <= imax; i++)
+				{
+					if (distance[i][j] == 100000) continue;
+					dis[i][j] = length_two_point_tar(first_arr[i], second_arr[(j + shift) % second_num]);
+					double g1 = distance[i - 1][j] + dis[i][j];
+					double g2 = distance[i - 1][j - 1] + dis[i][j];
+					double g3 = distance[i][j - 1] + dis[i][j];
+					if (g1 < g2)
+					{
+						if (g1 < g3) distance[i][j] = g1;
+						else distance[i][j] = g3;
+					}
+					else
+					{
+						if (g2 < g3) distance[i][j] = g2;
+						else distance[i][j] = g3;
+					}
+				}
+			}
+			if (distance[first_num - 1][second_num - 1] < min_mis)
+			{
+				path_min.swap(vector<pair<int, int>>());
+				min_mis = distance[first_num - 1][second_num - 1];
+				print_TAR_Path(dis, distance, first_num - 1, second_num - 1, path_min);
+				sec_shift = shift;
+			}
 		}
-		print_TAR_Path(dis, distance, first_num - 1, second_num - 1, path);
-		return distance[first_num - 1][second_num - 1];
+		path = path_min;
+		return min_mis;
 	}
+
 	void Tiling_opt::print_TAR_Path(double d[][202], double dp[][202], int i, int j, vector<pair<int, int>>& path)
 	{
 		if (i == 0 && j == 0) {

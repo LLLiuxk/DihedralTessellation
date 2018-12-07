@@ -1,10 +1,10 @@
 #include "tilingOpt.h"
-#include<ctime>
+#include <ctime>
 using namespace Tiling_tiles;
 
 int main(int argc, char** argv)
 {
-	clock_t start, finish;
+	clock_t start, midtime,finish;
 	start = clock();
 	
 
@@ -84,25 +84,33 @@ int main(int argc, char** argv)
 		//imshow("aaaa", drawing_);
 		
 		//-------------------test tar_mismatch函数--------------------
-		prototile_first->loadTileData("19");
-		vector<Point2f> a = prototile_first->contour_sample[1];
-		vector<vector<double>> tar_all = prototile_first->compute_TAR(a);
-		prototile_second->loadTileData("19");
-		vector<Point2f> b = prototile_second->contour_sample[1];
-		vector<vector<double>> tar_all1 = prototile_second->compute_TAR(b);
-		vector<pair<int, int>> path;
-		//cout << "tar_all.size" << tar_all1.size() << "  tar_all[0]size" << tar_all1[0].size() << "  " << tar_all1[0][5]<<endl;
-		//double re = length_two_point_tar(tar_all[0], tar_all1[0]);
-		double re = tiling_opt->tar_mismatch(tar_all, tar_all1, path);//点对应匹配的筛选框宽度
-		cout << "result: "<<re << endl;
-		//cout << path.size() << endl;
-		for (int i = 0; i < path.size(); i++)
-		{
-			cout << path[i].first << "--"<<path[i].second << endl;
-		}
 
+		//prototile_first->loadTileData("19");
+		//vector<Point2f> a = prototile_first->contour_sample[1];
+		//vector<vector<double>> tar_all = prototile_first->compute_TAR(a);
+		//prototile_second->loadTileData("522");
+		//vector<Point2f> b = prototile_second->contour_sample[1];
+		//vector<vector<double>> tar_all1 = prototile_second->compute_TAR(b);
+		//vector<pair<int, int>> path;
+		////double re = length_two_point_tar(tar_all[0], tar_all1[0]);
+		//int shift = 0;
+		//double re = tiling_opt->tar_mismatch(tar_all, tar_all1, path, shift);//点对应匹配的筛选框宽度
+		//cout << "result: " << re << "  shift:" << shift<< endl;
+		////cout << path.size() << endl;
+		//for (int i = 0; i < path.size(); i++)
+		//{
+		//	cout << path[i].first << "--"<<path[i].second << endl;
+		//}
 
+		//---------------  test compare_choose_TAR-------------------
+		
+		tiling_opt->load_dataset();
+		tiling_opt->com_all_TARs(1);
+		midtime = clock();
+		cout << endl << (double)(midtime - start) / CLOCKS_PER_SEC << " s " << endl;
 
+		prototile_first->loadTileData("691");
+		tiling_opt->compare_choose_TAR(prototile_first->contour);
 
 
 		//--------------------test morphing------------
@@ -147,84 +155,8 @@ int main(int argc, char** argv)
 		//imshow("aaa", drawing_pro1);
 
 
-		//vector<Point2f> inter_mid;
-		//ImageMorphing(tt, contour_inner, drawing_pro1, contour_cand, drawing_dst, inter_mid, 0.5);
-		//imshow("dst", drawing_dst);
-		//draw_poly(drawing_, inter_mid, Point2f(400, 400));
-		//imshow("dst_p", drawing_);
-		//vector<Point2f> inter_mid = morphing_2_patterns(contour_inner, contour_cand, 0.5);
-	
-		/*
-		Mat drawing_src1 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		Mat drawing_src2 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		Mat drawing_src3 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		Mat drawing_dst = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		prototile_first->loadTileData("test");
-		prototile_second->loadTileData("128");
-		vector<Point2f> src1_points;
-		vector<Point2f> src2_points;
-		vector<Point2f> output_final;
+		//-------------测试min_mismatch函数-----------
 
-		vector<Point2f> a;
-		vector<Point2f> b;
-		src1_points = prototile_first->contour_sample[0];
-		src2_points = prototile_second->contour_sample[0];
-		src1_points.pop_back();
-		int size = src1_points.size();
-
-		for (int i = 100; i < 150; i++)
-		{
-			a.push_back(src1_points[i]);
-			b.push_back(src2_points[i]);
-		}
-		Mat rot_mat;
-		rot_mat = getRotationMatrix2D(a[10], 45, 1);
-		transform(a, a, rot_mat);
-		int asize = a.size();
-		//for (int i = 0; i < size; i++)
-		//{
-		//	src1_points[i].x = src1_points[i].x +100;
-		//	src1_points[i].y = src1_points[i].y +100;
-		//}
-		//src1_points.push_back(Point2f(100, 100));
-		//src1_points.push_back(Point2f(200, 100));
-		//src1_points.push_back(Point2f(200, 200));
-		//src1_points.push_back(Point2f(150, 300));
-		//src1_points.push_back(Point2f(100, 200));
-
-		//src2_points.push_back(Point2f(300, 100));
-		//src2_points.push_back(Point2f(400, 100));
-		//src2_points.push_back(Point2f(400, 200));
-		//src2_points.push_back(Point2f(350, 220));
-		//src2_points.push_back(Point2f(300, 200));
-		//cout << src1_points.size() << "   " << src2_points.size() << endl;
-		for (int i = 0; i < asize-1; i++)
-		{
-			MyLine(drawing_src1, a[i], a[i + 1], "red");
-			MyLine(drawing_src2, b[i], b[i + 1], "green");
-			MyLine(drawing_src3, a[i], a[i + 1], "red");
-			MyLine(drawing_src3, b[i], b[i + 1], "green");
-			
-		}
-		//drawing_src1 = draw_polygen("drawing_src1", a);
-		//drawing_src2 = draw_polygen("drawing_src2", b);
-		ImageMorphing(drawing_src1, a, drawing_src2, b, drawing_dst, output_final, 0.5);
-		imshow("out1: ", drawing_dst);
-		for (int i = 0; i < output_final.size()-1; i++)
-		{
-			cout << output_final[i] << endl;
-			MyLine(drawing_dst, output_final[i], output_final[i + 1], "black");
-			MyLine(drawing_src3, output_final[i], output_final[i + 1], "black");
-		}
-		//drawing_dst = draw_polygen("out: ", output_final);
-		imshow("1: ", drawing_src1);
-		imshow("2: ", drawing_src2);
-		imshow("3: ", drawing_src3);
-		imshow("out: ", drawing_dst);
-		//------------------------*/
-
-		//------------------------
-		//测试min_mismatch函数
 		//prototile_first->loadTileData("test1");
 		//////Mat img1;
 		////double leng = prototile_first->c_length;
@@ -273,6 +205,7 @@ int main(int argc, char** argv)
 		//
 		//cout << hahah <<" : "  << endl;
 
+        //------------test getRotationMatrix2D-----------------
 
 		//Mat rot_mat = getRotationMatrix2D(center_p(con2), hahah.angle, 1);
 		//vector<Point2f> d;
@@ -313,96 +246,27 @@ int main(int argc, char** argv)
 		//}
 		//------------------------
 
-		//
-		//
-		//cout << center_p(b) << endl;
-		//for (int i = 0; i < b.size(); i++)
-		//{
-		//	b[i].x = b[i].x*0.8;
-		//	b[i].y = b[i].y*0.8;
-		//}
-		//cout << center_p(b) << endl;
-		//double len = arcLength(b,true);
-		//cout << "leng: " << leng
-		//	<< endl << "len: " << len << endl;			
-		//draw_polygen("111", a);
-		//b.push_back(Point2f(300, 300));
-		//b.push_back(Point2f(400, 300));
-		//b.push_back(Point2f(400, 400));
-		//b.push_back(Point2f(300, 400));
-		//
-		//draw_polygen("hahahah",b);
-		//Point2f cen = center_p(b);
-		//vector<Point2f> c;
-		//Mat rot_mat = getRotationMatrix2D(cen, 45, 1);
-		//transform(b, c, rot_mat);
-		//		
-		//vector<int> haha=tiling_opt->search_align_p(cen, b[0], c);
-		//cout << haha[0]<<endl<<c[haha[0]] << endl;
-		//warpAffine(img, img1, rot_mat, Size(800,800));
-		//draw_polygen("111", a);
-		//Moments mu = moments(a);
-		//Point2f cen = Point2f(mu.m10 / mu.m00, mu.m01 / mu.m00);
-		//Mat rot_mat(2, 3, CV_32FC1);
-		////Point center = Point(300, 100);
-		//double angle = 90.0;
-		//double scale = 1;
-		//cout << center_p(a) << endl;
-		//rot_mat = getRotationMatrix2D(center_p(a), angle, scale);
-		//cv::transform(a, b, rot_mat);	
-		//cout << center_p << endl;	//
-		//cout << cen << endl;
-		//draw_polygen("222", a);
-		//imshow("show: ", img1);
-		//tiling_opt->points_dividing(imagename3);
-		/*vector<Point2f> po;
-		vector<Point2f> po1;
-		po.push_back(Point2f(650, 650));
-		po.push_back(Point2f(800, 650));
-		po.push_back(Point2f(900, 750));
-		po.push_back(Point2f(750, 750));
-		po1.push_back(Point2f(650, 650));
-		po1.push_back(Point2f(900, 750));
-		po1.push_back(Point2f(750, 750));
-		po1.push_back(Point2f(800, 650));
-		
-		vector<double>  ter(4, 0);
-		vector<double>  ter1(4, 0);
-		//tiling_opt->min_mismatch(po, po1, ter, ter1);*/
-		//draw_polygen("win", po);
-		//String imageName("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\22.png"); // by default
-		//Mat src = imread(imageName, 0);
-		//Mat src1 = src(Range(100,600), Range(0, 507));
-		////threshold(src, src, 128, 1, cv::THRESH_BINARY);
-		//cout << src.cols << "  " << src.rows << endl;
-		//for (int i = 400; i <src.cols; i++)
-		//	for (int j = 0; j < src.rows; j++)
-		//	{
-		//		src.at<uchar>(j, i)=(int)src.at<uchar>(j, i) + 1;
-		//		//cout << (int)src.at<uchar>(i, j)<< endl;;
-		//	}
-		//
-		////threshold(src, src, 1.5, 255, cv::THRESH_BINARY);
-		////namedWindow("result", 1);
-		////threshold(src, src, 128, 255, cv::THRESH_BINARY);
-		//imshow("result", src1);	
-		//imshow("win", src);
-
+	
         //------------------测试compare_shapes函数---------------
 
 		//tiling_opt->load_dataset();
-		//prototile_first->contourname = "643";
+		//midtime = clock();
+		//cout << endl << (double)(midtime - start) / CLOCKS_PER_SEC << " s " << endl;
+		//prototile_first->contourname = "691";
 		//prototile_first->contour = prototile_first->readTxt();
 		////cout << prototile_first->contour[5] << endl;
 		//
 		////prototile_first->contour_sam_cur();
 		//vector<CandPat> candida_contours;
-		//Mat tt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));;
+		//Mat tt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 		//draw_poly(tt, prototile_first->contour, Point2f(400, 400));//draw_polygen("hhhh", prototile_first->contour);
 		//imshow("aaa", tt); 
-		//candida_contours = tiling_opt->compare_shapes(prototile_first->contour, 2);
+		//candida_contours = tiling_opt->compare_shapes(prototile_first->contour, 1);
         ////-------------------------------------------
 		
+        
+
+
 
 		//prototile_first->loadTileData(imagename3);
 		//vector<Point2f> con1 = prototile_first->contour_sample[0];
@@ -799,7 +663,7 @@ int main(int argc, char** argv)
 	cout << "pengzhuang" << endl;
 	else cout << "no";*/
     finish = clock();
-	cout << endl<< (finish - start) / CLOCKS_PER_SEC << " s " << endl;
+	cout << endl<< (double)(finish - start) / CLOCKS_PER_SEC << " s " << endl;
 	waitKey(0);
 	return 0;
 }
