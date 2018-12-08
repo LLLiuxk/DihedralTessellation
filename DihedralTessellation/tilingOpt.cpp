@@ -68,8 +68,10 @@ namespace Tiling_tiles{
 		{
 			prototile_second->Pro_clear();
 			prototile_second->loadPoints(contour_dataset[i]);
-			vector<vector<double>> tar_all = prototile_second->compute_TAR(prototile_second->contour_sample[num_c]);//(num_c+1)*100 points
+			double shape_com;
+			vector<vector<double>> tar_all = prototile_second->compute_TAR(prototile_second->contour_sample[num_c], shape_com);//(num_c+1)*100 points
 			all_con_tars.push_back(tar_all);
+			all_shape_complexity.push_back(shape_com);
 		}
 		cout << "all TARs of contours have been computed" << endl;
 	}
@@ -881,18 +883,20 @@ namespace Tiling_tiles{
 		prototile_mid->Pro_clear();
 		prototile_mid->loadPoints(inner_c);
 		vector<Point2f> contour_mid = prototile_mid->contour_sample[1];
-		vector<vector<double>> tar_mid = prototile_mid->compute_TAR(contour_mid);
+		double shape_com_mid;
+		vector<vector<double>> tar_mid = prototile_mid->compute_TAR(contour_mid, shape_com_mid);
 		for (int can_num = 0; can_num < total_num; can_num++)
 		{
 			vector<vector<double>> tar_sec = all_con_tars[can_num];
 			vector<pair<int, int>> path;
 			int shift = 0;
 			double re = tar_mismatch(tar_mid, tar_sec, path, shift,2);
+			re = re / (1 + shape_com_mid + all_shape_complexity[can_num]);
 			all_result.push_back(re);
 			all_total.push_back(can_num);
 		}
 		sort_comb(all_result, all_total);
-		for (int t = all_total.size() - 1; t > total_num - 15; t--)
+		for (int t = all_total.size() - 1; t > total_num - 30; t--)
 		{
 			cout << "order: " << all_total[t] << endl;
 		}

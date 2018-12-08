@@ -52,7 +52,7 @@ namespace Tiling_tiles{
 		void getpath();
 		void loadTileData(string tile_data);
 		void contour_sam_cur();	
-		vector<vector<double>> compute_TAR(vector<Point2f> &contour_);
+		vector<vector<double>> compute_TAR(vector<Point2f> &contour_,double &shape_complexity);
 
 		vector<int> convex_p(int max_cur_num);                 //求轮廓上值最大的10个不临近的凸点
 		vector<int> partition_points(string imaname);  //求得用做划分的点
@@ -171,6 +171,7 @@ namespace Tiling_tiles{
 		Prototile *prototile_tem;
 		vector<vector<Point2f>> contour_dataset;
 		vector<vector<vector<double>>> all_con_tars;
+		vector<double> all_shape_complexity;
 	};
 
 	//all kinds tools

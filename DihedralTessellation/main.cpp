@@ -74,7 +74,8 @@ int main(int argc, char** argv)
 		//a.push_back(Point2f(100, 60));
 		//Mat drawing_ = Mat(300, 300, CV_8UC3, Scalar(255,255,255));
 		//draw_poly(drawing_,a,Point2f(150,150));
-		//vector<vector<double>> tar_all = prototile_first->compute_TAR(a);
+		//double shape_com;
+		//vector<vector<double>> tar_all = prototile_first->compute_TAR(a, shape_com);
 		////double b = sin_2vector_convexc(Point2f(5,0), Point2f(0,5));
 		////cout << b << endl;
 		//for (int i = 0; i < tar_all.size(); i++)
@@ -87,14 +88,17 @@ int main(int argc, char** argv)
 
 		//prototile_first->loadTileData("19");
 		//vector<Point2f> a = prototile_first->contour_sample[1];
-		//vector<vector<double>> tar_all = prototile_first->compute_TAR(a);
+		//double sca;
+		//vector<vector<double>> tar_all = prototile_first->compute_TAR(a, sca);
 		//prototile_second->loadTileData("522");
 		//vector<Point2f> b = prototile_second->contour_sample[1];
-		//vector<vector<double>> tar_all1 = prototile_second->compute_TAR(b);
+		//double scb;
+		//vector<vector<double>> tar_all1 = prototile_second->compute_TAR(b, scb);
 		//vector<pair<int, int>> path;
 		////double re = length_two_point_tar(tar_all[0], tar_all1[0]);
 		//int shift = 0;
 		//double re = tiling_opt->tar_mismatch(tar_all, tar_all1, path, shift);//点对应匹配的筛选框宽度
+		//re = re / (1 + sca + scb);
 		//cout << "result: " << re << "  shift:" << shift<< endl;
 		////cout << path.size() << endl;
 		//for (int i = 0; i < path.size(); i++)
@@ -104,13 +108,13 @@ int main(int argc, char** argv)
 
 		//---------------  test compare_choose_TAR-------------------
 		
-		tiling_opt->load_dataset();
+		/*tiling_opt->load_dataset();
 		tiling_opt->com_all_TARs(1);
 		midtime = clock();
 		cout << endl << (double)(midtime - start) / CLOCKS_PER_SEC << " s " << endl;
 
-		prototile_first->loadTileData("691");
-		tiling_opt->compare_choose_TAR(prototile_first->contour);
+		prototile_first->loadTileData("686");
+		tiling_opt->compare_choose_TAR(prototile_first->contour);*/
 
 
 		//--------------------test morphing------------
@@ -249,19 +253,19 @@ int main(int argc, char** argv)
 	
         //------------------测试compare_shapes函数---------------
 
-		//tiling_opt->load_dataset();
-		//midtime = clock();
-		//cout << endl << (double)(midtime - start) / CLOCKS_PER_SEC << " s " << endl;
-		//prototile_first->contourname = "691";
-		//prototile_first->contour = prototile_first->readTxt();
-		////cout << prototile_first->contour[5] << endl;
-		//
-		////prototile_first->contour_sam_cur();
-		//vector<CandPat> candida_contours;
-		//Mat tt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		//draw_poly(tt, prototile_first->contour, Point2f(400, 400));//draw_polygen("hhhh", prototile_first->contour);
-		//imshow("aaa", tt); 
-		//candida_contours = tiling_opt->compare_shapes(prototile_first->contour, 1);
+		tiling_opt->load_dataset();
+		midtime = clock();
+		cout << endl << (double)(midtime - start) / CLOCKS_PER_SEC << " s " << endl;
+		prototile_first->contourname = "686";
+		prototile_first->contour = prototile_first->readTxt();
+		//cout << prototile_first->contour[5] << endl;
+		
+		//prototile_first->contour_sam_cur();
+		vector<CandPat> candida_contours;
+		Mat tt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		draw_poly(tt, prototile_first->contour, Point2f(400, 400));//draw_polygen("hhhh", prototile_first->contour);
+		imshow("aaa", tt); 
+		candida_contours = tiling_opt->compare_shapes(prototile_first->contour, 1);
         ////-------------------------------------------
 		
         
