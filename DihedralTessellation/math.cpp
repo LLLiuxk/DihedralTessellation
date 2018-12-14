@@ -317,7 +317,7 @@ namespace Tiling_tiles{
 		return (l1 * l1 + l2 * l2 - l3 * l3) / (2 * l1 * l2);
 	}
 
-	double sin_2vector_convexc(Point2f &v0, Point2f &v1)
+	double sin_two_vector(Point2f &v0, Point2f &v1)
 	{
 		return unit_vec(v0).x*unit_vec(v1).y - unit_vec(v0).y*unit_vec(v1).x;
 	}
@@ -380,10 +380,10 @@ namespace Tiling_tiles{
 		ofstream out(filepath);
 		if (out.is_open())
 		{
-			out << contour_.size() + 1 << endl;//contours[0].size()
+			out << contour_.size() << endl;//contours[0].size()
 			for (int j = 0; j < contour_.size(); j++)
 				out << contour_[j].x << "," << contour_[j].y << endl;
-			out << contour_[0].x << "," << contour_[0].y << endl;  //首尾连起来
+			//out << contour_[0].x << "," << contour_[0].y << endl;  //首尾连起来
 		}
 		cout << "contours[0].size(): " << contour_.size() << endl;
 		out.close();
@@ -467,14 +467,14 @@ namespace Tiling_tiles{
 	{
 		vector<double> eachOfcurvature;
 		int c_s = contour_sam.size();
-		//sin_2vector_convexc>0 为一凸点,cos值+1.1; <0为一凹点,cos值-1.1
+		//sin_two_vector>0 为一凸点,cos值+1.1; <0为一凹点,cos值-1.1
 		//使用1.1是为了防止在无限接近0时来回加减出现近似误差
 		//此处需要注意，opencv图像与正常坐标y轴相反
 		//提取轮廓点在图上看是逆时针，实际在正常坐标系为顺时针，因此应用顺时针来计算凹凸
 		for (int i = 0; i < c_s; i++)
 		{
 			double curvature = cos_two_vector(contour_sam[(i + c_s - 1) % c_s] - contour_sam[i], contour_sam[(i + 1) % c_s] - contour_sam[i]);
-			if (sin_2vector_convexc(contour_sam[(i + c_s - 1) % c_s] - contour_sam[i], contour_sam[(i + 1) % c_s] - contour_sam[i]) > 0)
+			if (sin_two_vector(contour_sam[(i + c_s - 1) % c_s] - contour_sam[i], contour_sam[(i + 1) % c_s] - contour_sam[i]) > 0)
 				eachOfcurvature.push_back(curvature + 1.1);
 			else eachOfcurvature.push_back(curvature - 1.1);
 		}
@@ -1384,26 +1384,27 @@ namespace Tiling_tiles{
 
 		contour_sam.push_back(contour_[0]);
 		sample = contour_[0];
-		for (int t = 1; t < contour_.size(); t++)
+		int csize = contour_.size();
+		for (int t = 1; t <= csize; t++)
 		{
-			double length_ = length_two_point2f(sample, contour_[t]);
+			double length_ = length_two_point2f(sample, contour_[t%csize]);
 			if (length_ > Lambda)
 			{
-				Point2f vec = unit_vec(contour_[t] - sample);
+				Point2f vec = unit_vec(contour_[t%csize] - sample);
 				sample = sample + Lambda * vec;
 				contour_sam.push_back(sample);
 				t = t - 1;
 			}
-			else if (t < contour_.size() - 1)
+			else if (t < contour_.size())
 			{
-				while ((length_ + length_two_point2f(contour_[t], contour_[t + 1])) < Lambda)
+				while ((length_ + length_two_point2f(contour_[t], contour_[(t + 1)%csize])) < Lambda)
 				{
-					length_ = length_ + length_two_point2f(contour_[t], contour_[t + 1]);
+					length_ = length_ + length_two_point2f(contour_[t], contour_[(t + 1)%csize]);
 					t++;
-					if (t >= (contour_.size() - 1)) break;
+					if (t > (contour_.size() - 1)) break;
 				}
-				if (t >= (contour_.size() - 1)) break;
-				Point2f vec = unit_vec(contour_[t + 1] - contour_[t]);
+				if (t > (contour_.size() - 1)) break;
+				Point2f vec = unit_vec(contour_[(t + 1)%csize] - contour_[t]);
 				sample = contour_[t] + (Lambda - length_) * vec;
 				contour_sam.push_back(sample);
 			}

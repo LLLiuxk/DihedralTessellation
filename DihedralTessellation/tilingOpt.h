@@ -31,6 +31,7 @@ namespace Tiling_tiles{
 		double mismatch;
 	}CandPat;
 
+
 	class Line_Seg{
 	public:
 		Line_Seg();
@@ -54,13 +55,13 @@ namespace Tiling_tiles{
 		void contour_sam_cur();	
 		vector<vector<double>> compute_TAR(vector<Point2f> &contour_,double &shape_complexity);
 
-		vector<int> convex_p(int max_cur_num);                 //求轮廓上值最大的10个不临近的凸点
+		vector<int> cand_tiling_v(int max_cur_num);                 //求轮廓上值最大的10个不临近的凸点
 		vector<int> partition_points(string imaname);  //求得用做划分的点
 
 		//void cur_normalize();
 
 		//flipping
-		vector<Point2f> flip_contour(vector<Point2f> cont_s, int flag);
+		vector<Point2f> flip_contour(vector<Point2f> cont_s, int flag = 0);
 
 		//io polygon
 		void imgtocout(string tile_image, int raw=0);
@@ -95,20 +96,31 @@ namespace Tiling_tiles{
 		void com_score(string imagename1, string imagename2);
 
 		void points_dividing(string imaname);
+		void tiliing_generation(string imaname);
 		bool one_situ_div(vector<int> results, vector<Point2f> contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname);
 
 		//collision
 		bool coll_detection(Point2f shifting1, Point2f shifting2, vector<Point2f> &contour_s);
 		bool collision_pixel(vector<Point2f> dis_p, vector<Point2f> contour_s);
+		
+		bool coll_detec_bbx(vector<Point2f> &contour1, vector<Point2f> &contour2);
+		bool coll_pixel(vector<Point2f> dis_p, vector<Point2f> contour_s);
+		bool coll_intersection(vector<Point2f> dis_p, vector<Point2f> contour_s);
+		bool vertex_angle(vector<Point2f> angle1, vector<Point2f> angle2);
 
 		//load dataset
 		void load_dataset();
 		void com_all_TARs(int num_c);
 		void check_Repetitive_pattern();
-
+		
+		//three placement rules
+		bool translation_placement(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname);
+		bool rotation_placement(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname);
+		bool fliping(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname);
+		
 		//shapes comparing and candidate contour choosing
 		vector<CandPat> compare_shapes(vector<Point2f> inner_c, int num_c);
-		vector<int> compare_choose_TAR(vector<Point2f> inner_c);
+		vector<pair<int, bool>> compare_choose_TAR(vector<Point2f> inner_c); //得到选择出的pattern的序号和是否翻转的标志
 		CandPat min_mismatch(vector<Point2f> inner, vector<Point2f> cand, vector<double> inner_c, vector<double> cand_c, int theone, bool isFilp);
 		double quadr_mismatch(vector<Point2f> first_arr, vector<Point2f> second_arr, vector<double> first_c, vector<double> second_c, vector<pair<int, int>>& path, double zeta = 1.0);//zeta 是曲率值权重与距离值权重的倍数
 		double tar_mismatch(vector<vector<double>> first_arr, vector<vector<double>> second_arr, vector<pair<int, int>>& path, int &sec_shift, int width = 4);//点对应匹配的筛选框宽度
@@ -123,13 +135,17 @@ namespace Tiling_tiles{
 		//morphing
 		//提高cos值权重+重采样
 		vector<Point2f> morphing_2_patterns(vector<Point2f> &contour1, vector<Point2f> &contour2, vector<double> &concur1, vector<double> &concur2, vector<int> &mid_inter, float shape_ratio);
-		//迭代morph
+		//morphing by tar
+		vector<Point2f> morphing_tar(vector<Point2f> &contour1, vector<Point2f> &contour2, vector<int> &mid_inter, vector<pair<int, int>> &path, int shift);
+
+		//迭代morph	
 		vector<Point2f> morphing_patterns_iter(vector<Point2f> contour1, vector<Point2f> contour2, vector<double> concur1, vector<double> concur2, float shape_ratio);//, vector<int> mid_inter, float shape_ratio);
 
 		double evalua_deformation(vector<vector<Point2f>> contour, vector<vector<double>> curvature);
 		
 		//simulation
 		vector<Point2f> simulation_mid(string imaname, int inner_one, int cand_one);
+		vector<Point2f> simulation_tar(string imaname, int inner_one, int cand_one);
 
 		double com_each_pair(vector<Point2f> &first_interval, vector<Point2f> &second_interval, int &flag);
 		double com_optimal_score(vector<vector<Point2f>> &proto_interval_1, vector<vector<char>> &proto_first_char,
@@ -171,6 +187,7 @@ namespace Tiling_tiles{
 		Prototile *prototile_tem;
 		vector<vector<Point2f>> contour_dataset;
 		vector<vector<vector<double>>> all_con_tars;
+		vector<vector<vector<double>>> all_con_tars_flip;
 		vector<double> all_shape_complexity;
 	};
 
@@ -207,7 +224,7 @@ namespace Tiling_tiles{
 	Point2f unit_vec(Point2f vec);
 	double cos_3edges(double l1,double l2,double l3);
 	double cos_two_vector(Point2f &v0, Point2f &v1);
-	double sin_2vector_convexc(Point2f &v0, Point2f &v1);
+	double sin_two_vector(Point2f &v0, Point2f &v1);
 	double tar_sin_2vector(Point2f &v0, Point2f &v1);
 	vector<double> recover_consin(const vector<double> &former);
 

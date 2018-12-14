@@ -120,7 +120,7 @@ namespace Tiling_tiles{
 		cout << "contours num:" << contours.size() << endl;
 		
 		
-		Mat drwa = Mat::zeros(800, 800, CV_8UC3);
+		/*Mat drwa = Mat::zeros(800, 800, CV_8UC3);
 		int i = 0;
 		for (; i < contours[0].size() / 4; i++)
 		{
@@ -134,7 +134,7 @@ namespace Tiling_tiles{
 		{
 			circle(drwa, contours[0][i], 1, Scalar(0, 0, 255), -1);
 		}
-		imshow("contour" + tile_image, drwa);
+		imshow("contour" + tile_image, drwa);*/
 
 		//output two 
 		//namedWindow("contour one", WINDOW_AUTOSIZE);
@@ -365,9 +365,9 @@ namespace Tiling_tiles{
 	{
 		vector<vector<double>> all_tar;
 		int consize = contour_.size();
-		int tar_num = consize / 2 - 1;
+		int tar_num = consize / 4 - 1;
 		shape_complexity = 0;
-		cout << "consize: " << consize << " tar_num: " << tar_num << endl;
+		//cout << "consize: " << consize << " tar_num: " << tar_num << endl;
 		vector<double> maxtar(tar_num, 0);
 		for (int i = 0; i < consize; i++)
 		{
@@ -397,11 +397,11 @@ namespace Tiling_tiles{
 			shape_complexity += abs(max_tar_one - min_tar_one);
 		}
 		shape_complexity = shape_complexity / consize;		
-		cout << all_tar[0].size() << "    shape_com: " << shape_complexity << endl;
+		//cout << all_tar[0].size() << "    shape_com: " << shape_complexity << endl;
 		return all_tar;
 	}
 
-	vector<int> Prototile::convex_p(int max_cur_num)
+	vector<int> Prototile::cand_tiling_v(int max_cur_num)
 	{
 		//排序，找最大的max_cur_num个凹凸点
 		contour.swap(vector<Point2f>());
@@ -438,7 +438,7 @@ namespace Tiling_tiles{
 		vector<int> max_order;
 		imgtocout(imaname);
 		loadTileData(imaname);
-		max_order = convex_p(cur_p_num );
+		max_order = cand_tiling_v(cur_p_num);
 		int contoursize = contour.size();
 		vector<int> all_order = max_order;
 
