@@ -17,32 +17,10 @@ int main(int argc, char** argv)
 	Tiling_tiles::Prototile *prototile_third;
 	prototile_third = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
-	int f = 0;
+	int f = 7;
 	if (f == 0) //已有dataset
 	{
-		prototile_first->loadTileData("685");
-		vector<Point2f> a = prototile_first->contour_sample[2];
-		for (int i = 0; i < a.size(); i++)
-			a[i] = a[i] + Point2f(400, 400);
-		Mat drawing1 = Mat(600, 600, CV_8UC1, Scalar(255));
-		int n = a.size();
-		Point rook_points[1][800];
-		for (int t = 0; t < n; t++)
-		{
-			rook_points[0][t] = a[t];
-		}
-		const Point* ppt[1] = { rook_points[0] };
-		int npt[] = { n };
-		fillPoly(drawing1,
-			ppt,
-			npt,
-			1,
-			Scalar(0) //黑色
-			);
-		//threshold(drawing1, drawing1, 128, 255, cv::THRESH_BINARY);
-		imshow("draw1", drawing1);
-		
-
+		tiling_opt->tiliing_generation("685");
 		//int iii[20] = {22,46,51,65,106,152,208,288,384,432,439,474,496,511,524,606,621,654,652,670};
 		//for (int i = 0; i < 20; i++)
 		//{
@@ -690,15 +668,82 @@ int main(int argc, char** argv)
 		//------test 角点度数检测----------------------
 		vector<Point2f> a;
 		vector<Point2f> b;
-		a.push_back(Point2f(2,2));
-		a.push_back(Point2f(5,2));
-		a.push_back(Point2f(2,5));
+		a.push_back(Point2f(2, 2));
+		a.push_back(Point2f(5, 2));
+		a.push_back(Point2f(2, 5));
 		b.push_back(Point2f(2, 2));
 		b.push_back(Point2f(2, 5));
 		b.push_back(Point2f(5, 2.5));
-		
-		if(tiling_opt->vertex_angle(a,b)) cout<<"pengzhuang";
 
+		if (tiling_opt->vertex_angle(a, b)) cout << "pengzhuang";
+	}
+	else if (f == 7)
+	{
+		//------------------------test translation----------------
+
+		//vector<int> p_p_index = prototile_first->partition_points("685");
+		//vector<Point2f> a = prototile_first->contour;
+		//vector<int> mark;
+		//mark.push_back(12);
+		//mark.push_back(72);
+		//mark.push_back(144);
+		//mark.push_back(480);
+		////prototile_first->loadTileData("685");
+		//Mat drawing1 = Mat(1600, 1600, CV_8UC3, Scalar(255,255,255));
+		//////Mat drawing2 = Mat(600, 600, CV_8UC1, Scalar(255)); 
+		//////Mat drawing3 = Mat(1200, 1200, CV_8UC1, Scalar(255));
+		////vector<Point2f> a = prototile_first->contour_sample[2];
+		//vector<int> midmark;
+		//vector<Point2f> return_B;
+		//if (tiling_opt->translation_placement(mark, a, return_B, midmark, drawing1)) cout << "pngzhuang" << endl;
+		//else cout << "no" << endl;
+		//imshow(" ", drawing1);
+		////cout << return_B.size() << endl;
+		//for (int i = 0; i < return_B.size(); i++)
+		//{
+		//	circle(drawing1,return_B[i],2,Scalar(0,0,0),-1);
+		//}
+		//imshow("tt ", drawing1);
+		//MyLine(drawing1, return_B[187], return_B[188], "red");
+		//MyLine(drawing1, return_B[189], return_B[190], "green");
+		//imshow("  ", drawing1);*/
+		//vector<Point2f> b;
+		//draw_poly(drawing1, a, center_p(a));
+		//draw_poly(drawing3, a, center_p(a));
+		//for (int i = 0; i < a.size(); i++)
+		//	b.push_back(a[i] + Point2f(-306, -200));
+		///*Point2f shift = Point2f(600, 600);
+		//for (int i = 0; i < a.size(); i++)
+		//{
+		//a[i] += shift;
+		//b[i] += shift;
+		//}
+		//draw_poly(drawing2, a, center_p(b));
+		//draw_poly(drawing3, a, center_p(b));
+		//if(tiling_opt->coll_detec_bbx(a, b)) cout<<"pengzhuang"<<endl;
+		//threshold(drawing1, drawing1, 128, 255, cv::THRESH_BINARY);
+		//imshow("draw1", drawing1);
+		//imshow("draw2", drawing2);
+		//imshow("draw3", drawing3);
+		//----------------------------------------------------------------
+
+		//-------------------test rotation------------------------------
+
+		vector<int> p_p_index = prototile_first->partition_points("685");
+		vector<Point2f> a = prototile_first->contour;
+		vector<int> mark;
+		mark.push_back(12);
+		mark.push_back(72);
+		mark.push_back(144);
+		mark.push_back(480);
+		vector<int> midmark;
+		vector<Point2f> return_B;
+		Mat draw1 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		tiling_opt->rotation_placement(mark, a, return_B,midmark,draw1);
+		imshow("hahah", draw1);
+		imwrite("D:\\XXXX.PNG", draw1);
+
+	
 		////简单的检测
 		//cv::Mat ima = Mat(300, 300, CV_8UC3, Scalar(255, 255, 255));//imread(txtname);
 		//cv::Mat imb = Mat(300, 300, CV_8UC3, Scalar(255, 255, 255));//imread(txtname1);

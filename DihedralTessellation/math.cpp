@@ -16,7 +16,7 @@ namespace Tiling_tiles{
 		else if (color1.compare("purple") == 0) color = Scalar(60, 32, 240);
 		else if (color1.compare("white") == 0) color = Scalar(255, 255, 255);
 		else if (color1.compare("black") == 0) color = Scalar(0, 0, 0);
-		else color = Scalar(0, 165, 255);
+		else color = Scalar(128);
 		int thickness = 2;
 		int lineType = 8;
 		line(img,
@@ -263,17 +263,17 @@ namespace Tiling_tiles{
 		return 1;
 	}
 
-	bool seif_intersect(vector<Point2f> &contour_)
+	bool self_intersect(vector<Point2f> &contour_)
 	{
 		int sizec = contour_.size();
 		for (int i = 0; i < sizec-2; i++)
 		{
+			Line_Seg line1(contour_[i], contour_[i + 1]);
 			if (i == 0)
 			{
 				for (int j = 2; j < sizec-1; j++)
 				{
 					Point2f crossp;
-					Line_Seg line1(contour_[i], contour_[i + 1]);
 					Line_Seg line2(contour_[j], contour_[j + 1]);
 					if (line_intersection(line1, line2, crossp)==1)
 					{
@@ -286,7 +286,6 @@ namespace Tiling_tiles{
 				for (int j = i + 2; j < sizec; j++)
 				{
 					Point2f crossp;
-					Line_Seg line1(contour_[i], contour_[i + 1]);
 					Line_Seg line2(contour_[j], contour_[(j + 1) % sizec]);
 					if (line_intersection(line1, line2, crossp)==1)
 					{
@@ -620,33 +619,37 @@ namespace Tiling_tiles{
 		return index_num;
 	}
 
-	vector<Point2f> extract_contour(vector<Point2f> contour_, vector<int> mark_p, vector<int> &midmark_p)
+	vector<Point2f> extract_contour(vector<Point2f> contour_, vector<int> mark_p, vector<int> &midmark_p, vector<vector<Point2f>> &four_place)
 	{
 		Point2f line1 = contour_[mark_p[2]] - contour_[mark_p[0]];
 		Point2f line2 = contour_[mark_p[3]] - contour_[mark_p[1]];
 		//Point2f cente = center_p(inter_mid);
 		int csize = contour_.size();
-		vector<vector<Point2f>> four_place;
-		vector<Point2f> one_loca;
-		// 提取围成的轮廓，目前为止只考虑正向摆放，不考虑旋转和翻转
-		four_place.push_back(contour_);
-		for (int i = 0; i < csize; i++)
+		//vector<vector<Point2f>> four_place;
+		//four_place.swap(vector<vector<Point2f>>());
+		if (four_place.empty())
 		{
-			one_loca.push_back(contour_[i] + line1);
-		}
-		four_place.push_back(one_loca);
-		one_loca.swap(vector<Point2f>());
-		for (int i = 0; i < csize; i++)
-		{
-			one_loca.push_back(contour_[i] + line2);
-		}
-		four_place.push_back(one_loca);
-		one_loca.swap(vector<Point2f>());
-		for (int i = 0; i < csize; i++)
-		{
-			one_loca.push_back(contour_[i] + line1 + line2);
-		}
-		four_place.push_back(one_loca);
+			vector<Point2f> one_loca;
+			// 提取围成的轮廓，目前为止只考虑正向摆放，不考虑旋转和翻转
+			four_place.push_back(contour_);
+			for (int i = 0; i < csize; i++)
+			{
+				one_loca.push_back(contour_[i] + line1);
+			}
+			four_place.push_back(one_loca);
+			one_loca.swap(vector<Point2f>());
+			for (int i = 0; i < csize; i++)
+			{
+				one_loca.push_back(contour_[i] + line2);
+			}
+			four_place.push_back(one_loca);
+			one_loca.swap(vector<Point2f>());
+			for (int i = 0; i < csize; i++)
+			{
+				one_loca.push_back(contour_[i] + line1 + line2);
+			}
+			four_place.push_back(one_loca);
+		}		
 		int total_num = 0;
 		midmark_p.push_back(0);
 		vector<Point2f> morphed_B;
@@ -1341,7 +1344,7 @@ namespace Tiling_tiles{
 	string int2string(int number)
 	{
 		char ch[8];
-		int  divisor = 1000;
+		int  divisor = 10000;
 		int index = 0;
 		if (number == 0)
 		{

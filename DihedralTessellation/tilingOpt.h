@@ -93,19 +93,13 @@ namespace Tiling_tiles{
 		Tiling_opt();
 		~Tiling_opt();
 		void Tiling_clear();
-		void com_score(string imagename1, string imagename2);
-
+		
 		void points_dividing(string imaname);
 		void tiliing_generation(string imaname);
-		bool one_situ_div(vector<int> results, vector<Point2f> contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname);
 
 		//collision
-		bool coll_detection(Point2f shifting1, Point2f shifting2, vector<Point2f> &contour_s);
-		bool collision_pixel(vector<Point2f> dis_p, vector<Point2f> contour_s);
 		
-		bool coll_detec_bbx(vector<Point2f> &contour1, vector<Point2f> &contour2);
-		bool coll_pixel(vector<Point2f> dis_p, vector<Point2f> contour_s);
-		bool coll_intersection(vector<Point2f> dis_p, vector<Point2f> contour_s);
+		bool coll_detec_bbx(vector<Point2f> contour1, vector<Point2f> contour2, int threshold);
 		bool vertex_angle(vector<Point2f> angle1, vector<Point2f> angle2);
 
 		//load dataset
@@ -119,16 +113,11 @@ namespace Tiling_tiles{
 		bool fliping(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname);
 		
 		//shapes comparing and candidate contour choosing
-		vector<CandPat> compare_shapes(vector<Point2f> inner_c, int num_c);
 		vector<pair<int, bool>> compare_choose_TAR(vector<Point2f> inner_c); //得到选择出的pattern的序号和是否翻转的标志
-		CandPat min_mismatch(vector<Point2f> inner, vector<Point2f> cand, vector<double> inner_c, vector<double> cand_c, int theone, bool isFilp);
-		double quadr_mismatch(vector<Point2f> first_arr, vector<Point2f> second_arr, vector<double> first_c, vector<double> second_c, vector<pair<int, int>>& path, double zeta = 1.0);//zeta 是曲率值权重与距离值权重的倍数
 		double tar_mismatch(vector<vector<double>> first_arr, vector<vector<double>> second_arr, vector<pair<int, int>>& path, int &sec_shift, int width = 4);//点对应匹配的筛选框宽度
 		void print_TAR_Path(double d[][202], double dp[][202], int i, int j, vector<pair<int, int>>& path);
 		vector<int> search_align_p(Point2f cent, Point2f end, vector<Point2f> cand_temp);
 
-		//from CandPat to contour
-		vector<Point2f> CandP2Contour(CandPat candp, int num);
 		//relocation
 		vector<int> joint_relocate(vector<Point2f> contour_, vector<int> joint_index, int num_c);
 		
@@ -147,31 +136,36 @@ namespace Tiling_tiles{
 		vector<Point2f> simulation_mid(string imaname, int inner_one, int cand_one);
 		vector<Point2f> simulation_tar(string imaname, int inner_one, int cand_one);
 
-		double com_each_pair(vector<Point2f> &first_interval, vector<Point2f> &second_interval, int &flag);
-		double com_optimal_score(vector<vector<Point2f>> &proto_interval_1, vector<vector<char>> &proto_first_char,
-			vector<vector<Point2f>> &proto_interval_2, vector<vector<char>> &proto_second_char, vector<pair<int, int>> &order_type);
-
-		double com_tra_sim(vector<Point2f> &first_interval, vector<char>&first_char, vector<Point2f> &second_interval, vector<char>&second_char, int &flag);
-
-		//simulation
-		double com_score_manual(string imagename1, string imagename2);
+		
 
 		//math
+
+
+		//old
+		void com_score(string imagename1, string imagename2);
+		vector<CandPat> compare_shapes(vector<Point2f> inner_c, int num_c);
+		CandPat min_mismatch(vector<Point2f> inner, vector<Point2f> cand, vector<double> inner_c, vector<double> cand_c, int theone, bool isFilp);
+		double quadr_mismatch(vector<Point2f> first_arr, vector<Point2f> second_arr, vector<double> first_c, vector<double> second_c, vector<pair<int, int>>& path, double zeta = 1.0);//zeta 是曲率值权重与距离值权重的倍数
+		bool one_situ_div(vector<int> results, vector<Point2f> contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname);
+		//from CandPat to contour
+		vector<Point2f> CandP2Contour(CandPat candp, int num);
+		bool coll_detection(Point2f shifting1, Point2f shifting2, vector<Point2f> &contour_s);
+		bool collision_pixel(vector<Point2f> dis_p, vector<Point2f> contour_s);
 		double warpAff_tra(vector<Point2f> &input_, vector<Point2f> &output_);
 		double warpAff_tra_sec(vector<Point2f> &input_, vector<Point2f> &output_, vector<char>&second_char, vector<char>&second_char_out);
 		double warpAff_tra_ref_y(vector<Point2f> &input_, vector<Point2f> &output_);
-
 		double re_warp_Aff(vector<Point2f> &input_, vector<Point2f> &output_, Point2f start, Point2f end);
 		double re_warp_Aff_sec(vector<Point2f> &input_, vector<Point2f> &output_, Point2f start, Point2f end);
 		double re_warp_Aff_ref(vector<Point2f> &input_, vector<Point2f> &output_, Point2f start, Point2f end);
-
 		double warpAff_sca(vector<Point2f> &input_, vector<Point2f> &output_, Point2f start, Point2f end);
-
 		double Aff_place(vector<Point2f> &input1, vector<Point2f> &input2, vector<vector<Point2f>> &prototwo, vector<Point2f> &protoAff, int flag);
-
 		double DTW(vector<Point2f> &first_arr, vector<Point2f> &second_arr);
 		void printPath(double d[][202], double d_c[][202], double dp[][202], int i, int j, vector<pair<int, int>>& path);
-
+		double com_each_pair(vector<Point2f> &first_interval, vector<Point2f> &second_interval, int &flag);
+		double com_optimal_score(vector<vector<Point2f>> &proto_interval_1, vector<vector<char>> &proto_first_char,
+			vector<vector<Point2f>> &proto_interval_2, vector<vector<char>> &proto_second_char, vector<pair<int, int>> &order_type);
+		double com_tra_sim(vector<Point2f> &first_interval, vector<char>&first_char, vector<Point2f> &second_interval, vector<char>&second_char, int &flag);
+		double com_score_manual(string imagename1, string imagename2);
 		//private:
 		//vector<pair<int, int>> dp_path;
 		//int dp[600][600];
@@ -212,13 +206,13 @@ namespace Tiling_tiles{
 	vector<double> curvature_com(const vector<Point2f> &contour_sam); //记录cos值
 	vector<int> most_convex_p(vector<Point2f> contour_, vector<double> cont_c, int max_cur_num);
 	vector<int> feature_points(vector<Point2f> contour_, double dmin, double dmax, double angle_cos);//amax 165; dmin 0.015Ls
-	vector<Point2f> extract_contour(vector<Point2f> contour_, vector<int> mark_p, vector<int> &midmark_p);
+	vector<Point2f> extract_contour(vector<Point2f> contour_, vector<int> mark_p, vector<int> &midmark_p, vector<vector<Point2f>> &four_place);
 	//translate tool
 	string int2string(int number);
 
 	//cross points
 	int line_intersection(Line_Seg line1, Line_Seg line2, Point2f &cross_p);
-	bool seif_intersect(vector<Point2f> &contour_);
+	bool self_intersect(vector<Point2f> &contour_);
 
 	//vector and cosin/ sin
 	Point2f unit_vec(Point2f vec);
