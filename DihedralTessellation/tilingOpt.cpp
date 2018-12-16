@@ -765,33 +765,63 @@ namespace Tiling_tiles{
 		vector<Point2f> one_loca_;
 		vector<Point2f> one_loca_f;
 		// 提取翻转围成的轮廓
-		double rota_angle = acos(cos_two_vector(Point2f(0, 1), line1)) / PI * 180;
-		if (sin_two_vector(Point2f(0, 1), line1) > 0) rota_angle = -rota_angle;
-		//cout << rota_angle << endl;
-		Point2f cent = center_p(contour_s);
-		Point2f line3(line1.y, -line1.x);
-		Point2f cross;
-		if (line_intersection(Line_Seg(contour_s[results[2]], contour_s[results[0]]), Line_Seg(cent, cent + 10 * line3), cross) != 1)
+		if (type == 0)
 		{
-			if (line_intersection(Line_Seg(contour_s[results[2]], contour_s[results[0]]), Line_Seg(cent, cent - 10 * line3), cross) != 1)
-				return true;
+			double rota_angle = acos(cos_two_vector(Point2f(0, 1), line1)) / PI * 180;
+			if (sin_two_vector(Point2f(0, 1), line1) > 0) rota_angle = -rota_angle;
+			//cout << rota_angle << endl;
+			Point2f cent = center_p(contour_s);
+			Point2f line3(line1.y, -line1.x);
+			Point2f cross;
+			if (line_intersection(Line_Seg(contour_s[results[2]], contour_s[results[0]]), Line_Seg(cent, cent + 10 * line3), cross) != 1)
+			{
+				if (line_intersection(Line_Seg(contour_s[results[2]], contour_s[results[0]]), Line_Seg(cent, cent - 10 * line3), cross) != 1)
+					return true;
+			}
+			Point2f cent_shift = 2 * (cross - cent);
+			one_loca = flip_only_coord(contour_s);
+			Mat rot_mat = getRotationMatrix2D(cent, 2 * rota_angle, 1);
+			transform(one_loca, one_loca, rot_mat);
+			Point2f shift = cent_shift + line1;
+			for (int i = 0; i < csize; i++)
+			{
+				one_loca[i] += shift;
+				one_loca_.push_back(contour_s[i] + line2);
+				one_loca_f.push_back(one_loca[i] + line2);
+			}
+			four_place.push_back(one_loca);
+			four_place.push_back(one_loca_);
+			four_place.push_back(one_loca_f);
 		}
-		Point2f cent_shift = 2 * (cross - cent);
-		one_loca = flip_only_coord(contour_s);
-		Mat rot_mat = getRotationMatrix2D(cent, 2 * rota_angle, 1);
-		transform(one_loca, one_loca, rot_mat);
-		Point2f shift = cent_shift + line1;
-		for (int i = 0; i < csize; i++)
+		else if (type == 1)
 		{
-			one_loca[i] += shift;
-			one_loca_.push_back(contour_s[i] + line2);
-			one_loca_f.push_back(one_loca[i] + line2);
+			double rota_angle = acos(cos_two_vector(Point2f(0, 1), line2)) / PI * 180;
+			if (sin_two_vector(Point2f(0, 1), line2) > 0) rota_angle = -rota_angle;
+			//cout << rota_angle << endl;
+			Point2f cent = center_p(contour_s);
+			Point2f line3(line2.y, -line2.x);
+			Point2f cross;
+			if (line_intersection(Line_Seg(contour_s[results[3]], contour_s[results[1]]), Line_Seg(cent, cent + 10 * line3), cross) != 1)
+			{
+				if (line_intersection(Line_Seg(contour_s[results[3]], contour_s[results[1]]), Line_Seg(cent, cent - 10 * line3), cross) != 1)
+					return true;
+			}
+			Point2f cent_shift = 2 * (cross - cent);
+			one_loca = flip_only_coord(contour_s);
+			Mat rot_mat = getRotationMatrix2D(cent, 2 * rota_angle, 1);
+			transform(one_loca, one_loca, rot_mat);
+			Point2f shift = cent_shift + line2;
+			for (int i = 0; i < csize; i++)
+			{
+				one_loca[i] += shift;
+				one_loca_.push_back(contour_s[i] + line1);
+				one_loca_f.push_back(one_loca[i] + line1);
+			}
+			four_place.push_back(one_loca_);
+			four_place.push_back(one_loca);			
+			four_place.push_back(one_loca_f);
 		}
-		four_place.push_back(one_loca);
-		four_place.push_back(one_loca_);
-		four_place.push_back(one_loca_f);
-		return_B = one_loca;
-		
+		return_B = one_loca_f;
 		vector<Point2f> a[2];
 		vector<Point2f> b[2];
 		for (int i = 0; i < 4; i++)
@@ -815,13 +845,14 @@ namespace Tiling_tiles{
 				b[1].push_back(four_place[2][(results[1] + i) % csize]);
 			}
 		}
-		//if (vertex_angle(a[0], b[0]) || vertex_angle(a[1], b[1])) return true;  //到这里用时0.009s
-		//if (coll_detec_bbx(four_place[0], four_place[1], 8) || coll_detec_bbx(four_place[0], four_place[2], 8) || coll_detec_bbx(four_place[0], four_place[3], 0) || coll_detec_bbx(four_place[1], four_place[2], 0))
-		//	return true;
-		//return_B = extract_contour(contour_s, results, return_p, four_place, 0);
+		if (vertex_angle(a[0], b[0]) || vertex_angle(a[1], b[1])) return true;  //到这里用时0.009s
+		if (coll_detec_bbx(four_place[0], four_place[1], 8) || coll_detec_bbx(four_place[0], four_place[2], 8) || coll_detec_bbx(four_place[0], four_place[3], 0) || coll_detec_bbx(four_place[1], four_place[2], 0))
+			return true;
+		if (type == 0) return_B = extract_contour(contour_s, results, return_p, four_place, 2);
+		if (type == 1) return_B = extract_contour(contour_s, results, return_p, four_place, 3);
 		////visual presentation
 		Point2f shift1 = Point2f(1200, 400) - (0.4*center_p(contour_s) + 0.2*line1 + 0.2*line2);
-		for (int i = 1; i < 4; i++)
+		for (int i = 0; i < 4; i++)
 		{
 			vector<Point2f> one_;
 			for (int j = 0; j < four_place[i].size(); j++)
@@ -840,14 +871,16 @@ namespace Tiling_tiles{
 		//  0:translation  1:rotation  2:flipping
 		int csize = contour_.size();
 		vector<Point2f> morphed_B;
+		Point2f line1 = contour_[mark_p[2]] - contour_[mark_p[0]];
+		Point2f line2 = contour_[mark_p[3]] - contour_[mark_p[1]];
 		if (type == 0)   // 提取translation围成的轮廓
 		{
 			if (four_place.empty())
 			{
 				vector<Point2f> shifting;
-				shifting.push_back(contour_[mark_p[2]] - contour_[mark_p[0]]);
-				shifting.push_back(contour_[mark_p[3]] - contour_[mark_p[1]]);
-				shifting.push_back((contour_[mark_p[2]] - contour_[mark_p[0]]) + (contour_[mark_p[3]] - contour_[mark_p[1]]));
+				shifting.push_back(line1);
+				shifting.push_back(line2);
+				shifting.push_back(line1 + line2);
 				vector<Point2f> one_loca;
 				four_place.push_back(contour_);
 				for (int i = 0; i < 3; i++)
@@ -891,7 +924,7 @@ namespace Tiling_tiles{
 				morphed_B.push_back(four_place[2][t]);
 			}
 		}
-		if (type == 1)   // 提取rotation围成的轮廓
+		else if (type == 1)   // 提取rotation围成的轮廓
 		{
 			if (four_place.empty())
 			{
@@ -901,7 +934,7 @@ namespace Tiling_tiles{
 				{
 					Point2f rota_cent = one_loca[mark_p[i]];
 					Mat rot_mat = getRotationMatrix2D(rota_cent, 180, 1);
-					transform(one_loca, one_loca, rot_mat);
+					cv::transform(one_loca, one_loca, rot_mat);
 					four_place.push_back(one_loca);
 				}
 			}
@@ -935,9 +968,133 @@ namespace Tiling_tiles{
 				morphed_B.push_back(four_place[1][t]);
 			}			
 		}
-		if (type == 2)
+		else if (type == 2)
 		{
-
+			if (four_place.empty())
+			{
+				four_place.push_back(contour_);
+				vector<Point2f> one_loca;
+				vector<Point2f> one_loca_;
+				vector<Point2f> one_loca_f;
+				double rota_angle = acos(cos_two_vector(Point2f(0, 1), line1)) / PI * 180;
+				if (sin_two_vector(Point2f(0, 1), line1) > 0) rota_angle = -rota_angle;
+				//cout << rota_angle << endl;
+				Point2f cent = center_p(contour_);
+				Point2f line3(line1.y, -line1.x);
+				Point2f cross;
+				if (line_intersection(Line_Seg(contour_[mark_p[2]], contour_[mark_p[0]]), Line_Seg(cent, cent + 10 * line3), cross) != 1)
+				{
+					if (line_intersection(Line_Seg(contour_[mark_p[2]], contour_[mark_p[0]]), Line_Seg(cent, cent - 10 * line3), cross) != 1)
+						cout<<"erong!"<<endl;
+				}
+				Point2f cent_shift = 2 * (cross - cent);
+				one_loca = flip_only_coord(contour_);
+				Mat rot_mat = getRotationMatrix2D(cent, 2 * rota_angle, 1);
+				cv::transform(one_loca, one_loca, rot_mat);
+				Point2f shift = cent_shift + line1;
+				for (int i = 0; i < csize; i++)
+				{
+					one_loca[i] += shift;
+					one_loca_.push_back(contour_[i] + line2);
+					one_loca_f.push_back(one_loca[i] + line2);
+				}
+				four_place.push_back(one_loca);
+				four_place.push_back(one_loca_);
+				four_place.push_back(one_loca_f);
+			}
+			int total_num = 0;
+			midmark_p.push_back(0);
+			for (int t = mark_p[0]; t >= 0; t--)
+			{
+				total_num++;
+				morphed_B.push_back(four_place[0][t]);
+			}
+			for (int t = csize - 1; t > mark_p[3]; t--)
+			{
+				total_num++;
+				morphed_B.push_back(four_place[0][t]);
+			}
+			midmark_p.push_back(total_num);
+			for (int t = mark_p[3]; t > mark_p[2]; t--)
+			{
+				total_num++;
+				morphed_B.push_back(four_place[3][t]);
+			}
+			midmark_p.push_back(total_num);
+			for (int t = mark_p[2]; t > mark_p[1]; t--)
+			{
+				morphed_B.push_back(four_place[2][t]);
+			}
+			midmark_p.push_back(total_num);
+			for (int t = mark_p[1]; t > mark_p[0]; t--)
+			{
+				total_num++;
+				morphed_B.push_back(four_place[1][t]);
+			}			
+		}
+		else if (type == 3)
+		{
+			if (four_place.empty())
+			{
+				four_place.push_back(contour_);
+				vector<Point2f> one_loca;
+				vector<Point2f> one_loca_;
+				vector<Point2f> one_loca_f;
+				double rota_angle = acos(cos_two_vector(Point2f(0, 1), line2)) / PI * 180;
+				if (sin_two_vector(Point2f(0, 1), line2) > 0) rota_angle = -rota_angle;
+				//cout << rota_angle << endl;
+				Point2f cent = center_p(contour_);
+				Point2f line3(line2.y, -line2.x);
+				Point2f cross;
+				if (line_intersection(Line_Seg(contour_[mark_p[3]], contour_[mark_p[1]]), Line_Seg(cent, cent + 10 * line3), cross) != 1)
+				{
+					if (line_intersection(Line_Seg(contour_[mark_p[3]], contour_[mark_p[1]]), Line_Seg(cent, cent - 10 * line3), cross) != 1)
+						cout << "erong!" << endl;
+				}
+				Point2f cent_shift = 2 * (cross - cent);
+				one_loca = flip_only_coord(contour_);
+				Mat rot_mat = getRotationMatrix2D(cent, 2 * rota_angle, 1);
+				cv::transform(one_loca, one_loca, rot_mat);
+				Point2f shift = cent_shift + line2;
+				for (int i = 0; i < csize; i++)
+				{
+					one_loca[i] += shift;
+					one_loca_.push_back(contour_[i] + line1);
+					one_loca_f.push_back(one_loca[i] + line1);
+				}
+				four_place.push_back(one_loca_);
+				four_place.push_back(one_loca);				
+				four_place.push_back(one_loca_f);
+			}
+			int total_num = 0;
+			midmark_p.push_back(0);
+			for (int t = mark_p[0]; t >= 0; t--)
+			{
+				total_num++;
+				morphed_B.push_back(four_place[0][t]);
+			}
+			for (int t = csize - 1; t > mark_p[3]; t--)
+			{
+				total_num++;
+				morphed_B.push_back(four_place[0][t]);
+			}
+			midmark_p.push_back(total_num);
+			for (int t = mark_p[3]; t > mark_p[2]; t--)
+			{
+				total_num++;
+				morphed_B.push_back(four_place[3][t]);
+			}
+			midmark_p.push_back(total_num);
+			for (int t = mark_p[2]; t > mark_p[1]; t--)
+			{
+				morphed_B.push_back(four_place[2][t]);
+			}
+			midmark_p.push_back(total_num);
+			for (int t = mark_p[1]; t > mark_p[0]; t--)
+			{
+				total_num++;
+				morphed_B.push_back(four_place[1][t]);
+			}
 		}
 		return morphed_B;
 	}

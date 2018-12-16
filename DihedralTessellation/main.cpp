@@ -759,13 +759,13 @@ int main(int argc, char** argv)
 		//------------------------------------------------------
 
 		//---------------------test flip------------------------
-		vector<int> p_p_index = prototile_first->partition_points("685");
+		vector<int> p_p_index = prototile_first->partition_points("19");
 		vector<Point2f> a = prototile_first->contour;
 		vector<int> mark;
 		mark.push_back(12);
-		mark.push_back(72);
-		mark.push_back(144);
-		mark.push_back(480);
+		mark.push_back(172);
+		mark.push_back(244);
+		mark.push_back(380);
 		Mat draw2 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 		
 		//Point2f t = a[479] - a[480];
@@ -781,8 +781,8 @@ int main(int argc, char** argv)
 		{
 			draw_poly(draw2, return_B, center_p(return_B));
 			MyLine(draw1, return_B[12], return_B[144], "green");
-			imshow("hahah", draw1);
-			imwrite("D:\\XXXX.PNG", draw1);
+			//imshow("hahah", draw1);
+			//imwrite("D:\\XXXX.PNG", draw1);
 		}
 		for (int i = 0; i < a.size(); i++)
 			circle(draw2, a[i], 2, Scalar(0, 0, 255), -1);
@@ -796,7 +796,7 @@ int main(int argc, char** argv)
 		MyLine(draw2, a[12], a[144], "green");
 		//draw_poly(draw1, return_B, center_p(return_B));
 		//imshow("hahah", draw1);
-		imshow("asdad", draw2);
+		//imshow("asdad", draw2);
 		//---------------------------------------------------
 
 	
