@@ -31,6 +31,12 @@ namespace Tiling_tiles{
 		double mismatch;
 	}CandPat;
 
+	typedef struct innerPat_pare
+	{
+		int type;
+		vector<int> in_interval;
+		vector<Point2f> in_contour;
+	}inPat;
 
 	class Line_Seg{
 	public:
@@ -110,8 +116,9 @@ namespace Tiling_tiles{
 		//three placement rules
 		bool translation_placement(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname);
 		bool rotation_placement(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname);
-		bool fliping(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname);
-		
+		bool fliping_placement(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname);
+		vector<Point2f> extract_contour(vector<Point2f> contour_, vector<int> mark_p, vector<int> &midmark_p, vector<vector<Point2f>> &four_place, int type);
+
 		//shapes comparing and candidate contour choosing
 		vector<pair<int, bool>> compare_choose_TAR(vector<Point2f> inner_c); //得到选择出的pattern的序号和是否翻转的标志
 		double tar_mismatch(vector<vector<double>> first_arr, vector<vector<double>> second_arr, vector<pair<int, int>>& path, int &sec_shift, int width = 4);//点对应匹配的筛选框宽度
@@ -206,9 +213,11 @@ namespace Tiling_tiles{
 	vector<double> curvature_com(const vector<Point2f> &contour_sam); //记录cos值
 	vector<int> most_convex_p(vector<Point2f> contour_, vector<double> cont_c, int max_cur_num);
 	vector<int> feature_points(vector<Point2f> contour_, double dmin, double dmax, double angle_cos);//amax 165; dmin 0.015Ls
-	vector<Point2f> extract_contour(vector<Point2f> contour_, vector<int> mark_p, vector<int> &midmark_p, vector<vector<Point2f>> &four_place);
 	//translate tool
 	string int2string(int number);
+
+	//flipping
+	vector<Point2f> flip_only_coord(vector<Point2f> cont_s, int flag = 0);
 
 	//cross points
 	int line_intersection(Line_Seg line1, Line_Seg line2, Point2f &cross_p);

@@ -134,26 +134,35 @@ namespace Tiling_tiles{
 					if (abs(p_p_index[m] - p_p_index[j]) < margin) continue;
 					for (int n = m + 1; n < ppindex; n++)
 					{
-						if (abs(p_p_index[n] - p_p_index[m]) < margin) continue;
+						if (abs(p_p_index[n] - p_p_index[m]) < margin) continue;                                                     
 						vector<Point2f> inner_contour;
 						vector<int> result_index;
 						vector<int> mid_interval; //mid_interval存储的是组合成的inner 的分段连接点
-						result_index.push_back(p_p_index[i]);
-						result_index.push_back(p_p_index[j]);
-						result_index.push_back(p_p_index[m]);
-						result_index.push_back(p_p_index[n]);
-	
-						////one_situ_div(result_index, contour_, inner_contour);					
-						//string image = int2string(count);
-						/*string conut_name = rootname + "\\placement " + int2string(count);
-						na = conut_name.c_str();
-						mkdir(na);*/
-						Mat drawing1 = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
-						if (translation_placement(result_index, contour_, inner_contour, mid_interval, drawing1))
-						//if (!one_situ_div(result_index, contour_, inner_contour, mid_interval, drawing1))
+						result_index.push_back(p_p_index[i]);                                                                       //总共讨论一下三种摆放规律，
+						result_index.push_back(p_p_index[j]);                                                                       //1.translation：以下所有该类摆放都以1-3,2-4为轴摆放 
+						result_index.push_back(p_p_index[m]);                                                                       //2.rotation：以下所有该类摆放都按照1-2-3-4的顺序摆放
+						result_index.push_back(p_p_index[n]);                                                                       //3:flipping:一下所有该类摆放都依次以1-3,2-4为轴旋转摆放
+						Mat drawing1 = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));                                              //其中flip又分为两种，分别沿1-3和2-4
+						if (!translation_placement(result_index, contour_, inner_contour, mid_interval, drawing1))
 						{
-							//cout << "-------------collision-------------" << endl;
-							continue;
+							count++;
+
+						}
+						Mat drawing2 = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
+						Mat drawing3 = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
+						vector<Mat> all_mat;
+						vector<string> all_png;
+						/*Line_Seg line1(contour_[p_p_index[m]], contour_[p_p_index[i]]);
+						Line_Seg line2(contour_[p_p_index[n]], contour_[p_p_index[j]]);
+						Point2f cross_p;
+						if (line_intersection(line1, line2, cross_p) != 1) continue;
+						if (abs(length_two_point2f(contour_[p_p_index[m]], cross_p) - length_two_point2f(contour_[p_p_index[i]], cross_p)) > 5) continue;
+						if (abs(length_two_point2f(contour_[p_p_index[n]], cross_p) - length_two_point2f(contour_[p_p_index[j]], cross_p)) > 5) continue;*/
+						if (!rotation_placement(result_index, contour_, inner_contour, mid_interval, drawing2))
+						//if (translation_placement(result_index, contour_, inner_contour, mid_interval, drawing1))
+						{
+							count++;
+							
 						}
 						//cout << "  i: " << p_p_index[i]
 						//	<< "   j: " << p_p_index[j]
@@ -192,7 +201,7 @@ namespace Tiling_tiles{
 			}
 		}
 		cout << "succeed count: " << count << endl;
-		/*if (count == 0)
+		if (count == 0)
 		{
 			cout << "no right placement" << endl;
 			return;
@@ -246,7 +255,8 @@ namespace Tiling_tiles{
 				draw_allplane(drawing_mid, mor_result, mid_inter, 0, 0.4);
 				Point2f cente = center_p(mor_result);
 				vector<int> return_p;
-				vector<Point2f> morphed_A = extract_contour(mor_result, mid_inter, return_p);
+				vector<vector<Point2f>> four_place;
+				vector<Point2f> morphed_A = extract_contour(mor_result, mid_inter, return_p, four_place,0);
 				//evalua_deformation();
 				draw_allplane(drawing_mA, morphed_A, return_p, 0, 0.4);
 				string filename = rootname + "\\";
@@ -257,7 +267,7 @@ namespace Tiling_tiles{
 				imshow("tiling_result_of_mid: ", drawing_mid);
 			}
 		}
-		*/
+		
 	}
 
 	void Tiling_opt::points_dividing(string imaname) //
@@ -414,7 +424,7 @@ namespace Tiling_tiles{
 					
 					vector<int> return_p;
 					vector<vector<Point2f>> four_;
-					vector<Point2f> morphed_B = extract_contour(inter_mid, mid_inter_new, return_p, four_);
+					vector<Point2f> morphed_B = extract_contour(inter_mid, mid_inter_new, return_p, four_,0);
 					//evalua_deformation();
 					Mat drawing_pro2 = Mat(1600, 2400, CV_8UC3, Scalar(255, 255, 255));
 					draw_allplane(drawing_pro2, morphed_B, return_p, 0, 0.4);
@@ -588,7 +598,7 @@ namespace Tiling_tiles{
 		Point2f cente = center_p(mor_result);
 		vector<int> return_p;
 		vector<vector<Point2f>> four_;
-		vector<Point2f> morphed_A = extract_contour(mor_result, mid_inter, return_p, four_);
+		vector<Point2f> morphed_A = extract_contour(mor_result, mid_inter, return_p, four_,0);
 		//evalua_deformation();
 		draw_allplane(drawing_mA, morphed_A, return_p, 0, 0.4);
 
@@ -651,6 +661,8 @@ namespace Tiling_tiles{
 		if (vertex_angle(a[0], b[0]) || vertex_angle(a[1], b[1])) return true;  //到这里用时0.009s
 		if(coll_detec_bbx(four_place[0], four_place[1],8)||coll_detec_bbx(four_place[0], four_place[2],8)||coll_detec_bbx(four_place[0], four_place[3],0)||coll_detec_bbx(four_place[1], four_place[2],0)) 
 			return true;
+		return_B = extract_contour(contour_s, results, return_p, four_place,0);
+		//visual presentation
 		Point2f shift1 = Point2f(1200, 400) - (0.4*center_p(contour_s) + 0.2*line1 + 0.2*line2);
 		for (int i = 0; i < 4; i++)
 		{
@@ -662,12 +674,18 @@ namespace Tiling_tiles{
 			}
 			draw_poly(countname, one_, center_p(one_));
 		}
-		return_B = extract_contour(contour_s, results, return_p, four_place);
+		
 		return false;
 	}
 
 	bool Tiling_opt::rotation_placement(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname)
 	{
+		Line_Seg line1(contour_s[results[2]], contour_s[results[0]]);
+		Line_Seg line2(contour_s[results[3]], contour_s[results[1]]);
+		Point2f cross_p;
+		if (line_intersection(line1, line2, cross_p) != 1) return true;
+		if (abs(length_two_point2f(contour_s[results[2]], cross_p) - length_two_point2f(contour_s[results[0]], cross_p)) > 5) return true;
+		if (abs(length_two_point2f(contour_s[results[3]], cross_p) - length_two_point2f(contour_s[results[1]], cross_p)) > 5) return true;
 		int csize = contour_s.size();
 		// 提取旋转围成的轮廓
 		vector<vector<Point2f>> four_place;
@@ -680,53 +698,38 @@ namespace Tiling_tiles{
 			transform(one_loca, one_loca, rot_mat);
 			four_place.push_back(one_loca);
 		}
-		
-		
-		
-		/*if (self_intersect(return_B))
-		{
-		return true;
-		cout << "collision" << endl;
+		vector<Point2f> a[4];                                                                                     //               ①    ③            共有①②③④四个图案，
+		for (int i = 0; i < 4; i++)                                                                               //               /\    /\			   对于旋转的情况来说，接触点的角为同一个角，
+		{                                                                                                         //              /1 \  /3 \           因此只需检测①和②中的顶点3，以此类推
+			if (i == 0)                                                                                           //             /    \/    \ 
+			{                                                                                                     //            2\   4/\4   /2
+				for (int j = 0; j < 4; j++)                                                                       //              \  /  \  /
+				{																								  //              3\/    \/1
+					a[j].push_back(four_place[0][results[j]]);                                                    //               /\    /\						                                                                      
+				}	                                                                                              //              /3 \  /1 \  
+		}		                                                                                                  //             /    \/    \          为保证在一定范围内可靠，
+			else                                                                                                  //            4\   2/\2  4/          比较时计算∠Pt-iPtPt+i的角度，
+			{	                                                                                                  //              \  /  \  /           i从1取到3
+			    for (int j = 0; j < 4; j++)                                                                       //              1\/    \/3          
+			    {                                                                                                 //               ②    ④
+					a[j].push_back(four_place[0][(results[j] - i + csize) % csize]);
+					a[j].push_back(four_place[0][(results[j] + i) % csize]);                                                                                            
+				}	                              
+			}		                              
 		}
-		else return false;*/
-		//vector<Point2f> a[2];
-		//vector<Point2f> b[2];
-		//for (int i = 0; i < 4; i++)
-		//{
-		//	if (i == 0)
-		//	{																								  //              ①     ③            共有①②③④四个图案，
-		//		a[0].push_back(four_place[0][results[2]]);                                                    //               /\    /\			   检测①中的顶点3与②中顶点1，	
-		//		a[1].push_back(four_place[0][results[3]]);                                                    //              /1 \  /1 \           以及①中顶点4与③中顶点2的角度之和
-		//		b[0].push_back(four_place[1][results[0]]);                                                    //             /    \/    \         
-		//		b[1].push_back(four_place[2][results[1]]);                                                    //            2\   4/\2   /4
-		//	}                                                                                                 //              \  /  \  /
-		//	else                                                                                              //              3\/    \/3
-		//	{                                                                                                 //               /\    /\     
-		//		a[0].push_back(four_place[0][(results[2] - i + csize) % csize]);                              //              /1 \  /  \ 
-		//		a[1].push_back(four_place[0][(results[3] - i + csize) % csize]);                              //             /    \/    \          为保证在一定范围内可靠，
-		//		a[0].push_back(four_place[0][(results[2] + i) % csize]);                                      //            2\   4/\    /          比较时计算∠Pt-iPtPt+i的角度，
-		//		a[1].push_back(four_place[0][(results[3] + i) % csize]);                                      //              \  /  \  /           i从1取到3
-		//		b[0].push_back(four_place[1][(results[0] - i + csize) % csize]);                              //              3\/    \/
-		//		b[1].push_back(four_place[2][(results[1] - i + csize) % csize]);                              //               ②    ④
-		//		b[0].push_back(four_place[1][(results[0] + i) % csize]);
-		//		b[1].push_back(four_place[2][(results[1] + i) % csize]);
-		//	}
-		//}
-		//if (vertex_angle(a[0], b[0]) || vertex_angle(a[1], b[1])) return true;  //到这里用时0.009s
-		//if (coll_detec_bbx(four_place[0], four_place[1], 8) || coll_detec_bbx(four_place[0], four_place[2], 8) || coll_detec_bbx(four_place[0], four_place[3], 0) || coll_detec_bbx(four_place[1], four_place[2], 0))
-		//	return true;
-		//Point2f shift1 = Point2f(1200, 400) - (0.4*center_p(contour_s) + 0.2*line1 + 0.2*line2);
-		//for (int i = 0; i < 4; i++)
-		//{
-		//	vector<Point2f> one_;
-		//	for (int j = 0; j < four_place[i].size(); j++)
-		//	{
-		//		Point2f p = four_place[i][j] * 0.4 + shift1;
-		//		one_.push_back(p);
-		//	}
-		//	draw_poly(countname, one_, center_p(one_));
-		//}
-		//return_B = extract_contour(contour_s, results, return_p, four_place);
+
+		if (vertex_angle(a[0], a[0]) || vertex_angle(a[1], a[1]) || vertex_angle(a[2], a[2]) || vertex_angle(a[3], a[3])) return true; //到这里用时0.009s
+
+		for (int i = 0; i < 4; i++)
+		{
+			for (int j = i + 1; j < 4; j++)
+			{
+				if (coll_detec_bbx(four_place[i], four_place[j], 8))
+					return true;
+			}
+		}
+		return_B = extract_contour(contour_s, results, return_p, four_place,1);
+		//visual presentation
 		vector<Point2f> all_cent;
 		Point2f allcenter = Point2f(0, 0);
 		for (int i = 0; i < 4; i++)
@@ -735,7 +738,7 @@ namespace Tiling_tiles{
 			all_cent.push_back(t);
 			allcenter += t;
 		}
-		Point2f shift = Point2f(400, 400) - 0.1*allcenter;
+		Point2f shift = Point2f(1200, 400) - 0.1*allcenter;
 		for (int i = 0; i < 4; i++)
 		{
 			vector<Point2f> one_;
@@ -748,8 +751,196 @@ namespace Tiling_tiles{
 		}
 		return false;
 	}
+	
+	bool Tiling_opt::fliping_placement(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname)
+	{
+		int type = 0; //0:以1-3为轴翻转 1:以2-4为轴
+		int csize = contour_s.size();
+		Point2f line1 = contour_s[results[2]] - contour_s[results[0]];
+		Point2f line2 = contour_s[results[3]] - contour_s[results[1]];
+		if (abs(cos_two_vector(line1, line2))>0.06) return true;
+		vector<vector<Point2f>> four_place;
+		four_place.push_back(contour_s);
+		vector<Point2f> one_loca;
+		vector<Point2f> one_loca_;
+		vector<Point2f> one_loca_f;
+		// 提取翻转围成的轮廓
+		double rota_angle = acos(cos_two_vector(Point2f(0, 1), line1)) / PI * 180;
+		if (sin_two_vector(Point2f(0, 1), line1) > 0) rota_angle = -rota_angle;
+		//cout << rota_angle << endl;
+		Point2f cent = center_p(contour_s);
+		Point2f line3(line1.y, -line1.x);
+		Point2f cross;
+		if (line_intersection(Line_Seg(contour_s[results[2]], contour_s[results[0]]), Line_Seg(cent, cent + 10 * line3), cross) != 1)
+		{
+			if (line_intersection(Line_Seg(contour_s[results[2]], contour_s[results[0]]), Line_Seg(cent, cent - 10 * line3), cross) != 1)
+				return true;
+		}
+		Point2f cent_shift = 2 * (cross - cent);
+		one_loca = flip_only_coord(contour_s);
+		Mat rot_mat = getRotationMatrix2D(cent, 2 * rota_angle, 1);
+		transform(one_loca, one_loca, rot_mat);
+		Point2f shift = cent_shift + line1;
+		for (int i = 0; i < csize; i++)
+		{
+			one_loca[i] += shift;
+			one_loca_.push_back(contour_s[i] + line2);
+			one_loca_f.push_back(one_loca[i] + line2);
+		}
+		four_place.push_back(one_loca);
+		four_place.push_back(one_loca_);
+		four_place.push_back(one_loca_f);
+		return_B = one_loca;
+		
+		vector<Point2f> a[2];
+		vector<Point2f> b[2];
+		for (int i = 0; i < 4; i++)
+		{
+			if (i == 0)
+			{																								  //              ①     ③            共有①②③④四个图案，
+				a[0].push_back(four_place[0][results[2]]);                                                    //               /\    /\			   检测①中的顶点3与②中顶点1，	
+				a[1].push_back(four_place[0][results[3]]);                                                    //              /1 \  /1 \           以及①中顶点4与③中顶点2的角度之和
+				b[0].push_back(four_place[1][results[0]]);                                                    //             /    \/    \         
+				b[1].push_back(four_place[2][results[1]]);                                                    //            2\   4/\2   /4
+			}                                                                                                 //              \  /  \  /
+			else                                                                                              //              3\/    \/3
+			{                                                                                                 //               /\    /\     
+				a[0].push_back(four_place[0][(results[2] - i + csize) % csize]);                              //              /1 \  /1 \ 
+				a[1].push_back(four_place[0][(results[3] - i + csize) % csize]);                              //             /    \/    \          为保证在一定范围内可靠，
+				a[0].push_back(four_place[0][(results[2] + i) % csize]);                                      //            4\   2/\4  2/          比较时计算∠Pt-iPtPt+i的角度，
+				a[1].push_back(four_place[0][(results[3] + i) % csize]);                                      //              \  /  \  /           i从1取到3
+				b[0].push_back(four_place[1][(results[0] - i + csize) % csize]);                              //              3\/   3\/
+				b[1].push_back(four_place[2][(results[1] - i + csize) % csize]);                              //               ②    ④
+				b[0].push_back(four_place[1][(results[0] + i) % csize]);
+				b[1].push_back(four_place[2][(results[1] + i) % csize]);
+			}
+		}
+		//if (vertex_angle(a[0], b[0]) || vertex_angle(a[1], b[1])) return true;  //到这里用时0.009s
+		//if (coll_detec_bbx(four_place[0], four_place[1], 8) || coll_detec_bbx(four_place[0], four_place[2], 8) || coll_detec_bbx(four_place[0], four_place[3], 0) || coll_detec_bbx(four_place[1], four_place[2], 0))
+		//	return true;
+		//return_B = extract_contour(contour_s, results, return_p, four_place, 0);
+		////visual presentation
+		Point2f shift1 = Point2f(1200, 400) - (0.4*center_p(contour_s) + 0.2*line1 + 0.2*line2);
+		for (int i = 1; i < 4; i++)
+		{
+			vector<Point2f> one_;
+			for (int j = 0; j < four_place[i].size(); j++)
+			{
+				Point2f p = four_place[i][j] * 0.4 + shift1;
+				one_.push_back(p);
+			}
+			draw_poly(countname, one_, center_p(one_));
+		}
 
+		return false;
+	}
 
+	vector<Point2f> Tiling_opt::extract_contour(vector<Point2f> contour_, vector<int> mark_p, vector<int> &midmark_p, vector<vector<Point2f>> &four_place, int type)
+	{   
+		//  0:translation  1:rotation  2:flipping
+		int csize = contour_.size();
+		vector<Point2f> morphed_B;
+		if (type == 0)   // 提取translation围成的轮廓
+		{
+			if (four_place.empty())
+			{
+				vector<Point2f> shifting;
+				shifting.push_back(contour_[mark_p[2]] - contour_[mark_p[0]]);
+				shifting.push_back(contour_[mark_p[3]] - contour_[mark_p[1]]);
+				shifting.push_back((contour_[mark_p[2]] - contour_[mark_p[0]]) + (contour_[mark_p[3]] - contour_[mark_p[1]]));
+				vector<Point2f> one_loca;
+				four_place.push_back(contour_);
+				for (int i = 0; i < 3; i++)
+				{
+					Point2f move = shifting[i];
+					for (int j = 0; j < csize; j++)
+					{
+						one_loca.push_back(contour_[j] + move);
+					}
+					four_place.push_back(one_loca);
+					one_loca.swap(vector<Point2f>());
+				}
+			}
+			int total_num = 0;
+			midmark_p.push_back(0);
+			for (int t = mark_p[3]; t > mark_p[2]; t--)
+			{
+				total_num++;
+				morphed_B.push_back(four_place[0][t]);
+			}
+			midmark_p.push_back(total_num);
+			for (int t = mark_p[0]; t >= 0; t--)
+			{
+				total_num++;
+				morphed_B.push_back(four_place[1][t]);
+			}
+			for (int t = csize - 1; t > mark_p[3]; t--)
+			{
+				total_num++;
+				morphed_B.push_back(four_place[1][t]);
+			}
+			midmark_p.push_back(total_num);
+			for (int t = mark_p[1]; t > mark_p[0]; t--)
+			{
+				total_num++;
+				morphed_B.push_back(four_place[3][t]);
+			}
+			midmark_p.push_back(total_num);
+			for (int t = mark_p[2]; t > mark_p[1]; t--)
+			{
+				morphed_B.push_back(four_place[2][t]);
+			}
+		}
+		if (type == 1)   // 提取rotation围成的轮廓
+		{
+			if (four_place.empty())
+			{
+				vector<Point2f> one_loca = contour_;
+				four_place.push_back(one_loca);
+				for (int i = 0; i < 3; i++)
+				{
+					Point2f rota_cent = one_loca[mark_p[i]];
+					Mat rot_mat = getRotationMatrix2D(rota_cent, 180, 1);
+					transform(one_loca, one_loca, rot_mat);
+					four_place.push_back(one_loca);
+				}
+			}
+			int total_num = 0;
+			midmark_p.push_back(0);
+			for (int t = mark_p[0]; t >= 0; t--)
+			{
+				total_num++;
+				morphed_B.push_back(four_place[0][t]);
+			}
+			for (int t = csize - 1; t > mark_p[3]; t--)
+			{
+				total_num++;
+				morphed_B.push_back(four_place[0][t]);
+			}
+			midmark_p.push_back(total_num);
+			for (int t = mark_p[3]; t > mark_p[2]; t--)
+			{
+				total_num++;
+				morphed_B.push_back(four_place[3][t]);
+			}
+			midmark_p.push_back(total_num);
+			for (int t = mark_p[2]; t > mark_p[1]; t--)
+			{
+				morphed_B.push_back(four_place[2][t]);
+			}
+			midmark_p.push_back(total_num);
+			for (int t = mark_p[1]; t > mark_p[0]; t--)
+			{
+				total_num++;
+				morphed_B.push_back(four_place[1][t]);
+			}			
+		}
+		if (type == 2)
+		{
+
+		}
+		return morphed_B;
+	}
 	
 	bool Tiling_opt::coll_detec_bbx(vector<Point2f> contour1, vector<Point2f> contour2,int threshold)
 	{
@@ -860,9 +1051,13 @@ namespace Tiling_tiles{
 			angle_sin = sin_two_vector((angle2[2 * i + 1] - angle2[0]), (angle2[2 * i + 2] - angle2[0]));
 			if (angle_sin > 0) ang2 = acos(angle_cos) / PI * 180;
 			else ang2 = 360 - acos(angle_cos) / PI * 180;
-			if (ang1 + ang2>360) return true;
+			if (ang1 + ang2 > 361)
+			{
+				//cout << ang1 <<"  "<<ang2<< endl;
+				return true;
+			}
 		}
-		//cout << angle << endl;
+		
 		return false;
 	}
 
@@ -1310,7 +1505,7 @@ namespace Tiling_tiles{
 			Point2f cente = center_p(inter_mid);
 			vector<int> return_p;
 			vector<vector<Point2f>> four_;
-			vector<Point2f> morphed_A = extract_contour(inter_mid, mid_inter, return_p, four_);
+			vector<Point2f> morphed_A = extract_contour(inter_mid, mid_inter, return_p, four_,0);
 			//evalua_deformation();
 			draw_allplane(drawing_mA, morphed_A, return_p, 0, 0.4);
 

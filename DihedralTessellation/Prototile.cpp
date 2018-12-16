@@ -326,40 +326,6 @@ namespace Tiling_tiles{
 		}		
 	}
 
-	vector<Point2f> Prototile::flip_contour(vector<Point2f> cont_s, int flag)
-	{
-		Point2f ccen = center_p(cont_s);
-		int cont_size = cont_s.size();
-
-		//flag==0 水平翻转
-		if (flag == 0)
-		{
-			for (int i = 0; i < cont_size; i++)
-			{
-				cont_s[i].x = 2 * ccen.x - cont_s[i].x;
-			}
-			for (int i = 0; i < cont_size / 2; i++)
-			{
-				Point2f mid = cont_s[i];
-				cont_s[i] = cont_s[cont_size - 1 - i];
-				cont_s[cont_size - 1 - i] = mid;
-			}
-		}
-		else if (flag == 1)
-		{
-			for (int i = 0; i < cont_size; i++)
-			{
-				cont_s[i].y = 2 * ccen.y - cont_s[i].y;
-			}
-			for (int i = 0; i < cont_size / 2; i++)
-			{
-				Point2f mid = cont_s[i];
-				cont_s[i] = cont_s[cont_size - 1 - i];
-				cont_s[cont_size - 1 - i] = mid;
-			}
-		}
-		return cont_s;
-	}
 
 	vector<vector<double>> Prototile::compute_TAR(vector<Point2f> &contour_, double &shape_complexity)
 	{
@@ -490,6 +456,40 @@ namespace Tiling_tiles{
 		return all_order;
 	}
 
+	vector<Point2f> Prototile::flip_contour(vector<Point2f> cont_s, int flag)
+	{
+		Point2f ccen = center_p(cont_s);
+		int cont_size = cont_s.size();
+
+		//flag==0 水平翻转
+		if (flag == 0)
+		{
+			for (int i = 0; i < cont_size; i++)
+			{
+				cont_s[i].x = 2 * ccen.x - cont_s[i].x;
+			}
+			for (int i = 0; i < cont_size / 2; i++)
+			{
+				Point2f mid = cont_s[i];
+				cont_s[i] = cont_s[cont_size - 1 - i];
+				cont_s[cont_size - 1 - i] = mid;
+			}
+		}
+		else if (flag == 1)
+		{
+			for (int i = 0; i < cont_size; i++)
+			{
+				cont_s[i].y = 2 * ccen.y - cont_s[i].y;
+			}
+			for (int i = 0; i < cont_size / 2; i++)
+			{
+				Point2f mid = cont_s[i];
+				cont_s[i] = cont_s[cont_size - 1 - i];
+				cont_s[cont_size - 1 - i] = mid;
+			}
+		}
+		return cont_s;
+	}
 	//void Prototile::cur_normalize()
 	//{
 	//	for (int n = 0; n < 5; n++)

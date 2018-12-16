@@ -619,69 +619,6 @@ namespace Tiling_tiles{
 		return index_num;
 	}
 
-	vector<Point2f> extract_contour(vector<Point2f> contour_, vector<int> mark_p, vector<int> &midmark_p, vector<vector<Point2f>> &four_place)
-	{
-		Point2f line1 = contour_[mark_p[2]] - contour_[mark_p[0]];
-		Point2f line2 = contour_[mark_p[3]] - contour_[mark_p[1]];
-		//Point2f cente = center_p(inter_mid);
-		int csize = contour_.size();
-		//vector<vector<Point2f>> four_place;
-		//four_place.swap(vector<vector<Point2f>>());
-		if (four_place.empty())
-		{
-			vector<Point2f> one_loca;
-			// 提取围成的轮廓，目前为止只考虑正向摆放，不考虑旋转和翻转
-			four_place.push_back(contour_);
-			for (int i = 0; i < csize; i++)
-			{
-				one_loca.push_back(contour_[i] + line1);
-			}
-			four_place.push_back(one_loca);
-			one_loca.swap(vector<Point2f>());
-			for (int i = 0; i < csize; i++)
-			{
-				one_loca.push_back(contour_[i] + line2);
-			}
-			four_place.push_back(one_loca);
-			one_loca.swap(vector<Point2f>());
-			for (int i = 0; i < csize; i++)
-			{
-				one_loca.push_back(contour_[i] + line1 + line2);
-			}
-			four_place.push_back(one_loca);
-		}		
-		int total_num = 0;
-		midmark_p.push_back(0);
-		vector<Point2f> morphed_B;
-		for (int t = mark_p[3]; t > mark_p[2]; t--)
-		{
-			total_num++;
-			morphed_B.push_back(four_place[0][t]);
-		}
-		midmark_p.push_back(total_num);
-		for (int t = mark_p[0]; t >= 0; t--)
-		{
-			total_num++;
-			morphed_B.push_back(four_place[1][t]);
-		}
-		for (int t = csize - 1; t > mark_p[3]; t--)
-		{
-			total_num++;
-			morphed_B.push_back(four_place[1][t]);
-		}
-		midmark_p.push_back(total_num);
-		for (int t = mark_p[1]; t > mark_p[0]; t--)
-		{
-			total_num++;
-			morphed_B.push_back(four_place[3][t]);
-		}
-		midmark_p.push_back(total_num);
-		for (int t = mark_p[2]; t > mark_p[1]; t--)
-		{
-			morphed_B.push_back(four_place[2][t]);
-		}
-		return morphed_B;
-	}
 
 	double Tiling_opt::warpAff_tra(vector<Point2f> &input_, vector<Point2f> &output_)
 	{
@@ -1374,6 +1311,28 @@ namespace Tiling_tiles{
 		}
 		ch[index] = '\0';
 		return ch;
+	}
+
+	vector<Point2f> flip_only_coord(vector<Point2f> cont_s, int flag)
+	{
+		Point2f ccen = center_p(cont_s);
+		int cont_size = cont_s.size();
+		//flag==0 水平翻转
+		if (flag == 0)
+		{
+			for (int i = 0; i < cont_size; i++)
+			{
+				cont_s[i].x = 2 * ccen.x - cont_s[i].x;
+			}
+		}
+		else if (flag == 1)
+		{
+			for (int i = 0; i < cont_size; i++)
+			{
+				cont_s[i].y = 2 * ccen.y - cont_s[i].y;
+			}
+		}
+		return cont_s;
 	}
 
 	vector<Point2f> sampling(vector<Point2f> &contour_, int points_num)

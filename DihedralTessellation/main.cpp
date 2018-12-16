@@ -20,11 +20,11 @@ int main(int argc, char** argv)
 	int f = 7;
 	if (f == 0) //已有dataset
 	{
-		tiling_opt->tiliing_generation("685");
-		//int iii[20] = {22,46,51,65,106,152,208,288,384,432,439,474,496,511,524,606,621,654,652,670};
-		//for (int i = 0; i < 20; i++)
+		tiling_opt->tiliing_generation("1");
+		//int iii[20] = {1,2,9,23,36,50,54,55,61,125};//{22,46,51,65,106,152,208,288,384,432,439,474,496,511,524,606,621,654,652,670};
+		//for (int i = 0; i < 10; i++)
 		//{
-		//	//tiling_opt->points_dividing(int2string(iii[i]));
+		////	//tiling_opt->points_dividing(int2string(iii[i]));
 		//	tiling_opt->Tiling_clear();
 		//	tiling_opt->tiliing_generation(int2string(iii[i]));
 		//	system("cls");
@@ -712,7 +712,7 @@ int main(int argc, char** argv)
 		//draw_poly(drawing3, a, center_p(a));
 		//for (int i = 0; i < a.size(); i++)
 		//	b.push_back(a[i] + Point2f(-306, -200));
-		///*Point2f shift = Point2f(600, 600);
+		//Point2f shift = Point2f(600, 600);
 		//for (int i = 0; i < a.size(); i++)
 		//{
 		//a[i] += shift;
@@ -729,6 +729,36 @@ int main(int argc, char** argv)
 
 		//-------------------test rotation------------------------------
 
+		//vector<int> p_p_index = prototile_first->partition_points("685");
+		//vector<Point2f> a = prototile_first->contour;
+		//vector<int> mark;
+		//mark.push_back(12);
+		//mark.push_back(72);
+		//mark.push_back(144);
+		//mark.push_back(480);
+		//Mat draw2 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		//for (int i = 0; i < a.size(); i++)
+		//	circle(draw2, a[i], 2, Scalar(0, 0, 255), -1);
+		//circle(draw2, a[12], 6, Scalar(0, 255, 0), -1);
+		//for (int j = 1; j < 4;j++)
+		//	circle(draw2, a[mark[j]], 4, Scalar(0, 255, 0), -1);
+		////Point2f t = a[479] - a[480];
+		////Point2f tt = a[481] - a[480];
+		////cout << t << " " << tt << "  " << cos_two_vector(t, tt) <<"  "<<sin_two_vector(t,tt)<< endl;;
+		//vector<int> midmark;
+		//vector<Point2f> return_B;
+		//Mat draw1 = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
+		//if(tiling_opt->rotation_placement(mark, a, return_B, midmark, draw1)) cout<<" pengzhuang "<<endl;
+		//else
+		//{
+		//	draw_poly(draw1,return_B,Point2f(400,400));
+		//	imshow("hahah", draw1);
+		//	imwrite("D:\\XXXX.PNG", draw1);
+		//}		
+		//imshow("asdad", draw2);
+		//------------------------------------------------------
+
+		//---------------------test flip------------------------
 		vector<int> p_p_index = prototile_first->partition_points("685");
 		vector<Point2f> a = prototile_first->contour;
 		vector<int> mark;
@@ -736,12 +766,38 @@ int main(int argc, char** argv)
 		mark.push_back(72);
 		mark.push_back(144);
 		mark.push_back(480);
+		Mat draw2 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		
+		//Point2f t = a[479] - a[480];
+		//Point2f tt = a[481] - a[480];
+		//cout << t << " " << tt << "  " << cos_two_vector(t, tt) <<"  "<<sin_two_vector(t,tt)<< endl;;
 		vector<int> midmark;
 		vector<Point2f> return_B;
-		Mat draw1 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		tiling_opt->rotation_placement(mark, a, return_B,midmark,draw1);
-		imshow("hahah", draw1);
-		imwrite("D:\\XXXX.PNG", draw1);
+		Mat draw1 = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
+		Mat rot_mat = getRotationMatrix2D(center_p(a), 50, 1);
+		transform(a, return_B, rot_mat);
+		if (tiling_opt->fliping_placement(mark, a, return_B, midmark, draw1)) cout << " pengzhuang " << endl;
+		else
+		{
+			draw_poly(draw2, return_B, center_p(return_B));
+			MyLine(draw1, return_B[12], return_B[144], "green");
+			imshow("hahah", draw1);
+			imwrite("D:\\XXXX.PNG", draw1);
+		}
+		for (int i = 0; i < a.size(); i++)
+			circle(draw2, a[i], 2, Scalar(0, 0, 255), -1);
+		circle(draw2, a[12], 6, Scalar(0, 255, 0), -1);
+		circle(draw2, return_B[12], 6, Scalar(0, 255, 0), -1);
+		for (int j = 1; j < 4; j++)
+		{
+			circle(draw2, a[mark[j]], 4, Scalar(0, 255, 0), -1);
+			circle(draw2, return_B[mark[j]], 4, Scalar(0, 255, 0), -1);
+		}
+		MyLine(draw2, a[12], a[144], "green");
+		//draw_poly(draw1, return_B, center_p(return_B));
+		//imshow("hahah", draw1);
+		imshow("asdad", draw2);
+		//---------------------------------------------------
 
 	
 		////简单的检测
