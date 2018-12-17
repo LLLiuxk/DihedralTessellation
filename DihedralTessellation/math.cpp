@@ -73,7 +73,7 @@ namespace Tiling_tiles{
 		//circle(drawing_, center, 4, Scalar(0, 255, 255), -1);
 	}
 
-	void draw_allplane(Mat &drawing_, vector<Point2f> contour_, vector<int> vec_, int type, double scale)
+	void draw_allplane(Mat &drawing_, vector<Point2f> contour_, vector<int> vec_,  double scale, int type)
 	{
 		int drawrow = drawing_.rows;
 		int drawcol = drawing_.cols;
@@ -86,20 +86,19 @@ namespace Tiling_tiles{
 				contour_[i] = scale*contour_[i];
 			}
 		}
-		Point2f center = center_p(contour_);
 		vector<Point2f> allcent_in_plane;
+		vector<Point2f> allcent_in_plane_;
 		//vector<vector<Point2f>> four_place;
 		//vector<Point2f> one_loca;
 		if (type == 0) //translation
 		{
 			stack<Point2f> cent_stack;
-			Point2f step[6];
+			Point2f step[4];
 			step[0] = contour_[vec_[2]] - contour_[vec_[0]];
 			step[1] = contour_[vec_[3]] - contour_[vec_[1]];
-			step[2] = step[0] + step[1];
-			step[3] = -step[0];
-			step[4] = -step[1];
-			step[5] = -step[2];
+			step[2] = -step[0];
+			step[3] = -step[1];
+
 			Point2f cenp = Point2f(drawrow / 2, drawcol/2);
 			draw_poly(drawing_, contour_, cenp);
 			cent_stack.push(cenp);
@@ -107,7 +106,59 @@ namespace Tiling_tiles{
 			{
 				Point2f top_p = cent_stack.top();
 				cent_stack.pop();
-				for (int i = 0; i < 6; i++)
+				for (int i = 0; i < 4; i++)
+				{
+					cenp = top_p + step[i];
+					if ((cenp.x<drawcol + border) && (cenp.x>-border) && (cenp.y<drawrow + border) && (cenp.y>-border))
+					{
+						int flag = 0;
+						for (vector<Point2f>::iterator it = allcent_in_plane.begin(); it != allcent_in_plane.end(); it++)
+						{
+							double leng = length_two_point2f(cenp, *it);
+							if (leng < 10)
+							{
+								flag = 1;
+								break;
+							}
+						}
+						if (flag == 0)
+						{
+							cent_stack.push(cenp);
+							allcent_in_plane.push_back(cenp);
+							draw_poly(drawing_, contour_, cenp);
+						}		
+					}
+				}
+			}
+		}
+		else if (type == 1) //rotation
+		{
+			Point2f center = center_p(contour_);
+			vector<Point2f> contour_r;
+			Point2f rota_cent = contour_[vec_[0]];
+			Mat rot_mat = getRotationMatrix2D(rota_cent, 180, 1);
+			transform(contour_, contour_r, rot_mat);
+			Point2f shift = center_p(contour_r) - center;
+
+			stack<Point2f> cent_stack;
+			stack<Point2f> cent_stack_r;
+			Point2f step[4];
+			step[0] = 2*(contour_[vec_[1]] - contour_[vec_[0]]);
+			step[1] = 2*(contour_[vec_[3]] - contour_[vec_[0]]);
+			step[2] = -step[0];
+			step[3] = -step[1];
+
+			Point2f cenp = Point2f(drawrow / 2, drawcol / 2);
+			Point2f cenp_r = cenp + shift;
+			draw_poly(drawing_, contour_, cenp);
+			draw_poly(drawing_, contour_r, cenp_r);
+			cent_stack.push(cenp);
+			cent_stack_r.push(cenp_r);
+			while (!cent_stack.empty())
+			{
+				Point2f top_p = cent_stack.top();
+				cent_stack.pop();
+				for (int i = 0; i < 4; i++)
 				{
 					cenp = top_p + step[i];
 					if ((cenp.x<drawcol + border) && (cenp.x>-border) && (cenp.y<drawrow + border) && (cenp.y>-border))
@@ -128,16 +179,229 @@ namespace Tiling_tiles{
 							allcent_in_plane.push_back(cenp);
 							draw_poly(drawing_, contour_, cenp);
 						}
-
-						
 					}
 				}
 			}
-			
+			while (!cent_stack_r.empty())
+			{
+				Point2f top_p = cent_stack_r.top();
+				cent_stack_r.pop();
+				for (int i = 0; i < 4; i++)
+				{
+					cenp_r = top_p + step[i];
+					if ((cenp_r.x<drawcol + border) && (cenp_r.x>-border) && (cenp_r.y<drawrow + border) && (cenp_r.y>-border))
+					{
+						int flag = 0;
+						for (vector<Point2f>::iterator it = allcent_in_plane_.begin(); it != allcent_in_plane_.end(); it++)
+						{
+							double leng = length_two_point2f(cenp_r, *it);
+							if (leng < 10)
+							{
+								flag = 1;
+								break;
+							}
+						}
+						if (flag == 0)
+						{
+							cent_stack_r.push(cenp_r);
+							allcent_in_plane_.push_back(cenp_r);
+							draw_poly(drawing_, contour_r, cenp_r);
+						}
+					}
+				}
+			}
 		}
-		else if (type == 1) //rotation
+		else if (type == 2) //flipping (1-3)
 		{
-			cout << "no";
+			Point2f line1 = contour_[vec_[2]] - contour_[vec_[0]];
+			Point2f line2 = contour_[vec_[3]] - contour_[vec_[1]];
+			double rota_angle = acos(cos_two_vector(Point2f(0, 1), line1)) / PI * 180;
+			if (sin_two_vector(Point2f(0, 1), line1) > 0) rota_angle = -rota_angle;
+			//cout << rota_angle << endl;
+			Point2f center = center_p(contour_);
+			Point2f line3(line1.y, -line1.x);
+			Point2f cross;
+			if (line_intersection(Line_Seg(contour_[vec_[2]], contour_[vec_[0]]), Line_Seg(center, center + 10 * line3), cross) != 1)
+			{
+				if (line_intersection(Line_Seg(contour_[vec_[2]], contour_[vec_[0]]), Line_Seg(center, center - 10 * line3), cross) != 1)
+					cout<<"Error!"<<endl;
+			}
+			Point2f cent_shift = 2 * (cross - center);
+			vector<Point2f> contour_r = flip_only_coord(contour_);
+			Mat rot_mat = getRotationMatrix2D(center, 2 * rota_angle, 1);
+			transform(contour_r, contour_r, rot_mat);
+			Point2f shifting = cent_shift + line1;
+			for (int i = 0; i < con_size; i++)
+			{
+				contour_r[i] += shifting;
+			}
+			Point2f shift = center_p(contour_r) - center;
+			stack<Point2f> cent_stack;
+			stack<Point2f> cent_stack_r;
+			Point2f step[4];
+			step[0] = 2 * line1;
+			step[1] = line2;
+			step[2] = -step[0];
+			step[3] = -step[1];
+
+			Point2f cenp = Point2f(drawrow / 2, drawcol / 2);
+			Point2f cenp_r = cenp + shift;
+			draw_poly(drawing_, contour_, cenp);
+			draw_poly(drawing_, contour_r, cenp_r);
+			cent_stack.push(cenp);
+			cent_stack_r.push(cenp_r);
+			while (!cent_stack.empty())
+			{
+				Point2f top_p = cent_stack.top();
+				cent_stack.pop();
+				for (int i = 0; i < 4; i++)
+				{
+					cenp = top_p + step[i];
+					if ((cenp.x<drawcol + border) && (cenp.x>-border) && (cenp.y<drawrow + border) && (cenp.y>-border))
+					{
+						int flag = 0;
+						for (vector<Point2f>::iterator it = allcent_in_plane.begin(); it != allcent_in_plane.end(); it++)
+						{
+							double leng = length_two_point2f(cenp, *it);
+							if (leng < 10)
+							{
+								flag = 1;
+								break;
+							}
+						}
+						if (flag == 0)
+						{
+							cent_stack.push(cenp);
+							allcent_in_plane.push_back(cenp);
+							draw_poly(drawing_, contour_, cenp);
+						}
+					}
+				}
+			}
+			while (!cent_stack_r.empty())
+			{
+				Point2f top_p = cent_stack_r.top();
+				cent_stack_r.pop();
+				for (int i = 0; i < 4; i++)
+				{
+					cenp_r = top_p + step[i];
+					if ((cenp_r.x<drawcol + border) && (cenp_r.x>-border) && (cenp_r.y<drawrow + border) && (cenp_r.y>-border))
+					{
+						int flag = 0;
+						for (vector<Point2f>::iterator it = allcent_in_plane_.begin(); it != allcent_in_plane_.end(); it++)
+						{
+							double leng = length_two_point2f(cenp_r, *it);
+							if (leng < 10)
+							{
+								flag = 1;
+								break;
+							}
+						}
+						if (flag == 0)
+						{
+							cent_stack_r.push(cenp_r);
+							allcent_in_plane_.push_back(cenp_r);
+							draw_poly(drawing_, contour_r, cenp_r);
+						}
+					}
+				}
+			}
+		}
+		else if (type == 3) //flipping (2-4)
+		{
+			Point2f line1 = contour_[vec_[2]] - contour_[vec_[0]];
+			Point2f line2 = contour_[vec_[3]] - contour_[vec_[1]];
+			double rota_angle = acos(cos_two_vector(Point2f(0, 1), line2)) / PI * 180;
+			if (sin_two_vector(Point2f(0, 1), line2) > 0) rota_angle = -rota_angle;
+			//cout << rota_angle << endl;
+			Point2f center = center_p(contour_);
+			Point2f line3(line2.y, -line2.x);
+			Point2f cross;
+			if (line_intersection(Line_Seg(contour_[vec_[3]], contour_[vec_[1]]), Line_Seg(center, center + 10 * line3), cross) != 1)
+			{
+				if (line_intersection(Line_Seg(contour_[vec_[3]], contour_[vec_[1]]), Line_Seg(center, center - 10 * line3), cross) != 1)
+					cout << "Error!" << endl;
+			}
+			Point2f cent_shift = 2 * (cross - center);
+			vector<Point2f> contour_r = flip_only_coord(contour_);
+			Mat rot_mat = getRotationMatrix2D(center, 2 * rota_angle, 1);
+			transform(contour_r, contour_r, rot_mat);
+			Point2f shifting = cent_shift + line2;
+			for (int i = 0; i < con_size; i++)
+			{
+				contour_r[i] += shifting;
+			}
+			Point2f shift = center_p(contour_r) - center;
+			stack<Point2f> cent_stack;
+			stack<Point2f> cent_stack_r;
+			Point2f step[4];
+			step[0] = line1;
+			step[1] = 2*line2;
+			step[2] = -step[0];
+			step[3] = -step[1];
+
+			Point2f cenp = Point2f(drawrow / 2, drawcol / 2);
+			Point2f cenp_r = cenp + shift;
+			draw_poly(drawing_, contour_, cenp);
+			draw_poly(drawing_, contour_r, cenp_r);
+			cent_stack.push(cenp);
+			cent_stack_r.push(cenp_r);
+			while (!cent_stack.empty())
+			{
+				Point2f top_p = cent_stack.top();
+				cent_stack.pop();
+				for (int i = 0; i < 4; i++)
+				{
+					cenp = top_p + step[i];
+					if ((cenp.x<drawcol + border) && (cenp.x>-border) && (cenp.y<drawrow + border) && (cenp.y>-border))
+					{
+						int flag = 0;
+						for (vector<Point2f>::iterator it = allcent_in_plane.begin(); it != allcent_in_plane.end(); it++)
+						{
+							double leng = length_two_point2f(cenp, *it);
+							if (leng < 10)
+							{
+								flag = 1;
+								break;
+							}
+						}
+						if (flag == 0)
+						{
+							cent_stack.push(cenp);
+							allcent_in_plane.push_back(cenp);
+							draw_poly(drawing_, contour_, cenp);
+						}
+					}
+				}
+			}
+			while (!cent_stack_r.empty())
+			{
+				Point2f top_p = cent_stack_r.top();
+				cent_stack_r.pop();
+				for (int i = 0; i < 4; i++)
+				{
+					cenp_r = top_p + step[i];
+					if ((cenp_r.x<drawcol + border) && (cenp_r.x>-border) && (cenp_r.y<drawrow + border) && (cenp_r.y>-border))
+					{
+						int flag = 0;
+						for (vector<Point2f>::iterator it = allcent_in_plane_.begin(); it != allcent_in_plane_.end(); it++)
+						{
+							double leng = length_two_point2f(cenp_r, *it);
+							if (leng < 10)
+							{
+								flag = 1;
+								break;
+							}
+						}
+						if (flag == 0)
+						{
+							cent_stack_r.push(cenp_r);
+							allcent_in_plane_.push_back(cenp_r);
+							draw_poly(drawing_, contour_r, cenp_r);
+						}
+					}
+				}
+			}
 		}
 	}
 

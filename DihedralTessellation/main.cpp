@@ -17,10 +17,11 @@ int main(int argc, char** argv)
 	Tiling_tiles::Prototile *prototile_third;
 	prototile_third = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
-	int f = 7;
+	int f = 0;
 	if (f == 0) //ÒÑÓÐdataset
 	{
-		tiling_opt->tiliing_generation("1");
+		tiling_opt->tiliing_generation("2");
+		//tiling_opt->points_dividing("1");
 		//int iii[20] = {1,2,9,23,36,50,54,55,61,125};//{22,46,51,65,106,152,208,288,384,432,439,474,496,511,524,606,621,654,652,670};
 		//for (int i = 0; i < 10; i++)
 		//{
@@ -281,7 +282,7 @@ int main(int argc, char** argv)
 		//int iii[] = {660,680,678,685};// {610, 614, 618, 636, 637, 638};
 		//int t =  54;
 		//int i = 308;
-		for (int i = 0; i < 701; i++)
+		for (int i = 43; i < 44; i++)
 		{
 			//string image = int2string(iii[i]);
 			string image = int2string(i);
@@ -321,7 +322,7 @@ int main(int argc, char** argv)
 			prototile_first->dataroot = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\";
 			//prototile_first->txtpath =  "C:\\Users\\liuxk\\Desktop\\shape\\txt\\";
 			//prototile_first->dataroot = "C:\\Users\\liuxk\\Desktop\\shape\\new\\";
-			prototile_first->imgtocout(image);
+			prototile_first->imgtocout(image,1);
 			//////
 			//////string image = int2string(i);
 			//////cout << image << endl;
@@ -352,9 +353,9 @@ int main(int argc, char** argv)
 	{
 		//for (int i = 0; i < 60; i++)
 		//{
-			tiling_opt->Tiling_clear();
+			//tiling_opt->Tiling_clear();
 		//	//vector<Point2f> sim_mid = tiling_opt->simulation_mid("19", 20, 0);
-			vector<Point2f> sim_mid = tiling_opt->simulation_tar("16", 53, 0);
+			vector<Point2f> sim_mid = tiling_opt->simulation_tar("1", 0, 2);
 		//}
 		//-----------------test compute_TAR----------------------
 
@@ -500,11 +501,11 @@ int main(int argc, char** argv)
 
 		//--------------------test morphing_tar by one------------
 
-		//prototile_first->loadTileData("test15");
+		//prototile_first->loadTileData("test0");
 		//vector<Point2f> contour_inner = prototile_first->contour_sample[1];
 		//double sc_inner = 0;
 		//vector<vector<double>> inner_tar = prototile_first->compute_TAR(contour_inner, sc_inner);
-		//prototile_second->loadTileData("218");
+		//prototile_second->loadTileData("276");
 		//vector<Point2f> contour_cand = prototile_second->contour_sample[1];
 		//double sc_cand = 0;
 		//vector<vector<double>> cand_tar = prototile_second->compute_TAR(contour_cand, sc_cand);
@@ -521,7 +522,6 @@ int main(int argc, char** argv)
 		//	re2 = tiling_opt->tar_mismatch(inner_tar, cand_tar, path, shift, width);
 		//	contour_cand_f = prototile_second->contour_sample[1];
 		//}
-
 		//cout << "re2: " << re2 <<"shift: "<<shift<< endl;
 		//vector<int> mid_inter;
 		//mid_inter.push_back(0);
@@ -545,6 +545,9 @@ int main(int argc, char** argv)
 		//	circle(tt, contour_inner[mid_inter[i]], 5, Scalar(255, 0, 0), -1);
 		//}
 		////
+		//vector<int> return_p;
+		//vector<vector<Point2f>> four_;
+		//vector<Point2f> morphed_A = tiling_opt->extract_contour(mor_result, mid_inter, return_p, four_, 0);
 		//imshow("morphing result", ttt);
 		//imshow("contour_inner", tt);
 		//imshow("cand_pattern", drawing_pro1);
@@ -759,7 +762,7 @@ int main(int argc, char** argv)
 		//------------------------------------------------------
 
 		//---------------------test flip------------------------
-		vector<int> p_p_index = prototile_first->partition_points("19");
+		vector<int> p_p_index = prototile_first->partition_points("685");
 		vector<Point2f> a = prototile_first->contour;
 		vector<int> mark;
 		mark.push_back(12);
@@ -776,7 +779,7 @@ int main(int argc, char** argv)
 		Mat draw1 = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
 		Mat rot_mat = getRotationMatrix2D(center_p(a), 50, 1);
 		transform(a, return_B, rot_mat);
-		if (tiling_opt->fliping_placement(mark, a, return_B, midmark, draw1)) cout << " pengzhuang " << endl;
+		if (tiling_opt->flipping_placement(mark, a, return_B, midmark, draw1,0)) cout << " pengzhuang " << endl;
 		else
 		{
 			draw_poly(draw2, return_B, center_p(return_B));

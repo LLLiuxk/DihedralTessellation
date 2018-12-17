@@ -33,7 +33,7 @@ namespace Tiling_tiles{
 
 	typedef struct innerPat_pare
 	{
-		int type;
+		int type; //0:trans,1:rota,2:flip(13),3:flip(24)
 		vector<int> in_interval;
 		vector<Point2f> in_contour;
 	}inPat;
@@ -116,7 +116,7 @@ namespace Tiling_tiles{
 		//three placement rules
 		bool translation_placement(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname);
 		bool rotation_placement(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname);
-		bool fliping_placement(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname);
+		bool flipping_placement(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname,int type);
 		vector<Point2f> extract_contour(vector<Point2f> contour_, vector<int> mark_p, vector<int> &midmark_p, vector<vector<Point2f>> &four_place, int type);
 
 		//shapes comparing and candidate contour choosing
@@ -197,7 +197,7 @@ namespace Tiling_tiles{
 	void MyLine(Mat img, Point2f start, Point2f end, string color1);
 	Mat draw_polygen(string win_name, vector<Point2f> contour_s);
 	void draw_poly(Mat &drawing_, vector<Point2f> contour_s, Point2f center);
-	void draw_allplane(Mat &drawing_, vector<Point2f> contour_, vector<int> vec_, int type, double scale = 1);
+	void draw_allplane(Mat &drawing_, vector<Point2f> contour_, vector<int> vec_, double scale = 1,int type = 0);
 	//math tool
 	Point2f center_p(vector<Point2f> contour_);
 	double contour_length(vector<Point2f> contour);

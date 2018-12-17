@@ -60,6 +60,7 @@ namespace Tiling_tiles{
 
 	void Prototile::imgtocout(string tile_image, int raw)
 	{
+		int show = 1;
 		getpath();
 		Mat src;
 		Mat src_gray;
@@ -119,22 +120,25 @@ namespace Tiling_tiles{
 		findContours(canny_output, contours, hierarchy, CV_RETR_EXTERNAL, CHAIN_APPROX_SIMPLE, Point(0, 0));
 		cout << "contours num:" << contours.size() << endl;
 		
+		if (show == 1)
+		{
+			Mat drwa = Mat::zeros(800, 800, CV_8UC3);
+			int i = 0;
+			for (; i < contours[0].size() / 4; i++)
+			{
+				circle(drwa, contours[0][i], 1, Scalar(255, 0, 0), -1);
+			}
+			for (; i < contours[0].size() / 2; i++)
+			{
+				circle(drwa, contours[0][i], 1, Scalar(0, 255, 0), -1);
+			}
+			for (; i < contours[0].size(); i++)
+			{
+				circle(drwa, contours[0][i], 1, Scalar(0, 0, 255), -1);
+			}
+			imshow("contour" + tile_image, drwa);
+		}
 		
-		/*Mat drwa = Mat::zeros(800, 800, CV_8UC3);
-		int i = 0;
-		for (; i < contours[0].size() / 4; i++)
-		{
-			circle(drwa, contours[0][i], 1, Scalar(255, 0, 0), -1);
-		}
-		for (; i < contours[0].size() / 2; i++)
-		{
-			circle(drwa, contours[0][i], 1, Scalar(0, 255, 0), -1);
-		}
-		for (; i < contours[0].size(); i++)
-		{
-			circle(drwa, contours[0][i], 1, Scalar(0, 0, 255), -1);
-		}
-		imshow("contour" + tile_image, drwa);*/
 
 		//output two 
 		//namedWindow("contour one", WINDOW_AUTOSIZE);
