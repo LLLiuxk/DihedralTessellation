@@ -86,6 +86,7 @@ namespace Tiling_tiles{
 				contour_[i] = scale*contour_[i];
 			}
 		}
+		double length_ = arcLength(contour_, 1) / con_size;
 		vector<Point2f> allcent_in_plane;
 		vector<Point2f> allcent_in_plane_;
 		//vector<vector<Point2f>> four_place;
@@ -104,6 +105,8 @@ namespace Tiling_tiles{
 			cent_stack.push(cenp);
 			while (!cent_stack.empty())
 			{
+				//cout << cent_stack.size() << endl;
+				if (cent_stack.size() == 500000) break;
 				Point2f top_p = cent_stack.top();
 				cent_stack.pop();
 				for (int i = 0; i < 4; i++)
@@ -115,7 +118,7 @@ namespace Tiling_tiles{
 						for (vector<Point2f>::iterator it = allcent_in_plane.begin(); it != allcent_in_plane.end(); it++)
 						{
 							double leng = length_two_point2f(cenp, *it);
-							if (leng < 10)
+							if (leng < length_)
 							{
 								flag = 1;
 								break;
@@ -167,7 +170,7 @@ namespace Tiling_tiles{
 						for (vector<Point2f>::iterator it = allcent_in_plane.begin(); it != allcent_in_plane.end(); it++)
 						{
 							double leng = length_two_point2f(cenp, *it);
-							if (leng < 10)
+							if (leng < length_)
 							{
 								flag = 1;
 								break;
@@ -195,7 +198,7 @@ namespace Tiling_tiles{
 						for (vector<Point2f>::iterator it = allcent_in_plane_.begin(); it != allcent_in_plane_.end(); it++)
 						{
 							double leng = length_two_point2f(cenp_r, *it);
-							if (leng < 10)
+							if (leng < length_)
 							{
 								flag = 1;
 								break;
@@ -215,31 +218,36 @@ namespace Tiling_tiles{
 		{
 			Point2f line1 = contour_[vec_[2]] - contour_[vec_[0]];
 			Point2f line2 = contour_[vec_[3]] - contour_[vec_[1]];
-			double rota_angle = acos(cos_two_vector(Point2f(0, 1), line1)) / PI * 180;
-			if (sin_two_vector(Point2f(0, 1), line1) > 0) rota_angle = -rota_angle;
-			//cout << rota_angle << endl;
 			Point2f center = center_p(contour_);
-			Point2f line3(line1.y, -line1.x);
+			Point2f line1_cent = 0.5 * contour_[vec_[2]] + 0.5 * contour_[vec_[0]];
+			Point2f s_axis(line2.y, -line2.x);
+			Line_Seg symmetry_axis(line1_cent + 5 * s_axis, line1_cent - 5 * s_axis);
+			//计算翻转后的轮廓，因为直接任意轴对称翻转比较耗时，因此先以x轴为对称轴翻转，然后旋转相应角度
+			double rota_angle = acos(cos_two_vector(Point2f(0, 1), s_axis)) / PI * 180;
+			if (sin_two_vector(Point2f(0, 1), s_axis) > 0) rota_angle = -rota_angle;
+			//cout << rota_angle << endl;
 			Point2f cross;
-			if (line_intersection(Line_Seg(contour_[vec_[2]], contour_[vec_[0]]), Line_Seg(center, center + 10 * line3), cross) != 1)
-			{
-				if (line_intersection(Line_Seg(contour_[vec_[2]], contour_[vec_[0]]), Line_Seg(center, center - 10 * line3), cross) != 1)
-					cout<<"Error!"<<endl;
-			}
+			if (line_intersection(Line_Seg(symmetry_axis), Line_Seg(center - 5 * line2, center + 5 * line2), cross) != 1) cout<<"Error!"<<endl;  //没有交点说明出错了
 			Point2f cent_shift = 2 * (cross - center);
 			vector<Point2f> contour_r = flip_only_coord(contour_);
 			Mat rot_mat = getRotationMatrix2D(center, 2 * rota_angle, 1);
 			transform(contour_r, contour_r, rot_mat);
-			Point2f shifting = cent_shift + line1;
+			//将以上所得翻转的轮廓沿相对应的轴平移，计算该位置
+			double cos_ax_1_3 = cos_two_vector(s_axis, line1);
+			Point2f line3 = s_axis;
+			if (cos_ax_1_3 < 0) line3 = -s_axis;
+			//这里line3代表对称轴上与line1成锐角夹角方向的向量，长度为line1在对称轴上的投影
+			line3 = line3*(abs(line1.x*line3.x + line1.y*line3.y) / (line3.x*line3.x + line3.y*line3.y)); 
+			Point2f shift = cent_shift + line3;
+
 			for (int i = 0; i < con_size; i++)
 			{
-				contour_r[i] += shifting;
+				contour_r[i] += shift;
 			}
-			Point2f shift = center_p(contour_r) - center;
 			stack<Point2f> cent_stack;
 			stack<Point2f> cent_stack_r;
 			Point2f step[4];
-			step[0] = 2 * line1;
+			step[0] = 2 * line3;
 			step[1] = line2;
 			step[2] = -step[0];
 			step[3] = -step[1];
@@ -263,7 +271,7 @@ namespace Tiling_tiles{
 						for (vector<Point2f>::iterator it = allcent_in_plane.begin(); it != allcent_in_plane.end(); it++)
 						{
 							double leng = length_two_point2f(cenp, *it);
-							if (leng < 10)
+							if (leng < length_)
 							{
 								flag = 1;
 								break;
@@ -291,7 +299,7 @@ namespace Tiling_tiles{
 						for (vector<Point2f>::iterator it = allcent_in_plane_.begin(); it != allcent_in_plane_.end(); it++)
 						{
 							double leng = length_two_point2f(cenp_r, *it);
-							if (leng < 10)
+							if (leng < length_)
 							{
 								flag = 1;
 								break;
@@ -311,32 +319,36 @@ namespace Tiling_tiles{
 		{
 			Point2f line1 = contour_[vec_[2]] - contour_[vec_[0]];
 			Point2f line2 = contour_[vec_[3]] - contour_[vec_[1]];
-			double rota_angle = acos(cos_two_vector(Point2f(0, 1), line2)) / PI * 180;
-			if (sin_two_vector(Point2f(0, 1), line2) > 0) rota_angle = -rota_angle;
-			//cout << rota_angle << endl;
 			Point2f center = center_p(contour_);
-			Point2f line3(line2.y, -line2.x);
+			Point2f line2_cent = 0.5 * contour_[vec_[3]] + 0.5 * contour_[vec_[1]];
+			Point2f s_axis(line1.y, -line1.x);
+			Line_Seg symmetry_axis(line2_cent + 5 * s_axis, line2_cent - 5 * s_axis);
+			//计算翻转后的轮廓，因为直接任意轴对称翻转比较耗时，因此先以x轴为对称轴翻转，然后旋转相应角度
+			double rota_angle = acos(cos_two_vector(Point2f(0, 1), s_axis)) / PI * 180;
+			if (sin_two_vector(Point2f(0, 1), s_axis) > 0) rota_angle = -rota_angle;
+			//cout << rota_angle << endl;
 			Point2f cross;
-			if (line_intersection(Line_Seg(contour_[vec_[3]], contour_[vec_[1]]), Line_Seg(center, center + 10 * line3), cross) != 1)
-			{
-				if (line_intersection(Line_Seg(contour_[vec_[3]], contour_[vec_[1]]), Line_Seg(center, center - 10 * line3), cross) != 1)
-					cout << "Error!" << endl;
-			}
+			if (line_intersection(Line_Seg(symmetry_axis), Line_Seg(center - 5 * line1, center + 5 * line1), cross) != 1) cout << "Error!" << endl;  //没有交点说明出错了
 			Point2f cent_shift = 2 * (cross - center);
 			vector<Point2f> contour_r = flip_only_coord(contour_);
 			Mat rot_mat = getRotationMatrix2D(center, 2 * rota_angle, 1);
 			transform(contour_r, contour_r, rot_mat);
-			Point2f shifting = cent_shift + line2;
+			//将以上所得翻转的轮廓沿相对应的轴平移，计算该位置
+			double cos_ax_2_4 = cos_two_vector(s_axis, line2);
+			Point2f line3 = s_axis;
+			if (cos_ax_2_4 < 0) line3 = -s_axis;
+			//这里line3代表对称轴上与line2成锐角夹角方向的向量，长度为line2在对称轴上的投影
+			line3 = line3*(abs(line2.x*line3.x + line2.y*line3.y) / (line3.x*line3.x + line3.y*line3.y));
+			Point2f shift = cent_shift + line3;
 			for (int i = 0; i < con_size; i++)
 			{
-				contour_r[i] += shifting;
+				contour_r[i] += shift;
 			}
-			Point2f shift = center_p(contour_r) - center;
 			stack<Point2f> cent_stack;
 			stack<Point2f> cent_stack_r;
 			Point2f step[4];
 			step[0] = line1;
-			step[1] = 2*line2;
+			step[1] = 2*line3;
 			step[2] = -step[0];
 			step[3] = -step[1];
 
@@ -359,7 +371,7 @@ namespace Tiling_tiles{
 						for (vector<Point2f>::iterator it = allcent_in_plane.begin(); it != allcent_in_plane.end(); it++)
 						{
 							double leng = length_two_point2f(cenp, *it);
-							if (leng < 10)
+							if (leng < length_)
 							{
 								flag = 1;
 								break;
@@ -387,7 +399,7 @@ namespace Tiling_tiles{
 						for (vector<Point2f>::iterator it = allcent_in_plane_.begin(); it != allcent_in_plane_.end(); it++)
 						{
 							double leng = length_two_point2f(cenp_r, *it);
-							if (leng < 10)
+							if (leng < length_)
 							{
 								flag = 1;
 								break;

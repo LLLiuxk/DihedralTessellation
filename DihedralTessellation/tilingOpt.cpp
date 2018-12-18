@@ -827,11 +827,14 @@ namespace Tiling_tiles{
 	
 	bool Tiling_opt::flipping_placement(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname, int type)
 	{
-		//0:以1-3为轴翻转 1:以2-4为轴
+		//0:以1-3对应的中线为轴翻转 1:以2-4为轴 
+		//不一定需要以1-3为轴，只要1,3两点到对称轴的距离相同
+		//因此第一步是根据1,3两点确定翻转轴
 		int csize = contour_s.size();
+		Point2f cent = center_p(contour_s);
 		Point2f line1 = contour_s[results[2]] - contour_s[results[0]];
-		Point2f line2 = contour_s[results[3]] - contour_s[results[1]];
-		if (abs(cos_two_vector(line1, line2))>0.06) return true;
+		Point2f line2 = contour_s[results[3]] - contour_s[results[1]];	
+		//if (abs(cos_two_vector(line1, line2))>0.06) return true;
 		//cout << line1 << endl << line2 << endl << cos_two_vector(line1, line2) << endl;
 		vector<vector<Point2f>> four_place;
 		four_place.push_back(contour_s);
@@ -841,22 +844,27 @@ namespace Tiling_tiles{
 		// 提取翻转围成的轮廓
 		if (type == 0)
 		{
-			double rota_angle = acos(cos_two_vector(Point2f(0, 1), line1)) / PI * 180;
-			if (sin_two_vector(Point2f(0, 1), line1) > 0) rota_angle = -rota_angle;
+			//实际的对称轴应该是过1，3中点且与2，4垂直的直线
+			Point2f line1_cent = 0.5 * contour_s[results[2]] + 0.5 * contour_s[results[0]];
+			Point2f s_axis(line2.y, -line2.x);
+			Line_Seg symmetry_axis(line1_cent + 5 * s_axis, line1_cent - 5 * s_axis);
+			//计算翻转后的轮廓，因为直接任意轴对称翻转比较耗时，因此先以x轴为对称轴翻转，然后旋转相应角度
+			double rota_angle = acos(cos_two_vector(Point2f(0, 1), s_axis)) / PI * 180;
+			if (sin_two_vector(Point2f(0, 1), s_axis) > 0) rota_angle = -rota_angle;
 			//cout << rota_angle << endl;
-			Point2f cent = center_p(contour_s);
-			Point2f line3(line1.y, -line1.x);
 			Point2f cross;
-			if (line_intersection(Line_Seg(contour_s[results[2]], contour_s[results[0]]), Line_Seg(cent, cent + 10 * line3), cross) != 1)
-			{
-				if (line_intersection(Line_Seg(contour_s[results[2]], contour_s[results[0]]), Line_Seg(cent, cent - 10 * line3), cross) != 1)
-					return true;
-			}
+			if (line_intersection(Line_Seg(symmetry_axis), Line_Seg(cent - 5 * line2, cent + 5 * line2), cross) != 1) return true;  //没有交点说明出错了
 			Point2f cent_shift = 2 * (cross - cent);
 			one_loca = flip_only_coord(contour_s);
 			Mat rot_mat = getRotationMatrix2D(cent, 2 * rota_angle, 1);
 			transform(one_loca, one_loca, rot_mat);
-			Point2f shift = cent_shift + line1;
+			//将以上所得翻转的轮廓沿相对应的轴平移，计算该位置
+			double cos_ax_1_3 = cos_two_vector(s_axis, line1);
+			Point2f line3 = s_axis;
+			if (cos_ax_1_3 < 0) line3 = -s_axis;
+			//这里line3代表对称轴上与line1成锐角夹角方向的向量，长度为line1在对称轴上的投影
+			line3 = line3*(abs(line1.x*line3.x + line1.y*line3.y) / (line3.x*line3.x + line3.y*line3.y)); 
+			Point2f shift = cent_shift + line3;
 			for (int i = 0; i < csize; i++)
 			{
 				one_loca[i] += shift;
@@ -869,22 +877,26 @@ namespace Tiling_tiles{
 		}
 		else if (type == 1)
 		{
-			double rota_angle = acos(cos_two_vector(Point2f(0, 1), line2)) / PI * 180;
-			if (sin_two_vector(Point2f(0, 1), line2) > 0) rota_angle = -rota_angle;
+			//实际的对称轴应该是过2，4中点且与1，3垂直的直线
+			Point2f line2_cent = 0.5 * contour_s[results[3]] + 0.5 * contour_s[results[1]];
+			Point2f s_axis(line1.y, -line1.x);
+			Line_Seg symmetry_axis(line2_cent + 5 * s_axis, line2_cent - 5 * s_axis);
+
+			double rota_angle = acos(cos_two_vector(Point2f(0, 1), s_axis)) / PI * 180;
+			if (sin_two_vector(Point2f(0, 1), s_axis) > 0) rota_angle = -rota_angle;
 			//cout << rota_angle << endl;
-			Point2f cent = center_p(contour_s);
-			Point2f line3(line2.y, -line2.x);
 			Point2f cross;
-			if (line_intersection(Line_Seg(contour_s[results[3]], contour_s[results[1]]), Line_Seg(cent, cent + 10 * line3), cross) != 1)
-			{
-				if (line_intersection(Line_Seg(contour_s[results[3]], contour_s[results[1]]), Line_Seg(cent, cent - 10 * line3), cross) != 1)
-					return true;
-			}
+			if (line_intersection(Line_Seg(symmetry_axis), Line_Seg(cent - 5 * line1, cent + 5 * line1), cross) != 1) return true;  //没有交点说明出错了
 			Point2f cent_shift = 2 * (cross - cent);
 			one_loca = flip_only_coord(contour_s);
 			Mat rot_mat = getRotationMatrix2D(cent, 2 * rota_angle, 1);
 			transform(one_loca, one_loca, rot_mat);
-			Point2f shift = cent_shift + line2;
+
+			double cos_ax_2_4 = cos_two_vector(s_axis, line2);
+			Point2f line3 = s_axis;
+			if (cos_ax_2_4 < 0) line3 = -s_axis;
+			line3 = line3*(abs(line2.x*line3.x + line2.y*line3.y) / (line3.x*line3.x + line3.y*line3.y)); //这里line3代表对称轴上与line2成锐角夹角方向的向量，长度为line2在对称轴上的投影
+			Point2f shift = cent_shift + line3;
 			for (int i = 0; i < csize; i++)
 			{
 				one_loca[i] += shift;
@@ -944,6 +956,7 @@ namespace Tiling_tiles{
 	{   
 		//  0:translation  1:rotation  2:flipping(1-3)   3:flipping(2-4)
 		int csize = contour_.size();
+		Point2f cent = center_p(contour_);
 		vector<Point2f> morphed_B;
 		Point2f line1 = contour_[mark_p[2]] - contour_[mark_p[0]];
 		Point2f line2 = contour_[mark_p[3]] - contour_[mark_p[1]];
@@ -1051,22 +1064,25 @@ namespace Tiling_tiles{
 				vector<Point2f> one_loca;
 				vector<Point2f> one_loca_;
 				vector<Point2f> one_loca_f;
-				double rota_angle = acos(cos_two_vector(Point2f(0, 1), line1)) / PI * 180;
-				if (sin_two_vector(Point2f(0, 1), line1) > 0) rota_angle = -rota_angle;
+				Point2f line1_cent = 0.5 * contour_[mark_p[2]] + 0.5 * contour_[mark_p[0]];
+				Point2f s_axis(line2.y, -line2.x);
+				Line_Seg symmetry_axis(line1_cent + 5 * s_axis, line1_cent - 5 * s_axis);
+				//计算翻转后的轮廓，因为直接任意轴对称翻转比较耗时，因此先以x轴为对称轴翻转，然后旋转相应角度
+				double rota_angle = acos(cos_two_vector(Point2f(0, 1), s_axis)) / PI * 180;
+				if (sin_two_vector(Point2f(0, 1), s_axis) > 0) rota_angle = -rota_angle;
 				//cout << rota_angle << endl;
-				Point2f cent = center_p(contour_);
-				Point2f line3(line1.y, -line1.x);
 				Point2f cross;
-				if (line_intersection(Line_Seg(contour_[mark_p[2]], contour_[mark_p[0]]), Line_Seg(cent, cent + 10 * line3), cross) != 1)
-				{
-					if (line_intersection(Line_Seg(contour_[mark_p[2]], contour_[mark_p[0]]), Line_Seg(cent, cent - 10 * line3), cross) != 1)
-						cout<<"Error!"<<endl;
-				}
+				if (line_intersection(Line_Seg(symmetry_axis), Line_Seg(cent - 5 * line2, cent + 5 * line2), cross) != 1) cout << "Error!" << endl;  //没有交点说明出错了
 				Point2f cent_shift = 2 * (cross - cent);
 				one_loca = flip_only_coord(contour_);
 				Mat rot_mat = getRotationMatrix2D(cent, 2 * rota_angle, 1);
-				cv::transform(one_loca, one_loca, rot_mat);
-				Point2f shift = cent_shift + line1;
+				transform(one_loca, one_loca, rot_mat);
+				//将以上所得翻转的轮廓沿相对应的轴平移，计算该位置
+				double cos_ax_1_3 = cos_two_vector(s_axis, line1);
+				Point2f line3 = s_axis;
+				if (cos_ax_1_3 < 0) line3 = -s_axis;
+				line3 = line3*(abs(line1.x*line3.x + line1.y*line3.y) / (line3.x*line3.x + line3.y*line3.y));
+				Point2f shift = cent_shift + line3;
 				for (int i = 0; i < csize; i++)
 				{
 					one_loca[i] += shift;
@@ -1111,22 +1127,25 @@ namespace Tiling_tiles{
 				vector<Point2f> one_loca;
 				vector<Point2f> one_loca_;
 				vector<Point2f> one_loca_f;
-				double rota_angle = acos(cos_two_vector(Point2f(0, 1), line2)) / PI * 180;
-				if (sin_two_vector(Point2f(0, 1), line2) > 0) rota_angle = -rota_angle;
+				Point2f line2_cent = 0.5 * contour_[mark_p[3]] + 0.5 * contour_[mark_p[1]];
+				Point2f s_axis(line1.y, -line1.x);
+				Line_Seg symmetry_axis(line2_cent + 5 * s_axis, line2_cent - 5 * s_axis);
+
+				double rota_angle = acos(cos_two_vector(Point2f(0, 1), s_axis)) / PI * 180;
+				if (sin_two_vector(Point2f(0, 1), s_axis) > 0) rota_angle = -rota_angle;
 				//cout << rota_angle << endl;
-				Point2f cent = center_p(contour_);
-				Point2f line3(line2.y, -line2.x);
 				Point2f cross;
-				if (line_intersection(Line_Seg(contour_[mark_p[3]], contour_[mark_p[1]]), Line_Seg(cent, cent + 10 * line3), cross) != 1)
-				{
-					if (line_intersection(Line_Seg(contour_[mark_p[3]], contour_[mark_p[1]]), Line_Seg(cent, cent - 10 * line3), cross) != 1)
-						cout << "erong!" << endl;
-				}
+				if (line_intersection(Line_Seg(symmetry_axis), Line_Seg(cent - 5 * line1, cent + 5 * line1), cross) != 1) cout<<"Error!"<<endl;  //没有交点说明出错了
 				Point2f cent_shift = 2 * (cross - cent);
 				one_loca = flip_only_coord(contour_);
 				Mat rot_mat = getRotationMatrix2D(cent, 2 * rota_angle, 1);
-				cv::transform(one_loca, one_loca, rot_mat);
-				Point2f shift = cent_shift + line2;
+				transform(one_loca, one_loca, rot_mat);
+
+				double cos_ax_2_4 = cos_two_vector(s_axis, line2);
+				Point2f line3 = s_axis;
+				if (cos_ax_2_4 < 0) line3 = -s_axis;
+				line3 = line3*(abs(line2.x*line3.x + line2.y*line3.y) / (line3.x*line3.x + line3.y*line3.y));
+				Point2f shift = cent_shift + line3;
 				for (int i = 0; i < csize; i++)
 				{
 					one_loca[i] += shift;
