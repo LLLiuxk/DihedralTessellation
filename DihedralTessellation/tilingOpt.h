@@ -8,6 +8,7 @@
 #include <fstream>
 #include <string>
 #include <stack>
+#include <ctime>
 #include <list>
 #include <direct.h>
 //#include "Morphing.h"
@@ -80,7 +81,7 @@ namespace Tiling_tiles{
 		string dataroot;
 		string txtpath;
 		vector<Point2f> contour;
-		vector<double> cconvex;
+		//vector<double> cconvex;
 		vector<vector<Point2f>> contour_sample;
 		vector<vector<Point2f>> contour_sample_flip;
 		//vector<vector<double>> contour_curva;
@@ -114,6 +115,7 @@ namespace Tiling_tiles{
 		void check_Repetitive_pattern();
 		
 		//three placement rules
+		vector<vector<int>> find_rota_tilingV(vector<Point2f> cont, vector<int> mark_13);
 		bool translation_placement(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname);
 		bool rotation_placement(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname);
 		bool flipping_placement(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname,int type);
@@ -137,7 +139,7 @@ namespace Tiling_tiles{
 		//µü´úmorph	
 		vector<Point2f> morphing_patterns_iter(vector<Point2f> contour1, vector<Point2f> contour2, vector<double> concur1, vector<double> concur2, float shape_ratio);//, vector<int> mid_inter, float shape_ratio);
 
-		double evalua_deformation(vector<vector<Point2f>> contour, vector<vector<double>> curvature);
+		double evalua_deformation(vector<Point2f> contour1, vector<Point2f> contour2);
 		
 		//simulation
 		vector<Point2f> simulation_mid(string imaname, int inner_one, int cand_one);

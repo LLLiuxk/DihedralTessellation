@@ -1,5 +1,5 @@
 #include "tilingOpt.h"
-#include <ctime>
+
 using namespace Tiling_tiles;
 
 int main(int argc, char** argv)
@@ -17,10 +17,11 @@ int main(int argc, char** argv)
 	Tiling_tiles::Prototile *prototile_third;
 	prototile_third = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
-	int f = 1;
+	int f = 4;
 	if (f == 0) //ÒÑÓÐdataset
 	{
 		tiling_opt->tiliing_generation("1");
+
 		//tiling_opt->points_dividing("1");
 		//int iii[20] = {1,2,9,23,36,50,54,55,61,125};//{22,46,51,65,106,152,208,288,384,432,439,474,496,511,524,606,621,654,652,670};
 		//for (int i = 0; i < 10; i++)
@@ -367,13 +368,13 @@ int main(int argc, char** argv)
 	}
 	else if (f == 4)  //simulation of one tiling
 	{
-		Point2f s_axis(10,10);
+		/*Point2f s_axis(10,10);
 		Point2f line1(0, -5);
 		double cos_ax_1_3 = cos_two_vector(s_axis, line1);
 		Point2f line3 = s_axis;
 		if (cos_ax_1_3 < 0) line3 = -s_axis;
 		line3 = line3*(abs(line1.x*line3.x + line1.y*line3.y) / (line3.x*line3.x + line3.y*line3.y));
-		cout << line3 << endl;
+		cout << line3 << endl;*/
 		//for (int i = 0; i < 60; i++)
 		//{
 			//tiling_opt->Tiling_clear();
@@ -462,21 +463,23 @@ int main(int argc, char** argv)
 		*/
 
 		//--------------------test morphing_tar by all------------
-
-		//tiling_opt->load_dataset();
-		//tiling_opt->com_all_TARs(1);
-		////cout << "tiling_opt" << tiling_opt->contour_dataset.size()<<endl
-		////	<< "tars: " << tiling_opt->all_con_tars.size()<<endl;
-		//prototile_first->loadTileData("test53");
-		//vector<Point2f> contour_inner = prototile_first->contour_sample[1];
-		////cout << "prototile_first->contour" << prototile_first->contour.size() << "  contour_inner: " << contour_inner.size()<<endl;
-		////midtime = clock();
-		////cout << endl << (double)(midtime - start) / CLOCKS_PER_SEC << " s " << endl;
-		//double sc_inner = 0;
-		//vector<vector<double>> inner_tar = prototile_first->compute_TAR(contour_inner, sc_inner);
-		////cout << "sc_inner: " << sc_inner << endl;
-		//vector<pair<int, bool>> cand = tiling_opt->compare_choose_TAR(prototile_first->contour);
-		//cout << "candsize: " << cand.size() << endl;
+		start = clock();
+		tiling_opt->load_dataset();
+		tiling_opt->com_all_TARs(1);
+		//cout << "tiling_opt" << tiling_opt->contour_dataset.size()<<endl
+		//	<< "tars: " << tiling_opt->all_con_tars.size()<<endl;
+		prototile_first->loadTileData("test53");
+		vector<Point2f> contour_inner = prototile_first->contour_sample[1];
+		//cout << "prototile_first->contour" << prototile_first->contour.size() << "  contour_inner: " << contour_inner.size()<<endl;
+		//midtime = clock();
+		//cout << endl << (double)(midtime - start) / CLOCKS_PER_SEC << " s " << endl;
+		double sc_inner = 0;
+		vector<vector<double>> inner_tar = prototile_first->compute_TAR(contour_inner, sc_inner);
+		cout << "sc_inner: " << sc_inner << endl;
+		vector<pair<int, bool>> cand = tiling_opt->compare_choose_TAR(prototile_first->contour);
+		cout << "candsize: " << cand.size() << endl;
+		midtime = clock();
+		cout << endl << "All time consumption: " << (double)(midtime - start) / CLOCKS_PER_SEC << " s " << endl;
 		//int t = 0;
 		//prototile_second->loadPoints(tiling_opt->contour_dataset[cand[t].first]);
 		//vector<pair<int, int>> path;
@@ -496,12 +499,16 @@ int main(int argc, char** argv)
 		//cout << "first: " << cand[t].first << " second: " << cand[t].second << endl;
 		//int width = 6;
 		//double re = tiling_opt->tar_mismatch(inner_tar, tar_sec, path, shift, width);
+		//finish = clock();
+		//cout << endl << "once consumption: " << (double)(finish - midtime) / CLOCKS_PER_SEC << " s " << endl;
 		//vector<int> mid_inter;
 		//mid_inter.push_back(0);
 		//mid_inter.push_back(60);
 		//mid_inter.push_back(120);
 		//mid_inter.push_back(175);
 		//vector<Point2f> mor_result = tiling_opt->morphing_tar(contour_inner, contour_cand, mid_inter, path, shift);
+		//start = clock();
+		//cout << endl << "once morphing consumption: " << (double)(start - finish) / CLOCKS_PER_SEC << " s " << endl;
 		////imgtocout();
 		//cout << "inter_: " << mor_result.size() << endl;
 		////MorphPoints(contour_inner, contour_cand, inter_, 0.5);
@@ -524,6 +531,7 @@ int main(int argc, char** argv)
 
 		//--------------------test morphing_tar by one------------
 
+  //      start = clock();
 		//prototile_first->loadTileData("test0");
 		//vector<Point2f> contour_inner = prototile_first->contour_sample[1];
 		//double sc_inner = 0;
@@ -538,14 +546,17 @@ int main(int argc, char** argv)
 		//vector<pair<int, int>> path;
 		//int shift;	
 		//int width = 6;
+
 		//double re = tiling_opt->tar_mismatch(inner_tar, cand_tar, path, shift, width);
+		//
 		//double re2 = tiling_opt->tar_mismatch(inner_tar, cand_tar_f, path, shift, width);
 		//if (re < re2)
 		//{
 		//	re2 = tiling_opt->tar_mismatch(inner_tar, cand_tar, path, shift, width);
 		//	contour_cand_f = prototile_second->contour_sample[1];
 		//}
-		//cout << "re2: " << re2 <<"shift: "<<shift<< endl;
+		////cout << "re2: " << re2 <<"shift: "<<shift<< endl;
+
 		//vector<int> mid_inter;
 		//mid_inter.push_back(0);
 		//mid_inter.push_back(60);
@@ -553,6 +564,8 @@ int main(int argc, char** argv)
 		//mid_inter.push_back(175);
 		//vector<Point2f> mor_result = tiling_opt->morphing_tar(contour_inner, contour_cand_f, mid_inter, path, shift);
 		////imgtocout();
+		//finish = clock();
+		//cout << endl << "once morphing consumption: " << (double)(finish - start) / CLOCKS_PER_SEC << " s " << endl;
 		//cout << "inter_: " << mor_result.size() << endl;
 		////MorphPoints(contour_inner, contour_cand, inter_, 0.5);
 		//Mat tt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
@@ -938,7 +951,7 @@ int main(int argc, char** argv)
 	
 	
     finish = clock();
-	cout << endl<< (double)(finish - start) / CLOCKS_PER_SEC << " s " << endl;
+	cout << endl<< "All time consumption: "<<(double)(finish - start) / CLOCKS_PER_SEC << " s " << endl;
 	waitKey(0);
 	return 0;
 }

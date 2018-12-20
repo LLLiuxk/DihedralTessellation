@@ -22,7 +22,7 @@ namespace Tiling_tiles{
 		dataroot.clear();
 		txtpath.clear();
 		contour.swap(vector<Point2f>());
-		cconvex.swap(vector<double>());
+		//cconvex.swap(vector<double>());
 		contour_sample.swap(vector<vector<Point2f>>());
 		contour_sample_flip.swap(vector<vector<Point2f>>());
 		//contour_curva.swap(vector<vector<double>>());
@@ -377,7 +377,7 @@ namespace Tiling_tiles{
 		contour.swap(vector<Point2f>());
 		int sam_num = contour_sample.size();	
 		contour = contour_sample[sam_num - 1];
-		cconvex = curvature_com(contour);
+		//cconvex = curvature_com(contour);
 		cout << "contour_sample num: " << contour_sample[sam_num - 1].size() << endl;
 		vector<int> cand_points_index;
 		//cand_points_index = most_convex_p(contour, cconvex, max_cur_num);
