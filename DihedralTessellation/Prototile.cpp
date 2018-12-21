@@ -331,11 +331,11 @@ namespace Tiling_tiles{
 	}
 
 
-	vector<vector<double>> Prototile::compute_TAR(vector<Point2f> &contour_, double &shape_complexity)
+	vector<vector<double>> Prototile::compute_TAR(vector<Point2f> &contour_, double &shape_complexity ,double frac)
 	{
 		vector<vector<double>> all_tar;
 		int consize = contour_.size();
-		int tar_num = consize / 4 - 1;
+		int tar_num = frac * consize - 1;
 		shape_complexity = 0;
 		//cout << "consize: " << consize << " tar_num: " << tar_num << endl;
 		vector<double> maxtar(tar_num, 0);

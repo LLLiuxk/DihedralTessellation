@@ -60,7 +60,7 @@ namespace Tiling_tiles{
 		void getpath();
 		void loadTileData(string tile_data);
 		void contour_sam_cur();	
-		vector<vector<double>> compute_TAR(vector<Point2f> &contour_,double &shape_complexity);
+		vector<vector<double>> compute_TAR(vector<Point2f> &contour_,double &shape_complexity, double frac = 0.25);
 
 		vector<int> cand_tiling_v(int max_cur_num);                 //求轮廓上值最大的10个不临近的凸点
 		vector<int> partition_points(string imaname);  //求得用做划分的点
@@ -123,6 +123,7 @@ namespace Tiling_tiles{
 
 		//shapes comparing and candidate contour choosing
 		vector<pair<int, bool>> compare_choose_TAR(vector<Point2f> inner_c); //得到选择出的pattern的序号和是否翻转的标志
+		vector<pair<int, bool>> quick_choose_TAR(vector<Point2f> inner_c); //得到选择出的pattern的序号和是否翻转的标志
 		double tar_mismatch(vector<vector<double>> first_arr, vector<vector<double>> second_arr, vector<pair<int, int>>& path, int &sec_shift, int width = 4);//点对应匹配的筛选框宽度
 		void print_TAR_Path(double d[][202], double dp[][202], int i, int j, vector<pair<int, int>>& path);
 		vector<int> search_align_p(Point2f cent, Point2f end, vector<Point2f> cand_temp);
@@ -191,6 +192,8 @@ namespace Tiling_tiles{
 		vector<vector<Point2f>> contour_dataset;
 		vector<vector<vector<double>>> all_con_tars;
 		vector<vector<vector<double>>> all_con_tars_flip;
+		vector<vector<vector<double>>> all_fea_tars;
+		vector<vector<vector<double>>> all_fea_tars_flip;
 		vector<double> all_shape_complexity;
 	};
 

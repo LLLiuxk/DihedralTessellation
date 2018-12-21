@@ -417,17 +417,25 @@ int main(int argc, char** argv)
 
 		//tiling_opt->load_dataset();
 		//tiling_opt->com_all_TARs(1);
-		//prototile_first->loadTileData("15");
+		//prototile_first->loadTileData("test53");
 		//vector<Point2f> a = prototile_first->contour_sample[1];
+		////a.pop_back();
 		//double sca;
 		//vector<vector<double>> tar_all = prototile_first->compute_TAR(a, sca);
+		//vector<int> cand_points_index = feature_points(a, 1, 3, cos(PI * 160 / 180));
+		//cout << "feature :" << cand_points_index.size() << endl;
+		//vector<vector<double>> tar_fea;
+		//for (int j = 0; j < cand_points_index.size(); j++)
+		//{
+		//	tar_fea.push_back(tar_all[cand_points_index[j]]);
+		//}
 		///*prototile_second->loadTileData("23");
 		//vector<Point2f> b = prototile_second->contour_sample[1];
 		//vector<Point2f> c = prototile_second->contour_sample_flip[1];
 		//double scb;
 		//vector<vector<double>> tar_all1 = prototile_second->compute_TAR(b, scb);
 		//vector<vector<double>> tar_all2 = prototile_second->compute_TAR(c, scb);*/
-		//int num = 23;
+		//int num = 122;
 		//prototile_second->loadPoints(tiling_opt->contour_dataset[num]);
 		//vector<Point2f> b = prototile_second->contour_sample[1];
 		//vector<Point2f> c = prototile_second->contour_sample_flip[1];
@@ -435,17 +443,38 @@ int main(int argc, char** argv)
 		//cout << "sca: " << sca << "   scb:  " << scb << endl;
 		//vector<vector<double>> tar_all1 = tiling_opt->all_con_tars[num];//prototile_second->compute_TAR(b, scb);
 		//vector<vector<double>> tar_all2 = tiling_opt->all_con_tars_flip[num];//prototile_second->compute_TAR(c, scb);
+		//vector<vector<double>> tar_fea2;
+		//vector<vector<double>> tar_fea_flip2;
+		//cand_points_index = feature_points(b, 1, 3, cos(PI * 160 / 180));
+		//cout << "feature :" << cand_points_index.size() << endl;
+		//for (int j = 0; j < cand_points_index.size(); j++)
+		//{
+		//	tar_fea2.push_back(tar_all1[cand_points_index[j]]);
+		//}
+		//cand_points_index = feature_points(c, 1, 3, cos(PI * 160 / 180));
+		//cout << "feature :" << cand_points_index.size() << endl;
+		//for (int j = 0; j < cand_points_index.size(); j++)
+		//{
+		//	tar_fea_flip2.push_back(tar_all2[cand_points_index[j]]);
+		//}
 		//vector<pair<int, int>> path;
 		////double re = length_two_point_tar(tar_all[0], tar_all1[0]);
 		//int shift = 0;
 		//double re = tiling_opt->tar_mismatch(tar_all, tar_all1, path, shift);//点对应匹配的筛选框宽度
 		//cout << "result: " << re << "  shift:" << shift << endl;
-		//double re2 = tiling_opt->tar_mismatch(tar_all, tar_all2, path, shift);
+	 //   double re2 = tiling_opt->tar_mismatch(tar_all, tar_all2, path, shift);
 		//cout << "result2: " << re2 << "  shift:" << shift << endl;
+		//double re3 = tiling_opt->tar_mismatch(tar_fea, tar_fea2, path, shift);
+		//cout << "result3: " << re3 << "  shift:" << shift << endl;
+		//double re4 = tiling_opt->tar_mismatch(tar_fea, tar_fea_flip2, path, shift);
+		//cout << "result4: " << re4 << "  shift:" << shift << endl;
 		//re = re / (1 + sca + scb);
 		//re2 = re2 / (1 + sca + scb);
+		//re3 = re3 / (1 + sca + scb);
+		//re4 = re4 / (1 + sca + scb);
 		//
 		//cout << "result: " <<re<<"  result2: "<< re2 << "  shift:" << shift << endl;
+		//cout << "result3: " << re3 << "  result4: " << re4 << "  shift:" << shift << endl;
 		//cout << path.size() << endl;
 		/*for (int i = 0; i < path.size(); i++)
 		{
@@ -468,7 +497,7 @@ int main(int argc, char** argv)
 		tiling_opt->com_all_TARs(1);
 		//cout << "tiling_opt" << tiling_opt->contour_dataset.size()<<endl
 		//	<< "tars: " << tiling_opt->all_con_tars.size()<<endl;
-		prototile_first->loadTileData("test53");
+		prototile_first->loadTileData("22");
 		vector<Point2f> contour_inner = prototile_first->contour_sample[1];
 		//cout << "prototile_first->contour" << prototile_first->contour.size() << "  contour_inner: " << contour_inner.size()<<endl;
 		//midtime = clock();
@@ -477,9 +506,11 @@ int main(int argc, char** argv)
 		vector<vector<double>> inner_tar = prototile_first->compute_TAR(contour_inner, sc_inner);
 		cout << "sc_inner: " << sc_inner << endl;
 		vector<pair<int, bool>> cand = tiling_opt->compare_choose_TAR(prototile_first->contour);
+		//vector<pair<int, bool>> cand = tiling_opt->quick_choose_TAR(prototile_first->contour);
 		cout << "candsize: " << cand.size() << endl;
 		midtime = clock();
 		cout << endl << "All time consumption: " << (double)(midtime - start) / CLOCKS_PER_SEC << " s " << endl;
+
 		//int t = 0;
 		//prototile_second->loadPoints(tiling_opt->contour_dataset[cand[t].first]);
 		//vector<pair<int, int>> path;
