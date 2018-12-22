@@ -497,7 +497,7 @@ int main(int argc, char** argv)
 		tiling_opt->com_all_TARs(1);
 		//cout << "tiling_opt" << tiling_opt->contour_dataset.size()<<endl
 		//	<< "tars: " << tiling_opt->all_con_tars.size()<<endl;
-		prototile_first->loadTileData("22");
+		prototile_first->loadTileData("46");
 		vector<Point2f> contour_inner = prototile_first->contour_sample[1];
 		//cout << "prototile_first->contour" << prototile_first->contour.size() << "  contour_inner: " << contour_inner.size()<<endl;
 		//midtime = clock();

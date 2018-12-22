@@ -1441,12 +1441,14 @@ namespace Tiling_tiles{
 
 	vector<pair<int,bool>> Tiling_opt::compare_choose_TAR(vector<Point2f> inner_c)
 	{
-		
+		int method = 1;
 		int match_width = 4;
-		vector<pair<int, bool>> all_total = quick_choose_Hu(inner_c);
-		//vector<pair<int, bool>> all_total = quick_choose_TAR(inner_c); 
-		//vector<pair<int, bool>> all_total;// = quick_choose_TAR(inner_c); //未翻转:false,翻转:true
-		//for (int i = 0; i < all_types; i++) all_total.push_back(make_pair(i, true));
+		vector<pair<int, bool>> all_total;
+		if (method == 1) all_total = quick_choose_TAR(inner_c);
+		else if (method == 2)
+		{
+			for (int i = 0; i < all_types; i++) all_total.push_back(make_pair(i, true));
+		}		
 		vector<pair<int, bool>> all_final;
 		vector<double> all_result;
 		int total_num = all_total.size();
@@ -1710,7 +1712,7 @@ namespace Tiling_tiles{
 					all_total[j + 1] = tempp;
 				}
 		vector<pair<int, bool>> all_total_mid;
-		for (int t = all_total.size() - 1; t > total_num - 300; t--)
+		for (int t = all_total.size() - 1; t > total_num - 350; t--)
 		{
 			all_total_mid.push_back(all_total[t]);
 			cout << "order: " << all_total[t].first << "  flip: " << all_total[t].second << " value: " << all_result[t] << " complxeity: " << all_shape_complexity[all_total[t].first] << endl;
@@ -1725,56 +1727,6 @@ namespace Tiling_tiles{
 		all_total.swap(all_total_mid);
 		return all_total;
 	}
-
-	vector<pair<int, bool>> Tiling_opt::quick_choose_Hu(vector<Point2f> inner_c)
-	{
-		vector<pair<int, bool>> order_total;
-		prototile_mid->Pro_clear();
-		prototile_mid->loadPoints(inner_c);
-		vector<Point2f> contour_mid = prototile_mid->contour_sample[1];
-		int total_num = contour_dataset.size();
-		//cout << "total_num:" << total_num << endl;
-		vector<vector<double>> score_3types(3);
-		vector<vector<int>> index_s(3);
-		//int internum = 0;
-		for (int can_num = 0; can_num < total_num; can_num++)
-		{
-			prototile_second->Pro_clear();
-			prototile_second->loadPoints(contour_dataset[can_num]);
-			vector<Point2f> contour_second = prototile_second->contour_sample[1];
-			for (int method_ = 1; method_ <= 1; method_++)
-			{
-				double score;
-				score = matchShapes(contour_mid, contour_second, method_, 0);
-				score_3types[method_ - 1].push_back(score);
-				index_s[method_ - 1].push_back(can_num);
-			}
-
-		}
-
-		for (int i = 0; i < 1; i++)
-		{
-			sort_comb(score_3types[i], index_s[i]);
-			//添加到order数组里
-			for (int t = index_s[i].size() - 1; t > total_num - 200; t--)
-			{
-				int f = 0;
-				int sizeorder = order_total.size();
-				for (int j = 0; j < sizeorder; j++)
-				{
-					if (index_s[i][t] == order_total[j].first)
-					{
-						f = 1;
-						break;
-					}
-				}
-				if (f == 0) order_total.push_back(make_pair(index_s[i][t],true));
-			}
-		}
-		return order_total;
-	}
-
-
 
 	vector<Point2f> Tiling_opt::morphing_tar(vector<Point2f> &contour1, vector<Point2f> &contour2, vector<int> &mid_inter, vector<pair<int, int>> &path, int shift)
 	{
