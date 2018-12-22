@@ -124,6 +124,8 @@ namespace Tiling_tiles{
 		//shapes comparing and candidate contour choosing
 		vector<pair<int, bool>> compare_choose_TAR(vector<Point2f> inner_c); //得到选择出的pattern的序号和是否翻转的标志
 		vector<pair<int, bool>> quick_choose_TAR(vector<Point2f> inner_c); //得到选择出的pattern的序号和是否翻转的标志
+		vector<pair<int, bool>> quick_choose_Hu(vector<Point2f> inner_c); //得到选择出的pattern的序号和是否翻转的标志
+
 		double tar_mismatch(vector<vector<double>> first_arr, vector<vector<double>> second_arr, vector<pair<int, int>>& path, int &sec_shift, int width = 4);//点对应匹配的筛选框宽度
 		void print_TAR_Path(double d[][202], double dp[][202], int i, int j, vector<pair<int, int>>& path);
 		vector<int> search_align_p(Point2f cent, Point2f end, vector<Point2f> cand_temp);
