@@ -17,7 +17,7 @@ int main(int argc, char** argv)
 	Tiling_tiles::Prototile *prototile_third;
 	prototile_third = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
-	int f = 4;
+	int f = 2;
 	if (f == 0) //已有dataset
 	{
 		tiling_opt->tiliing_generation("1");
@@ -297,17 +297,29 @@ int main(int argc, char** argv)
 	}	
 	else if (f==2){  //批量读图
 		//int iii[] = {660,680,678,685};// {610, 614, 618, 636, 637, 638};
-		//int t =  54;
+		int t =  0;
 		//int i = 308;
-		for (int i = 43; i < 44; i++)
+		for (int i = 0; i < 100; i++)
 		{
 			//string image = int2string(iii[i]);
 			string image = int2string(i);
 			//cout << image << endl;
-			//string image1 = "C:\\Users\\liuxk\\Desktop\\shape\\new\\" + image + ".png";
+			string image1 = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\" + image + ".png";
 			////string image1 = "D:\\VisualStudioProjects\\images\\scr\\new\\" + image+".png";
 
-			//Mat src = imread(image1, IMREAD_GRAYSCALE);
+			Mat src = imread(image1, IMREAD_GRAYSCALE);
+			if (src.empty()) continue;
+			else
+			{
+				cout << t << endl;
+				string image2 = "D:\\VisualStudioProjects\\DihedralTessellation\\datasetnew\\" + int2string(t) + ".png";
+				imwrite(image2, src);
+				t++;
+			}
+			//prototile_first->txtpath = "D:\\VisualStudioProjects\\DihedralTessellation\\contours\\";
+			//prototile_first->dataroot = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\";
+			//prototile_first->imgtocout(image,1);
+
 
 			//像素点操作
 			//threshold(src, src, 128, 255, cv::THRESH_BINARY);
@@ -334,12 +346,15 @@ int main(int argc, char** argv)
 		    //string image2 = int2string(i+534);
 			//imwrite("D:\\VisualStudioProjects\\images\\new\\" + image2 + ".png",src);
 			//imwrite("D:\\VisualStudioProjects\\p16.png", src);
-			prototile_first->Pro_clear();
-			prototile_first->txtpath = "D:\\VisualStudioProjects\\DihedralTessellation\\contours\\";
-			prototile_first->dataroot = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\";
+
+			//prototile_first->Pro_clear();
+			//prototile_first->txtpath = "D:\\VisualStudioProjects\\DihedralTessellation\\contours\\";
+			//prototile_first->dataroot = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\";
+
 			//prototile_first->txtpath =  "C:\\Users\\liuxk\\Desktop\\shape\\txt\\";
 			//prototile_first->dataroot = "C:\\Users\\liuxk\\Desktop\\shape\\new\\";
-			prototile_first->imgtocout(image,1);
+			//prototile_first->imgtocout(image,1);
+
 			//////
 			//////string image = int2string(i);
 			//////cout << image << endl;
