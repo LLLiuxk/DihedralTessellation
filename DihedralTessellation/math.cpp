@@ -496,7 +496,6 @@ namespace Tiling_tiles{
 		Point2f s32 = end2 - start2;
 		Point2f s02 = start1 - start2;
 		float s_numer, t_numer, denom, t;
-
 		denom = s10.x * s32.y - s32.x * s10.y;
 		s_numer = s10.x * s02.y - s10.y * s02.x;
 		t_numer = s32.x * s02.y - s32.y * s02.x;
@@ -520,7 +519,6 @@ namespace Tiling_tiles{
 			cout << "denom == 0" << endl;
 		}
 		bool denomPositive = denom > 0;
-
 		if ((s_numer < 0) == denomPositive)//参数是大于等于0且小于等于1的，分子分母必须同号且分子小于等于分母
 			return 0; // No collision
 
@@ -532,14 +530,13 @@ namespace Tiling_tiles{
 			return 0; // No collision
 		// Collision detected
 		t = t_numer / denom;
-
 		//cout << "t:" << t << endl;
 		cross_p.x = start1.x + t * s10.x;
 		cross_p.y = start1.y + t * s10.y;
 		return 1;
 	}
 
-	bool self_intersect(vector<Point2f> &contour_)
+	bool self_intersect(vector<Point2f> &contour_, int &first, int &second)
 	{
 		int sizec = contour_.size();
 		for (int i = 0; i < sizec-2; i++)
@@ -553,7 +550,8 @@ namespace Tiling_tiles{
 					Line_Seg line2(contour_[j], contour_[j + 1]);
 					if (line_intersection(line1, line2, crossp)==1)
 					{
-						//cout << i << "  " << j << endl;
+						first = i;
+						second = j;
 						return true;
 					}
 				}
@@ -565,12 +563,15 @@ namespace Tiling_tiles{
 					Line_Seg line2(contour_[j], contour_[(j + 1) % sizec]);
 					if (line_intersection(line1, line2, crossp)==1)
 					{
-						//cout << i << "  " << j << endl;
+						first = i;
+						second = j;
 						return true;
 					}
 				}		
 			}	
 		}
+		first = -1;
+		second = -1;
 		return false;
 	}
 

@@ -14,7 +14,7 @@ namespace Tiling_tiles{
 		prototile_mid = new Prototile();
 		prototile_second = new Prototile();
 		prototile_tem = new Prototile();
-		all_types = 700;
+		all_types = 466;
 		//memset(dp, 0, sizeof(dp));
 		//memset(dp_inver, 0, sizeof(dp_inver));
 
@@ -172,7 +172,7 @@ namespace Tiling_tiles{
 		//vector<vector<int>> mid_interval_index;
 		for (int i = 0; i < ppindex; i++)
 		{
-			for (int j = i + 1; j < ppindex; j++)
+			for (int j = i + 4; j < ppindex; j++)
 			{
 				vector<Point2f> inner_contour;
 				vector<int> mid_interval; //mid_interval存储的是组合成的inner 的分段连接点
@@ -220,8 +220,9 @@ namespace Tiling_tiles{
 				for (int m = j + 1; m < ppindex; m++)
 				{
 					if (abs(p_p_index[m] - p_p_index[j]) < margin) continue;
-					for (int n = m + 1; n < ppindex; n++)
+					for (int n = m + 6; n < ppindex; n++)
 					{
+						//cout << i<<" "<<j<<" "<<m<<" "<<n << endl;
 						if (abs(p_p_index[n] - p_p_index[m]) < margin) continue;                                                     
 						vector<Mat> all_mat;
 						vector<string> all_png;
@@ -249,7 +250,6 @@ namespace Tiling_tiles{
 							inner_contour.swap(vector<Point2f>());
 							mid_interval.swap(vector<int>());
 						}
-						
 						if (!flipping_placement(result_index, contour_, inner_contour, mid_interval, drawing3, 0))
 						{
 							++flips;
@@ -306,8 +306,8 @@ namespace Tiling_tiles{
 			}
 		}
 		cout << "succeed count: " << count <<" trans: "<<trans<<" rotat: "<<rotas<<" flips: "<<flips<< endl;
-		midtime = clock();
-		cout << "Time consumption: " << (double)(midtime - start) / CLOCKS_PER_SEC << " s " << endl;
+		//midtime = clock();
+		//cout << "Time consumption: " << (double)(midtime - start) / CLOCKS_PER_SEC << " s " << endl;
 		if (count == 0)
 		{
 			cout << "no right placement" << endl;
@@ -351,7 +351,9 @@ namespace Tiling_tiles{
 				int width = 6;
 				double re = tar_mismatch(inner_tar, cand_tar, path, shift, width);
 				vector<Point2f> mor_result = morphing_tar(contour_inner, contour_cand, mid_inter, path, shift);
-				if (self_intersect(mor_result)) continue;
+				int first = 0;
+				int second = 0;
+				//if (self_intersect(mor_result, first, second)) continue;
 				Mat drawing_pro = Mat(800, 2400, CV_8UC3, Scalar(255, 255, 255));
 				draw_poly(drawing_pro, contour_inner, Point2f(400, 400));
 				draw_poly(drawing_pro, contour_cand, Point2f(1200, 400));
@@ -364,7 +366,7 @@ namespace Tiling_tiles{
 				vector<int> return_p;
 				vector<vector<Point2f>> four_place;
 				vector<Point2f> morphed_A = extract_contour(mor_result, mid_inter, return_p, four_place, all_inner_conts[i].type);
-				if (self_intersect(morphed_A)) continue;
+				//if (self_intersect(morphed_A, first, second)) continue;
 				
 				evalua_deformation(mor_result, contour_cand);
 				evalua_deformation(morphed_A, cont_orig);
@@ -383,176 +385,7 @@ namespace Tiling_tiles{
 		
 	}
 
-	void Tiling_opt::points_dividing(string imaname) //
-	{
-		vector<int> p_p_index = prototile_first->partition_points(imaname);
-		vector<Point2f> contour_ = prototile_first->contour;
-		//vector<Point2f> contour_ = prototile_first->contour;
-		load_dataset();
-		string rootname = "D:\\VisualStudioProjects\\DihedralTessellation\\result\\" + prototile_first->contourname;
-		const char *na = rootname.c_str();
-		mkdir(na);
-		int ppindex = p_p_index.size();
-		int margin = prototile_first->contour.size() / 10;
-		cout << "margin: " << margin << endl;
-		int count = 0;
-
-		vector<vector<Point2f>> inner_conts;
-		vector<vector<int>> all_situation_index;
-		vector<vector<int>> mid_interval_index;
-		for (int i = 0; i < ppindex; i++)
-		{
-			for (int j = i + 1; j < ppindex; j++)
-			{
-				if (abs(p_p_index[j] - p_p_index[i]) < margin) continue;
-				//cout << "i: " << p_p_index[i] << "   j: " << p_p_index[j% ppindex] << endl;
-				for (int m = j + 1; m < ppindex; m++)
-				{
-					if (abs(p_p_index[m] - p_p_index[j]) < margin) continue;
-					for (int n = m + 1; n < ppindex; n++)
-					{
-						if (abs(p_p_index[n] - p_p_index[m]) < margin) continue;
-						vector<Point2f> inner_contour;
-						vector<int> result_index;
-						vector<int> mid_interval; //mid_interval存储的是组合成的inner 的分段连接点
-						result_index.push_back(p_p_index[i]);
-						result_index.push_back(p_p_index[j]);
-						result_index.push_back(p_p_index[m]);
-						result_index.push_back(p_p_index[n]);
-						//cout << "  i: " << p_p_index[i]
-						//	<< "   j: " << p_p_index[j]
-						//	<< "   m: " << p_p_index[m]
-						//	<< "   n: " << p_p_index[n] << endl;	
-						////one_situ_div(result_index, contour_, inner_contour);					
-						//string image = int2string(count);
-						/*string conut_name = rootname + "\\placement " + int2string(count);
-						na = conut_name.c_str();
-						mkdir(na);*/
-						Mat drawing1 = Mat(800, 1600, CV_8UC3, Scalar(255,255,255));
-						if (!one_situ_div(result_index, contour_, inner_contour, mid_interval, drawing1))
-						{
-							//cout << "-------------collision-------------" << endl;
-							continue;
-						}
-						count++;
-						//show the marked points
-						Point2f shift2 = Point2f(400, 400) - center_p(contour_);
-						for (int j = 0; j < contour_.size(); j++)
-						{
-							circle(drawing1, contour_[j] + shift2, 1, Scalar(0, 0, 0), -1);
-
-							//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
-						}
-						for (int j = 0; j < p_p_index.size(); j++)
-						{
-							circle(drawing1, contour_[p_p_index[j]] + shift2, 4, Scalar(0, 0, 255), -1);
-						}
-						circle(drawing1, contour_[result_index[0]] + shift2, 8, Scalar(0, 255, 0), -1);
-						circle(drawing1, contour_[result_index[1]] + shift2, 8, Scalar(0, 255, 0), -1);
-						circle(drawing1, contour_[result_index[2]] + shift2, 8, Scalar(0, 255, 0), -1);
-						circle(drawing1, contour_[result_index[3]] + shift2, 8, Scalar(0, 255, 0), -1);
-						//imshow("result_mid", drawing1);
-						string filename = rootname + "\\" + int2string(count-1)+ "PlacingResult.png";
-						imwrite(filename, drawing1);
-
-						
-						cout << endl << count<< " succeed" ;
-						cout << "    inner_contour.size : " << inner_contour.size() << endl;
-
-						inner_conts.push_back(inner_contour);
-						all_situation_index.push_back(result_index);
-						mid_interval_index.push_back(mid_interval);
-						//if (count == 2) break;
-
-					}
-					//if (count == 2) break;
-				}
-				//if (count == 2) break;
-			}
-			//if (count == 2) break;
-		}
-		//string conut_name = rootname + "\\placement " + int2string(count);
-		//rmdir(conut_name.c_str());
-		cout << "succeed count: " << count << endl;
-		// search the right image
-		/*
-		1.将周长调整为一致
-		2.搜索最相近的图案以及角度
-		3.变形
-		*/
-		if (count == 0)
-		{
-			cout << "no right placement" << endl;
-			return;
-		}
-
-		for (int i = 0; i < inner_conts.size(); i++) //inner_conts.size()
-		{
-			cout << "count: " << i<<"/"<<count-1 << endl;
-			int num_c = 1;//选择(num_c+1)*100个点
-			vector<CandPat> candida_contours;
-
-			/*cout << "inner_one: " << inner_one  << endl;
-			string filepathname = "D:\\VisualStudioProjects\\DihedralTessellation\\contours\\test" + int2string(i)+".txt";
-			vector<Point> con;
-			for (int i = 0; i < inner_conts[inner_one].size(); i++)
-			con.push_back((Point)inner_conts[inner_one][i]);
-			fileout(filepathname, con);*/
-
-			
-			//compare_choose_TAR(prototile_first->contour)
-			candida_contours = compare_shapes(inner_conts[i], num_c);
-			//cout << "candida_contours" << candida_contours.size()<< endl;
-			//string conut_name = rootname + "\\placement " + int2string(i);
-			vector<int> mid_inter = joint_relocate(inner_conts[i], mid_interval_index[i], num_c);
-			for (int j = 0; j <candida_contours.size(); j++) //candida_contours.size()
-			{
-				//将所有的结果保存下来
-				Mat drawing_pro = Mat(800, 3200, CV_8UC3, Scalar(255, 255, 255));
-				CandPat tem = candida_contours[j];
-				prototile_second->Pro_clear();
-				prototile_second->loadPoints(contour_dataset[tem.number]);
-				prototile_mid->Pro_clear();
-				prototile_mid->loadPoints(inner_conts[i]);
-
-				vector<Point2f> contour_inner = prototile_mid->contour_sample[num_c]; //选择最少的点进行比较
-				vector<double> contour_inner_c = curvature_com(contour_inner);// prototile_mid->contour_curva[0];
-				vector<Point2f> contour_cand = CandP2Contour(tem, num_c);
-				vector<double> contour_cand_c = curvature_com(contour_cand);
-				//inner and cand morph into the final pettern	
-				//!!!!!!在下一步中将morph改为分段!!!此时没有考虑中心平移和缩放倍数，因为之前是一一对应进行的变形
-				int num = 1;
-				float ratio = 4;
-				while (num-- != 0)
-				{
-					vector<int> mid_inter_new = mid_inter;
-					ratio = ratio + 1;
-					vector<Point2f> inter_mid = morphing_2_patterns(contour_inner, contour_cand, contour_inner_c, contour_cand_c, mid_inter_new, ratio / 10);
-					
-					//show the result
-					draw_poly(drawing_pro, contour_inner, Point2f(400, 400));
-					draw_poly(drawing_pro, contour_cand, Point2f(1200, 400));
-					draw_poly(drawing_pro, inter_mid, Point2f(2000, 400));
-					//draw_polygen("cand pattern: ", contour_cand);
-					
-					vector<int> return_p;
-					vector<vector<Point2f>> four_;
-					vector<Point2f> morphed_B = extract_contour(inter_mid, mid_inter_new, return_p, four_,0);
-					//evalua_deformation();
-					Mat drawing_pro2 = Mat(1600, 2400, CV_8UC3, Scalar(255, 255, 255));
-					draw_allplane(drawing_pro2, morphed_B, return_p, 0.4);
-
-					string filename = rootname + "\\";
-					string file2 = filename + int2string(i) + "_Candidate_" + int2string(j) + "tiling_result.png";
-					filename = filename + int2string(i) + "_Candidate_" + int2string(j) + ".png";
-					imwrite(filename, drawing_pro);
-					imwrite(file2, drawing_pro2);
-					imshow("tiling_result: ", drawing_pro2);
-				}
-
-			}
-		}
-	}
+	
 
 	vector<Point2f> Tiling_opt::simulation_tar(string imaname, int inner_one, int cand_one)
 	{
@@ -560,6 +393,7 @@ namespace Tiling_tiles{
 		vector<int> p_p_index = prototile_first->partition_points(imaname);
 		vector<Point2f> contour_ = prototile_first->contour;
 		int contsize = contour_.size();
+		Point2f cent_cont = center_p(contour_);
 		//vector<Point2f> contour_ = prototile_first->contour;
 		load_dataset();
 		com_all_TARs(num_c);
@@ -570,16 +404,60 @@ namespace Tiling_tiles{
 		int margin = prototile_first->contour.size() / 10;
 		cout << "margin: " << margin << endl;
 		int count = 0;
+		int trans = 0;
+		int rotas = 0;
+		int flips = 0;
+		vector<inPat> all_inner_conts;
 
-		vector<vector<Point2f>> inner_conts;
-		vector<vector<int>> all_situation_index;
-		vector<vector<int>> mid_interval_index;
-		vector<int> result_index;
-		Mat draw1 = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
 		for (int i = 0; i < ppindex; i++)
 		{
 			for (int j = i + 1; j < ppindex; j++)
 			{
+				vector<Point2f> inner_contour;
+				vector<int> mid_interval; //mid_interval存储的是组合成的inner 的分段连接点
+				vector<int> mark_13;
+				mark_13.push_back(p_p_index[i]);
+				mark_13.push_back(p_p_index[j]);
+				vector<vector<int>> all_result_index = find_rota_tilingV(contour_, mark_13);
+				int allresultsize = all_result_index.size();
+				for (int num = 0; num < allresultsize; num++)
+				{
+					Mat drawing1 = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
+					if (!rotation_placement(all_result_index[num], contour_, inner_contour, mid_interval, drawing1))
+					{
+						++rotas;
+						cout << ++count << " succeed" << endl;
+						inPat one_situation;
+						one_situation.in_contour = inner_contour;
+						one_situation.in_interval = mid_interval;
+						one_situation.type = 1;
+						all_inner_conts.push_back(one_situation);
+						inner_contour.swap(vector<Point2f>());
+						mid_interval.swap(vector<int>());
+						if ((count - inner_one) == 1)
+						{
+							Point2f shift2 = Point2f(400, 400) - cent_cont;
+							for (int jj = 0; jj < contsize; jj++)
+							{
+								circle(drawing1, contour_[jj] + shift2, 1, Scalar(0, 0, 0), -1);
+
+								//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
+							}
+							for (int jj = 0; jj < ppindex; jj++)
+							{
+								circle(drawing1, contour_[p_p_index[jj]] + shift2, 4, Scalar(0, 0, 255), -1);
+							}
+							for (int jj = 0; jj < 4; jj++)
+							{
+								circle(drawing1, contour_[all_result_index[num][jj]] + shift2, 8, Scalar(0, 255, 0), -1);
+							}
+							string filename = rootname + "\\" + int2string(count - 1) + "rota_PlacingResult_sim.png";
+							imwrite(filename, drawing1);
+							break;
+						}
+						
+					}
+				}
 				if (abs(p_p_index[j] - p_p_index[i]) < margin) continue;
 				//cout << "i: " << p_p_index[i] << "   j: " << p_p_index[j% ppindex] << endl;
 				for (int m = j + 1; m < ppindex; m++)
@@ -588,81 +466,124 @@ namespace Tiling_tiles{
 					for (int n = m + 1; n < ppindex; n++)
 					{
 						if (abs(p_p_index[n] - p_p_index[m]) < margin) continue;
-						vector<Point2f> inner_contour;
-						vector<int> mid_interval; //mid_interval存储的是组合成的inner 的分段连接点
-						result_index.swap(vector<int>());
+						vector<Mat> all_mat;
+						vector<string> all_png;
+						vector<int> result_index;
 						result_index.push_back(p_p_index[i]);                                                                       //总共讨论一下三种摆放规律，
 						result_index.push_back(p_p_index[j]);                                                                       //1.translation：以下所有该类摆放都以1-3,2-4为轴摆放 
 						result_index.push_back(p_p_index[m]);                                                                       //2.rotation：以下所有该类摆放都按照1-2-3-4的顺序摆放
-						result_index.push_back(p_p_index[n]);                                                                       //3:flipping:一下所有该类摆放都依次以1-3,2-4为轴旋转摆放
-						Mat drawing1 = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
+						result_index.push_back(p_p_index[n]);                                                                       //3:flipping:一下所有该类摆放都依次以1-3,2-4为轴旋转摆放			
 						Mat drawing2 = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
 						Mat drawing3 = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
 						Mat drawing4 = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
-						vector<Mat> all_mat;
-						vector<string> all_png;
+
 						//其中flip又分为两种，分别沿1-3和2-4
-						if (!translation_placement(result_index, contour_, inner_contour, mid_interval, drawing1))
+						if (!translation_placement(result_index, contour_, inner_contour, mid_interval, drawing2))
 						{
 							cout << ++count << " succeed" << endl;
-							all_mat.push_back(drawing1);
+							++trans;
+							all_mat.push_back(drawing2);
 							all_png.push_back("trans");
-							inner_conts.push_back(inner_contour);
-							all_situation_index.push_back(result_index);
-							mid_interval_index.push_back(mid_interval);
+							inPat one_situation;
+							one_situation.in_contour = inner_contour;
+							one_situation.in_interval = mid_interval;
+							one_situation.type = 0;
+							all_inner_conts.push_back(one_situation);
 							inner_contour.swap(vector<Point2f>());
 							mid_interval.swap(vector<int>());
 							if ((count - inner_one) == 1)
 							{
-								draw1 = drawing1;
+								Point2f shift2 = Point2f(400, 400) - cent_cont;
+								for (int jj = 0; jj < contsize; jj++)
+								{
+									circle(drawing2, contour_[jj] + shift2, 1, Scalar(0, 0, 0), -1);
+
+									//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
+								}
+								for (int jj = 0; jj < ppindex; jj++)
+								{
+									circle(drawing2, contour_[p_p_index[jj]] + shift2, 4, Scalar(0, 0, 255), -1);
+								}
+								for (int jj = 0; jj < 4; jj++)
+								{
+									circle(drawing2, contour_[result_index[jj]] + shift2, 8, Scalar(0, 255, 0), -1);
+								}
+								string filename = rootname + "\\" + int2string(count - 1)  + "transPlacingResult_sim.png";
+								imwrite(filename, drawing2);
 								break;
 							}
 						}
-						if (!rotation_placement(result_index, contour_, inner_contour, mid_interval, drawing2))
-						{
-							cout << ++count << " succeed" << endl;
-							all_mat.push_back(drawing2);
-							all_png.push_back("rota");
-							inner_conts.push_back(inner_contour);
-							all_situation_index.push_back(result_index);
-							mid_interval_index.push_back(mid_interval);
-							inner_contour.swap(vector<Point2f>());
-							mid_interval.swap(vector<int>());
-							if ((count - inner_one) == 1) 
-							{
-								draw1 = drawing2;
-								break;
-							}
-						}
+
 						if (!flipping_placement(result_index, contour_, inner_contour, mid_interval, drawing3, 0))
 						{
+							++flips;
 							cout << ++count << " succeed" << endl;
 							all_mat.push_back(drawing3);
 							all_png.push_back("flip(1-3)");
-							inner_conts.push_back(inner_contour);
-							all_situation_index.push_back(result_index);
-							mid_interval_index.push_back(mid_interval);
+							inPat one_situation;
+							one_situation.in_contour = inner_contour;
+							one_situation.in_interval = mid_interval;
+							one_situation.type = 2;
+							all_inner_conts.push_back(one_situation);
 							inner_contour.swap(vector<Point2f>());
 							mid_interval.swap(vector<int>());
-							if ((count - inner_one) == 1) {
-								draw1 = drawing3;
+							if ((count - inner_one) == 1)
+							{
+								Point2f shift2 = Point2f(400, 400) - cent_cont;
+								for (int jj = 0; jj < contsize; jj++)
+								{
+									circle(drawing3, contour_[jj] + shift2, 1, Scalar(0, 0, 0), -1);
+
+									//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
+								}
+								for (int jj = 0; jj < ppindex; jj++)
+								{
+									circle(drawing3, contour_[p_p_index[jj]] + shift2, 4, Scalar(0, 0, 255), -1);
+								}
+								for (int jj = 0; jj < 4; jj++)
+								{
+									circle(drawing3, contour_[result_index[jj]] + shift2, 8, Scalar(0, 255, 0), -1);
+								}
+								string filename = rootname + "\\" + int2string(count - 1) + "flip(1-3)PlacingResult_sim.png";
+								imwrite(filename, drawing3);
 								break;
 							}
 						}
 						if (!flipping_placement(result_index, contour_, inner_contour, mid_interval, drawing4, 1))
 						{
+							++flips;
 							cout << ++count << " succeed" << endl;
 							all_mat.push_back(drawing4);
 							all_png.push_back("flip(2-4)");
-							inner_conts.push_back(inner_contour);
-							all_situation_index.push_back(result_index);
-							mid_interval_index.push_back(mid_interval);
-							if ((count - inner_one) == 1) {
-								draw1 = drawing4;
+							inPat one_situation;
+							one_situation.in_contour = inner_contour;
+							one_situation.in_interval = mid_interval;
+							one_situation.type = 3;
+							all_inner_conts.push_back(one_situation);
+							inner_contour.swap(vector<Point2f>());
+							mid_interval.swap(vector<int>());
+							if ((count - inner_one) == 1)
+							{
+								Point2f shift2 = Point2f(400, 400) - cent_cont;
+								for (int jj = 0; jj < contsize; jj++)
+								{
+									circle(drawing4, contour_[jj] + shift2, 1, Scalar(0, 0, 0), -1);
+
+									//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
+								}
+								for (int jj = 0; jj < ppindex; jj++)
+								{
+									circle(drawing4, contour_[p_p_index[jj]] + shift2, 4, Scalar(0, 0, 255), -1);
+								}
+								for (int jj = 0; jj < 4; jj++)
+								{
+									circle(drawing4, contour_[result_index[jj]] + shift2, 8, Scalar(0, 255, 0), -1);
+								}
+								string filename = rootname + "\\" + int2string(count - 1) + "flip(2-4)PlacingResult_sim.png";
+								imwrite(filename, drawing4);
 								break;
 							}
 						}
-
 					}
 					if ((count - inner_one) == 1) break;
 				}
@@ -671,53 +592,34 @@ namespace Tiling_tiles{
 			if ((count - inner_one) == 1) break;
 		}
 		cout << "succeed count: " << count << endl;
-		// search the right image
-		/*
-		1.将周长调整为一致
-		2.搜索最相近的图案以及角度
-		3.变形
-		*/
 		if (count == 0)
 		{
 			cout << "no right placement" << endl;
 			return vector<Point2f>();
 		}
 		
-		Point2f shift2 = Point2f(400, 400) - center_p(contour_);
-		for (int j = 0; j < contour_.size(); j++)
-		{
-			circle(draw1, contour_[j] + shift2, 1, Scalar(0, 0, 0), -1);
-
-			//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
-		}
-		for (int j = 0; j < p_p_index.size(); j++)
-		{
-			circle(draw1, contour_[p_p_index[j]] + shift2, 4, Scalar(0, 0, 255), -1);
-		}
-		//cout << "inner_one: " << inner_one << " result_index: " << result_index.size()<<endl;
-		circle(draw1, contour_[result_index[0]] + shift2, 8, Scalar(0, 255, 0), -1);
-		circle(draw1, contour_[result_index[1]] + shift2, 8, Scalar(0, 255, 0), -1);
-		circle(draw1, contour_[result_index[2]] + shift2, 8, Scalar(0, 255, 0), -1);
-		circle(draw1, contour_[result_index[3]] + shift2, 8, Scalar(0, 255, 0), -1);
-		string conut_name = rootname + "\\PlacingResult_" + int2string(inner_one) + ".png";
-		imwrite(conut_name, draw1);
-
-		
 		string filepathname = "D:\\VisualStudioProjects\\DihedralTessellation\\contours\\test" + int2string(inner_one)+".txt";
 		vector<Point> con;
-		for (int i = 0; i < inner_conts[inner_one].size(); i++)
-		    con.push_back((Point)inner_conts[inner_one][i]);
+		for (int i = 0; i < all_inner_conts[inner_one].in_contour.size(); i++)
+		{
+			con.push_back((Point)all_inner_conts[inner_one].in_contour[i]);
+		}
 		fileout(filepathname, con);
-
+		
 		//Mat ttt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 		//draw_poly(ttt, inner_conts[inner_one], Point2f(400, 400));
 		//imwrite("D:\\ttt.png", ttt);
-		cout << inner_conts.size() << "  :  " << inner_one << endl;
-		vector<pair<int, bool>> all_total = compare_choose_TAR(inner_conts[inner_one]);
+		cout << all_inner_conts.size() << "  :  " << inner_one << endl;
+		vector<pair<int, bool>> all_total = compare_choose_TAR(all_inner_conts[inner_one].in_contour);
+		for (int t = 0; t < 5; t++)
+		{
+			cout << all_total[t].first << endl;
+		}
 		//cout << "all_tital: " << all_total.size() << endl;
-		vector<int> mid_inter = joint_relocate(inner_conts[inner_one], mid_interval_index[inner_one], num_c);
+		vector<int> mid_inter = joint_relocate(all_inner_conts[inner_one].in_contour, all_inner_conts[inner_one].in_interval, num_c);
+		
 		prototile_mid->Pro_clear();
-		prototile_mid->loadPoints(inner_conts[inner_one]);
+		prototile_mid->loadPoints(all_inner_conts[inner_one].in_contour);
 		vector<Point2f> contour_inner = prototile_mid->contour_sample[1];
 		double sc_inner = 0;
 		vector<vector<double>> inner_tar = prototile_mid->compute_TAR(contour_inner, sc_inner);
@@ -740,27 +642,75 @@ namespace Tiling_tiles{
 		}
 		vector<pair<int, int>> path;
 		int shift = 0;
-		int width = 6;
+		int width = 4;
 		double re = tar_mismatch(inner_tar, cand_tar, path, shift, width);
-		//将所有的结果保存下来
-		Mat drawing_pro = Mat(800, 2400, CV_8UC3, Scalar(255, 255, 255));
 
 		vector<Point2f> mor_result = morphing_tar(contour_inner, contour_cand, mid_inter, path, shift);
-		draw_poly(drawing_pro, contour_inner, Point2f(400, 400));
-		draw_poly(drawing_pro, contour_cand, Point2f(1200, 400));
-		draw_poly(drawing_pro, mor_result, Point2f(2000, 400));
-		////show the result
-		Mat drawing_mid = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		Mat drawing_mA = Mat(1600, 2400, CV_8UC3, Scalar(255, 255, 255));
-		draw_allplane(drawing_mid, mor_result, mid_inter, 0.4,3);
-		//将该proto1以及相邻四个proto2展示出来
+
 		Point2f cente = center_p(mor_result);
 		vector<int> return_p;
 		vector<vector<Point2f>> four_;
-		vector<Point2f> morphed_A = extract_contour(mor_result, mid_inter, return_p, four_,3);
-		cout << "morphed_A size:  " << morphed_A.size() << endl;
-		//evalua_deformation();
-		draw_allplane(drawing_mA, morphed_A, return_p, 0.4,3);
+		vector<Point2f> morphed_A = extract_contour(mor_result, mid_inter, return_p, four_, all_inner_conts[inner_one].type);
+		int first = 0;
+		int second = 0;
+		while (self_intersect(morphed_A, first, second))
+		{
+			cout << "self_intersect" << endl;
+			contour_fine_tuning(morphed_A, return_p, first, second);
+		}
+		four_.swap(vector<vector<Point2f>>());
+		mor_result = extract_contour(morphed_A, return_p, mid_inter, four_, all_inner_conts[inner_one].type);
+
+		double score_fir_r = evalua_deformation(morphed_A, contour_);
+		double score_sec_r = evalua_deformation(mor_result, contour_dataset[all_total[cand_one].first]);
+		cout << "score_fir_r: " << score_fir_r << "score_sec_r: " << score_sec_r << endl;
+
+		//将所有的结果保存下来
+		Mat drawing_pro = Mat(800, 2400, CV_8UC3, Scalar(255, 255, 255));
+		Mat drawing_mid = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		Mat drawing_mA = Mat(1600, 2400, CV_8UC3, Scalar(255, 255, 255));
+		draw_poly(drawing_pro, contour_inner, Point2f(400, 400));
+		draw_poly(drawing_pro, contour_cand, Point2f(1200, 400));
+		draw_poly(drawing_pro, mor_result, Point2f(2000, 400));
+		////show the result		
+		draw_allplane(drawing_mid, mor_result, mid_inter, 0.4, all_inner_conts[inner_one].type);
+		//将该proto1以及相邻四个proto2展示出来
+		
+		Mat drawing_ex = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
+		Mat drawing_ttt = Mat(1600, 1600, CV_8UC3, Scalar(255, 255, 255));
+		for (int t = 0; t < four_[0].size(); t++)
+		{
+			circle(drawing_ttt, four_[0][t], 2, Scalar(0, 0, 255), -1);
+		}
+		for (int t = 0; t < four_[1].size(); t++)
+		{
+			circle(drawing_ttt, four_[1][t], 2, Scalar(128, 0, 128), -1);
+		}
+		for (int t = 0; t < four_[2].size(); t++)
+		{
+			circle(drawing_ttt, four_[2][t], 2, Scalar(0, 255, 0), -1);
+		}
+		for (int t = 0; t < four_[3].size(); t++)
+		{
+			circle(drawing_ttt, four_[3][t], 2, Scalar(255, 128, 0), -1);
+		}
+		for (int t = 0; t < return_p.size(); t++)
+		{
+			circle(drawing_ttt, morphed_A[return_p[t]], 2, Scalar(0, 0, 0), -1);
+		}
+		imshow("all", drawing_ttt);
+		/*Point2f sss = Point2f(400, 400) - center_p(morphed_A);
+		for (int t = 0; t < morphed_A.size(); t++)
+		{
+			circle(drawing_ex, morphed_A[t] + sss, 2, Scalar(0, 0, 255), -1);
+		}
+		draw_poly(drawing_ex, morphed_A,Point2f(1200,400));
+		imshow("morphed_A: ", drawing_ex);*/
+		
+
+		//if (self_intersect(morphed_A, first, second)) cout << "self_intersect" << endl;
+		
+		draw_allplane(drawing_mA, morphed_A, return_p, 0.4, all_inner_conts[inner_one].type);
 		
 		string filename = rootname + "\\Candidate_" + int2string(cand_one) + ".png";
 		string file2 = rootname + "\\Cand_" + int2string(cand_one) + "tiling_result.png";
@@ -782,7 +732,7 @@ namespace Tiling_tiles{
 			double length1 = length_two_point2f(center, cont[i]);
 			double mincos = -0.996; //cos(175)=-0.996194
 			int minnum = -1;
-			for (int j = mark_13[1]; j < mark_13[0] + contsize; j++)
+			for (int j = mark_13[1] + 1; j < mark_13[0] + contsize; j++)
 			{
 				int t = j % contsize;
 				double length2 = length_two_point2f(center, cont[t]);
@@ -856,10 +806,11 @@ namespace Tiling_tiles{
 				b[0].push_back(four_place[1][(results[0] + i) % csize]);                                      
 				b[1].push_back(four_place[2][(results[1] + i) % csize]);
 			}                                                                                                  
-		}                                                                                                        
+		}                                                                                         
+
 		if (vertex_angle(a[0], b[0]) || vertex_angle(a[1], b[1])) return true;  //到这里用时0.009s
-		if(coll_detec_bbx(four_place[0], four_place[1],10)||coll_detec_bbx(four_place[0], four_place[2],10)||coll_detec_bbx(four_place[0], four_place[3],0)||coll_detec_bbx(four_place[1], four_place[2],0)) 
-			return true;
+		if (coll_detec_bbx(four_place[0], four_place[1], 10) || coll_detec_bbx(four_place[0], four_place[2], 10) || coll_detec_bbx(four_place[0], four_place[3], 0) || coll_detec_bbx(four_place[1], four_place[2], 0))
+			return true; 
 		return_B = extract_contour(contour_s, results, return_p, four_place,0);
 		//visual presentation
 		Point2f shift1 = Point2f(1200, 400) - (0.4*center_p(contour_s) + 0.2*line1 + 0.2*line2);
@@ -879,8 +830,11 @@ namespace Tiling_tiles{
 
 	bool Tiling_opt::rotation_placement(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname)
 	{
+		
 		Line_Seg line1(contour_s[results[2]], contour_s[results[0]]);
 		Line_Seg line2(contour_s[results[3]], contour_s[results[1]]);
+		//cout << results[0] << " " << results[1] << " " << results[2] << " " << results[3] << endl;
+		//cout << line1.start << " " << line1.end << endl << line2.start << " " << line2.end << endl;
 		Point2f cross_p;
 		if (line_intersection(line1, line2, cross_p) != 1) return true;
 		if (abs(length_two_point2f(contour_s[results[2]], cross_p) - length_two_point2f(contour_s[results[0]], cross_p)) > 5) return true;
@@ -890,6 +844,7 @@ namespace Tiling_tiles{
 		vector<vector<Point2f>> four_place;
 		vector<Point2f> one_loca = contour_s;
 		four_place.push_back(one_loca);
+		
 		for (int i = 0; i < 3; i++)
 		{
 			Point2f rota_cent = one_loca[results[i]];
@@ -1108,12 +1063,19 @@ namespace Tiling_tiles{
 				}
 			}
 			//cout << four_place.size() << endl;
+			/*Mat drawing_ttt = Mat(1600, 1600, CV_8UC3, Scalar(255, 255, 255));
+			for (int i = 0; i < 4; i++)
+				for (int t = 0; t < four_place[i].size(); t++)
+				{
+					circle(drawing_ttt, four_place[i][t], 2, Scalar(0, 0, 255), -1);
+				}*/
 			int total_num = 0;
 			midmark_p.push_back(0);
 			for (int t = mark_p[3]; t > mark_p[2]; t--)                   //translation的提取规律为1的4-3,2的1-4,4的2-1,3的3-2
 			{
 				total_num++;
 				morphed_B.push_back(four_place[0][t]);
+				//circle(drawing_ttt, four_place[0][t], 2, Scalar(0, 255, 0), -1);
 			}
 			midmark_p.push_back(total_num);
 			for (int t = mark_p[0]; t >= 0; t--)
@@ -1311,14 +1273,15 @@ namespace Tiling_tiles{
 			{
 				morphed_B.push_back(four_place[2][t]);
 			}
-		}
+		}	
 		return morphed_B;
 	}
 	
 	bool Tiling_opt::coll_detec_bbx(vector<Point2f> contour1, vector<Point2f> contour2,int threshold)
 	{
 		int csize = contour1.size();
-		Point2f shift = Point2f(300, 300) - center_p(contour1);
+		vector<Point2f> bbox1 = b_box(contour1);
+		Point2f shift = Point2f(1, 1) - bbox1[1];
 		for (int i = 0; i < csize; i++)
 		{
 			contour1[i] += shift;
@@ -1329,13 +1292,13 @@ namespace Tiling_tiles{
 		//Mat drawing3 = Mat(1200, 1200, CV_8UC1, Scalar(255));
 		//draw_poly(drawing3, contour1, cen1);		
 		//draw_poly(drawing3, contour2, cen2);
-		vector<Point2f> bbox1 = b_box(contour1);
+		bbox1 = b_box(contour1);
 		vector<Point2f> bbox2 = b_box(contour2);
-		/*for (int i = 0; i < bbox1.size(); i++)
-		{
-			MyLine(drawing3, bbox1[i], bbox1[(i + 1) % bbox1.size()], "");
-			MyLine(drawing3, bbox2[i], bbox2[(i + 1) % bbox2.size()], "");
-		}*/
+		//for (int i = 0; i < bbox1.size(); i++)
+		//{
+			//MyLine(drawing3, bbox1[i], bbox1[(i + 1) % bbox1.size()], "");
+			//MyLine(drawing3, bbox2[i], bbox2[(i + 1) % bbox2.size()], "");
+		//}
 		vector<Point2f> search_boundary;
 		vector<int> num_in1;
 		vector<int> num_in2;
@@ -1398,7 +1361,7 @@ namespace Tiling_tiles{
 		//imshow("draw2222", drawing2);
 		//imshow("draw3", drawing3);
 		//imwrite("D:\\tu.png", drawing3);
-
+		if (search_boundary[0].x < 0 || search_boundary[1].x>600 || search_boundary[0].y < 0 || search_boundary[1].y>600) cout << "search_boundary beyond!" << endl;
 		int count = 0;
 		for (int i = search_boundary[0].y; i <= search_boundary[1].y + 0.5; i++)
 			for (int j = search_boundary[0].x; j <= search_boundary[1].x + 0.5; j++)
@@ -1447,7 +1410,8 @@ namespace Tiling_tiles{
 		if (method == 1) all_total = quick_choose_TAR(inner_c);
 		else if (method == 2)
 		{
-			for (int i = 0; i < all_types; i++) all_total.push_back(make_pair(i, true));
+			for (int i = 0; i < all_types; i++) 
+				all_total.push_back(make_pair(i, true));
 		}		
 		vector<pair<int, bool>> all_final;
 		vector<double> all_result;
@@ -1503,7 +1467,7 @@ namespace Tiling_tiles{
 		vector<pair<int, bool>> all_total_mid;
 		for (int t = total_num - 1; t > total_num - 30; t--)
 		{
-			all_total_mid.push_back(all_total[t]);
+			all_total_mid.push_back(all_final[t]);
 			cout << "order: " << all_final[t].first << "  flip: " << all_final[t].second << " value: " << all_result[t] << " complxeity: " << all_shape_complexity[all_final[t].first] << endl;
 		}
 		all_final.swap(all_total_mid);
@@ -1675,7 +1639,7 @@ namespace Tiling_tiles{
 			//vector<vector<double>> tar_sec_f = all_con_tars_flip[can_num];
 			vector<vector<double>> tar_sec = all_fea_tars[can_num];
 			vector<vector<double>> tar_sec_f = all_fea_tars_flip[can_num];
-			cout << "tar_sec :" << tar_sec.size() << "   tar_sec_f: " << tar_sec_f.size() << endl;
+			//cout << "tar_sec :" << tar_sec.size() << "   tar_sec_f: " << tar_sec_f.size() << endl;
 			vector<pair<int, int>> path;
 			int shift = 0;
 			//double re = tar_mismatch(tar_mid, tar_sec, path, shift, match_width);
@@ -1715,7 +1679,7 @@ namespace Tiling_tiles{
 		for (int t = all_total.size() - 1; t > total_num - 350; t--)
 		{
 			all_total_mid.push_back(all_total[t]);
-			cout << "order: " << all_total[t].first << "  flip: " << all_total[t].second << " value: " << all_result[t] << " complxeity: " << all_shape_complexity[all_total[t].first] << endl;
+			//cout << "order: " << all_total[t].first << "  flip: " << all_total[t].second << " value: " << all_result[t] << " complxeity: " << all_shape_complexity[all_total[t].first] << endl;
 		}
 		cout << all_total_mid.size() << endl;
 		/*int midsize = all_total_mid.size();
@@ -1743,7 +1707,7 @@ namespace Tiling_tiles{
 			contour_mid.push_back(contour2[i]);
 		}
 
-		//cout << contour1.size() << "   " << c2size << "  c3: " << contour_mid .size()<< endl;
+		cout << contour1.size() << "   " << c2size << "  c3: " << contour_mid .size()<< endl;
 		contour2 = contour_mid;
 		double scale = arcLength(contour1, true) / arcLength(contour2, true);
 		//cout << "scale: " << scale << endl;
@@ -1786,26 +1750,27 @@ namespace Tiling_tiles{
 				mid_inter_new.push_back(i);
 			}
 		}
+		Point2f shiftting = Point2f(400, 400) - cen1;
 		Mat ta = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 		Mat tt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 		Mat ttt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 		for (int t = 0; t < contour1.size(); t++)
 		{
-			circle(tt, contour1[t], 3, Scalar(255, 0, 0), -1);
-			circle(ttt, contour1[t], 3, Scalar(255, 0, 0), -1);
-			circle(ta, contour1[t], 3, Scalar(255, 0, 0), -1);
+			circle(tt, contour1[t] + shiftting, 3, Scalar(255, 0, 0), -1);
+			circle(ttt, contour1[t] + shiftting, 3, Scalar(255, 0, 0), -1);
+			circle(ta, contour1[t] + shiftting, 3, Scalar(255, 0, 0), -1);
 		}
 		for (int t = 0; t < contour2.size(); t++)
 		{
-			circle(tt, contour2[t], 3, Scalar(0, 255, 0), -1);
-			circle(ttt, contour2[t], 3, Scalar(0, 255, 0), -1);
-			circle(ta, contour2[t], 3, Scalar(0, 255, 0), -1);
+			circle(tt, contour2[t] + shiftting, 3, Scalar(0, 255, 0), -1);
+			circle(ttt, contour2[t] + shiftting, 3, Scalar(0, 255, 0), -1);
+			circle(ta, contour2[t] + shiftting, 3, Scalar(0, 255, 0), -1);
 		}
 		for (int t = 0; t < psize; t++)
 		{
 			//circle(ttt, src1_points[t], 4, Scalar(255, 120, 120), -1);
-			circle(ta, final_pettern[t], 3, Scalar(255, 120, 120), -1);
-			MyLine(tt, contour1[path[t].first], contour2[path[t].second], "grey");
+			circle(ta, final_pettern[t] + shiftting, 3, Scalar(255, 120, 120), -1);
+			MyLine(tt, contour1[path[t].first] + shiftting, contour2[path[t].second] + shiftting, "grey");
 		}
 		/*for (int t = 0; t < 20; t++)
 		{
@@ -1816,7 +1781,7 @@ namespace Tiling_tiles{
 		final_pettern = sampling(final_pettern, 2);
 		for (int i = 0; i < final_pettern.size(); i++)
 		{
-			circle(ttt, final_pettern[i], 3, Scalar(0, 0, 255), -1);
+			circle(ttt, final_pettern[i] + shiftting, 3, Scalar(0, 0, 255), -1);
 		}
 		//for (int i = 0; i < path.size(); i++)
 		//{
@@ -1829,6 +1794,50 @@ namespace Tiling_tiles{
 		imshow("????:", ttt);
 		return final_pettern;
 	}
+
+	void Tiling_opt::contour_fine_tuning(vector<Point2f> &contour_, vector<int> mid_index, int first, int second)
+	{
+		vector<Point2f> mid_con;
+		int csize = contour_.size();
+		cout << "csize: "<<csize << endl;
+		for (int i = 0; i < mid_index.size(); i++)
+		{
+			if (mid_index[i] > first&&mid_index[i] < second)
+			{
+				vector<Point2f> pre;
+				vector<Point2f> post;
+				for (int t = first; t < mid_index[i]; t++)
+				{
+					pre.push_back(contour_[t]);
+				}
+				for (int t = mid_index[i] + 1; t <=second + 1; t++)
+				{
+					post.push_back(contour_[t]);
+				}
+				for (int t = 0; t < first; t++)
+				{
+					mid_con.push_back(contour_[t]);
+				}
+				mid_con.push_back(0.5*mid_con.back() + 0.5*post[post.size() - 2]);
+				for (int t = post.size()-2; t >=0; t--)
+				{
+					mid_con.push_back(post[t]);
+				}
+				mid_con.push_back(contour_[mid_index[i]]);
+				for (int t = pre.size() - 1; t > 0; t--)
+				{
+					mid_con.push_back(pre[t]);
+				}
+				mid_con.push_back(0.5*mid_con.back() + 0.5*contour_[second + 2]);
+				for (int t = second + 2; t < csize; t++)
+				{
+					mid_con.push_back(contour_[t]);
+				}
+			}
+		}
+		contour_.swap(mid_con);
+	}
+
 	vector<int> Tiling_opt::joint_relocate(vector<Point2f> contour_, vector<int> joint_index, int num_c) //将原始轮廓上的划分点对应到采样后的轮廓上
 	{
 		vector<Point2f> contour_mid = sampling(contour_, num_c + 1);//选择最少的点进行比较
@@ -1980,8 +1989,21 @@ namespace Tiling_tiles{
 	{
 		//储存顺序为 mid sec result
 		double total_score = 0;
-		double score_mid_r = 0;
-		double score_sec_r = 0;
+		prototile_second->Pro_clear();
+		prototile_second->loadPoints(contour1);
+		double shape_com1 = 0;
+		vector<vector<double>> tar_all = prototile_second->compute_TAR(prototile_second->contour_sample[1], shape_com1);//(num_c+1)*100 points
+		prototile_tem->Pro_clear();
+		prototile_tem->loadPoints(contour2);
+		double shape_com2;
+		vector<vector<double>> tar_all1 = prototile_second->compute_TAR(prototile_tem->contour_sample[1], shape_com2);
+		vector<vector<double>> tar_all2 = prototile_second->compute_TAR(prototile_tem->contour_sample_flip[1], shape_com2);
+		vector<pair<int, int>> path;
+		int shift = 0;
+		double re = tar_mismatch(tar_all, tar_all1, path, shift);
+		double re2 = tar_mismatch(tar_all, tar_all2, path, shift);
+		if (re > re2)re = re2;
+		total_score = re / (1 + shape_com1 + shape_com2);
 		//score_mid_r = contourArea(contour[2]) / contourArea(contour[0]);
 		//score_sec_r = contourArea(contour[1]) / contourArea(contour[0]);
 		return total_score;
@@ -2710,6 +2732,177 @@ namespace Tiling_tiles{
 		return final_pettern;
 	}
 	
+	void Tiling_opt::points_dividing(string imaname) //
+	{
+		vector<int> p_p_index = prototile_first->partition_points(imaname);
+		vector<Point2f> contour_ = prototile_first->contour;
+		//vector<Point2f> contour_ = prototile_first->contour;
+		load_dataset();
+		string rootname = "D:\\VisualStudioProjects\\DihedralTessellation\\result\\" + prototile_first->contourname;
+		const char *na = rootname.c_str();
+		mkdir(na);
+		int ppindex = p_p_index.size();
+		int margin = prototile_first->contour.size() / 10;
+		cout << "margin: " << margin << endl;
+		int count = 0;
+
+		vector<vector<Point2f>> inner_conts;
+		vector<vector<int>> all_situation_index;
+		vector<vector<int>> mid_interval_index;
+		for (int i = 0; i < ppindex; i++)
+		{
+			for (int j = i + 1; j < ppindex; j++)
+			{
+				if (abs(p_p_index[j] - p_p_index[i]) < margin) continue;
+				//cout << "i: " << p_p_index[i] << "   j: " << p_p_index[j% ppindex] << endl;
+				for (int m = j + 1; m < ppindex; m++)
+				{
+					if (abs(p_p_index[m] - p_p_index[j]) < margin) continue;
+					for (int n = m + 1; n < ppindex; n++)
+					{
+						if (abs(p_p_index[n] - p_p_index[m]) < margin) continue;
+						vector<Point2f> inner_contour;
+						vector<int> result_index;
+						vector<int> mid_interval; //mid_interval存储的是组合成的inner 的分段连接点
+						result_index.push_back(p_p_index[i]);
+						result_index.push_back(p_p_index[j]);
+						result_index.push_back(p_p_index[m]);
+						result_index.push_back(p_p_index[n]);
+						//cout << "  i: " << p_p_index[i]
+						//	<< "   j: " << p_p_index[j]
+						//	<< "   m: " << p_p_index[m]
+						//	<< "   n: " << p_p_index[n] << endl;	
+						////one_situ_div(result_index, contour_, inner_contour);					
+						//string image = int2string(count);
+						/*string conut_name = rootname + "\\placement " + int2string(count);
+						na = conut_name.c_str();
+						mkdir(na);*/
+						Mat drawing1 = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
+						if (!one_situ_div(result_index, contour_, inner_contour, mid_interval, drawing1))
+						{
+							//cout << "-------------collision-------------" << endl;
+							continue;
+						}
+						count++;
+						//show the marked points
+						Point2f shift2 = Point2f(400, 400) - center_p(contour_);
+						for (int j = 0; j < contour_.size(); j++)
+						{
+							circle(drawing1, contour_[j] + shift2, 1, Scalar(0, 0, 0), -1);
+
+							//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
+						}
+						for (int j = 0; j < p_p_index.size(); j++)
+						{
+							circle(drawing1, contour_[p_p_index[j]] + shift2, 4, Scalar(0, 0, 255), -1);
+						}
+						circle(drawing1, contour_[result_index[0]] + shift2, 8, Scalar(0, 255, 0), -1);
+						circle(drawing1, contour_[result_index[1]] + shift2, 8, Scalar(0, 255, 0), -1);
+						circle(drawing1, contour_[result_index[2]] + shift2, 8, Scalar(0, 255, 0), -1);
+						circle(drawing1, contour_[result_index[3]] + shift2, 8, Scalar(0, 255, 0), -1);
+						//imshow("result_mid", drawing1);
+						string filename = rootname + "\\" + int2string(count - 1) + "PlacingResult.png";
+						imwrite(filename, drawing1);
+
+
+						cout << endl << count << " succeed";
+						cout << "    inner_contour.size : " << inner_contour.size() << endl;
+
+						inner_conts.push_back(inner_contour);
+						all_situation_index.push_back(result_index);
+						mid_interval_index.push_back(mid_interval);
+						//if (count == 2) break;
+
+					}
+					//if (count == 2) break;
+				}
+				//if (count == 2) break;
+			}
+			//if (count == 2) break;
+		}
+		//string conut_name = rootname + "\\placement " + int2string(count);
+		//rmdir(conut_name.c_str());
+		cout << "succeed count: " << count << endl;
+		// search the right image
+		/*
+		1.将周长调整为一致
+		2.搜索最相近的图案以及角度
+		3.变形
+		*/
+		if (count == 0)
+		{
+			cout << "no right placement" << endl;
+			return;
+		}
+
+		for (int i = 0; i < inner_conts.size(); i++) //inner_conts.size()
+		{
+			cout << "count: " << i << "/" << count - 1 << endl;
+			int num_c = 1;//选择(num_c+1)*100个点
+			vector<CandPat> candida_contours;
+
+			/*cout << "inner_one: " << inner_one  << endl;
+			string filepathname = "D:\\VisualStudioProjects\\DihedralTessellation\\contours\\test" + int2string(i)+".txt";
+			vector<Point> con;
+			for (int i = 0; i < inner_conts[inner_one].size(); i++)
+			con.push_back((Point)inner_conts[inner_one][i]);
+			fileout(filepathname, con);*/
+
+
+			//compare_choose_TAR(prototile_first->contour)
+			candida_contours = compare_shapes(inner_conts[i], num_c);
+			//cout << "candida_contours" << candida_contours.size()<< endl;
+			//string conut_name = rootname + "\\placement " + int2string(i);
+			vector<int> mid_inter = joint_relocate(inner_conts[i], mid_interval_index[i], num_c);
+			for (int j = 0; j <candida_contours.size(); j++) //candida_contours.size()
+			{
+				//将所有的结果保存下来
+				Mat drawing_pro = Mat(800, 3200, CV_8UC3, Scalar(255, 255, 255));
+				CandPat tem = candida_contours[j];
+				prototile_second->Pro_clear();
+				prototile_second->loadPoints(contour_dataset[tem.number]);
+				prototile_mid->Pro_clear();
+				prototile_mid->loadPoints(inner_conts[i]);
+
+				vector<Point2f> contour_inner = prototile_mid->contour_sample[num_c]; //选择最少的点进行比较
+				vector<double> contour_inner_c = curvature_com(contour_inner);// prototile_mid->contour_curva[0];
+				vector<Point2f> contour_cand = CandP2Contour(tem, num_c);
+				vector<double> contour_cand_c = curvature_com(contour_cand);
+				//inner and cand morph into the final pettern	
+				//!!!!!!在下一步中将morph改为分段!!!此时没有考虑中心平移和缩放倍数，因为之前是一一对应进行的变形
+				int num = 1;
+				float ratio = 4;
+				while (num-- != 0)
+				{
+					vector<int> mid_inter_new = mid_inter;
+					ratio = ratio + 1;
+					vector<Point2f> inter_mid = morphing_2_patterns(contour_inner, contour_cand, contour_inner_c, contour_cand_c, mid_inter_new, ratio / 10);
+
+					//show the result
+					draw_poly(drawing_pro, contour_inner, Point2f(400, 400));
+					draw_poly(drawing_pro, contour_cand, Point2f(1200, 400));
+					draw_poly(drawing_pro, inter_mid, Point2f(2000, 400));
+					//draw_polygen("cand pattern: ", contour_cand);
+
+					vector<int> return_p;
+					vector<vector<Point2f>> four_;
+					vector<Point2f> morphed_B = extract_contour(inter_mid, mid_inter_new, return_p, four_, 0);
+					//evalua_deformation();
+					Mat drawing_pro2 = Mat(1600, 2400, CV_8UC3, Scalar(255, 255, 255));
+					draw_allplane(drawing_pro2, morphed_B, return_p, 0.4);
+
+					string filename = rootname + "\\";
+					string file2 = filename + int2string(i) + "_Candidate_" + int2string(j) + "tiling_result.png";
+					filename = filename + int2string(i) + "_Candidate_" + int2string(j) + ".png";
+					imwrite(filename, drawing_pro);
+					imwrite(file2, drawing_pro2);
+					imshow("tiling_result: ", drawing_pro2);
+				}
+
+			}
+		}
+	}
+
 	vector<Point2f> Tiling_opt::morphing_2_patterns(vector<Point2f> &contour1, vector<Point2f> &contour2, vector<double> &concur1, vector<double> &concur2, vector<int> &mid_inter, float shape_ratio)
 	{
 		//传统morphing是由start和end求得一系列intermediate状态，这里是通过c1和c2获得最终的变形结果

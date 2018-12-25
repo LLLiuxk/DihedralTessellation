@@ -137,6 +137,7 @@ namespace Tiling_tiles{
 		vector<Point2f> morphing_2_patterns(vector<Point2f> &contour1, vector<Point2f> &contour2, vector<double> &concur1, vector<double> &concur2, vector<int> &mid_inter, float shape_ratio);
 		//morphing by tar
 		vector<Point2f> morphing_tar(vector<Point2f> &contour1, vector<Point2f> &contour2, vector<int> &mid_inter, vector<pair<int, int>> &path, int shift);
+		void contour_fine_tuning(vector<Point2f> &contour_,vector<int> mid_index, int first,int second );
 
 		//µü´úmorph	
 		vector<Point2f> morphing_patterns_iter(vector<Point2f> contour1, vector<Point2f> contour2, vector<double> concur1, vector<double> concur2, float shape_ratio);//, vector<int> mid_inter, float shape_ratio);
@@ -227,7 +228,7 @@ namespace Tiling_tiles{
 
 	//cross points
 	int line_intersection(Line_Seg line1, Line_Seg line2, Point2f &cross_p);
-	bool self_intersect(vector<Point2f> &contour_);
+	bool self_intersect(vector<Point2f> &contour_, int &first, int &second);
 
 	//vector and cosin/ sin
 	Point2f unit_vec(Point2f vec);

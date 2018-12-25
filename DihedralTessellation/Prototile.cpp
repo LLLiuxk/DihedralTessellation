@@ -72,6 +72,7 @@ namespace Tiling_tiles{
 		String imageName = dataroot + tile_image + ".png"; // by default
 		cout << imageName << endl;
 		src = imread(imageName, IMREAD_COLOR);
+		//src = imread(imageName, CV_LOAD_IMAGE_UNCHANGED);
 		if (src.empty())
 		{
 			cerr << "No image supplied ..." << endl;
