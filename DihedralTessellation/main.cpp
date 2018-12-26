@@ -406,7 +406,7 @@ int main(int argc, char** argv)
 		//{
 			tiling_opt->Tiling_clear();
 		//	//vector<Point2f> sim_mid = tiling_opt->simulation_mid("19", 20, 0);
-			vector<Point2f> sim_mid = tiling_opt->simulation_tar("15", 34, 0);
+			vector<Point2f> sim_mid = tiling_opt->simulation_tar("0", 19, 1);
 		//}
 		//-----------------test compute_TAR----------------------
 
