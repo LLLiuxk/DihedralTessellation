@@ -16,6 +16,8 @@ namespace Tiling_tiles{
 		else if (color1.compare("purple") == 0) color = Scalar(60, 32, 240);
 		else if (color1.compare("white") == 0) color = Scalar(255, 255, 255);
 		else if (color1.compare("black") == 0) color = Scalar(0, 0, 0);
+		else if (color1.compare("deepblue") == 0) color = Scalar(225, 0, 120);
+		else if (color1.compare("green2") == 0) color = Scalar(20, 220, 20);
 		else color = Scalar(128);
 		int thickness = 2;
 		int lineType = 8;
@@ -413,6 +415,64 @@ namespace Tiling_tiles{
 						}
 					}
 				}
+			}
+		}
+	}
+
+	void draw_result(Mat &drawing_, vector<Point2f> contour_, vector<int> vec_, double scale, int type)
+	{
+		int drawrow = drawing_.rows;
+		int drawcol = drawing_.cols;
+		int border = 300 * scale;
+		int con_size = contour_.size();
+		if (scale != 1)
+		{
+			for (int i = 0; i < con_size; i++)
+			{
+				contour_[i] = scale*contour_[i];
+			}
+		}
+		double length_ = arcLength(contour_, 1) / con_size;
+		vector<Point2f> allcent_in_plane;
+		vector<Point2f> allcent_in_plane_;
+		//vector<Point2f> connect_area;
+		//connect_area.push_back(Point2f())
+		if (type == 0) //translation
+		{
+			Point2f step[4];
+			step[0] = contour_[vec_[2]] - contour_[vec_[0]];
+			step[1] = contour_[vec_[3]] - contour_[vec_[1]];
+			step[2] = -step[0];
+			step[3] = -step[1];
+
+			Point2f cenp = Point2f(drawrow / 2, drawcol / 2);
+			Point2f connec_cent[4];
+			connec_cent[0] = contour_[vec_[0]] - center_p(contour_);
+			connec_cent[1] = contour_[vec_[1]] - center_p(contour_);
+			connec_cent[2] = contour_[vec_[2]] - center_p(contour_);
+			connec_cent[3] = contour_[vec_[3]] - center_p(contour_);
+
+			draw_poly(drawing_, contour_, cenp);
+			int new_poly = 1;
+			for (int t = 1; new_poly > 0; t = t + 2)
+			{
+				new_poly = 0;
+				for (int index = 0; index < 4; index++)
+				{		
+					int r = index / 2;
+					for (int n = 0; n < t + r; n++)
+					{
+						cenp = cenp + step[index];
+						if ((cenp.x<drawcol + border) && (cenp.x>-border) && (cenp.y<drawrow + border) && (cenp.y>-border))
+						{
+							draw_poly(drawing_, contour_, cenp);
+							circle(drawing_, cenp + connec_cent[index],5,Scalar(0,255,0),-1);
+							//draw_poly(drawing_, contour_, cenp);
+							new_poly++;
+						}
+					}
+				}
+				
 			}
 		}
 	}
@@ -1587,6 +1647,27 @@ namespace Tiling_tiles{
 			}
 		}
 		ch[index] = '\0';
+		return ch;
+	}
+
+	string double2string(double number)
+	{
+		char ch[8];
+		int mid = number * 1000;
+		string result = int2string(mid);
+		int length = result.length();
+		int i = 0;
+		int t = 0;
+		while (i < length-3)
+		{
+			ch[i++] = result[t++]; 
+		}
+		ch[i++] = '.';
+		while (i <= length)
+		{
+			ch[i++] = result[t++];
+		}
+		ch[i] = '\0';
 		return ch;
 	}
 

@@ -1,7 +1,82 @@
-﻿Build started 2018/12/26 9:53:05.
+﻿Build started 2018/12/29 13:56:28.
      1>Project "D:\VisualStudioProjects\DihedralTessellation\DihedralTessellation\DihedralTessellation.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /IC:\local\opencv\build\include /IC:\local\opencv\build\include\opencv /IC:\local\opencv\build\include\opencv2 /Zi /nologo /W3 /WX- /Od /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Debug\\" /Fd"x64\Debug\vc120.pdb" /Gd /TP /errorReport:prompt Prototile.cpp main.cpp math.cpp tilingOpt.cpp
+         tilingOpt.cpp
+     1>tilingOpt.cpp(154): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(161): warning C4996: 'mkdir': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _mkdir. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\direct.h(140) : see declaration of 'mkdir'
+     1>tilingOpt.cpp(162): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(163): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(183): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(300): warning C4267: 'argument' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(147): warning C4101: 'midtime' : unreferenced local variable
+     1>tilingOpt.cpp(425): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(432): warning C4996: 'mkdir': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _mkdir. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\direct.h(140) : see declaration of 'mkdir'
+     1>tilingOpt.cpp(433): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(434): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(452): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(808): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(846): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(923): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(995): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(1126): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(1389): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(1448): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>tilingOpt.cpp(1449): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>tilingOpt.cpp(1458): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>tilingOpt.cpp(1459): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>tilingOpt.cpp(1481): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
+     1>tilingOpt.cpp(1482): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
+     1>tilingOpt.cpp(1496): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(1534): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(1572): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(1739): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(1784): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(1797): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(1813): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(1846): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(1920): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(1946): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(1950): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(1966): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(1988): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(1989): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(2143): warning C4996: 'mkdir': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _mkdir. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\direct.h(140) : see declaration of 'mkdir'
+     1>tilingOpt.cpp(2144): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(2145): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(2318): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(2348): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(2364): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(2431): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>tilingOpt.cpp(2432): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>tilingOpt.cpp(2441): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(2464): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(2465): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(2533): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(2534): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(2694): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(2755): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(2789): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(2865): warning C4996: 'mkdir': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _mkdir. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\direct.h(140) : see declaration of 'mkdir'
+     1>tilingOpt.cpp(2866): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(2867): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(3077): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(3269): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(3354): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(3418): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(3430): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>tilingOpt.cpp(3431): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>tilingOpt.cpp(3450): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>tilingOpt.cpp(3451): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>tilingOpt.cpp(3484): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>tilingOpt.cpp(3485): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>tilingOpt.cpp(3504): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(3522): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>tilingOpt.cpp(3530): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
          math.cpp
      1>math.cpp(34): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
      1>math.cpp(56): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
@@ -69,14 +144,13 @@
      1>math.cpp(1596): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
      1>math.cpp(1626): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
          main.cpp
-     1>main.cpp(268): warning C4305: 'argument' : truncation from 'double' to 'float'
      1>main.cpp(269): warning C4305: 'argument' : truncation from 'double' to 'float'
      1>main.cpp(270): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>main.cpp(271): warning C4305: 'argument' : truncation from 'double' to 'float'
      1>main.cpp(7): warning C4101: 'midtime' : unreferenced local variable
          Generating Code...
      1>d:\visualstudioprojects\dihedraltessellation\dihedraltessellation\math.cpp(652): warning C4715: 'Tiling_tiles::cur_char_length' : not all control paths return a value
          Skipping... (no relevant changes detected)
-         tilingOpt.cpp
          Prototile.cpp
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.exe" /INCREMENTAL /NOLOGO /LIBPATH:C:\local\opencv\build\x64\vc12\lib opencv_calib3d248d.lib opencv_contrib248d.lib opencv_core248d.lib opencv_features2d248d.lib opencv_flann248d.lib opencv_gpu248d.lib opencv_highgui248d.lib opencv_imgproc248d.lib opencv_legacy248d.lib opencv_ml248d.lib opencv_objdetect248d.lib opencv_ts248d.lib opencv_video248d.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.lib" /MACHINE:X64 x64\Debug\main.obj
@@ -88,4 +162,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:02.61
+Time Elapsed 00:00:04.03

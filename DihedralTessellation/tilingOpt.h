@@ -9,6 +9,7 @@
 #include <string>
 #include <stack>
 #include <ctime>
+#include <io.h>
 #include <list>
 #include <direct.h>
 //#include "Morphing.h"
@@ -205,6 +206,7 @@ namespace Tiling_tiles{
 	Mat draw_polygen(string win_name, vector<Point2f> contour_s);
 	void draw_poly(Mat &drawing_, vector<Point2f> contour_s, Point2f center);
 	void draw_allplane(Mat &drawing_, vector<Point2f> contour_, vector<int> vec_, double scale = 1,int type = 0);
+	void draw_result(Mat &drawing_, vector<Point2f> contour_, vector<int> vec_, double scale = 1, int type = 0);
 	//math tool
 	Point2f center_p(vector<Point2f> contour_);
 	double contour_length(vector<Point2f> contour);
@@ -222,6 +224,7 @@ namespace Tiling_tiles{
 	vector<int> feature_points(vector<Point2f> contour_, double dmin, double dmax, double angle_cos);//amax 165; dmin 0.015Ls
 	//translate tool
 	string int2string(int number);
+	string double2string(double number);
 
 	//flipping
 	vector<Point2f> flip_only_coord(vector<Point2f> cont_s, int flag = 0);

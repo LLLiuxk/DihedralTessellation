@@ -1,4 +1,7 @@
 #include "tilingOpt.h"
+#include  <stdio.h>
+#include  <stdlib.h>
+
 
 using namespace Tiling_tiles;
 
@@ -20,27 +23,26 @@ int main(int argc, char** argv)
 	int f = 0;
 	if (f == 0) //已有dataset
 	{
-		//tiling_opt->tiliing_generation("15");
 
-		//int iii[20] = {1,2,9,23,36,50,54,55,61,125};//{22,46,51,65,106,152,208,288,384,432,439,474,496,511,524,606,621,654,652,670};
-		for (int i = 0; i < 10; i++)
+		//tiling_opt->tiliing_generation("312");
+
+		//int iii[20] = { 0,36,278,293,298,312,357,454, 452, 443, 429, 364 };//{458,451,439,439,426,357,359,59,70,75,102,128,169,175,223,312};//{205,210,215,219,230,233,180};//
+		for (int i = 36; i < 46; i++)
 		{
-		//	//tiling_opt->points_dividing(int2string(iii[i]));
 			tiling_opt->Tiling_clear();
+			//tiling_opt->tiliing_generation(int2string(iii[i]));
+			
 			tiling_opt->tiliing_generation(int2string(i));
 			system("cls");
 		}
-	
 
-
-		//prototile_first->partition_points("19");
 		
 		// ________________feature_points___________________________
+
 		//Mat drawing2 = Mat(600, 600, CV_8UC1, Scalar(255));
 		//prototile_first->loadTileData("0");
 		//vector<Point2f> a = prototile_first->contour_sample[2];
-		//Point2f cent = center_p(a);
-		
+		//Point2f cent = center_p(a);	
 		//draw_poly(drawing2, a, cent);
 		//circle(drawing2, Point2f(300,300), 2, Scalar(255), -1);
 		//circle(drawing2, cent, 2, Scalar(255), -1);
@@ -72,7 +74,6 @@ int main(int argc, char** argv)
 		//	circle(drawing3, a[d[j]], 4, Scalar(255, 0, 0), -1);
 		//}
 		//imshow("fea", drawing3);
-
 		
 		//--------------------test morphing------------
 
@@ -114,8 +115,6 @@ int main(int argc, char** argv)
 		//imshow("only point", ttt);
 	 //   imshow("aaab", tt);
 		//imshow("aaa", drawing_pro1);
-
-		
 
 		//-------------测试min_mismatch函数-----------
 
@@ -208,7 +207,6 @@ int main(int argc, char** argv)
 		//}
 		//------------------------
 
-	
         //------------------测试compare_shapes函数---------------
 
 		//tiling_opt->load_dataset();
@@ -225,10 +223,7 @@ int main(int argc, char** argv)
 		//imshow("aaa", tt); 
 		//candida_contours = tiling_opt->compare_shapes(prototile_first->contour, 1);
         ////-------------------------------------------
-		
-
-
-		
+			
 	}
 	else if (f == 1)   //test draw_allplane
 	{
@@ -237,48 +232,49 @@ int main(int argc, char** argv)
 		//{
 			//prototile_first->imgtocout("777");
 			//prototile_first->loadTileData("600");
-			//Mat show = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+			Mat show = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 			//Mat show1 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 			//Mat show2 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		 //   vector<Point2f> a;
-		 //   a.push_back(Point2f(0, 40));
-		 //   a.push_back(Point2f(30, 0));
-		 //   a.push_back(Point2f(80, 40));
-		 //   a.push_back(Point2f(30, 70));
+		    vector<Point2f> a;
+		    a.push_back(Point2f(0, 40));
+		    a.push_back(Point2f(30, 0));
+		    a.push_back(Point2f(80, 40));
+		    a.push_back(Point2f(30, 70));
 			//vector<vector<Point2f>> b;
-			//vector<int> tt;
+			vector<int> tt;
 			//vector<int> ttt;
 			//vector<int> tttt;
 			////vector<Point2f> ccc = prototile_first->contour_sample[3];
-			//tt.push_back(0);
-			//tt.push_back(1);
-			//tt.push_back(2);
-			//tt.push_back(3);
+			tt.push_back(0);
+			tt.push_back(1);
+			tt.push_back(2);
+			tt.push_back(3);
 			//vector<Point2f> c = tiling_opt->extract_contour(a, tt, ttt, b, 3);
 			//draw_allplane(show, a, tt, 1, 3);
 			//draw_allplane(show1, c, ttt, 1, 3);
-			//imshow("hahah",show);
+			draw_result(show, a, tt, 1, 0);
+			imshow("hahah",show);
 			//imshow("aahahah", show1);
 			//vector<Point2f> d = tiling_opt->extract_contour(c, ttt, tttt, b, 3);
 			//draw_allplane(show2, d, tttt, 1, 3);
 			//imshow("final", show2);
 		    //--------------------test line_intersection 函数--------------------------------------
-			vector<Point2f> a;
-			a.push_back(Point2f(178,60));
-			a.push_back(Point2f(175.068,61));
-			a.push_back(Point2f(33, 121.33));
-			a.push_back(Point2f(33, 121.33));
-			Point2f c;
-			/*a.push_back(Point2f(119, 93.1645));
-			a.push_back(Point2f(119, 96.97));
-			a.push_back(Point2f(119, 100.775));
-			a.push_back(Point2f(119, 104.581));*/
+			//vector<Point2f> a;
+			//a.push_back(Point2f(178,60));
+			//a.push_back(Point2f(175.068,61));
+			//a.push_back(Point2f(33, 121.33));
+			//a.push_back(Point2f(33, 121.33));
 			//Point2f c;
-			Line_Seg line1(a[2], a[0]);
-			Line_Seg line2(a[3], a[1]);
-			cout << line1.start << " " << line1.end << endl << line2.start << " " << line2.end << endl;
-			if (line_intersection(line1, line2, c)==1) cout << c << endl;
-			else cout << "line=0";
+			///*a.push_back(Point2f(119, 93.1645));
+			//a.push_back(Point2f(119, 96.97));
+			//a.push_back(Point2f(119, 100.775));
+			//a.push_back(Point2f(119, 104.581));*/
+			////Point2f c;
+			//Line_Seg line1(a[2], a[0]);
+			//Line_Seg line2(a[3], a[1]);
+			//cout << line1.start << " " << line1.end << endl << line2.start << " " << line2.end << endl;
+			//if (line_intersection(line1, line2, c)==1) cout << c << endl;
+			//else cout << "line=0";
 			//-------------------------------------------------------------------------------------
 
 			//for (int i = 0; i < ccc.size(); i++)
@@ -307,25 +303,25 @@ int main(int argc, char** argv)
 		//int iii[] = {714,763,736};// {610, 614, 618, 636, 637, 638};
 		int t =  0;
 		//int i = 308;
-		for (int i = 178; i < 179; i++)
+		for (int i = 174; i < 175; i++)
 		{
 			//string image = int2string(iii[i]);
 			string image = int2string(i);
 			////cout << image << endl;
-			//string image1 = "C:\\Users\\liuxk\\Desktop\\datasetnew\\zym\\datasetnew\\" + image + ".png";
-			//Mat src = imread(image1);
-			//if (src.empty())
-			//{
-			//	cout << "empty!" << endl;
-			//	continue;
-			//}
-			//else
-			//{
-			//    cout << t << endl;
-			//	string image2 = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\" + int2string(t) + ".png";
-			//	imwrite(image2, src);
-			//	t++;
-			//}
+			/*string image1 = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\" + int2string(i) + ".png"; //"C:\\Users\\liuxk\\Desktop\\datasetnew\\zym\\datasetnew\\" + image + ".png";
+			Mat src = imread(image1);
+			if (src.empty())
+			{
+				cout << "empty!" << endl;
+				continue;
+			}
+			else
+			{
+			    cout << t << endl;
+				string image2 = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\" + int2string(t) + ".png";
+				imwrite(image2, src);
+				t++;
+			}*/
 			prototile_first->txtpath = "D:\\VisualStudioProjects\\DihedralTessellation\\contours\\";
 			prototile_first->dataroot = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\";
 			prototile_first->imgtocout(image);
@@ -406,7 +402,7 @@ int main(int argc, char** argv)
 		//{
 			tiling_opt->Tiling_clear();
 		//	//vector<Point2f> sim_mid = tiling_opt->simulation_mid("19", 20, 0);
-			vector<Point2f> sim_mid = tiling_opt->simulation_tar("0", 19, 1);
+			vector<Point2f> sim_mid = tiling_opt->simulation_tar("278", 14, 0);
 		//}
 		//-----------------test compute_TAR----------------------
 
@@ -444,12 +440,20 @@ int main(int argc, char** argv)
 
 		//tiling_opt->load_dataset();
 		//tiling_opt->com_all_TARs(1);
-		//prototile_first->loadTileData("test53");
-		//vector<Point2f> a = prototile_first->contour_sample[1];
+		//prototile_first->loadTileData("test12");
+		//vector<Point2f> a = prototile_first->contour;// prototile_first->contour_sample[1];
+		//Mat drawing_ = Mat(600, 600, CV_8UC3, Scalar(255, 255, 255));
+		//int asize = a.size();
+		//cout << asize << endl;
+		//for (int i = 0; i < asize; i++)
+		//{
+		//	circle(drawing_, a[i], 2, Scalar(0, 255, 0), -1);
+		//}
+		//imshow("asa", drawing_);
 		////a.pop_back();
 		//double sca;
 		//vector<vector<double>> tar_all = prototile_first->compute_TAR(a, sca);
-		//vector<int> cand_points_index = feature_points(a, 1, 3, cos(PI * 160 / 180));
+		//vector<int> cand_points_index = most_convex_p(a, curvature_com(a), 30);
 		//cout << "feature :" << cand_points_index.size() << endl;
 		//vector<vector<double>> tar_fea;
 		//for (int j = 0; j < cand_points_index.size(); j++)
@@ -472,13 +476,13 @@ int main(int argc, char** argv)
 		//vector<vector<double>> tar_all2 = tiling_opt->all_con_tars_flip[num];//prototile_second->compute_TAR(c, scb);
 		//vector<vector<double>> tar_fea2;
 		//vector<vector<double>> tar_fea_flip2;
-		//cand_points_index = feature_points(b, 1, 3, cos(PI * 160 / 180));
+		//cand_points_index = most_convex_p(b, curvature_com(b), 30);// feature_points(b, 1, 3, cos(PI * 160 / 180));
 		//cout << "feature :" << cand_points_index.size() << endl;
 		//for (int j = 0; j < cand_points_index.size(); j++)
 		//{
 		//	tar_fea2.push_back(tar_all1[cand_points_index[j]]);
 		//}
-		//cand_points_index = feature_points(c, 1, 3, cos(PI * 160 / 180));
+		//cand_points_index = most_convex_p(c, curvature_com(c), 30); //feature_points(c, 1, 3, cos(PI * 160 / 180));
 		//cout << "feature :" << cand_points_index.size() << endl;
 		//for (int j = 0; j < cand_points_index.size(); j++)
 		//{
@@ -514,7 +518,7 @@ int main(int argc, char** argv)
 		tiling_opt->com_all_TARs(1);
 		midtime = clock();
 		cout << endl << (double)(midtime - start) / CLOCKS_PER_SEC << " s " << endl;
-		prototile_first->loadTileData("15");
+		prototile_first->loadTileData("test14");
 		vector<pair<int, bool>> all_total = tiling_opt->compare_choose_TAR(prototile_first->contour);
 		*/
 
@@ -524,7 +528,7 @@ int main(int argc, char** argv)
 		//tiling_opt->com_all_TARs(1);
 		////cout << "tiling_opt" << tiling_opt->contour_dataset.size()<<endl
 		////	<< "tars: " << tiling_opt->all_con_tars.size()<<endl;
-		//prototile_first->loadTileData("46");
+		//prototile_first->loadTileData("test9");
 		//vector<Point2f> contour_inner = prototile_first->contour_sample[1];
 		////cout << "prototile_first->contour" << prototile_first->contour.size() << "  contour_inner: " << contour_inner.size()<<endl;
 		////midtime = clock();
@@ -892,44 +896,45 @@ int main(int argc, char** argv)
 		//------------------------------------------------------
 
 		//---------------------test flip------------------------
-		//vector<int> p_p_index = prototile_first->partition_points("685");
-		//vector<Point2f> a = prototile_first->contour;
-		//vector<int> mark;
-		//mark.push_back(12);
-		//mark.push_back(172);
-		//mark.push_back(244);
-		//mark.push_back(380);
-		//Mat draw2 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		//
-		////Point2f t = a[479] - a[480];
-		////Point2f tt = a[481] - a[480];
-		////cout << t << " " << tt << "  " << cos_two_vector(t, tt) <<"  "<<sin_two_vector(t,tt)<< endl;;
-		//vector<int> midmark;
-		//vector<Point2f> return_B;
-		//Mat draw1 = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
+		vector<int> p_p_index = prototile_first->partition_points("1");
+		vector<Point2f> a = prototile_first->contour;
+		vector<int> mark;
+		mark.push_back(0);
+		mark.push_back(60);
+		mark.push_back(192);
+		mark.push_back(351);
+		Mat draw2 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		
+		//Point2f t = a[479] - a[480];
+		//Point2f tt = a[481] - a[480];
+		//cout << t << " " << tt << "  " << cos_two_vector(t, tt) <<"  "<<sin_two_vector(t,tt)<< endl;;
+		vector<int> midmark;
+		vector<Point2f> return_B;
+		Mat draw1 = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
 		//Mat rot_mat = getRotationMatrix2D(center_p(a), 50, 1);
 		//transform(a, return_B, rot_mat);
-		//if (tiling_opt->flipping_placement(mark, a, return_B, midmark, draw1,0)) cout << " pengzhuang " << endl;
-		//else
-		//{
-		//	draw_poly(draw2, return_B, center_p(return_B));
-		//	MyLine(draw1, return_B[12], return_B[144], "green");
-		//	//imshow("hahah", draw1);
-		//	//imwrite("D:\\XXXX.PNG", draw1);
-		//}
-		//for (int i = 0; i < a.size(); i++)
-		//	circle(draw2, a[i], 2, Scalar(0, 0, 255), -1);
-		//circle(draw2, a[12], 6, Scalar(0, 255, 0), -1);
-		//circle(draw2, return_B[12], 6, Scalar(0, 255, 0), -1);
-		//for (int j = 1; j < 4; j++)
-		//{
-		//	circle(draw2, a[mark[j]], 4, Scalar(0, 255, 0), -1);
-		//	circle(draw2, return_B[mark[j]], 4, Scalar(0, 255, 0), -1);
-		//}
-		//MyLine(draw2, a[12], a[144], "green");
-		//draw_poly(draw1, return_B, center_p(return_B));
-		//imshow("hahah", draw1);
-		//imshow("asdad", draw2);
+		if (tiling_opt->flipping_placement(mark, a, return_B, midmark, draw1,1)) cout << " pengzhuang " << endl;
+		else
+		{
+			cout << "return_B" << return_B.size()<< endl;
+			draw_poly(draw2, return_B, center_p(return_B));
+			//MyLine(draw1, return_B[12], return_B[144], "green");
+			//imshow("hahah", draw1);
+			//imwrite("D:\\XXXX.PNG", draw1);
+		}
+		/*for (int i = 0; i < a.size(); i++)
+			circle(draw2, a[i], 2, Scalar(0, 0, 255), -1);
+		circle(draw2, a[12], 6, Scalar(0, 255, 0), -1);
+		circle(draw2, return_B[12], 6, Scalar(0, 255, 0), -1);
+		for (int j = 1; j < 4; j++)
+		{
+			circle(draw2, a[mark[j]], 4, Scalar(0, 255, 0), -1);
+			circle(draw2, return_B[mark[j]], 4, Scalar(0, 255, 0), -1);
+		}
+		MyLine(draw2, a[12], a[144], "green");
+		draw_poly(draw1, return_B, center_p(return_B));*/
+		imshow("hahah", draw1);
+		imshow("asdad", draw2);
 		//---------------------------------------------------
         
 	
@@ -994,56 +999,86 @@ int main(int argc, char** argv)
 		cout << "pengzhuang" << endl;
 		else cout << "no";*/
 	}
-	//Tiling_tiles::Prototile *prototile_second;
-	//prototile_second = new Tiling_tiles::Prototile();
-	//prototile_first->loadTileData(imagename2);
+	else if (f == 8)
+	{
+		vector<int> max_order = prototile_first->partition_points("312");
+		vector<Point2f> contours = prototile_first->contour;	
+		int csize = contours.size();
+		int results[4] = {0,150,261,451};
+		Point2f line1 = contours[results[2]] - contours[results[0]];
+		Point2f line2 = contours[results[3]] - contours[results[1]];
+		
+		vector<Point2f> one_loca;
+		//translation
+		for (int j = 0; j < csize; j++)
+		{
+			one_loca.push_back(contours[j] + line2);
+		}
+		//rotation
+		/*Point2f rota_cent = contours[results[2]];
+		Mat rot_mat = getRotationMatrix2D(rota_cent, 180, 1);
+		transform(contours, one_loca, rot_mat);*/
 
-	//Tiling_tiles::Tiling_opt *tiling;
-	//tiling = new Tiling_tiles::Tiling_opt();
-	//////tiling->com_cur_string(imagename1, imagename2);
-	//////tiling->com_score(imagename1, imagename1);
-	//tiling->com_score_manual(imagename1, imagename2);
-
-	//检测各种仿射变换
-	/*vector<Point2f> a;
-	vector<Point2f> b;
-	a.push_back(Point2f(1, 1));
-	a.push_back(Point2f(2, 1));
-	a.push_back(Point2f(2, 2));
-	a.push_back(Point2f(3, 2));
-	a.push_back(Point2f(3, 1));
-	a.push_back(Point2f(4, 1));
-	a.push_back(Point2f(5, 0));
-	a.push_back(Point2f(6, 1));
-	a.push_back(Point2f(7, 1));
-
-	b.push_back(Point2f(1, 1));
-	b.push_back(Point2f(2, 1));
-	b.push_back(Point2f(3, 0));
-	b.push_back(Point2f(4, 1));
-	b.push_back(Point2f(5, 1));
-	b.push_back(Point2f(5, 2));
-	b.push_back(Point2f(6, 2));
-	b.push_back(Point2f(6, 1));
-	b.push_back(Point2f(7, 1));
-
-	vector<vector<Point2f>> prototwo;
-	tiling->Aff_place(a, b, prototwo);*/
-	//Point2f s(5, 1);
-	//Point2f e(1, 5);
-	////double ab = tiling->re_warp_Aff(a, b, s, e);
-	//double ab = tiling->warpAff_sca(a, b, s, e);
-	//for (int i = 0; i < a.size(); i++)
-	//{
-	//	cout << "output: " << b[i] << endl;
-
-	//}
-
-	//warpAff_sca(vector<Point2f> &input_, vector<Point2f> &output_, Point2f start, Point2f end)
-
-	//tiling->DTW(a, b);
+		Mat drwa = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		Mat drwa1 = Mat(1200, 1200, CV_8UC3, Scalar(255, 255, 255));
+		for (int i = 0; i < contours.size(); i++)
+		{
+			circle(drwa, contours[i], 1, Scalar(0, 0, 0), -1);
+		}
+		/*for (int i = 0; i < 4; i++)
+		{
+			circle(drwa, contours[results[i]], 6, Scalar(0, 255, 0), -1);
+		}*/
+		
+		for (int i = 0; i < max_order.size(); i++)
+		{
+			circle(drwa, contours[max_order[i]], 4, Scalar(0, 0, 255), -1);
+		}
+		circle(drwa, contours[results[1]], 6, Scalar(0, 255, 0), -1);
+		circle(drwa, contours[results[3]], 6, Scalar(0, 255, 0), -1);
+		imshow("contour", drwa);
+		Point2f cent = center_p(contours);
+		Point2f onecent = center_p(one_loca);
+		Point2f shift = Point2f(600, 600) - 0.5*cent - 0.5*onecent;
+		for (int i = 0; i < csize; i++)
+		{
+			contours[i] += shift;
+			one_loca[i] += shift;
+		}
+		cent = cent + shift;// center_p(contours);
+		onecent = onecent + shift;// center_p(one_loca);
+		vector<Point2f> bbox1 = b_box(contours);
+		vector<Point2f> bbox2 = b_box(one_loca);
+		draw_poly(drwa1, contours, cent);
+		draw_poly(drwa1, one_loca, onecent);
+		for (int i = 0; i < csize; i++)
+		{
+			//circle(drwa1, contours[i], 2, Scalar(255, 255, 255), -1);
+			MyLine(drwa1, contours[i], contours[(i + 1) % csize], "grey");
+		}
+		
+		for (int i = 0; i < csize; i++)
+		{
+			//circle(drwa1, one_loca[i], 2, Scalar(255, 255, 255), -1);
+			MyLine(drwa1, one_loca[i], one_loca[(i + 1) % csize], "grey");
+		}
+		circle(drwa1, one_loca[results[1]], 6, Scalar(0, 255, 0), -1);
+		circle(drwa1, one_loca[results[3]], 6, Scalar(0, 255, 0), -1);
+		circle(drwa1, contours[results[1]], 6, Scalar(0, 255, 0), -1);
+		circle(drwa1, contours[results[3]], 6, Scalar(0, 255, 0), -1);
+		//circle(drwa1, rota_cent + shift, 3, Scalar(0, 255, 0), -1);
+		
 	
-	
+		for (int i = 0; i < bbox1.size(); i++)
+		{
+			MyLine(drwa1, bbox1[i], bbox1[(i + 1) % bbox1.size()], "red");
+			MyLine(drwa1, bbox2[i], bbox2[(i + 1) % bbox2.size()], "red");
+		}
+		imshow("draw3", drwa1);
+		imwrite("D:\\pic.png", drwa1);
+
+	}
+		
     finish = clock();
 	cout << endl<< "All time consumption: "<<(double)(finish - start) / CLOCKS_PER_SEC << " s " << endl;
 	waitKey(0);
