@@ -63,7 +63,7 @@ namespace Tiling_tiles{
 		void contour_sam_cur();	
 		vector<vector<double>> compute_TAR(vector<Point2f> &contour_,double &shape_complexity, double frac = 0.25);
 
-		vector<int> cand_tiling_v(int max_cur_num);                 //求轮廓上值最大的10个不临近的凸点
+		vector<int> cand_tiling_v(int max_cur_num);       //求轮廓上值最大的10个不临近的凸点
 		vector<int> partition_points(string imaname);  //求得用做划分的点
 
 		//void cur_normalize();
@@ -204,16 +204,17 @@ namespace Tiling_tiles{
 	//draw tool
 	void MyLine(Mat img, Point2f start, Point2f end, string color1);
 	Mat draw_polygen(string win_name, vector<Point2f> contour_s);
-	void draw_poly(Mat &drawing_, vector<Point2f> contour_s, Point2f center);
+	void draw_poly(Mat &drawing_, vector<Point2f> contour_s, Point2f center,int color=0);
 	void draw_allplane(Mat &drawing_, vector<Point2f> contour_, vector<int> vec_, double scale = 1,int type = 0);
-	void draw_result(Mat &drawing_, vector<Point2f> contour_, vector<int> vec_, double scale = 1, int type = 0);
+	void draw_result(Mat &drawing_, vector<Point2f> contour_, vector<int> vec_, double scale = 1, int type = 0, Point2f shift = Point2f(0, 0));
+	void draw_two(Mat &drawing_, vector<Point2f> &contour_1, vector<int> vec_1, vector<Point2f> &contour_2, vector<int> vec_2, double scale = 1, int type = 0);
 	//math tool
 	Point2f center_p(vector<Point2f> contour_);
 	double contour_length(vector<Point2f> contour);
 	double length_two_point2f(Point2f &u, Point2f &v);
 	double length_two_point_tar(vector<double> &p1,vector<double> &p2);
-	//double area_poly(vector<Point2f> &cont);
-	//double area_p_pixel(vector<Point2f> &cont);
+	void move_con(vector<Point2f> &con, Point2f sh);
+
 
 	int cur_char_length(char a, char b);
 	double cur_length_two_p(double cur1, double cur2);

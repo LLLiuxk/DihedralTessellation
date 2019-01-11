@@ -732,37 +732,55 @@ namespace Tiling_tiles{
 			if (self_intersect(mor_result, first, second)) return vector<Point2f>();
 		}
 		
-		Mat drawing_1 = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
-		//cout << " morphed_A.size: " << morphed_A.size() << endl;
-		for (int i = 0; i < morphed_A.size(); i++)
-		{
-			circle(drawing_1, morphed_A[i], 2, Scalar(128, 0, 128), -1);
-		}
-
-		cout << " mor_result.size: " << mor_result.size() << endl;
-
-		for (int i = 0; i < mor_result.size()-1; i++)
-		{
-			MyLine(drawing_1, mor_result[i] + Point2f(800, 0), mor_result[i+1] + Point2f(800, 0),"red");
-			//circle(drawing_1, mor_result[i] + Point2f(800, 0), 2, Scalar(128, 0, 128), -1);
-		}
-		//draw_poly(drawing_1, mor_result, Point2f(800, 0));
-		imwrite("D:\\wocao.png", drawing_1);
-
-
 		double score_fir_r = evalua_deformation(morphed_A, con_ori);
 		double score_sec_r = evalua_deformation(mor_result, contour_cand);
 		cout << "score_fir_r: " << score_fir_r << "score_sec_r: " << score_sec_r << endl;
 
+
+		string filep = "D:\\VisualStudioProjects\\DihedralTessellation\\simulation\\";
+		filep = filep + imaname + "_morA_" + int2string(inner_one) + ".txt";
+		vector<Point> con1;
+		for (int i = 0; i < morphed_A.size(); i++)
+		{
+			con1.push_back((Point)morphed_A[i]);
+		}
+		fileout(filep, con1);
+
 		//将所有的结果保存下来
 		Mat drawing_pro = Mat(800, 2400, CV_8UC3, Scalar(255, 255, 255));
-		Mat drawing_mid = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		Mat drawing_mA = Mat(1600, 2400, CV_8UC3, Scalar(255, 255, 255));
+		Mat drawing_mid = Mat(1200, 2400, CV_8UC3, Scalar(255, 255, 255));
+		Mat drawing_mA = Mat(1800, 1800, CV_8UC3, Scalar(255, 255, 255));
+		Mat drawing_re = Mat(3600, 3600, CV_8UC3, Scalar(180, 180, 180));
 		draw_poly(drawing_pro, contour_inner, Point2f(400, 400));
 		draw_poly(drawing_pro, contour_cand, Point2f(1200, 400));
 		draw_poly(drawing_pro, mor_result, Point2f(2000, 400));
 		////show the result		
-		draw_allplane(drawing_mid, mor_result, mid_inter, 0.4, all_inner_conts[inner_one].type);
+		//draw_allplane(drawing_mid, mor_result, mid_inter, 0.4, all_inner_conts[inner_one].type);
+		//draw_result(drawing_mid, mor_result, mid_inter, 0.4, all_inner_conts[inner_one].type);
+		//draw_two(drawing_mid, morphed_A, return_p, mor_result, mid_inter, 0.4, all_inner_conts[inner_one].type);
+		Point2f shif1 = Point2f(400, 600) - center_p(mor_result);
+		Point2f shif2 = Point2f(1200, 600) - center_p(morphed_A);
+		Point2f shif3 = Point2f(2000, 600) - center_p(con_ori);
+		draw_poly(drawing_mid, mor_result, Point2f(400, 600), 9);
+		draw_poly(drawing_mid, morphed_A, Point2f(1200, 600), 7);
+		draw_poly(drawing_mid, con_ori, Point2f(2000, 600), 8);
+		for (int i = 0; i < mor_result.size(); i++)
+		{
+			//circle(drawing_mid, mor_result[i] + shif1, 3, Scalar(0, 0, 230), -1);
+			MyLine(drawing_mid, mor_result[i] + shif1, mor_result[(i + 1) % mor_result.size()] + shif1, "black");
+		}
+		for (int i = 0; i < morphed_A.size(); i++)
+		{
+			MyLine(drawing_mid, morphed_A[i] + shif2, morphed_A[(i + 1) % morphed_A.size()] + shif2, "black");
+			//circle(drawing_mid, morphed_A[i] + shif2, 3, Scalar(250, 100, 100), -1);
+		}
+		for (int i = 0; i < con_ori.size(); i++)
+		{
+			MyLine(drawing_mid, con_ori[i] + shif3, con_ori[(i + 1) % con_ori.size()] + shif3, "black");
+			//circle(drawing_mid, con_ori[i] + shif3, 3, Scalar(230, 0, 0), -1);
+		}
+		
+		imwrite("D:\\1.png", drawing_mid);
 		//将该proto1以及相邻四个proto2展示出来
 		
 		Mat drawing_ex = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
@@ -800,7 +818,13 @@ namespace Tiling_tiles{
 		//if (self_intersect(morphed_A, first, second)) cout << "self_intersect" << endl;
 		
 		draw_allplane(drawing_mA, morphed_A, return_p, 0.4, all_inner_conts[inner_one].type);
-		
+		//draw_result(drawing_mA, morphed_A, return_p, 0.4, all_inner_conts[inner_one].type);
+		imwrite("D:\\2.png", drawing_mA);
+
+		draw_two(drawing_re, morphed_A, return_p, mor_result, mid_inter, 0.5, all_inner_conts[inner_one].type);
+		//draw_result(drawing_re, mor_result, mid_inter, 0.4, all_inner_conts[inner_one].type,0.4*shift_);
+		imwrite("D:\\result.png", drawing_re);
+
 		string filename = rootname + "\\Candidate_" + int2string(cand_one) + ".png";
 		string file2 = rootname + "\\Cand_" + int2string(cand_one) + "tiling_result.png";
 
@@ -1763,17 +1787,23 @@ namespace Tiling_tiles{
 		Mat ta = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
 		Mat tt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 		Mat ttt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		Mat tttt = Mat(800, 3200, CV_8UC3, Scalar(255, 255, 255));
+		draw_poly(tttt, contour1, Point2f(400, 400), 3);
+		draw_poly(tttt, contour2, Point2f(1200, 400), 4);
+		draw_poly(tttt, final_pettern, Point2f(2000, 400), 9);
 		for (int t = 0; t < contour1.size(); t++)
 		{
-			circle(tt, contour1[t] + shiftting, 3, Scalar(255, 0, 0), -1);
-			circle(ttt, contour1[t] + shiftting, 3, Scalar(255, 0, 0), -1);
-			circle(ta, contour1[t] + shiftting, 3, Scalar(255, 0, 0), -1);
+			circle(tt, contour1[t] + shiftting, 3, Scalar(100, 230, 0), -1);
+			circle(ttt, contour1[t] + shiftting, 3, Scalar(100, 230, 0), -1);
+			circle(ta, contour1[t] + shiftting, 3, Scalar(100, 230, 0), -1);
+			MyLine(tttt, contour1[t] + shiftting, contour1[(t + 1) % contour1.size()] + shiftting,"black");
 		}
 		for (int t = 0; t < contour2.size(); t++)
 		{
 			circle(tt, contour2[t] + shiftting, 3, Scalar(0, 255, 0), -1);
 			circle(ttt, contour2[t] + shiftting, 3, Scalar(0, 255, 0), -1);
 			circle(ta, contour2[t] + shiftting2, 3, Scalar(0, 255, 0), -1);
+			MyLine(tttt, contour2[t] + shiftting2, contour2[(t + 1) % contour2.size()] + shiftting2, "black");
 		}
 		for (int t = 0; t < psize; t++)
 		{
@@ -1788,9 +1818,12 @@ namespace Tiling_tiles{
 		mid_inter_new = joint_relocate(final_pettern, mid_inter_new, 1);
 		mid_inter = mid_inter_new;
 		final_pettern = sampling(final_pettern, 2);
+		Point2f shiftting3 = Point2f(2000, 400) - center_p(final_pettern);
 		for (int i = 0; i < final_pettern.size(); i++)
 		{
-			circle(ttt, final_pettern[i] + shiftting, 3, Scalar(0, 0, 255), -1);
+			//circle(tttt, final_pettern[i] + shiftting, 3, Scalar(0, 230, 130), -1);
+			MyLine(tttt, final_pettern[i] + shiftting3, final_pettern[(i + 1) % final_pettern.size()] + shiftting3, "black");
+			circle(ttt, final_pettern[i] + shiftting, 3, Scalar(0, 230, 130), -1);
 		}
 		//for (int i = 0; i < path.size(); i++)
 		//{
@@ -1801,6 +1834,8 @@ namespace Tiling_tiles{
 		imshow("??:", ta);
 		imshow("???:", tt);
 		imshow("????:", ttt);
+		
+		imwrite("D:\\mor_all.png", tttt);
 		return final_pettern;
 	}
 

@@ -52,8 +52,18 @@ namespace Tiling_tiles{
 		//imshow(win_name, drawing_pro);
 		return drawing_pro;
 	}
-	void draw_poly(Mat &drawing_, vector<Point2f> contour_s, Point2f center)
+	void draw_poly(Mat &drawing_, vector<Point2f> contour_s, Point2f center,int color)
 	{
+		Scalar col_sca = Scalar(0, 0, 0);
+		if (color == 1) col_sca = Scalar(255, 255, 255);
+		if (color == 2) col_sca = Scalar(128, 128, 128);
+		if (color == 3) col_sca = Scalar(251, 228, 169); //blue1
+		if (color == 4) col_sca = Scalar(251, 204, 176); //blue2
+		if (color == 5) col_sca = Scalar(130, 174, 89); //green1
+		if (color == 6) col_sca = Scalar(222, 250, 167); //green2
+		if (color == 7) col_sca = Scalar(127, 110, 174); //red1
+		if (color == 8) col_sca = Scalar(70, 124, 217); //orange1
+		if (color == 9) col_sca = Scalar(251, 181, 105); //blue3
 		Point2f shift = center - center_p(contour_s);
 		int n = contour_s.size();
 		//cout << "n: " << n << endl;
@@ -68,7 +78,7 @@ namespace Tiling_tiles{
 			ppt,
 			npt,
 			1,
-			Scalar(0, 0, 0) //黑色
+			col_sca //黑色
 			//Scalar(255, 255, 255) //白色
 			);
 		//circle(drawing_, contour_s[0] + shift, 4, Scalar(255), 3);
@@ -419,61 +429,305 @@ namespace Tiling_tiles{
 		}
 	}
 
-	void draw_result(Mat &drawing_, vector<Point2f> contour_, vector<int> vec_, double scale, int type)
+	void draw_result(Mat &drawing_, vector<Point2f> contour_, vector<int> vec_, double scale, int type, Point2f shift)
 	{
 		int drawrow = drawing_.rows;
 		int drawcol = drawing_.cols;
-		int border = 300 * scale;
-		int con_size = contour_.size();
+		int border = 0;//30 * scale;
+		int csize1 = contour_.size();
+		vector<Point2f> cont1;
 		if (scale != 1)
 		{
-			for (int i = 0; i < con_size; i++)
+			for (int i = 0; i < csize1; i++)
 			{
-				contour_[i] = scale*contour_[i];
+				cont1.push_back(scale*contour_[i]);
 			}
 		}
-		double length_ = arcLength(contour_, 1) / con_size;
-		vector<Point2f> allcent_in_plane;
-		vector<Point2f> allcent_in_plane_;
-		//vector<Point2f> connect_area;
-		//connect_area.push_back(Point2f())
+		Point2f cen_con1 = center_p(cont1);
+		int c_a_width = 3;
+		vector<vector<Point2f>> connection_a;
+
 		if (type == 0) //translation
 		{
 			Point2f step[4];
-			step[0] = contour_[vec_[2]] - contour_[vec_[0]];
-			step[1] = contour_[vec_[3]] - contour_[vec_[1]];
+			step[0] = cont1[vec_[2]] - cont1[vec_[0]];
+			step[1] = cont1[vec_[3]] - cont1[vec_[1]];
 			step[2] = -step[0];
 			step[3] = -step[1];
 
-			Point2f cenp = Point2f(drawrow / 2, drawcol / 2);
-			Point2f connec_cent[4];
-			connec_cent[0] = contour_[vec_[0]] - center_p(contour_);
-			connec_cent[1] = contour_[vec_[1]] - center_p(contour_);
-			connec_cent[2] = contour_[vec_[2]] - center_p(contour_);
-			connec_cent[3] = contour_[vec_[3]] - center_p(contour_);
+			Point2f cenp = Point2f(drawcol / 2, drawrow / 2) + shift;
+			vector<Point2f> connect_area;
 
-			draw_poly(drawing_, contour_, cenp);
-			int new_poly = 1;
+			move_con(cont1, cenp - center_p(cont1));
+			draw_poly(drawing_, cont1, cenp);
+			connect_area.push_back(cont1[(vec_[2] + csize1 - c_a_width) % csize1]);
+			connect_area.push_back(cont1[(vec_[2] + c_a_width) % csize1]);
+
+			int new_poly = 30;
 			for (int t = 1; new_poly > 0; t = t + 2)
 			{
-				new_poly = 0;
+				int bey = 0;
 				for (int index = 0; index < 4; index++)
-				{		
+				{
 					int r = index / 2;
 					for (int n = 0; n < t + r; n++)
 					{
-						cenp = cenp + step[index];
-						if ((cenp.x<drawcol + border) && (cenp.x>-border) && (cenp.y<drawrow + border) && (cenp.y>-border))
+						move_con(cont1, step[index]);
+						cenp += step[index];
+						Point2f conn_p = cont1[vec_[index]];//cenp + connec_cent[index];
+						connect_area.push_back(cont1[(vec_[index] + csize1 - c_a_width) % csize1]);
+						connect_area.push_back(cont1[(vec_[index] + c_a_width) % csize1]);
+						
+						if ((conn_p.x<drawcol + border) && (conn_p.x>-border) && (conn_p.y<drawrow + border) && (conn_p.y>-border))
 						{
-							draw_poly(drawing_, contour_, cenp);
-							circle(drawing_, cenp + connec_cent[index],5,Scalar(0,255,0),-1);
-							//draw_poly(drawing_, contour_, cenp);
-							new_poly++;
+							new_poly--;
+							draw_poly(drawing_, cont1, cenp);
+							connection_a.push_back(connect_area);					
+						}
+						else 
+						{
+							bey = 1;
+							break;
+						}
+						connect_area.swap(vector<Point2f>());
+						if (n < t + r - 1)
+						{
+							connect_area.push_back(cont1[(vec_[(index + 2) % 4] + csize1 - c_a_width) % csize1]);
+							connect_area.push_back(cont1[(vec_[(index + 2) % 4] + c_a_width) % csize1]);
+						}
+						else
+						{
+							connect_area.push_back(cont1[(vec_[(index + 3) % 4] + csize1 - c_a_width) % csize1]);
+							connect_area.push_back(cont1[(vec_[(index + 3) % 4] + c_a_width) % csize1]);
 						}
 					}
+					if (bey == 1) break;
 				}
-				
+				if (bey == 1) break;
 			}
+			for (int g = 0; g < connection_a.size(); g++)
+			{
+				draw_poly(drawing_, connection_a[g], center_p(connection_a[g]));
+			}
+		}
+		else if (type == 1) //rotation
+		{
+
+		}
+		else if (type == 2) //reflection(1-3)
+		{
+
+		}
+		else if (type == 3) //reflection(2-4)
+		{
+		}
+	}
+	void draw_two(Mat &drawing_, vector<Point2f> &contour_1, vector<int> vec_1, vector<Point2f> &contour_2, vector<int> vec_2, double scale, int type)
+	{
+		//contour_2务必由contour_1提取得到
+		int drawrow = drawing_.rows;
+		int drawcol = drawing_.cols;
+		//double length_m = 0;//drawrow / 200 * 2;
+		int border = 0;//30 * scale;
+		int csize1 = contour_1.size();
+		int csize2 = contour_2.size();
+		vector<Point2f> cont1;
+		vector<Point2f> cont2;
+		if (scale != 1)
+		{
+			for (int i = 0; i < csize1; i++)
+			{
+				cont1.push_back(scale*contour_1[i]);
+			}
+			for (int i = 0; i < csize2; i++)
+			{
+				cont2.push_back(scale*contour_2[i]);
+			}
+		}
+		else
+		{
+			cont1 = contour_1;
+			cont2 = contour_2;
+		}
+		Point2f cen_con1 = center_p(cont1);
+		Point2f cen_con2 = center_p(cont2);
+		Point2f shift_ = cen_con2 - cen_con1;
+		int c_a_width = 5;
+		vector<vector<Point2f>> connection_a;
+		vector<vector<Point2f>> connection_a2;
+
+		if (type == 0) //translation
+		{
+			Point2f step[4];
+			step[0] = cont1[vec_1[2]] - cont1[vec_1[0]];
+			step[1] = cont1[vec_1[3]] - cont1[vec_1[1]];
+			step[2] = -step[0];
+			step[3] = -step[1];
+
+			Point2f cenp = Point2f(drawcol / 2, drawrow / 2);
+			Point2f cenp2 = cenp + shift_;
+			vector<Point2f> connect_area;
+			vector<Point2f> connect_area2;
+
+			move_con(cont1, cenp - center_p(cont1));
+			move_con(cont2, cenp2 - center_p(cont2));
+			draw_poly(drawing_, cont1, cenp);
+			Point2f conn_11 = cont1[(vec_1[2] + csize1 - c_a_width) % csize1];
+			Point2f conn_12 = cont1[(vec_1[2] + c_a_width) % csize1];
+			/*for (int add = 1; length_two_point2f(conn_11, conn_12) < length_m; add++)
+			{
+				cout << "length1:  " << length_two_point2f(conn_11, conn_12) << endl;
+				conn_11 = cont1[(vec_1[2] + csize1 - add - c_a_width) % csize1];
+				conn_12 = cont1[(vec_1[2] + add + c_a_width) % csize1];
+			}*/
+			connect_area.push_back(conn_11);
+			connect_area.push_back(conn_12);
+
+			draw_poly(drawing_, cont2, cenp2, 1);
+			Point2f conn_21 = cont2[(vec_2[0] + csize2 - c_a_width) % csize2];
+			Point2f conn_22 = cont2[(vec_2[0] + c_a_width) % csize2];
+			/*for (int add = 1; length_two_point2f(conn_21, conn_22) < length_m; add++)
+			{
+				cout << "length2:  " << length_two_point2f(conn_21, conn_22) << endl;
+				conn_21 = cont2[(vec_2[0] + csize2 - add - c_a_width) % csize2];
+				conn_22 = cont2[(vec_2[0] + add + c_a_width) % csize2];
+			}	*/
+			connect_area2.push_back(conn_21);
+			connect_area2.push_back(conn_22);
+			//for (int gg = 0; gg < 2; gg++)
+			//{
+			//	cout << connect_area[gg] << " ";
+			//	circle(drawing_, connect_area[gg], 5, Scalar(255, 128, 0), -1);
+			//	cout << endl;
+			//	cout << connect_area2[gg] << " ";
+			//	circle(drawing_, connect_area2[gg], 5, Scalar(128, 255, 0), -1);
+			//}
+			//cout << endl;
+			int new_poly = 60;
+			for (int t = 1; new_poly > 0; t = t + 2)
+			{
+				int bey = 0;
+				for (int index = 0; index < 4; index++)
+				{
+					int r = index / 2;
+					for (int n = 0; n < t + r; n++)
+					{
+						move_con(cont1, step[index]);
+						move_con(cont2, -step[index]);
+						cenp += step[index];
+						cenp2 += -step[index];
+						Point2f conn_p = cont1[vec_1[index]];//cenp + connec_cent[index];		
+						Point2f conn_p2 = cont2[vec_2[(index + 2) % 4]];
+
+						Point2f conn_13 = cont1[(vec_1[index] + csize1 - c_a_width) % csize1];
+						Point2f conn_14 = cont1[(vec_1[index] + c_a_width) % csize1];
+						/*for (int add = 1; length_two_point2f(conn_13, conn_14) < length_m; add++)
+						{
+							cout << "length3:  " << length_two_point2f(conn_13, conn_14) << endl;
+							conn_13 = cont1[(vec_1[index] + csize1 - add - c_a_width) % csize1];
+							conn_14 = cont1[(vec_1[index] + add + c_a_width) % csize1];
+						}*/
+						connect_area.push_back(conn_13);
+						connect_area.push_back(conn_14);
+
+						draw_poly(drawing_, cont2, cenp2, 1);
+						Point2f conn_23 = cont2[(vec_2[(index + 2) % 4] + csize2 - c_a_width) % csize2];
+						Point2f conn_24 = cont2[(vec_2[(index + 2) % 4] + c_a_width) % csize2];
+						/*for (int add = 1; length_two_point2f(conn_23, conn_24) < length_m; add++)
+						{
+							cout << "length4:  " << length_two_point2f(conn_23, conn_24) << endl;
+							conn_23 = cont2[(vec_2[(index + 2) % 4] + csize2 - add - c_a_width) % csize2];
+							conn_24 = cont2[(vec_2[(index + 2) % 4] + add + c_a_width) % csize2];
+						}*/
+						connect_area2.push_back(conn_23);
+						connect_area2.push_back(conn_24);
+						if ((conn_p.x<drawcol + border) && (conn_p.x>-border) && (conn_p.y<drawrow + border) && (conn_p.y>-border))
+						{
+							if ((conn_p2.x<drawcol + border) && (conn_p2.x>-border) && (conn_p2.y<drawrow + border) && (conn_p2.y>-border))
+							{
+								new_poly--;
+								draw_poly(drawing_, cont1, cenp);
+								//draw_poly(drawing_, connect_area, center_p(connect_area));
+								//circle(drawing_, conn_p, 9, Scalar(255, 0, 0), -1);
+								/*for (int gg = 0; gg < 4; gg++)
+								{
+									circle(drawing_, connect_area[gg], 2, Scalar(255, 128, 0), -1);
+								}*/
+								draw_poly(drawing_, cont2, cenp2, 1);
+								connection_a.push_back(connect_area);
+								connection_a2.push_back(connect_area2);
+								//circle(drawing_, conn_p2, 9, Scalar(0, 255, 0), -1);
+								
+								//draw_poly(drawing_, connect_area2, center_p(connect_area2), 1);
+							}
+							else
+							{
+								bey = 1;
+								break;
+							}
+						}
+						else
+						{
+							bey = 1;
+							break;
+						}
+						connect_area.swap(vector<Point2f>());
+						connect_area2.swap(vector<Point2f>());
+						if (n < t + r - 1)
+						{
+							conn_11 = cont1[(vec_1[(index + 2) % 4] + csize1 - c_a_width) % csize1];
+							conn_12 = cont1[(vec_1[(index + 2) % 4] + c_a_width) % csize1];
+							/*for (int add = 1; length_two_point2f(conn_11, conn_12) < length_m; add++)
+							{
+								cout << "length5:  " << length_two_point2f(conn_11, conn_12) << endl;
+								conn_11 = cont1[(vec_1[(index + 2) % 4] + csize1 - add - c_a_width) % csize1];
+								conn_12 = cont1[(vec_1[(index + 2) % 4] + add + c_a_width) % csize1];
+							}*/
+							conn_21 = cont2[(vec_2[index] + csize2 - c_a_width) % csize2];
+							conn_22 = cont2[(vec_2[index] + c_a_width) % csize2];
+							/*for (int add = 1; length_two_point2f(conn_21, conn_22) < length_m; add++)
+							{
+								cout << "length6:  " << length_two_point2f(conn_21, conn_22) << endl;
+								conn_21 = cont2[(vec_2[index] + csize2 -add - c_a_width) % csize2];
+								conn_22 = cont2[(vec_2[index] + add + c_a_width) % csize2];
+							}	*/				
+						}
+						else
+						{
+							conn_11 = cont1[(vec_1[(index + 3) % 4] + csize1 - c_a_width) % csize1];
+							conn_12 = cont1[(vec_1[(index + 3) % 4] + c_a_width) % csize1];
+							/*for (int add = 1; length_two_point2f(conn_11, conn_12) < length_m; add++)
+							{
+								conn_11 = cont1[(vec_1[(index + 3) % 4] + csize1 - add - c_a_width) % csize1];
+								conn_12 = cont1[(vec_1[(index + 3) % 4] + add + c_a_width) % csize1];
+							}*/
+							conn_21 = cont2[(vec_2[(index + 1) % 4] + csize2 - c_a_width) % csize2];
+							conn_22 = cont2[(vec_2[(index + 1) % 4] + c_a_width) % csize2];
+							/*for (int add = 1; length_two_point2f(conn_21, conn_22) < length_m; add++)
+							{
+								conn_21 = cont2[(vec_2[(index + 1) % 4] + csize2 - add - c_a_width) % csize2];
+								conn_22 = cont2[(vec_2[(index + 1) % 4] + add + c_a_width) % csize2];
+							}*/
+						}
+						connect_area.push_back(conn_11);
+						connect_area.push_back(conn_12);
+						connect_area2.push_back(conn_21);
+						connect_area2.push_back(conn_22);
+					}
+					if (bey == 1) break;
+				}
+				if (bey == 1) break;
+			}
+
+			for (int g = 0; g < connection_a.size(); g++)
+			{
+				draw_poly(drawing_, connection_a[g], center_p(connection_a[g]));
+			}
+			for (int g = 0; g < connection_a2.size(); g++)
+			{
+				draw_poly(drawing_, connection_a2[g], center_p(connection_a2[g]),1);
+			}
+
 		}
 	}
 
@@ -528,7 +782,15 @@ namespace Tiling_tiles{
 	//		sum += cont[i].x * cont[(i + 1) % csize].y - cont[i].y * cont[(i + 1) % csize].x;
 	//	return fabs(sum / 2.0);
 	//}
-	
+	void move_con(vector<Point2f> &con, Point2f sh)
+	{
+		int csize = con.size();
+		for (int i = 0; i < csize; i++)
+		{
+			con[i] += sh;
+		}
+	}
+
 	void sort_comb(vector<double> vect, vector<int> &index_num) //将下标和数值联合排序，只保留下标的排序,从大到小
 	{
 		int i, j;
