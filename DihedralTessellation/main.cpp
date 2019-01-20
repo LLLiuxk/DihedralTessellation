@@ -20,21 +20,21 @@ int main(int argc, char** argv)
 	Tiling_tiles::Prototile *prototile_third;
 	prototile_third = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
-	int f = 9;
+	int f = 0;
 	if (f ==0) //ÒÑÓÐdataset
 	{
 
-		tiling_opt->tiliing_generation("484");
+		//tiling_opt->tiliing_generation("352");
 
-		//int iii[20] = {484,483,482,482,480,479,478,474,472,467,451}; // { 0, 36, 278, 293, 298, 312, 357, 454, 452, 443, 429, 364 };//{458,451,439,439,426,357,359,59,70,75,102,128,169,175,223,312};//{205,210,215,219,230,233,180};//
-		//for (int i = 0; i < 11; i++)
-		//{
-		//	tiling_opt->Tiling_clear();
+		//int iii[20] = {48,75,80,124,220,218,212,228,248,251,280,312,317};//{484,483,482,482,480,479,478,474,472,467,451}; // { 0, 36, 278, 293, 298, 312, 357, 454, 452, 443, 429, 364 };//{458,451,439,439,426,357,359,59,70,75,102,128,169,175,223,312};//{205,210,215,219,230,233,180};//
+		for (int i = 56; i < 486; i++)
+		{
+			tiling_opt->Tiling_clear();
 		//	tiling_opt->tiliing_generation(int2string(iii[i]));
 		//	
-		//	//tiling_opt->tiliing_generation(int2string(i));
-		//	system("cls");
-		//}
+		    tiling_opt->tiliing_generation(int2string(i));
+			system("cls");
+		}
 
 		
 		// ________________feature_points___________________________
@@ -310,7 +310,7 @@ int main(int argc, char** argv)
 		//int iii[] = {714,763,736};// {610, 614, 618, 636, 637, 638};
 		int t =  0;
 		//int i = 308;
-		for (int i = 484; i < 485; i++)
+		for (int i = 485; i < 486; i++)
 		{
 			//string image = int2string(iii[i]);
 			string image = int2string(i);
@@ -409,7 +409,7 @@ int main(int argc, char** argv)
 		//{
 			tiling_opt->Tiling_clear();
 		//	//vector<Point2f> sim_mid = tiling_opt->simulation_mid("19", 20, 0);
-			vector<Point2f> sim_mid = tiling_opt->simulation_tar("312", 0, 0);
+			vector<Point2f> sim_mid = tiling_opt->simulation_tar("352", 74, 0);
 		//}
 		//-----------------test compute_TAR----------------------
 
@@ -524,10 +524,13 @@ int main(int argc, char** argv)
 		/*tiling_opt->load_dataset();
 		tiling_opt->com_all_TARs(1);
 		midtime = clock();
-		cout << endl << (double)(midtime - start) / CLOCKS_PER_SEC << " s " << endl;
-		prototile_first->loadTileData("test14");
+		
+		prototile_first->loadTileData("test50");
+		Mat draw = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		draw_poly(draw, prototile_first->contour, Point2f(400, 400));
+		imshow("asd", draw);
 		vector<pair<int, bool>> all_total = tiling_opt->compare_choose_TAR(prototile_first->contour);
-		*/
+		cout << endl << (double)(midtime - start) / CLOCKS_PER_SEC << " s " << endl;*/
 
 		//--------------------test morphing_tar by all------------
 		//start = clock();
@@ -535,7 +538,7 @@ int main(int argc, char** argv)
 		//tiling_opt->com_all_TARs(1);
 		////cout << "tiling_opt" << tiling_opt->contour_dataset.size()<<endl
 		////	<< "tars: " << tiling_opt->all_con_tars.size()<<endl;
-		//prototile_first->loadTileData("test9");
+		//prototile_first->loadTileData("test50");
 		//vector<Point2f> contour_inner = prototile_first->contour_sample[1];
 		////cout << "prototile_first->contour" << prototile_first->contour.size() << "  contour_inner: " << contour_inner.size()<<endl;
 		////midtime = clock();
@@ -600,98 +603,98 @@ int main(int argc, char** argv)
 
 		//--------------------test morphing_tar by one------------
 
-        start = clock();
-		prototile_first->loadTileData("test85");
-		vector<Point2f> contour_inner = prototile_first->contour_sample[1];
-		double sc_inner = 0;
-		vector<vector<double>> inner_tar = prototile_first->compute_TAR(contour_inner, sc_inner);
-		prototile_second->loadTileData("80");
-		vector<Point2f> contour_cand = prototile_second->contour_sample[1];
-		double sc_cand = 0;
-		vector<vector<double>> cand_tar = prototile_second->compute_TAR(contour_cand, sc_cand);
-		vector<Point2f> contour_cand_f = prototile_second->contour_sample_flip[1];
-		double sc_cand_f = 0;
-		vector<vector<double>> cand_tar_f = prototile_second->compute_TAR(contour_cand_f, sc_cand_f);
-		vector<pair<int, int>> path;
-		int shift;	
-		int width = 4;
+  //      start = clock();
+		//prototile_first->loadTileData("test50");
+		//vector<Point2f> contour_inner = prototile_first->contour_sample[1];
+		//double sc_inner = 0;
+		//vector<vector<double>> inner_tar = prototile_first->compute_TAR(contour_inner, sc_inner);
+		//prototile_second->loadTileData("485");
+		//vector<Point2f> contour_cand = prototile_second->contour_sample[1];
+		//double sc_cand = 0;
+		//vector<vector<double>> cand_tar = prototile_second->compute_TAR(contour_cand, sc_cand);
+		//vector<Point2f> contour_cand_f = prototile_second->contour_sample_flip[1];
+		//double sc_cand_f = 0;
+		//vector<vector<double>> cand_tar_f = prototile_second->compute_TAR(contour_cand_f, sc_cand_f);
+		//vector<pair<int, int>> path;
+		//int shift;	
+		//int width = 4;
 
-		double re = tiling_opt->tar_mismatch(inner_tar, cand_tar, path, shift, width);
-		
-		double re2 = tiling_opt->tar_mismatch(inner_tar, cand_tar_f, path, shift, width);
-		if (re < re2)
-		{
-			re2 = tiling_opt->tar_mismatch(inner_tar, cand_tar, path, shift, width);
-			contour_cand_f = prototile_second->contour_sample[1];
-		}
-		cout << "re2: " << re2 <<"shift: "<<shift<< endl;
-		cout << "load over!" << endl;
-		vector<int> mid_inter;
-		mid_inter.push_back(0);
-		mid_inter.push_back(35);
-		mid_inter.push_back(105);
-		mid_inter.push_back(170);
-		vector<Point2f> mor_result = tiling_opt->morphing_tar(contour_inner, contour_cand_f, mid_inter, path, shift);
-		mid_inter.swap(vector<int>());
-		mid_inter.push_back(0);
-		mid_inter.push_back(35);
-		mid_inter.push_back(105);
-		mid_inter.push_back(170);
-		//imgtocout();
-		finish = clock();
-		cout << endl << "once morphing consumption: " << (double)(finish - start) / CLOCKS_PER_SEC << " s " << endl;
-		cout << "inter_: " << mor_result.size() << endl;
-		//MorphPoints(contour_inner, contour_cand, inter_, 0.5);
-		Mat tt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		Mat ttt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		Mat drawing_pro1 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		//Mat drawing_dst = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		//Mat drawing_ = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		draw_poly(ttt, mor_result, Point2f(400, 400));
-		draw_poly(drawing_pro1, contour_cand_f, Point2f(400, 400));
-		draw_poly(tt, contour_inner, Point2f(400, 400));//draw_polygen("hhhh", prototile_first->contour);
-		for (int i = 0; i < 4; i++)
-		{
-			circle(tt, contour_inner[mid_inter[i]], 5, Scalar(255, 0, 0), -1);
-		}
+		//double re = tiling_opt->tar_mismatch(inner_tar, cand_tar, path, shift, width);
 		//
-		vector<int> return_p;
-		vector<vector<Point2f>> four_;
-		vector<Point2f> morphed_A = tiling_opt->extract_contour(mor_result, mid_inter, return_p, four_, 0);
-		Mat drawing_ex = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
-		Point2f sss = Point2f(400, 400) - center_p(morphed_A);
-		for (int t = 0; t < morphed_A.size(); t++)
-		{
-			circle(drawing_ex, morphed_A[t] + sss, 2, Scalar(0, 0, 255), -1);
-		}
-		//MyLine(drawing_ex, morphed_A[128] + sss, morphed_A[129] + sss, "blue");
-		//MyLine(drawing_ex, morphed_A[131] + sss, morphed_A[132] + sss, "green");
-		//circle(drawing_ex, morphed_A[128] + sss, 2, Scalar(0, 255, 0), -1);
-		//circle(drawing_ex, morphed_A[129] + sss, 2, Scalar(0, 255, 0), -1);
-		//circle(drawing_ex, morphed_A[131] + sss, 2, Scalar(255, 0, 0), -1);
-		//circle(drawing_ex, morphed_A[132] + sss, 2, Scalar(255, 0, 0), -1);
-		draw_poly(drawing_ex, morphed_A, Point2f(1200, 400));
-		
-		int first = 0;
-		int second = 0;
-		//if (self_intersect(morphed_A,first,second)) cout << "self_intersect" << endl;
-		while (self_intersect(morphed_A, first, second))
-		{
-			cout << "self_intersect" << endl;
-			//tiling_opt->contour_fine_tuning(morphed_A, return_p, first, second);
-		}
-		for (int t = 0; t < morphed_A.size(); t++)
-		{
-			circle(drawing_ex, morphed_A[t] + sss, 2, Scalar(0, 255, 0), -1);
-		}
-		Mat final_re = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		draw_poly(final_re, morphed_A, Point2f(400, 400));
-		imshow("final_re: ", final_re);
-		cout << "zahuishia: "<<morphed_A.size() << endl;
-		imshow("morphed_A: ", drawing_ex);
-		imshow("morphing result", ttt);
-		imshow("contour_inner", tt);
-		imshow("cand_pattern", drawing_pro1);
+		//double re2 = tiling_opt->tar_mismatch(inner_tar, cand_tar_f, path, shift, width);
+		//if (re < re2)
+		//{
+		//	re2 = tiling_opt->tar_mismatch(inner_tar, cand_tar, path, shift, width);
+		//	contour_cand_f = prototile_second->contour_sample[1];
+		//}
+		//cout << "re2: " << re2 <<"shift: "<<shift<< endl;
+		//cout << "load over!" << endl;
+		//vector<int> mid_inter;
+		//mid_inter.push_back(0);
+		//mid_inter.push_back(35);
+		//mid_inter.push_back(105);
+		//mid_inter.push_back(170);
+		//vector<Point2f> mor_result = tiling_opt->morphing_tar(contour_inner, contour_cand_f, mid_inter, path, shift);
+		//mid_inter.swap(vector<int>());
+		//mid_inter.push_back(0);
+		//mid_inter.push_back(35);
+		//mid_inter.push_back(105);
+		//mid_inter.push_back(170);
+		////imgtocout();
+		//finish = clock();
+		//cout << endl << "once morphing consumption: " << (double)(finish - start) / CLOCKS_PER_SEC << " s " << endl;
+		//cout << "inter_: " << mor_result.size() << endl;
+		////MorphPoints(contour_inner, contour_cand, inter_, 0.5);
+		//Mat tt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		//Mat ttt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		//Mat drawing_pro1 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		////Mat drawing_dst = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		////Mat drawing_ = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		//draw_poly(ttt, mor_result, Point2f(400, 400));
+		//draw_poly(drawing_pro1, contour_cand_f, Point2f(400, 400));
+		//draw_poly(tt, contour_inner, Point2f(400, 400));//draw_polygen("hhhh", prototile_first->contour);
+		//for (int i = 0; i < 4; i++)
+		//{
+		//	circle(tt, contour_inner[mid_inter[i]], 5, Scalar(255, 0, 0), -1);
+		//}
+		////
+		//vector<int> return_p;
+		//vector<vector<Point2f>> four_;
+		//vector<Point2f> morphed_A = tiling_opt->extract_contour(mor_result, mid_inter, return_p, four_, 0);
+		//Mat drawing_ex = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
+		//Point2f sss = Point2f(400, 400) - center_p(morphed_A);
+		//for (int t = 0; t < morphed_A.size(); t++)
+		//{
+		//	circle(drawing_ex, morphed_A[t] + sss, 2, Scalar(0, 0, 255), -1);
+		//}
+		////MyLine(drawing_ex, morphed_A[128] + sss, morphed_A[129] + sss, "blue");
+		////MyLine(drawing_ex, morphed_A[131] + sss, morphed_A[132] + sss, "green");
+		////circle(drawing_ex, morphed_A[128] + sss, 2, Scalar(0, 255, 0), -1);
+		////circle(drawing_ex, morphed_A[129] + sss, 2, Scalar(0, 255, 0), -1);
+		////circle(drawing_ex, morphed_A[131] + sss, 2, Scalar(255, 0, 0), -1);
+		////circle(drawing_ex, morphed_A[132] + sss, 2, Scalar(255, 0, 0), -1);
+		//draw_poly(drawing_ex, morphed_A, Point2f(1200, 400));
+		//
+		//int first = 0;
+		//int second = 0;
+		////if (self_intersect(morphed_A,first,second)) cout << "self_intersect" << endl;
+		//while (self_intersect(morphed_A, first, second))
+		//{
+		//	cout << "self_intersect" << endl;
+		//	//tiling_opt->contour_fine_tuning(morphed_A, return_p, first, second);
+		//}
+		//for (int t = 0; t < morphed_A.size(); t++)
+		//{
+		//	circle(drawing_ex, morphed_A[t] + sss, 2, Scalar(0, 255, 0), -1);
+		//}
+		//Mat final_re = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		//draw_poly(final_re, morphed_A, Point2f(400, 400));
+		//imshow("final_re: ", final_re);
+		//cout << "zahuishia: "<<morphed_A.size() << endl;
+		//imshow("morphed_A: ", drawing_ex);
+		//imshow("morphing result", ttt);
+		//imshow("contour_inner", tt);
+		//imshow("cand_pattern", drawing_pro1);
         //-----------------------------------------------------------------
 
 		//for (int i = 0; i < 202; i++)
@@ -769,43 +772,6 @@ int main(int argc, char** argv)
 		tiling_opt->load_dataset();
 		tiling_opt->check_Repetitive_pattern();
 
-
-
-		//double test[3] = { 0.05, 0.2, 0.05 };
-		//for (int i = 801; i < 819; i++)
-		//{
-		//	string name = int2string(i);
-		//	prototile_second->Pro_clear();
-		//	prototile_second->loadTileData(name);
-		//	vector<Point2f> contour_sec = prototile_second->contour_sample[2];
-		//	double score[3] = { 10000, 10000, 10000 };
-		//	int samey[3] = {0,0,0};
-		//	for (int j = 801; j < 819; j++)
-		//	{
-		//		if (j == i) continue;
-		//		string name1 = int2string(j);
-		//		prototile_third->Pro_clear();
-		//		prototile_third->loadTileData(name1);
-		//		vector<Point2f> contour_tem = prototile_third->contour_sample[2];
-		//		for (int t = 0; t < 3; t++)
-		//		{
-		//			double score1 = matchShapes(contour_sec, contour_tem, t+1, 0);
-		//			if (score1 < score[t])
-		//			{
-		//				score[t] = score1;
-		//				samey[t] = j;
-		//			}
-		//		}
-		//		
-		//		//cout << "similar score: " << i << " and " << samey<<" : "<<score1<<endl;
-		//		
-		//	}
-		//	for (int t = 0; t < 3; t++)
-		//	{
-		//		if (score[t] < test[t]) cout << i << "Probably similar" << t + 1 << ": " << i << " and " << samey[t] << " : " << score[t] << endl;
-		//	}
-
-		//}
 	}
 	else if (f == 6)
 	{
@@ -885,112 +851,67 @@ int main(int argc, char** argv)
 	}
 	else if (f == 7)
 	{
-		//------------------------test translation----------------
-
-		//vector<int> p_p_index = prototile_first->partition_points("685");
-		//vector<Point2f> a = prototile_first->contour;
-		//vector<int> mark;
-		//mark.push_back(12);
-		//mark.push_back(72);
-		//mark.push_back(144);
-		//mark.push_back(480);
-		////prototile_first->loadTileData("685");
-		//Mat drawing1 = Mat(1600, 1600, CV_8UC3, Scalar(255,255,255));
-		//////Mat drawing2 = Mat(600, 600, CV_8UC1, Scalar(255)); 
-		//////Mat drawing3 = Mat(1200, 1200, CV_8UC1, Scalar(255));
-		////vector<Point2f> a = prototile_first->contour_sample[2];
-		//vector<int> midmark;
-		//vector<Point2f> return_B;
-		//if (tiling_opt->translation_placement(mark, a, return_B, midmark, drawing1)) cout << "pngzhuang" << endl;
-		//else cout << "no" << endl;
-		//imshow(" ", drawing1);
-		////cout << return_B.size() << endl;
-		//for (int i = 0; i < return_B.size(); i++)
-		//{
-		//	circle(drawing1,return_B[i],2,Scalar(0,0,0),-1);
-		//}
-		//imshow("tt ", drawing1);
-		//MyLine(drawing1, return_B[187], return_B[188], "red");
-		//MyLine(drawing1, return_B[189], return_B[190], "green");
-		//imshow("  ", drawing1);*/
-		//vector<Point2f> b;
-		//draw_poly(drawing1, a, center_p(a));
-		//draw_poly(drawing3, a, center_p(a));
-		//for (int i = 0; i < a.size(); i++)
-		//	b.push_back(a[i] + Point2f(-306, -200));
-		//Point2f shift = Point2f(600, 600);
-		//for (int i = 0; i < a.size(); i++)
-		//{
-		//a[i] += shift;
-		//b[i] += shift;
-		//}
-		//draw_poly(drawing2, a, center_p(b));
-		//draw_poly(drawing3, a, center_p(b));
-		//if(tiling_opt->coll_detec_bbx(a, b)) cout<<"pengzhuang"<<endl;
-		//threshold(drawing1, drawing1, 128, 255, cv::THRESH_BINARY);
-		//imshow("draw1", drawing1);
-		//imshow("draw2", drawing2);
-		//imshow("draw3", drawing3);
-		//----------------------------------------------------------------
-
-		//-------------------test rotation------------------------------
-
-		//vector<int> p_p_index = prototile_first->partition_points("685");
-		//vector<Point2f> a = prototile_first->contour;
-		//vector<int> mark;
-		//mark.push_back(12);
-		//mark.push_back(72);
-		//mark.push_back(144);
-		//mark.push_back(480);
-		//Mat draw2 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		//for (int i = 0; i < a.size(); i++)
-		//	circle(draw2, a[i], 2, Scalar(0, 0, 255), -1);
-		//circle(draw2, a[12], 6, Scalar(0, 255, 0), -1);
-		//for (int j = 1; j < 4;j++)
-		//	circle(draw2, a[mark[j]], 4, Scalar(0, 255, 0), -1);
-		////Point2f t = a[479] - a[480];
-		////Point2f tt = a[481] - a[480];
-		////cout << t << " " << tt << "  " << cos_two_vector(t, tt) <<"  "<<sin_two_vector(t,tt)<< endl;;
-		//vector<int> midmark;
-		//vector<Point2f> return_B;
-		//Mat draw1 = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
-		//if(tiling_opt->rotation_placement(mark, a, return_B, midmark, draw1)) cout<<" pengzhuang "<<endl;
-		//else
-		//{
-		//	draw_poly(draw1,return_B,Point2f(400,400));
-		//	imshow("hahah", draw1);
-		//	imwrite("D:\\XXXX.PNG", draw1);
-		//}		
-		//imshow("asdad", draw2);
-		//------------------------------------------------------
-
-		//---------------------test flip------------------------
-		vector<int> p_p_index = prototile_first->partition_points("1");
+		//------------------------test translation, rotation and reflection----------------
+		string imaname = "307";
+		//prototile_first->imgtocout(imaname);
+		vector<int> p_p_index = prototile_first->partition_points(imaname);
 		vector<Point2f> a = prototile_first->contour;
 		vector<int> mark;
-		mark.push_back(0);
-		mark.push_back(60);
-		mark.push_back(192);
-		mark.push_back(351);
-		Mat draw2 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		//mark.push_back(0);
 		
+		mark.push_back(132);
+		mark.push_back(234);
+		mark.push_back(310);
+		mark.push_back(440);
+		Mat draw_p = Mat(600, 600, CV_8UC3, Scalar(255, 255, 255));
+		//Mat draw2 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		
+		for (int i = 0; i < a.size(); i++)
+		{
+			circle(draw_p, a[i], 1, Scalar(0, 0, 0), -1);
+		}
+		for (int jj = 0; jj < p_p_index.size(); jj++)
+		{
+			circle(draw_p, a[p_p_index[jj]], 4, Scalar(0, 0, 255), -1);
+		}
+		for (int jj = 0; jj < 4; jj++)
+		{
+			circle(draw_p, a[mark[jj]], 6, Scalar(0, 255, 0), -1);
+		}
 		//Point2f t = a[479] - a[480];
 		//Point2f tt = a[481] - a[480];
 		//cout << t << " " << tt << "  " << cos_two_vector(t, tt) <<"  "<<sin_two_vector(t,tt)<< endl;;
 		vector<int> midmark;
 		vector<Point2f> return_B;
-		Mat draw1 = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
+		vector<vector<Point2f>> four_place;
+		//Mat draw1 = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
+		return_B = tiling_opt->extract_contour(a, mark, midmark, four_place,0);
+		Mat drawing_ttt = Mat(2000, 2000, CV_8UC3, Scalar(255, 255, 255));
+		Point2f shift = Point2f(800, 800) - center_p(return_B);
+		for (int i = 0; i < 4; i++)
+		{
+			draw_poly(drawing_ttt, four_place[i], center_p(four_place[i]) + shift);
+		}
+		draw_poly(drawing_ttt, return_B, center_p(return_B) + shift, 2);
+		for (int i = 0; i < return_B.size(); i++)
+			MyLine(drawing_ttt, return_B[i] + shift, return_B[(i + 1) % return_B.size()] + shift, "green2");
+		imshow("extracted contour", drawing_ttt);
+		imwrite("D:\\ex_contour.png", drawing_ttt);
+		imshow("sample points", draw_p);
+		imwrite("D:\\samplepoints.png", draw_p);
 		//Mat rot_mat = getRotationMatrix2D(center_p(a), 50, 1);
 		//transform(a, return_B, rot_mat);
-		if (tiling_opt->flipping_placement(mark, a, return_B, midmark, draw1,1)) cout << " pengzhuang " << endl;
-		else
-		{
-			cout << "return_B" << return_B.size()<< endl;
-			draw_poly(draw2, return_B, center_p(return_B));
-			//MyLine(draw1, return_B[12], return_B[144], "green");
-			//imshow("hahah", draw1);
-			//imwrite("D:\\XXXX.PNG", draw1);
-		}
+		//if (tiling_opt->flipping_placement(mark, a, return_B, midmark, draw1,1)) cout << " pengzhuang " << endl;
+		////if (tiling_opt->translation_placement(mark, a, return_B, midmark, draw1)) cout << "pngzhuang" << endl;
+		////if (tiling_opt->rotation_placement(mark, a, return_B, midmark, draw1)) cout << " pengzhuang " << endl;
+		//else
+		//{
+		//	cout << "return_B" << return_B.size()<< endl;
+		//	draw_poly(draw2, return_B, center_p(return_B));
+		//	//MyLine(draw1, return_B[12], return_B[144], "green");
+		//	//imshow("hahah", draw1);
+		//	//imwrite("D:\\XXXX.PNG", draw1);
+		//}
 		/*for (int i = 0; i < a.size(); i++)
 			circle(draw2, a[i], 2, Scalar(0, 0, 255), -1);
 		circle(draw2, a[12], 6, Scalar(0, 255, 0), -1);
@@ -1002,8 +923,8 @@ int main(int argc, char** argv)
 		}
 		MyLine(draw2, a[12], a[144], "green");
 		draw_poly(draw1, return_B, center_p(return_B));*/
-		imshow("hahah", draw1);
-		imshow("asdad", draw2);
+		//imshow("hahah", draw1);
+		//imshow("asdad", draw2);
 		//---------------------------------------------------
         
 	
@@ -1151,16 +1072,16 @@ int main(int argc, char** argv)
 	else if (f==9)
 	{
 
-		//tiling_opt->Tiling_clear();
-		//vector<Point2f> sim_mid = tiling_opt->simulation_tar("293", 30, 0);
+		tiling_opt->Tiling_clear();
+		vector<Point2f> sim_mid = tiling_opt->simulation_tar("302", 96, 0);
 
 		Mat src, erosion_dst;
 		int erosion_elem = 0;
-		int erosion_size = 1;
+		int erosion_size = 0;
 		int const max_elem = 2;
 		int const max_kernel_size = 21;
 		
-		string name = "D:\\result.png";
+		string name = "D:\\model.png";//"D:\\result.png";
 		//string name = "D:\\print.png";
 		src = imread(name, IMREAD_COLOR);
 		if (src.empty())
@@ -1206,8 +1127,8 @@ int main(int argc, char** argv)
 			}
 		//erode(src, src, element);
 		imwrite("D:\\printre.png", src);
-		int erosion_size1 = 4;
-		int erosion_size2 = 3;
+		int erosion_size1 = 2;
+		int erosion_size2 = 2;
 		Mat element1 = getStructuringElement(erosion_type,
 			Size(2 * erosion_size1 + 1, 2 * erosion_size1 + 1),
 			Point(erosion_size1, erosion_size1));
@@ -1242,21 +1163,27 @@ int main(int argc, char** argv)
 		//imshow("zala", src);
 		//imshow("nine", dst);
 		Vec3b color_p[20];
-		color_p[0] = Vec3b(251,228,169);   //blue1
-		color_p[1] = Vec3b(127, 110, 174);  //red1
-		color_p[2] = Vec3b(130, 174, 89);  // green1
-		color_p[3] = Vec3b(70, 124, 217);   //orange
-		color_p[4] = Vec3b(251, 204, 176);  //blue2
-		color_p[5] = Vec3b(222, 250, 167);  //green2
-		color_p[6] = Vec3b(251, 100, 100);  //blue3
-		color_p[7] = Vec3b(3, 142, 249);  //orange2
-		color_p[8] = Vec3b(251, 181, 105);  //blue4
+		color_p[0] = Vec3b(194, 194, 194);//gray
+		color_p[1] = Vec3b(251, 228, 169); //blue1
+		color_p[2] = Vec3b(251, 204, 176); //blue2
+		color_p[3] = Vec3b(130, 174, 89); //green1
+		color_p[4] = Vec3b(222, 250, 167); //green2
+		color_p[5] = Vec3b(127, 110, 174); //red1
+		color_p[6] = Vec3b(70, 124, 217); //orange1
+		color_p[7] = Vec3b(251, 181, 105); //blue3
+		color_p[8] = Vec3b(237, 171, 245); //pink
+		color_p[9] = Vec3b(3, 142, 249); //orange2
+		color_p[10] = Vec3b(175, 211, 249); //lightorange2
+		color_p[11] = Vec3b(244, 211, 247); //lightpink
+		//color_p[12] = Vec3b(237, 171, 245); //pink
+		//color_p[13] = Vec3b(237, 171, 245); //pink
+
 		for (int i = 0; i < src.rows; i++)
 			for (int j = 0; j < src.cols; j++)
 			{
 				//cout << (int)src.at<uchar>(i, j) << " ";
-				if ((int)src.at<uchar>(i, j) == 0) dst.at<Vec3b>(i, j) = color_p[1];
-				if ((int)src.at<uchar>(i, j) == 255) dst.at<Vec3b>(i, j) = color_p[8];
+				if ((int)src.at<uchar>(i, j) == 0) dst.at<Vec3b>(i, j) = color_p[6];
+				if ((int)src.at<uchar>(i, j) == 255) dst.at<Vec3b>(i, j) = color_p[7];
 			}
 		imwrite("D:\\dst.png", dst);
 	}

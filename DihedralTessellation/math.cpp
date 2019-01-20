@@ -56,7 +56,7 @@ namespace Tiling_tiles{
 	{
 		Scalar col_sca = Scalar(0, 0, 0);
 		if (color == 1) col_sca = Scalar(255, 255, 255);
-		if (color == 2) col_sca = Scalar(128, 128, 128);
+		if (color == 2) col_sca = Scalar(194, 194, 194);//gray
 		if (color == 3) col_sca = Scalar(251, 228, 169); //blue1
 		if (color == 4) col_sca = Scalar(251, 204, 176); //blue2
 		if (color == 5) col_sca = Scalar(130, 174, 89); //green1
@@ -64,6 +64,10 @@ namespace Tiling_tiles{
 		if (color == 7) col_sca = Scalar(127, 110, 174); //red1
 		if (color == 8) col_sca = Scalar(70, 124, 217); //orange1
 		if (color == 9) col_sca = Scalar(251, 181, 105); //blue3
+		if (color == 10) col_sca = Scalar(237, 171, 245); //pink
+		if (color == 11) col_sca = Scalar(3, 142, 249); //orange2
+		if (color == 12) col_sca = Scalar(175, 211, 249); //lightorange2
+		if (color == 13) col_sca = Scalar(244, 211, 247); //lightpink
 		Point2f shift = center - center_p(contour_s);
 		int n = contour_s.size();
 		//cout << "n: " << n << endl;
@@ -89,7 +93,7 @@ namespace Tiling_tiles{
 	{
 		int drawrow = drawing_.rows;
 		int drawcol = drawing_.cols;
-		int border = 300 * scale;
+		int border = -300 * scale;
 		int con_size = contour_.size();
 		if (scale != 1)
 		{

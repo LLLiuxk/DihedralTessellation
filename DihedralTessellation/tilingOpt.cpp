@@ -14,7 +14,7 @@ namespace Tiling_tiles{
 		prototile_mid = new Prototile();
 		prototile_second = new Prototile();
 		prototile_tem = new Prototile();
-		all_types = 466;
+		all_types = 500;
 		//memset(dp, 0, sizeof(dp));
 		//memset(dp_inver, 0, sizeof(dp_inver));
 
@@ -64,7 +64,8 @@ namespace Tiling_tiles{
 			cout << "the TARs have been exist" << endl;
 			return;
 		}
-		for (int i = 0; i <= all_types; i++)
+		int all_num = contour_dataset.size();
+		for (int i = 0; i < all_num; i++)
 		{
 			prototile_second->Pro_clear();
 			prototile_second->loadPoints(contour_dataset[i]);
@@ -491,6 +492,10 @@ namespace Tiling_tiles{
 							}
 							string filename = rootname + "\\" + int2string(count - 1) + "rota_PlacingResult_sim.png";
 							imwrite(filename, drawing1);
+							cout << "Point set: " << endl;
+							for (int i = 0; i < 4; i++)
+								cout << all_result_index[num][i] << "  ";
+							cout << endl;
 							break;
 						}		
 					}
@@ -547,6 +552,8 @@ namespace Tiling_tiles{
 								}
 								string filename = rootname + "\\" + int2string(count - 1)  + "transPlacingResult_sim.png";
 								imwrite(filename, drawing2);
+								cout << "Point set: " << endl;
+								cout << p_p_index[i] << " " << p_p_index[j] << " " << p_p_index[m] << " " << p_p_index[n] << endl;
 								break;
 							}
 						}
@@ -584,6 +591,8 @@ namespace Tiling_tiles{
 								}
 								string filename = rootname + "\\" + int2string(count - 1) + "flip(1-3)PlacingResult_sim.png";
 								imwrite(filename, drawing3);
+								cout << "Point set: " << endl;
+								cout << p_p_index[i] << " " << p_p_index[j] << " " << p_p_index[m] << " " << p_p_index[n] << endl;
 								break;
 							}
 						}
@@ -620,6 +629,8 @@ namespace Tiling_tiles{
 								}
 								string filename = rootname + "\\" + int2string(count - 1) + "flip(2-4)PlacingResult_sim.png";
 								imwrite(filename, drawing4);
+								cout << "Point set: " << endl;
+								cout << p_p_index[i] << " " << p_p_index[j] << " " << p_p_index[m] << " " << p_p_index[n] << endl;
 								break;
 							}
 						}
@@ -666,6 +677,7 @@ namespace Tiling_tiles{
 			cout << all_total[t].first << endl;
 		}
 		//cout << "all_tital: " << all_total.size() << endl;
+		cout << "all_inner_conts[inner_one].in_interval[i]: " << endl;
 		for (int i = 0; i < 4; i++)
 			cout << all_inner_conts[inner_one].in_interval[i] << "  ";
 		cout << endl;
@@ -749,8 +761,8 @@ namespace Tiling_tiles{
 		//将所有的结果保存下来
 		Mat drawing_pro = Mat(800, 2400, CV_8UC3, Scalar(255, 255, 255));
 		Mat drawing_mid = Mat(1200, 2400, CV_8UC3, Scalar(255, 255, 255));
-		Mat drawing_mA = Mat(1800, 1800, CV_8UC3, Scalar(255, 255, 255));
-		Mat drawing_re = Mat(3600, 3600, CV_8UC3, Scalar(180, 180, 180));
+		Mat drawing_mA = Mat(3000, 3000, CV_8UC3, Scalar(255, 255, 255));
+		
 		draw_poly(drawing_pro, contour_inner, Point2f(400, 400));
 		draw_poly(drawing_pro, contour_cand, Point2f(1200, 400));
 		draw_poly(drawing_pro, mor_result, Point2f(2000, 400));
@@ -762,8 +774,8 @@ namespace Tiling_tiles{
 		Point2f shif2 = Point2f(1200, 600) - center_p(morphed_A);
 		Point2f shif3 = Point2f(2000, 600) - center_p(con_ori);
 		draw_poly(drawing_mid, mor_result, Point2f(400, 600), 9);
-		draw_poly(drawing_mid, morphed_A, Point2f(1200, 600), 7);
-		draw_poly(drawing_mid, con_ori, Point2f(2000, 600), 8);
+		draw_poly(drawing_mid, morphed_A, Point2f(1200, 600), 10);
+		draw_poly(drawing_mid, con_ori, Point2f(2000, 600), 13);
 		for (int i = 0; i < mor_result.size(); i++)
 		{
 			//circle(drawing_mid, mor_result[i] + shif1, 3, Scalar(0, 0, 230), -1);
@@ -819,11 +831,11 @@ namespace Tiling_tiles{
 		
 		draw_allplane(drawing_mA, morphed_A, return_p, 0.4, all_inner_conts[inner_one].type);
 		//draw_result(drawing_mA, morphed_A, return_p, 0.4, all_inner_conts[inner_one].type);
-		imwrite("D:\\2.png", drawing_mA);
+		imwrite("D:\\model.png", drawing_mA);
 
-		draw_two(drawing_re, morphed_A, return_p, mor_result, mid_inter, 0.5, all_inner_conts[inner_one].type);
-		//draw_result(drawing_re, mor_result, mid_inter, 0.4, all_inner_conts[inner_one].type,0.4*shift_);
-		imwrite("D:\\result.png", drawing_re);
+		//Mat drawing_re = Mat(3600, 3600, CV_8UC3, Scalar(180, 180, 180));
+		//draw_two(drawing_re, morphed_A, return_p, mor_result, mid_inter, 0.5, all_inner_conts[inner_one].type);
+		//imwrite("D:\\result.png", drawing_re);
 
 		string filename = rootname + "\\Candidate_" + int2string(cand_one) + ".png";
 		string file2 = rootname + "\\Cand_" + int2string(cand_one) + "tiling_result.png";
@@ -1413,22 +1425,14 @@ namespace Tiling_tiles{
 				morphed_B.push_back(four_place[2][t]);
 			}
 		}
-		Mat drawing_ttt = Mat(1600, 1600, CV_8UC3, Scalar(255, 255, 255));
+		/*Mat drawing_ttt = Mat(1600, 1600, CV_8UC3, Scalar(255, 255, 255));
 		for (int i = 0; i < 4; i++)
 		{
 			draw_poly(drawing_ttt, four_place[i], center_p(four_place[i]));
-		//	//circle(drawing_ttt, four_place[0][mark_p[i]] + Point2f(300, 0), 15, Scalar(0, 124, 0), -1);
-		//	for (int t = 0; t < four_place[i].size(); t++)
-		//	{
-		//		circle(drawing_ttt, four_place[i][t] + Point2f(300, 0), 2, Scalar(0, 0, 255), -1);
-		//	}
 		}
 		for (int i = 0; i < morphed_B.size(); i++)
-			//circle(drawing_ttt, four_place[0][mark_p[0]] + Point2f(300, 0), 15, Scalar(255, 124, 0), -1);
 			MyLine(drawing_ttt, morphed_B[i], morphed_B[(i + 1) % morphed_B.size()], "green2");
-		imshow("extracted contour",drawing_ttt);
-		//imwrite("d:\\extracted_contour.png", drawing_ttt);
-		//circle(drawing_ttt, four_place[0][mark_p[0]] + Point2f(300, 0), 15, Scalar(255, 124, 0), -1);
+		imshow("extracted contour",drawing_ttt);*/
 
 		return morphed_B;
 	}
@@ -1788,9 +1792,9 @@ namespace Tiling_tiles{
 		Mat tt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 		Mat ttt = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 		Mat tttt = Mat(800, 3200, CV_8UC3, Scalar(255, 255, 255));
-		draw_poly(tttt, contour1, Point2f(400, 400), 3);
-		draw_poly(tttt, contour2, Point2f(1200, 400), 4);
-		draw_poly(tttt, final_pettern, Point2f(2000, 400), 9);
+		//draw_poly(tttt, contour1, Point2f(400, 400), 3);
+		//draw_poly(tttt, contour2, Point2f(1200, 400), 4);
+		//draw_poly(tttt, final_pettern, Point2f(2000, 400), 9);
 		for (int t = 0; t < contour1.size(); t++)
 		{
 			circle(tt, contour1[t] + shiftting, 3, Scalar(100, 230, 0), -1);
@@ -1827,13 +1831,13 @@ namespace Tiling_tiles{
 		}
 		//for (int i = 0; i < path.size(); i++)
 		//{
-		//	cout << path[i].first << "   " << path[i].second << endl;
+			//cout << path[i].first << "   " << path[i].second << endl;
 			//MyLine(ta, cont1[qmpath[i].first], cont2[qmpath[i].second], "grey");
 			//MyLine(tt, cont1[qmpath[i].first], cont2[qmpath[i].second], "grey");
 		//}
-		imshow("??:", ta);
-		imshow("???:", tt);
-		imshow("????:", ttt);
+		//imshow("??:", ta);
+		//imshow("???:", tt);
+		//imshow("????:", ttt);
 		
 		imwrite("D:\\mor_all.png", tttt);
 		return final_pettern;

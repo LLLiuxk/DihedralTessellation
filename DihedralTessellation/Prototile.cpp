@@ -403,11 +403,12 @@ namespace Tiling_tiles{
 
 	vector<int> Prototile::partition_points(string imaname)
 	{
+		cout << imaname << endl;
 		int cur_p_num = 20;   //cur_p_num 个不相邻的最大cos值点
 		int margin = 12;      //margin个点的采样间隔
 		double ratio = 0.012; //筛选间隔与周长之比
 		vector<int> max_order;
-		imgtocout(imaname);
+		//imgtocout(imaname);
 		loadTileData(imaname);
 		max_order = cand_tiling_v(cur_p_num);
 		int contoursize = contour.size();
