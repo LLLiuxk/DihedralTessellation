@@ -2,6 +2,7 @@
 #include  <stdio.h>
 #include  <stdlib.h>
 
+//#include "stdafx.h"
 
 using namespace Tiling_tiles;
 
@@ -10,6 +11,7 @@ int main(int argc, char** argv)
 	clock_t start, midtime,finish;
 	start = clock();
 	
+	int width = 200;
 
 	Tiling_tiles::Tiling_opt *tiling_opt;
 	tiling_opt = new Tiling_tiles::Tiling_opt();
@@ -21,20 +23,38 @@ int main(int argc, char** argv)
 	prototile_third = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
 	int f = 0;
+	if (f == 12)
+	{
+		string fff = "hahahah.txt";
+		cout << fff.size()<<endl;
+		string t = fff.substr(fff.size() - 3, fff.size() - 1);
+		cout << t;
+	}
 	if (f ==0) //ÒÑÓÐdataset
 	{
 
-		//tiling_opt->tiliing_generation("352");
+		tiling_opt->tiliing_generation("488");
+		//vector<int> p_p_index = prototile_first->partition_points("test");
+		//Mat drawing5 = Mat(3*width, 3*width, CV_8UC3, Scalar(255, 255, 255));
+		//vector<Point2f> conr = prototile_first->contour_sample[1];
+		//int contoursize = conr.size();
+		////cout << contoursize << endl;
+		//for (int j = 0; j < contoursize; j++)
+		//{
+		//	circle(drawing5, conr[j], 2, Scalar(0, 0, 0), -1);
 
+		//	//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
+		//}
+		//imshow("sample", drawing5);
 		//int iii[20] = {48,75,80,124,220,218,212,228,248,251,280,312,317};//{484,483,482,482,480,479,478,474,472,467,451}; // { 0, 36, 278, 293, 298, 312, 357, 454, 452, 443, 429, 364 };//{458,451,439,439,426,357,359,59,70,75,102,128,169,175,223,312};//{205,210,215,219,230,233,180};//
-		for (int i = 56; i < 486; i++)
-		{
-			tiling_opt->Tiling_clear();
-		//	tiling_opt->tiliing_generation(int2string(iii[i]));
-		//	
-		    tiling_opt->tiliing_generation(int2string(i));
-			system("cls");
-		}
+		//for (int i = 5; i < 486; i++)
+		//{
+		//	tiling_opt->Tiling_clear();
+		////	tiling_opt->tiliing_generation(int2string(iii[i]));
+		////	
+		//    tiling_opt->tiliing_generation(int2string(i));
+		//	system("cls");
+		//}
 
 		
 		// ________________feature_points___________________________
@@ -310,10 +330,10 @@ int main(int argc, char** argv)
 		//int iii[] = {714,763,736};// {610, 614, 618, 636, 637, 638};
 		int t =  0;
 		//int i = 308;
-		for (int i = 485; i < 486; i++)
+		//for (int i = 485; i < 486; i++)
 		{
 			//string image = int2string(iii[i]);
-			string image = int2string(i);
+			string image = "488";//int2string(i);
 			////cout << image << endl;
 			/*string image1 = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\" + int2string(i) + ".png"; //"C:\\Users\\liuxk\\Desktop\\datasetnew\\zym\\datasetnew\\" + image + ".png";
 			Mat src = imread(image1);
@@ -409,7 +429,7 @@ int main(int argc, char** argv)
 		//{
 			tiling_opt->Tiling_clear();
 		//	//vector<Point2f> sim_mid = tiling_opt->simulation_mid("19", 20, 0);
-			vector<Point2f> sim_mid = tiling_opt->simulation_tar("352", 74, 0);
+			vector<Point2f> sim_mid = tiling_opt->simulation_tar("489", 176, 3);
 		//}
 		//-----------------test compute_TAR----------------------
 
@@ -935,7 +955,6 @@ int main(int argc, char** argv)
 		//vector<cv::Point2f> ima_p;
 		//vector<cv::Point2f> imb_p;
 		//vector<cv::Point2f> imc_p;
-
 		//MyLine(ima, Point2f(100, 100), Point2f(150, 50),"red");
 		//MyLine(ima, Point2f(150, 50), Point2f(200, 50), "red");
 		//MyLine(ima, Point2f(200, 50), Point2f(250, 100), "red");
@@ -1072,12 +1091,12 @@ int main(int argc, char** argv)
 	else if (f==9)
 	{
 
-		tiling_opt->Tiling_clear();
-		vector<Point2f> sim_mid = tiling_opt->simulation_tar("302", 96, 0);
+		//tiling_opt->Tiling_clear();
+		//vector<Point2f> sim_mid = tiling_opt->simulation_tar("302", 96, 0);
 
 		Mat src, erosion_dst;
-		int erosion_elem = 0;
-		int erosion_size = 0;
+		int erosion_elem = 1;
+		int erosion_size = 1;
 		int const max_elem = 2;
 		int const max_kernel_size = 21;
 		
@@ -1127,8 +1146,8 @@ int main(int argc, char** argv)
 			}
 		//erode(src, src, element);
 		imwrite("D:\\printre.png", src);
-		int erosion_size1 = 2;
-		int erosion_size2 = 2;
+		int erosion_size1 = 0;
+		int erosion_size2 = 0;
 		Mat element1 = getStructuringElement(erosion_type,
 			Size(2 * erosion_size1 + 1, 2 * erosion_size1 + 1),
 			Point(erosion_size1, erosion_size1));
@@ -1137,12 +1156,12 @@ int main(int argc, char** argv)
 			Point(erosion_size2, erosion_size2));
 		erode(flip1, flip1, element1);
 		erode(flip2, flip2, element2);
-		for (int i = 0; i < row; i++)
+		/*for (int i = 0; i < row; i++)
 			for (int j = 0; j < col; j++)
 			{
 				flip1.at<Vec3b>(i, j) = Vec3b(255, 255, 255) - flip1.at<Vec3b>(i, j);
 				flip2.at<Vec3b>(i, j) = Vec3b(255, 255, 255) - flip2.at<Vec3b>(i, j);
-			}
+			}*/
 		imwrite("D:\\flip1.png", flip1);
 		imwrite("D:\\flip2.png", flip2);
 
@@ -1188,6 +1207,32 @@ int main(int argc, char** argv)
 		imwrite("D:\\dst.png", dst);
 	}
 
+	else if (f == 11)
+	{
+		glutInit(&argc, argv);
+		vector<int> p_p_index = prototile_first->partition_points("test14");
+		vector<Point2f> conr = prototile_first->contour_sample[1];
+		vector<int> p_p_index1 = prototile_second->partition_points("test");
+		vector<Point2f> conr1 = prototile_second->contour_sample[1];
+		int contoursize = conr.size();
+
+		GLsizei wh = 800, ww = 1200;
+		OpenWindow(ww, wh, conr, conr1);
+		//glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA | GLUT_DEPTH);
+		//glutInitWindowSize(ww, wh);
+		////glutInitWindowPosition(100, 120);
+		//glutCreateWindow("test");
+		////glutReshapeFunc(myReshape);
+
+		//glutDisplayFunc(display);
+
+		////	glutDisplayFunc(Display);
+		////glEnable(GL_DEPTH_TEST);
+		//glutMouseFunc(myMouse);
+		//initial();
+		//glutMainLoop();
+		
+	}
     finish = clock();
 	cout << endl<< "All time consumption: "<<(double)(finish - start) / CLOCKS_PER_SEC << " s " << endl;
 	waitKey(0);

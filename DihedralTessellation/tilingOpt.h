@@ -12,6 +12,7 @@
 #include <io.h>
 #include <list>
 #include <direct.h>
+#include "gl/glut.h"
 //#include "Morphing.h"
 
 
@@ -145,7 +146,7 @@ namespace Tiling_tiles{
 
 		double evalua_deformation(vector<Point2f> contour1, vector<Point2f> contour2);
 		
-		//simulation
+		//simulation 
 		vector<Point2f> simulation_mid(string imaname, int inner_one, int cand_one);
 		vector<Point2f> simulation_tar(string imaname, int inner_one, int cand_one);
 
@@ -264,7 +265,12 @@ namespace Tiling_tiles{
 	//bounding box
 	void bbx_center_point(vector<vector<Point2f>> all_point, vector<Point2f> &five_p);
 	vector<Point2f> b_box(vector<Point2f> contour);//返回的点是从左上方逆时针
+	
+	//openglwindow
 
+	void OpenWindow(int w, int h, vector<Point2f> contour1, vector<Point2f> contour2);
+
+	
 	// Morph points
 	void MorphPoints(const std::vector<cv::Point2f>& srcPts1, const std::vector<cv::Point2f>& srcPts2, std::vector<cv::Point2f>& dstPts, float s);
 	//void merge_close_p(vector<Point2f> &contour_);

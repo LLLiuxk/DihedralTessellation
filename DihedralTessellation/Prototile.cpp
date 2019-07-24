@@ -45,7 +45,8 @@ namespace Tiling_tiles{
 		//vector<int> index_cos;		
 		contourname = tile_data;
 		//imgtocout();
-		contour = readTxt();	
+		contour = readTxt();
+		if (contour.empty()) exit(0);
 		//采样并求曲率
 		contour_sam_cur();
 		
@@ -69,7 +70,7 @@ namespace Tiling_tiles{
 		int max_thresh = 255;
 
 		//read image
-		String imageName = dataroot + tile_image + ".png"; // by default
+		String imageName =dataroot + tile_image + ".png"; // by default
 		cout << imageName << endl;
 		src = imread(imageName, IMREAD_COLOR);
 		//src = imread(imageName, CV_LOAD_IMAGE_UNCHANGED);
@@ -454,7 +455,7 @@ namespace Tiling_tiles{
 		
 		for (int j = 0; j < all_order.size(); j++)
 		{
-			circle(drawing5, contour[all_order[j]], 3, Scalar(128, 128, 128), -1);
+			//circle(drawing5, contour[all_order[j]], 3, Scalar(128, 128, 128), -1);
 		}
 		
 		imshow("convex points: ", drawing5);

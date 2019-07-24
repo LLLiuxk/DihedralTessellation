@@ -1168,6 +1168,51 @@ namespace Tiling_tiles{
 			double length_op = 0;
 			double angle = 2; 
 			int f = 0;
+			/*while (length_l < dmax && length_r < dmax)
+			{
+				length_op = length_two_point2f(contour_[(i + contoursize - k) % contoursize], contour_[(i + k) % contoursize]);
+				double angle1 = cos_3edges(length_l, length_r, length_op);
+				k++;
+				length_l = length_two_point2f(contour_[i], contour_[(i + contoursize - k) % contoursize]);
+				length_r = length_two_point2f(contour_[i], contour_[(i + k) % contoursize]);
+				if (angle1 > angle_cos)
+				{
+					f = 1;
+					if (angle1 > angle) angle = angle1;
+				}
+
+			}
+
+			if (f == 1 && angle != -2)
+			{
+				if (index_num.empty())
+				{
+					cout << "zahuishi" << endl;
+					angle_start = angle;
+					angle_back = angle;
+					index_num.push_back(i);
+				}
+				else
+				{
+					if (length_two_point2f(contour_[index_num.back()], contour_[i]) > dmax)
+					{
+						angle_back = angle;
+						index_num.push_back(i);
+					}
+					else
+					{
+						if (angle > angle_back)
+						{
+							index_num.pop_back();
+							angle_back = angle;
+							if (index_num.empty())
+								angle_start = angle;
+							index_num.push_back(i);
+						}
+					}
+				}
+			}*/
+
 			while (length_l < dmax && length_r < dmax)
 			{
 				length_op = length_two_point2f(contour_[(i + contoursize - k) % contoursize], contour_[(i + k) % contoursize]);
@@ -1190,6 +1235,7 @@ namespace Tiling_tiles{
 				if (index_num.empty()) 
 				{
 					angle_start = angle;
+					angle_back = angle;
 					index_num.push_back(i);
 				}
 				else
@@ -1205,20 +1251,24 @@ namespace Tiling_tiles{
 						{
 							index_num.pop_back();
 							angle_back = angle;
+							if (index_num.empty())
+								angle_start = angle;
 							index_num.push_back(i);
 						}
 					}	
 				}	
 			}
-		}	
+		}
+		
 		if (length_two_point2f(contour_[index_num.back()], contour_[index_num[0]]) < dmax)
 		{
 			if (angle_back > angle_start)
-			{
+			{ 
 				index_num[0] = index_num.back();
 			}
 			index_num.pop_back();			
 		}
+		cout << index_num.size() << endl;
 		return index_num;
 	}
 

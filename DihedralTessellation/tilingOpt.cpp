@@ -355,7 +355,7 @@ namespace Tiling_tiles{
 				}
 				else
 				{
-					//cout << "it is ont flip" << endl;
+					//cout << "it is not flip" << endl;
 					cand_tar = all_con_tars[all_total[j].first];
 					contour_cand = prototile_second->contour_sample[1];
 				}
@@ -739,9 +739,10 @@ namespace Tiling_tiles{
 				cout << "Too many tuning!" << endl;
 				return vector<Point2f>();
 			}
+			cout << "times" << times<<endl;
 			four_.swap(vector<vector<Point2f>>());
 			mor_result = extract_contour(morphed_A, return_p, mid_inter, four_, all_inner_conts[inner_one].type);
-			if (self_intersect(mor_result, first, second)) return vector<Point2f>();
+			//if (self_intersect(mor_result, first, second)) return vector<Point2f>();
 		}
 		
 		double score_fir_r = evalua_deformation(morphed_A, con_ori);
@@ -818,6 +819,7 @@ namespace Tiling_tiles{
 			circle(drawing_ttt, morphed_A[return_p[t]], 12, Scalar(0, 0, 0), -1);
 		}
 		imshow("all", drawing_ttt);
+		cout << "zahuishia!" << endl;
 		/*Point2f sss = Point2f(400, 400) - center_p(morphed_A);
 		for (int t = 0; t < morphed_A.size(); t++)
 		{
@@ -1637,7 +1639,7 @@ namespace Tiling_tiles{
 				}
 		cout << "the fianl order: " << endl;
 		vector<pair<int, bool>> all_total_mid;
-		for (int t = total_num - 1; t > total_num - 30; t--)
+		for (int t = total_num - 1; t > total_num - 200; t--)
 		{
 			all_total_mid.push_back(all_final[t]);
 			cout << "order: " << all_final[t].first << "  flip: " << all_final[t].second << " value: " << all_result[t] << " complxeity: " << all_shape_complexity[all_final[t].first] << endl;
