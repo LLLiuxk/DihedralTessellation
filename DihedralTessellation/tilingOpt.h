@@ -25,6 +25,8 @@ namespace Tiling_tiles{
 #define PI 3.1415926535897932384626433832795
 #endif
 
+	extern vector<pair<string, Scalar>> colorbar;
+
 	typedef struct candPat_angle_index_error
 	{
 		int number;
@@ -208,7 +210,8 @@ namespace Tiling_tiles{
 	void draw_poly(Mat &drawing_, vector<Point2f> contour_s, Point2f center,int color=0);
 	void draw_allplane(Mat &drawing_, vector<Point2f> contour_, vector<int> vec_, double scale = 1,int type = 0);
 	void draw_result(Mat &drawing_, vector<Point2f> contour_, vector<int> vec_, double scale = 1, int type = 0, Point2f shift = Point2f(0, 0));
-	void draw_two(Mat &drawing_, vector<Point2f> &contour_1, vector<int> vec_1, vector<Point2f> &contour_2, vector<int> vec_2, double scale = 1, int type = 0);
+	
+	void draw_two(Mat &drawing_, vector<Point2f> &contour_1, vector<int> vec_1, vector<Point2f> &contour_2, vector<int> vec_2, double scale = 1, int type = 0);//draw connection area
 	//math tool
 	Point2f center_p(vector<Point2f> contour_);
 	double contour_length(vector<Point2f> contour);

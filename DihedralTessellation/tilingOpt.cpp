@@ -147,7 +147,7 @@ namespace Tiling_tiles{
 	{
 		clock_t start, midtime, finish;
 		start = clock();
-
+		bool check_self_intersect = true;
 		int num_c = 1;//选择(num_c+1)*100个点
 		vector<int> p_p_index = prototile_first->partition_points(imaname);
 		vector<Point2f> contour_ = prototile_first->contour;
@@ -328,21 +328,23 @@ namespace Tiling_tiles{
 			vector<pair<int, bool>> all_total = compare_choose_TAR(all_inner_conts[i].in_contour);
 			//cout << "candida_contours" << candida_contours.size()<< endl;
 			//string conut_name = rootname + "\\placement " + int2string(i);
-			vector<int> mid_inter = joint_relocate(all_inner_conts[i].in_contour, all_inner_conts[i].in_interval, num_c);
-			if (abs(mid_inter[1] - mid_inter[0]) < 2 || abs(mid_inter[2] - mid_inter[1]) < 2 || abs(mid_inter[3] - mid_inter[2]) < 2 || abs(mid_inter[0] - mid_inter[3]) < 2)
-			{
-				cout << "two tiling vertices are too closed!" << endl;
-				continue;
-			}
+			vector<int> mid_inter_ = joint_relocate(all_inner_conts[i].in_contour, all_inner_conts[i].in_interval, num_c);
+			
+			//if (abs(mid_inter[1] - mid_inter[0]) < 2 || abs(mid_inter[2] - mid_inter[1]) < 2 || abs(mid_inter[3] - mid_inter[2]) < 2 || abs(mid_inter[0] - mid_inter[3]) < 2)
+			//{
+			//	cout << "two tiling vertices are too closed!" << endl;
+			//	continue;
+			//}
 			prototile_mid->Pro_clear();
 			prototile_mid->loadPoints(all_inner_conts[i].in_contour);
 			vector<Point2f> contour_inner = prototile_mid->contour_sample[1];
 			double sc_inner = 0;
 			vector<vector<double>> inner_tar = prototile_mid->compute_TAR(contour_inner, sc_inner);
-			bool check_self_intersect = true;
+
 			for (int j = 0; j <5; j++) //candida_contours.size()
 			{
 				//将所有的结果保存下来
+				vector<int> mid_inter = mid_inter_;
 				prototile_second->Pro_clear();
 				prototile_second->loadPoints(contour_dataset[all_total[j].first]);
 				vector<Point2f> contour_cand;// = prototile_second->contour_sample[1];
@@ -364,6 +366,8 @@ namespace Tiling_tiles{
 				int width = 6;
 				double re = tar_mismatch(inner_tar, cand_tar, path, shift, width);
 				vector<Point2f> mor_result = morphing_tar(contour_inner, contour_cand, mid_inter, path, shift);
+
+
 				if (mid_inter.size() != 4)
 				{
 					cout << "lack of tiling vertices!" << endl;
@@ -380,18 +384,22 @@ namespace Tiling_tiles{
 				Mat drawing_mid = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 				Mat drawing_mA = Mat(1600, 2400, CV_8UC3, Scalar(255, 255, 255));
 				draw_allplane(drawing_mid, mor_result, mid_inter, 0.4, all_inner_conts[i].type);
-				Point2f cente = center_p(mor_result);
+
 				vector<int> return_p;
 				vector<vector<Point2f>> four_place;
-				vector<Point2f> morphed_A = extract_contour(mor_result, mid_inter, return_p, four_place, all_inner_conts[i].type);
-				//if (self_intersect(morphed_A, first, second)) continue;
+				vector<Point2f> morphed_A = extract_contour(mor_result, mid_inter, return_p, four_place, all_inner_conts[i].type);   //
+				//if (self_intersect(morphed_A, first, second))
+				//{
+				//	cout << "morphed_A self intersected before morphing" << endl;
+				//	continue;
+				//}
 				int times = 0;
 				if (check_self_intersect)
 				{
 					while (self_intersect(morphed_A, first, second))
 					{
 						++times;
-						cout << "morphed_A self_intersect" << endl;
+						cout << "morphed_A self_intersect is repairing" << endl;
 						contour_fine_tuning(morphed_A, first, second);
 					}
 					if (times > 3) 
@@ -399,9 +407,14 @@ namespace Tiling_tiles{
 						cout << "Too many tuning!" << endl;
 						continue;
 					}
+					//cout << "times" << times << endl;
 					four_place.swap(vector<vector<Point2f>>());
 					mor_result = extract_contour(morphed_A, return_p, mid_inter, four_place, all_inner_conts[i].type);
-					if (self_intersect(mor_result, first, second)) continue;
+					if (self_intersect(mor_result, first, second))
+					{
+						cout << "mor_result self intersected" << endl;
+						continue;
+					}
 				}
 				//if (self_intersect(morphed_A, first, second)) continue;
 				double score_fir_r = evalua_deformation(morphed_A, cont_orig);
@@ -427,6 +440,7 @@ namespace Tiling_tiles{
 
 	vector<Point2f> Tiling_opt::simulation_tar(string imaname, int inner_one, int cand_one)
 	{
+		bool check_self_intersect = true;
 		int num_c = 1;//选择(num_c+1)*100个点
 		vector<int> p_p_index = prototile_first->partition_points(imaname);
 		vector<Point2f> contour_ = prototile_first->contour;
@@ -712,7 +726,11 @@ namespace Tiling_tiles{
 		int width = 6;
 		double re = tar_mismatch(inner_tar, cand_tar, path, shift, width);
 		vector<Point2f> mor_result = morphing_tar(contour_inner, contour_cand, mid_inter, path, shift);
-		
+		if (mid_inter.size() != 4)
+		{
+			cout << "lack of tiling vertices!" << endl;
+			exit(0);
+		}
 		int first = 0;
 		int second = 0;
 		/*while (self_intersect(mor_result, first, second))
@@ -724,7 +742,7 @@ namespace Tiling_tiles{
 		vector<int> return_p;
 		vector<vector<Point2f>> four_;
 		vector<Point2f> morphed_A = extract_contour(mor_result, mid_inter, return_p, four_, all_inner_conts[inner_one].type);
-		bool check_self_intersect = true;
+		
 		int times = 0;
 		if (check_self_intersect)
 		{
@@ -742,6 +760,24 @@ namespace Tiling_tiles{
 			cout << "times" << times<<endl;
 			four_.swap(vector<vector<Point2f>>());
 			mor_result = extract_contour(morphed_A, return_p, mid_inter, four_, all_inner_conts[inner_one].type);
+
+			//draw four_
+			Mat drawing_four = Mat(1600, 1600, CV_8UC3, Scalar(255, 255, 255));
+			Point2f shh = 0.25 * (center_p(four_[0]) + center_p(four_[1]) + center_p(four_[2]) + center_p(four_[3]));
+			shh = Point2f(800, 800) - shh;
+			for (int four_i = 0; four_i < 4; four_i++)
+			{
+				draw_poly(drawing_four, four_[four_i], center_p(four_[four_i]) + shh);
+				string filepathname = "D:\\VisualStudioProjects\\DihedralTessellation\\contours\\joint\\" + 
+					int2string(inner_one) + "_" + int2string(cand_one) + "_four_" + int2string(four_i) + ".txt";
+				vector<Point> con;
+				for (int it = 0; it < four_[four_i].size(); it++)
+				{
+					con.push_back((Point)four_[four_i][it]);
+				}
+				fileout(filepathname, con);
+			}
+			imshow("four", drawing_four);
 			//if (self_intersect(mor_result, first, second)) return vector<Point2f>();
 		}
 		
@@ -1639,7 +1675,7 @@ namespace Tiling_tiles{
 				}
 		cout << "the fianl order: " << endl;
 		vector<pair<int, bool>> all_total_mid;
-		for (int t = total_num - 1; t > total_num - 200; t--)
+		for (int t = total_num - 1; t > total_num - 150; t--)
 		{
 			all_total_mid.push_back(all_final[t]);
 			cout << "order: " << all_final[t].first << "  flip: " << all_final[t].second << " value: " << all_result[t] << " complxeity: " << all_shape_complexity[all_final[t].first] << endl;

@@ -4,21 +4,39 @@
 
 namespace Tiling_tiles{
 
+	vector<pair<string, Scalar>> colorbar = { 
+	{ "black", Scalar(0, 0, 0) },
+	{ "white", Scalar(255, 255, 255) },
+	{ "blue", Scalar(255, 0, 0) },
+	{ "green", Scalar(0, 255, 0) },
+	{ "red", Scalar(0, 0, 255) },
+	{ "red1", Scalar(127, 110, 174) },
+	{ "gray", Scalar(194, 194, 194) },
+	{ "blue1", Scalar(251, 228, 169) },
+	{ "blue2", Scalar(251, 204, 176) },
+	{ "blue3", Scalar(251, 181, 105) },
+	{ "green1", Scalar(130, 174, 89) },
+	{ "green2", Scalar(222, 250, 167) },
+	{ "yellow", Scalar(0, 255, 255) },
+	{ "orange1", Scalar(70, 124, 217) },		
+	{ "orange2", Scalar(3, 142, 249) },
+	{ "pink", Scalar(237, 171, 245) },
+	{ "lightorange2", Scalar(175, 211, 249) },
+	{ "lightpink", Scalar(244, 211, 247) } };
+
+
 	void MyLine(Mat img, Point2f start, Point2f end, string color1)
 	{
-		Scalar color;
-		if (color1.compare("red") == 0) color = Scalar(0, 0, 255);
-		else if (color1.compare("blue") == 0) color = Scalar(255, 0, 0);
-		else if (color1.compare("green") == 0) color = Scalar(0, 255, 0);
-		else if (color1.compare("cyan") == 0) color = Scalar(255, 255, 0);
-		else if (color1.compare("grey") == 0) color = Scalar(190, 190, 190);
-		else if (color1.compare("yellow") == 0) color = Scalar(0, 255, 255);
-		else if (color1.compare("purple") == 0) color = Scalar(60, 32, 240);
-		else if (color1.compare("white") == 0) color = Scalar(255, 255, 255);
-		else if (color1.compare("black") == 0) color = Scalar(0, 0, 0);
-		else if (color1.compare("deepblue") == 0) color = Scalar(225, 0, 120);
-		else if (color1.compare("green2") == 0) color = Scalar(20, 220, 20);
-		else color = Scalar(128);
+		Scalar color = Scalar(128);
+		int cosize = colorbar.size();
+		for (int i = 0; i < cosize; i++)
+		{
+			if (color1.compare(colorbar[i].first) == 0)
+			{
+				color = colorbar[i].second;
+				break;
+			}
+		}
 		int thickness = 2;
 		int lineType = 8;
 		line(img,
@@ -55,19 +73,8 @@ namespace Tiling_tiles{
 	void draw_poly(Mat &drawing_, vector<Point2f> contour_s, Point2f center,int color)
 	{
 		Scalar col_sca = Scalar(0, 0, 0);
-		if (color == 1) col_sca = Scalar(255, 255, 255);
-		if (color == 2) col_sca = Scalar(194, 194, 194);//gray
-		if (color == 3) col_sca = Scalar(251, 228, 169); //blue1
-		if (color == 4) col_sca = Scalar(251, 204, 176); //blue2
-		if (color == 5) col_sca = Scalar(130, 174, 89); //green1
-		if (color == 6) col_sca = Scalar(222, 250, 167); //green2
-		if (color == 7) col_sca = Scalar(127, 110, 174); //red1
-		if (color == 8) col_sca = Scalar(70, 124, 217); //orange1
-		if (color == 9) col_sca = Scalar(251, 181, 105); //blue3
-		if (color == 10) col_sca = Scalar(237, 171, 245); //pink
-		if (color == 11) col_sca = Scalar(3, 142, 249); //orange2
-		if (color == 12) col_sca = Scalar(175, 211, 249); //lightorange2
-		if (color == 13) col_sca = Scalar(244, 211, 247); //lightpink
+		if (color < colorbar.size())
+			col_sca = colorbar[color].second;
 		Point2f shift = center - center_p(contour_s);
 		int n = contour_s.size();
 		//cout << "n: " << n << endl;
@@ -447,6 +454,7 @@ namespace Tiling_tiles{
 				cont1.push_back(scale*contour_[i]);
 			}
 		}
+		else cont1 = contour_;
 		Point2f cen_con1 = center_p(cont1);
 		int c_a_width = 3;
 		vector<vector<Point2f>> connection_a;
