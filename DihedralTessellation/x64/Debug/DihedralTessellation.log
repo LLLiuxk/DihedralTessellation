@@ -1,81 +1,185 @@
-﻿Build started 2019/7/16 21:54:01.
-     1>Project "D:\VisualStudioProjects\DihedralTessellation\DihedralTessellation\DihedralTessellation.vcxproj" on node 2 (Build target(s)).
+﻿生成启动时间为 2019/7/28 17:18:15。
+     1>项目“D:\VSProjects\DihedralTessellation\DihedralTessellation\DihedralTessellation.vcxproj”在节点 2 上(Build 个目标)。
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /IC:\local\opencv\build\include /IC:\local\opencv\build\include\opencv /IC:\local\opencv\build\include\opencv2 /Zi /nologo /W3 /WX- /Od /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Debug\\" /Fd"x64\Debug\vc120.pdb" /Gd /TP /errorReport:prompt main.cpp tilingOpt.cpp
+         D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /IC:\local\opencv\build\include /IC:\local\opencv\build\include\opencv /IC:\local\opencv\build\include\opencv2 /Zi /nologo /W3 /WX- /Od /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Debug\\" /Fd"x64\Debug\vc120.pdb" /Gd /TP /errorReport:prompt OpenglWindow.cpp Prototile.cpp main.cpp math.cpp tilingOpt.cpp
          tilingOpt.cpp
-     1>tilingOpt.cpp(67): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(155): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(67): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(155): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
      1>tilingOpt.cpp(169): warning C4996: 'mkdir': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _mkdir. See online help for details.
-                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\direct.h(140) : see declaration of 'mkdir'
-     1>tilingOpt.cpp(170): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(171): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(191): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(308): warning C4267: 'argument' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(148): warning C4101: 'midtime' : unreferenced local variable
-     1>tilingOpt.cpp(434): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(441): warning C4996: 'mkdir': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _mkdir. See online help for details.
-                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\direct.h(140) : see declaration of 'mkdir'
-     1>tilingOpt.cpp(442): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(443): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(461): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(852): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(890): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(967): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(1039): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(1170): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(1442): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(1550): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(1588): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(1626): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(1656): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(1701): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(1714): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(1730): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(1763): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(1849): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(1876): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(1880): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(1896): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(1918): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(1919): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2073): warning C4996: 'mkdir': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _mkdir. See online help for details.
-                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\direct.h(140) : see declaration of 'mkdir'
-     1>tilingOpt.cpp(2074): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2075): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2248): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2278): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2294): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2371): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2394): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2395): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2463): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2464): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2624): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2685): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2719): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2795): warning C4996: 'mkdir': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _mkdir. See online help for details.
-                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\direct.h(140) : see declaration of 'mkdir'
-     1>tilingOpt.cpp(2796): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2797): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(3007): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(3199): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(3284): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(3348): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(3434): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+                 D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\direct.h(140) : 参见“mkdir”的声明
+     1>tilingOpt.cpp(170): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(171): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(191): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(308): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(148): warning C4101: “midtime”: 未引用的局部变量
+     1>tilingOpt.cpp(448): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(455): warning C4996: 'mkdir': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _mkdir. See online help for details.
+                 D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\direct.h(140) : 参见“mkdir”的声明
+     1>tilingOpt.cpp(456): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(457): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(475): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(890): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(928): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(1005): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(1077): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(1208): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(1480): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(1539): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>tilingOpt.cpp(1540): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>tilingOpt.cpp(1549): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>tilingOpt.cpp(1550): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>tilingOpt.cpp(1573): warning C4244: “初始化”: 从“float”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(1574): warning C4244: “初始化”: 从“float”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(1588): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(1626): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(1664): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(1694): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(1739): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(1752): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(1768): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(1801): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(1887): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(1914): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(1918): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(1934): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(1956): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(1957): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(2111): warning C4996: 'mkdir': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _mkdir. See online help for details.
+                 D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\direct.h(140) : 参见“mkdir”的声明
+     1>tilingOpt.cpp(2112): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(2113): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(2286): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(2316): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(2332): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(2399): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>tilingOpt.cpp(2400): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>tilingOpt.cpp(2409): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(2432): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(2433): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(2501): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(2502): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(2662): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(2723): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(2757): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(2833): warning C4996: 'mkdir': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _mkdir. See online help for details.
+                 D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\direct.h(140) : 参见“mkdir”的声明
+     1>tilingOpt.cpp(2834): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(2835): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(3045): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(3237): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(3322): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(3386): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(3398): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>tilingOpt.cpp(3399): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>tilingOpt.cpp(3418): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>tilingOpt.cpp(3419): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>tilingOpt.cpp(3452): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>tilingOpt.cpp(3453): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>tilingOpt.cpp(3472): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(3490): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+     1>tilingOpt.cpp(3498): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+         math.cpp
+     1>math.cpp(31): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(54): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(79): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(103): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+     1>math.cpp(104): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(126): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+     1>math.cpp(177): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+     1>math.cpp(278): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+     1>math.cpp(378): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+     1>math.cpp(448): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(470): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+     1>math.cpp(544): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(545): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(579): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+     1>math.cpp(750): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(772): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(799): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(875): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(915): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1031): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1032): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1033): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1034): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1035): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1053): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1054): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1055): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1056): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1064): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(1079): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(1097): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(1110): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(1159): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(1230): warning C4553: “==”: 运算符不起任何作用；是否是有意使用“=”的?
+     1>math.cpp(1294): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1296): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(1320): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1321): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1325): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1326): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1347): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1348): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1352): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1353): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1383): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(1395): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(1427): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(1449): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1454): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1462): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1472): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1507): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(1554): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(1620): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1621): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1625): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1626): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1633): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1634): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1638): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1639): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1646): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1656): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1698): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(1719): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(1808): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(1809): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(1932): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(1936): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1937): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>math.cpp(1980): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+     1>math.cpp(1982): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(2001): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>math.cpp(2031): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
          main.cpp
-     1>main.cpp(1016): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>main.cpp(1217): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>main.cpp(11): warning C4101: 'midtime' : unreferenced local variable
-         Generating Code...
+     1>main.cpp(37): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>main.cpp(593): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>main.cpp(695): warning C4244: “参数”: 从“double”转换到“uchar”，可能丢失数据
+     1>main.cpp(697): warning C4244: “参数”: 从“double”转换到“uchar”，可能丢失数据
+     1>main.cpp(715): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+         Prototile.cpp
+     1>Prototile.cpp(339): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>Prototile.cpp(340): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+     1>Prototile.cpp(380): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>Prototile.cpp(415): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>Prototile.cpp(469): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+         OpenglWindow.cpp
+     1>OpenglWindow.cpp(22): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>OpenglWindow.cpp(195): warning C4390: “;”: 找到空的受控语句；这是否是有意的?
+         正在生成代码...
+     1>d:\vsprojects\dihedraltessellation\dihedraltessellation\math.cpp(986): warning C4715: “Tiling_tiles::cur_char_length”: 不是所有的控件路径都返回值
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.exe" /INCREMENTAL /NOLOGO /LIBPATH:C:\local\opencv\build\x64\vc12\lib opencv_calib3d248d.lib opencv_contrib248d.lib opencv_core248d.lib opencv_features2d248d.lib opencv_flann248d.lib opencv_gpu248d.lib opencv_highgui248d.lib opencv_imgproc248d.lib opencv_legacy248d.lib opencv_ml248d.lib opencv_objdetect248d.lib opencv_ts248d.lib opencv_video248d.lib glut64.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.lib" /MACHINE:X64 x64\Debug\main.obj
+         D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"D:\VSProjects\DihedralTessellation\x64\Debug\DihedralTessellation.exe" /INCREMENTAL /NOLOGO /LIBPATH:C:\local\opencv\build\x64\vc12\lib opencv_calib3d248d.lib opencv_contrib248d.lib opencv_core248d.lib opencv_features2d248d.lib opencv_flann248d.lib opencv_gpu248d.lib opencv_highgui248d.lib opencv_imgproc248d.lib opencv_legacy248d.lib opencv_ml248d.lib opencv_objdetect248d.lib opencv_ts248d.lib opencv_video248d.lib glut64.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\VSProjects\DihedralTessellation\x64\Debug\DihedralTessellation.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\VSProjects\DihedralTessellation\x64\Debug\DihedralTessellation.lib" /MACHINE:X64 x64\Debug\main.obj
          x64\Debug\math.obj
          x64\Debug\OpenglWindow.obj
          x64\Debug\Prototile.obj
          x64\Debug\tilingOpt.obj
-         DihedralTessellation.vcxproj -> D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.exe
-     1>Done Building Project "D:\VisualStudioProjects\DihedralTessellation\DihedralTessellation\DihedralTessellation.vcxproj" (Build target(s)).
+         LINK : 没有找到 D:\VSProjects\DihedralTessellation\x64\Debug\DihedralTessellation.exe 或上一个增量链接没有生成它；正在执行完全链接
+         DihedralTessellation.vcxproj -> D:\VSProjects\DihedralTessellation\x64\Debug\DihedralTessellation.exe
+     1>已完成生成项目“D:\VSProjects\DihedralTessellation\DihedralTessellation\DihedralTessellation.vcxproj”(Build 个目标)的操作。
 
-Build succeeded.
+生成成功。
 
-Time Elapsed 00:00:02.07
+已用时间 00:00:05.29

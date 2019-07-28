@@ -150,9 +150,10 @@ namespace Tiling_tiles{
 		
 		//simulation 
 		vector<Point2f> simulation_mid(string imaname, int inner_one, int cand_one);
-		vector<Point2f> simulation_tar(string imaname, int inner_one, int cand_one);
+		vector<vector<Point2f>> simulation_tar(string imaname, int inner_one, int cand_one);
 
-		
+		//compute joint
+
 
 		//math
 

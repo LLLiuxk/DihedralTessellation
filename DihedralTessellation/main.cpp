@@ -61,7 +61,7 @@ int main(int argc, char** argv)
 	if (f == 1)  //simulation
 	{
 		tiling_opt->Tiling_clear();
-		vector<Point2f> sim_mid = tiling_opt->simulation_tar("307", 14, 1);  //
+		vector<vector<Point2f>> sim_mid = tiling_opt->simulation_tar("307", 14, 1);  //
 		
 	}
 	if (f == 2) //еЗа©╤ам╪

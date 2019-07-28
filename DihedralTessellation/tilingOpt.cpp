@@ -438,7 +438,7 @@ namespace Tiling_tiles{
 
 	
 
-	vector<Point2f> Tiling_opt::simulation_tar(string imaname, int inner_one, int cand_one)
+	vector<vector<Point2f>> Tiling_opt::simulation_tar(string imaname, int inner_one, int cand_one)
 	{
 		bool check_self_intersect = true;
 		int num_c = 1;//Ñ¡Ôñ(num_c+1)*100¸öµã
@@ -659,7 +659,7 @@ namespace Tiling_tiles{
 		if (count == 0)
 		{
 			cout << "no right placement" << endl;
-			return vector<Point2f>();
+			return vector<vector<Point2f>>();
 		}
 		
 		string filepathname = "D:\\VisualStudioProjects\\DihedralTessellation\\contours\\test" + int2string(inner_one)+".txt";
@@ -755,7 +755,7 @@ namespace Tiling_tiles{
 			if (times > 3)
 			{
 				cout << "Too many tuning!" << endl;
-				return vector<Point2f>();
+				return vector<vector<Point2f>>();
 			}
 			cout << "times" << times<<endl;
 			four_.swap(vector<vector<Point2f>>());
@@ -881,7 +881,8 @@ namespace Tiling_tiles{
 		imwrite(filename, drawing_pro);
 		imwrite(file2, drawing_mA);
 		imshow("result_mid_show: ", drawing_mid);	
-		return contour_inner;
+		return four_;
+		//return contour_inner;
 	}
 
 	vector<vector<int>> Tiling_opt::find_rota_tilingV(vector<Point2f> cont, vector<int> mark_13)
