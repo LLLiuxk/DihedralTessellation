@@ -20,7 +20,7 @@ int main(int argc, char** argv)
 	Tiling_tiles::Prototile *prototile_third;
 	prototile_third = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
-	int f = 1;
+	int f = 111;
 	//0:result  1:simulation  2:批量读图  3:feature points  4:compute_TAR  5:min_minsmatch  6:extract_contour  7:compare and choose
 	//8:morphing  9:draw  10:math  11:check  12:thickness  13:color  14:windows
 	if (f == 111) //test
@@ -29,18 +29,23 @@ int main(int argc, char** argv)
 		//cout << fff.size()<<endl;
 		//string t = fff.substr(fff.size() - 3, fff.size() - 1);
 		//cout << t;
-
 		//读一张图像数据
-		vector<int> p_p_index = prototile_first->partition_points("test14");
 		Mat drawing5 = Mat(600, 600, CV_8UC3, Scalar(255, 255, 255));
-		vector<Point2f> conr = prototile_first->contour_sample[1];
-		int contoursize = conr.size();
-		//cout << contoursize << endl;
-		for (int j = 0; j < contoursize; j++)
-		{
-			circle(drawing5, conr[j], 2, Scalar(0, 0, 0), -1);
-			//MyLine(drawing5, conr[j], conr[(j + 1) % contoursize], "pink");
-		}
+		vector<Point2f> p = { Point2f(10, 10), Point2f(20, 10), Point2f(20, 15), Point2f(25, 15), Point2f(20, 20), Point2f(10, 20) };
+		//Line_Seg t(Point2f(20,0),Point2f(20,25));
+		//line_polygon(t,p);
+		draw_poly(drawing5,p,Point2f(300,300));
+
+		//vector<int> p_p_index = prototile_first->partition_points("test14");
+		//Mat drawing5 = Mat(600, 600, CV_8UC3, Scalar(255, 255, 255));
+		//vector<Point2f> conr = prototile_first->contour_sample[1];
+		//int contoursize = conr.size();
+		////cout << contoursize << endl;
+		//for (int j = 0; j < contoursize; j++)
+		//{
+		//	circle(drawing5, conr[j], 2, Scalar(0, 0, 0), -1);
+		//	//MyLine(drawing5, conr[j], conr[(j + 1) % contoursize], "pink");
+		//}
 		imshow("sample", drawing5);
 	}
 	if (f == 0) //已有dataset, 计算结果
@@ -61,7 +66,46 @@ int main(int argc, char** argv)
 	if (f == 1)  //simulation
 	{
 		tiling_opt->Tiling_clear();
-		vector<vector<Point2f>> sim_mid = tiling_opt->simulation_tar("307", 14, 1);  //
+		int inner_one = 14;
+		int cand_one = 1;
+		jointPat sim_mid = tiling_opt->simulation_tar("307", inner_one, cand_one);  //
+		
+		//draw four_
+		//Mat drawing_four = Mat(1600, 1600, CV_8UC3, Scalar(255, 255, 255));
+		//Point2f shh = 0.25 * (center_p(sim_mid.four_contour[0]) + center_p(sim_mid.four_contour[1]) + center_p(sim_mid.four_contour[2]) + center_p(sim_mid.four_contour[3]));
+		//shh = Point2f(800, 800) - shh;
+		//cout << "mid:" << sim_mid.interval[0] << " " << sim_mid.interval[1] << " " << sim_mid.interval[2] << " " << sim_mid.interval[3] << endl;
+		//cout << "type: " << sim_mid.type << endl;
+		//for (int four_i = 0; four_i < 4; four_i++)
+		//{
+		//	for (int t = 0; t < 4; t++)
+		//	{
+		//		circle(drawing_four, sim_mid.four_contour[four_i][sim_mid.interval[t]] + shh, 3, Scalar(0, 0, 250), -1);
+		//	}
+		//	//draw_poly(drawing_four, sim_mid.four_contour[four_i], center_p(sim_mid.four_contour[four_i]) + shh);
+		//	string filepathname = "D:\\VisualStudioProjects\\DihedralTessellation\\contours\\joint\\" +
+		//		int2string(inner_one) + "_" + int2string(cand_one) + "_four_" + int2string(four_i) + ".txt";
+		//	vector<Point> con;
+		//	for (int it = 0; it < sim_mid.four_contour[four_i].size()/3; it++)
+		//	{
+		//		circle(drawing_four, sim_mid.four_contour[four_i][it] + shh, 2, Scalar(0), -1);
+		//		//con.push_back((Point)sim_mid.four_contour[four_i][it]);
+		//	}
+		//	for (int it = sim_mid.four_contour[four_i].size() / 3; it < sim_mid.four_contour[four_i].size() /2; it++)
+		//	{
+		//		circle(drawing_four, sim_mid.four_contour[four_i][it] + shh, 2, Scalar(255,0,0), -1);
+		//		//con.push_back((Point)sim_mid.four_contour[four_i][it]);
+		//	}
+		//	for (int it = sim_mid.four_contour[four_i].size() / 2; it < sim_mid.four_contour[four_i].size(); it++)
+		//	{
+		//		circle(drawing_four, sim_mid.four_contour[four_i][it] + shh, 2, Scalar(0, 255, 0), -1);
+		//		//con.push_back((Point)sim_mid.four_contour[four_i][it]);
+		//	}
+		//	//fileout(filepathname, con);
+		//}
+		//imshow("four", drawing_four);
+
+
 		
 	}
 	if (f == 2) //批量读图

@@ -43,6 +43,13 @@ namespace Tiling_tiles{
 		vector<Point2f> in_contour;
 	}inPat;
 
+	typedef struct jointPat_four
+	{
+		int type; //0:trans,1:rota,2:flip(13),3:flip(24)
+		vector<int> interval;
+		vector<vector<Point2f>> four_contour;
+	}jointPat;
+
 	class Line_Seg{
 	public:
 		Line_Seg();
@@ -150,10 +157,10 @@ namespace Tiling_tiles{
 		
 		//simulation 
 		vector<Point2f> simulation_mid(string imaname, int inner_one, int cand_one);
-		vector<vector<Point2f>> simulation_tar(string imaname, int inner_one, int cand_one);
+		jointPat simulation_tar(string imaname, int inner_one, int cand_one);
 
 		//compute joint
-
+		void pattern_joint(jointPat pattern);
 
 		//math
 
@@ -237,10 +244,12 @@ namespace Tiling_tiles{
 
 	//cross points
 	int line_intersection(Line_Seg line1, Line_Seg line2, Point2f &cross_p);
-	bool self_intersect(vector<Point2f> &contour_, int &first, int &second);
+	vector<Point2f> line_polygon(Line_Seg line1, vector<Point2f> contour);
+ 	bool self_intersect(vector<Point2f> &contour_, int &first, int &second);
 
 	//vector and cosin/ sin
 	Point2f unit_vec(Point2f vec);
+	Point2f vertical_vec(Point2f vec);
 	double cos_3edges(double l1,double l2,double l3);
 	double cos_two_vector(Point2f &v0, Point2f &v1);
 	double sin_two_vector(Point2f &v0, Point2f &v1);
@@ -279,11 +288,6 @@ namespace Tiling_tiles{
 	void MorphPoints(const std::vector<cv::Point2f>& srcPts1, const std::vector<cv::Point2f>& srcPts2, std::vector<cv::Point2f>& dstPts, float s);
 	//void merge_close_p(vector<Point2f> &contour_);
 	
-	//skeleton
-	Mat thinImage(const Mat & src, const int maxIterations);
-	void filterOver(Mat thinSrc);
-	vector<cv::Point2f> getPoints(const Mat &thinSrc, unsigned int raudis, unsigned int thresholdMax, unsigned int thresholdMin);
-	vector<Point2f> get_Skeleton(string imaname, vector<Point2f> &skeleton);
 
 
 

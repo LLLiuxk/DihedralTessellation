@@ -869,6 +869,27 @@ namespace Tiling_tiles{
 		cross_p.y = start1.y + t * s10.y;
 		return 1;
 	}
+	vector<Point2f> line_polygon(Line_Seg line1, vector<Point2f> contour)
+	{
+		vector<Point2f> all_inter;
+		int contsize = contour.size();
+		for (int i = 0; i < contsize; i++)
+		{
+			Point2f cen;
+			Line_Seg line2(contour[i], contour[(i + 1)%contsize]);
+			int f = line_intersection(line1, line2, cen);
+			if (f == 1)
+			{
+				if (all_inter.empty() || length_two_point2f(all_inter.back(),cen)>0.01)
+					all_inter.push_back(cen);
+			}
+			else if (f == 2) all_inter.push_back(0.5 * (line2.start + line2.end));
+		}
+		cout << "intersize :  "<<all_inter.size() 
+			<< all_inter [0]<<" "<<all_inter[1]<< endl;
+		return all_inter;
+	}
+	
 
 	bool self_intersect(vector<Point2f> &contour_, int &first, int &second)
 	{
@@ -914,6 +935,12 @@ namespace Tiling_tiles{
 		double fenmu = sqrt(vec.x*vec.x + vec.y*vec.y);
 		Point2f unit = Point2f(vec.x / fenmu, vec.y / fenmu);
 		return unit;
+	}
+
+	Point2f vertical_vec(Point2f vec)
+	{
+		Point2f vvec = Point2f(1, -vec.x / vec.y);
+		return unit_vec(vvec);
 	}
 
 	double cos_two_vector(Point2f &v0, Point2f &v1)

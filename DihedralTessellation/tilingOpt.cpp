@@ -438,7 +438,7 @@ namespace Tiling_tiles{
 
 	
 
-	vector<vector<Point2f>> Tiling_opt::simulation_tar(string imaname, int inner_one, int cand_one)
+	jointPat Tiling_opt::simulation_tar(string imaname, int inner_one, int cand_one)
 	{
 		bool check_self_intersect = true;
 		int num_c = 1;//选择(num_c+1)*100个点
@@ -659,7 +659,7 @@ namespace Tiling_tiles{
 		if (count == 0)
 		{
 			cout << "no right placement" << endl;
-			return vector<vector<Point2f>>();
+			exit(0);
 		}
 		
 		string filepathname = "D:\\VisualStudioProjects\\DihedralTessellation\\contours\\test" + int2string(inner_one)+".txt";
@@ -755,29 +755,12 @@ namespace Tiling_tiles{
 			if (times > 3)
 			{
 				cout << "Too many tuning!" << endl;
-				return vector<vector<Point2f>>();
+				exit(0);
 			}
 			cout << "times" << times<<endl;
 			four_.swap(vector<vector<Point2f>>());
 			mor_result = extract_contour(morphed_A, return_p, mid_inter, four_, all_inner_conts[inner_one].type);
 
-			//draw four_
-			Mat drawing_four = Mat(1600, 1600, CV_8UC3, Scalar(255, 255, 255));
-			Point2f shh = 0.25 * (center_p(four_[0]) + center_p(four_[1]) + center_p(four_[2]) + center_p(four_[3]));
-			shh = Point2f(800, 800) - shh;
-			for (int four_i = 0; four_i < 4; four_i++)
-			{
-				draw_poly(drawing_four, four_[four_i], center_p(four_[four_i]) + shh);
-				string filepathname = "D:\\VisualStudioProjects\\DihedralTessellation\\contours\\joint\\" + 
-					int2string(inner_one) + "_" + int2string(cand_one) + "_four_" + int2string(four_i) + ".txt";
-				vector<Point> con;
-				for (int it = 0; it < four_[four_i].size(); it++)
-				{
-					con.push_back((Point)four_[four_i][it]);
-				}
-				fileout(filepathname, con);
-			}
-			imshow("four", drawing_four);
 			//if (self_intersect(mor_result, first, second)) return vector<Point2f>();
 		}
 		
@@ -880,8 +863,12 @@ namespace Tiling_tiles{
 
 		imwrite(filename, drawing_pro);
 		imwrite(file2, drawing_mA);
-		imshow("result_mid_show: ", drawing_mid);	
-		return four_;
+		imshow("result_mid_show: ", drawing_mid);
+		jointPat four_pattern;
+		four_pattern.four_contour = four_;
+		four_pattern.interval = return_p;
+		four_pattern.type = all_inner_conts[inner_one].type;
+		return four_pattern;
 		//return contour_inner;
 	}
 
@@ -1309,7 +1296,7 @@ namespace Tiling_tiles{
 			}
 			else
 			{
-				for (int t = mark_p[0]; t > mark_p[3]; t--)                         //rotation的提取规律为1的1-4，4的4-3,3的3-2,2的2-1
+				for (int t = mark_p[0]; t > mark_p[3]; t--)                         //rotation的提取规律为1的1-4，4的4-3,3的3-2,2的2-1，1234顺序翻转
 				{
 					total_num++;
 					morphed_B.push_back(four_place[0][t]);
@@ -1476,6 +1463,58 @@ namespace Tiling_tiles{
 		return morphed_B;
 	}
 	
+	void Tiling_opt::pattern_joint(jointPat pattern)
+	{
+		double pattern_width = length_two_point2f(pattern.four_contour[0][pattern.interval[0]] , pattern.four_contour[0][pattern.interval[2]]);  
+		double pattern_length = length_two_point2f(pattern.four_contour[0][pattern.interval[1]], pattern.four_contour[0][pattern.interval[3]]); 
+		//实际中把较长的一边设为5cm
+		double W = pattern_width / 5; //对应的实际长度为0.2
+		double L = pattern_length / 5;
+		double safe_thickness_l = L / 5;
+		double safe_thickness_w = W / 5;
+		double safe_margin = L / 20;
+		Point2f dir13 = unit_vec(pattern.four_contour[0][pattern.interval[2]] - pattern.four_contour[0][pattern.interval[0]]);//第一个图案的1,3向量
+		Point2f dir24 = unit_vec(pattern.four_contour[0][pattern.interval[3]] - pattern.four_contour[0][pattern.interval[1]]);//第一个图案的1,3向量
+
+		//  0:translation  1:rotation  2:flipping(1-3)   3:flipping(2-4)		
+		if (pattern.type == 0)
+		{
+		}
+		else if (pattern.type == 1)
+		{
+		}
+		else if (pattern.type == 2)
+		{
+		}
+		else if (pattern.type == 3)  // 3时，关节位于1,3pattern的2,4交点
+		{
+			vector<Point2f> insert;
+			Point2f intersect_p = pattern.four_contour[0][pattern.interval[3]];
+			Point2f endp1 = intersect_p + 0.5 * W * dir13;
+			Point2f endp2 = intersect_p - 0.5 * W * dir13;
+			Point2f mid1 = intersect_p + safe_thickness_w * dir13;
+			Point2f mid2 = intersect_p - safe_thickness_w * dir13;
+			Line_Seg cut_line_mid = Line_Seg(mid1, mid2);
+			Line_Seg cut_line = Line_Seg(endp1, endp2);
+			Point2f v_vec = vertical_vec(dir13);
+
+			vector<Point2f> all_intersect = line_polygon(cut_line, pattern.four_contour[0]);
+			int intersize = all_intersect.size();
+			if (intersize == 1)
+			{
+				vector<Point2f> all1 = line_polygon(Line_Seg(mid1 + safe_thickness_l*v_vec, mid1 - safe_thickness_l*v_vec), pattern.four_contour[0]);
+
+				vector<Point2f> all2 = line_polygon(Line_Seg(mid2 + safe_thickness_l*v_vec, mid2 - safe_thickness_l*v_vec), pattern.four_contour[0]);
+				if (all1.empty() && all2.empty())
+				{
+
+				}
+			}
+
+
+		}
+	}
+
 	bool Tiling_opt::coll_detec_bbx(vector<Point2f> contour1, vector<Point2f> contour2,int threshold)
 	{
 		int csize = contour1.size();
