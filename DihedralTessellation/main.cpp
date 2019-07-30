@@ -20,7 +20,7 @@ int main(int argc, char** argv)
 	Tiling_tiles::Prototile *prototile_third;
 	prototile_third = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
-	int f = 111;
+	int f = 1;
 	//0:result  1:simulation  2:ÅúÁ¿¶ÁÍ¼  3:feature points  4:compute_TAR  5:min_minsmatch  6:extract_contour  7:compare and choose
 	//8:morphing  9:draw  10:math  11:check  12:thickness  13:color  14:windows
 	if (f == 111) //test
@@ -69,9 +69,13 @@ int main(int argc, char** argv)
 		int inner_one = 14;
 		int cand_one = 1;
 		jointPat sim_mid = tiling_opt->simulation_tar("307", inner_one, cand_one);  //
-		
+		vector<Point2f> new_c = tiling_opt->construct_joint(sim_mid);
+
 		//draw four_
-		//Mat drawing_four = Mat(1600, 1600, CV_8UC3, Scalar(255, 255, 255));
+		Mat drawing_four = Mat(1800, 600, CV_8UC3, Scalar(255, 255, 255));
+		draw_poly(drawing_four, new_c, Point2f(300, 900));
+		imshow("aaa", drawing_four);
+		imwrite("D:\\show\\111.png", drawing_four);
 		//Point2f shh = 0.25 * (center_p(sim_mid.four_contour[0]) + center_p(sim_mid.four_contour[1]) + center_p(sim_mid.four_contour[2]) + center_p(sim_mid.four_contour[3]));
 		//shh = Point2f(800, 800) - shh;
 		//cout << "mid:" << sim_mid.interval[0] << " " << sim_mid.interval[1] << " " << sim_mid.interval[2] << " " << sim_mid.interval[3] << endl;

@@ -1468,13 +1468,15 @@ namespace Tiling_tiles{
 		double pattern_width = length_two_point2f(pattern.four_contour[0][pattern.interval[0]] , pattern.four_contour[0][pattern.interval[2]]);  
 		double pattern_length = length_two_point2f(pattern.four_contour[0][pattern.interval[1]], pattern.four_contour[0][pattern.interval[3]]); 
 		//实际中把较长的一边设为5cm
-		double W = pattern_width / 5; //对应的实际长度为0.2
-		double L = pattern_length / 5;
-		double safe_thickness_l = L / 5;
-		double safe_thickness_w = W / 5;
-		double safe_margin = L / 20;
+		double W = 0.2 * pattern_width; //对应的实际长度为0.2
+		double L = 0.2 * pattern_length;
+
+		double safe_thickness_l = 0.2 * L;
+		double safe_thickness_w = 0.2 * W;
+		double safe_margin = 0.1 * L;
+
 		Point2f dir13 = unit_vec(pattern.four_contour[0][pattern.interval[2]] - pattern.four_contour[0][pattern.interval[0]]);//第一个图案的1,3向量
-		Point2f dir24 = unit_vec(pattern.four_contour[0][pattern.interval[3]] - pattern.four_contour[0][pattern.interval[1]]);//第一个图案的1,3向量
+		Point2f dir24 = unit_vec(pattern.four_contour[0][pattern.interval[3]] - pattern.four_contour[0][pattern.interval[1]]);//第一个图案的2,4向量
 
 		//  0:translation  1:rotation  2:flipping(1-3)   3:flipping(2-4)		
 		if (pattern.type == 0)
@@ -1492,11 +1494,14 @@ namespace Tiling_tiles{
 			Point2f intersect_p = pattern.four_contour[0][pattern.interval[3]];
 			Point2f endp1 = intersect_p + 0.5 * W * dir13;
 			Point2f endp2 = intersect_p - 0.5 * W * dir13;
-			Point2f mid1 = intersect_p + safe_thickness_w * dir13;
-			Point2f mid2 = intersect_p - safe_thickness_w * dir13;
+			Point2f mid1 = intersect_p + 0.25 * W * dir13;
+			Point2f mid2 = intersect_p - 0.25 * W * dir13;
 			Line_Seg cut_line_mid = Line_Seg(mid1, mid2);
 			Line_Seg cut_line = Line_Seg(endp1, endp2);
+			
+			//找到两个正向向量
 			Point2f v_vec = vertical_vec(dir13);
+			if (cos_two_vector(v_vec, dir24) < 0) v_vec = -v_vec;
 
 			vector<Point2f> all_intersect = line_polygon(cut_line, pattern.four_contour[0]);
 			int intersize = all_intersect.size();
@@ -1514,6 +1519,55 @@ namespace Tiling_tiles{
 
 		}
 	}
+
+	vector<Point2f> Tiling_opt::construct_joint(jointPat pattern)
+	{
+		int n = 3;
+		int margin = 3;
+		vector<Point2f> origin = pattern.four_contour[2];
+		int size_o = origin.size();
+		Point2f vec13 = pattern.four_contour[0][pattern.interval[2]] - pattern.four_contour[0][pattern.interval[0]]; //3-1
+		int start = pattern.interval[0];
+		int end = pattern.interval[2];
+		vector<Point2f> new_contour;
+		vector<Point2f> new_contour2;
+		vector<Point2f> shift_contour = origin;
+		new_contour.push_back(origin[start]);
+		new_contour.push_back(origin[start+1]);
+		new_contour.push_back(origin[start+2]);
+		new_contour2.push_back(origin[(start + size_o - 1) % size_o]);
+		new_contour2.push_back(origin[(start + size_o - 2) % size_o]);
+		for (int i = 0; i < n; i++)
+		{		
+			if (i > 0)
+			{
+				shift_contour.swap(vector<Point2f>());
+				Point2f shift = i*vec13;
+				for (int d = 0; d < size_o; d++)
+				{
+					shift_contour.push_back(origin[d]+ shift);
+				}
+			}
+			for (int j = start + margin; j <= end - margin; j++)
+			{
+				new_contour.push_back(shift_contour[j]);
+			}
+			for (int j = size_o + start - margin; j >= end + margin; j--)
+			{
+				new_contour2.push_back(shift_contour[j%size_o]);
+			}
+		}
+		for (int t = 0; t < 2 * margin - 1; t++)
+		{
+			new_contour.push_back(shift_contour[end - 2 + t]);
+		}
+		for (int i = new_contour2.size(); i > 0; i--)
+		{
+			new_contour.push_back(new_contour2[i - 1]);
+		}
+		return new_contour;
+	}
+
 
 	bool Tiling_opt::coll_detec_bbx(vector<Point2f> contour1, vector<Point2f> contour2,int threshold)
 	{
