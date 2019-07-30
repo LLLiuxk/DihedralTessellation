@@ -1520,23 +1520,26 @@ namespace Tiling_tiles{
 		}
 	}
 
-	vector<Point2f> Tiling_opt::construct_joint(jointPat pattern)
+	vector<Point2f> Tiling_opt::construct_joint(jointPat pattern, int &mid)
 	{
 		int n = 3;
 		int margin = 3;
 		vector<Point2f> origin = pattern.four_contour[2];
 		int size_o = origin.size();
-		Point2f vec13 = pattern.four_contour[0][pattern.interval[2]] - pattern.four_contour[0][pattern.interval[0]]; //3-1
 		int start = pattern.interval[0];
 		int end = pattern.interval[2];
+		Point2f vec13 = origin[end] - origin[start]; //3-1
+		
 		vector<Point2f> new_contour;
 		vector<Point2f> new_contour2;
 		vector<Point2f> shift_contour = origin;
 		new_contour.push_back(origin[start]);
-		new_contour.push_back(origin[start+1]);
-		new_contour.push_back(origin[start+2]);
-		new_contour2.push_back(origin[(start + size_o - 1) % size_o]);
-		new_contour2.push_back(origin[(start + size_o - 2) % size_o]);
+		for (int m = 1; m < margin; m++)
+		{
+			new_contour.push_back(origin[start + m]);
+			new_contour2.push_back(origin[(start + size_o - m) % size_o]);
+		}
+		mid = margin - 1;
 		for (int i = 0; i < n; i++)
 		{		
 			if (i > 0)
@@ -1551,6 +1554,7 @@ namespace Tiling_tiles{
 			for (int j = start + margin; j <= end - margin; j++)
 			{
 				new_contour.push_back(shift_contour[j]);
+				mid++;
 			}
 			for (int j = size_o + start - margin; j >= end + margin; j--)
 			{
@@ -1561,6 +1565,7 @@ namespace Tiling_tiles{
 		{
 			new_contour.push_back(shift_contour[end - 2 + t]);
 		}
+		mid = mid + margin;
 		for (int i = new_contour2.size(); i > 0; i--)
 		{
 			new_contour.push_back(new_contour2[i - 1]);

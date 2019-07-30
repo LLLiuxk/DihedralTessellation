@@ -146,7 +146,7 @@ namespace Tiling_tiles{
 
 		//compute joint
 		void pattern_joint(jointPat pattern);
-		vector<Point2f> construct_joint(jointPat pattern);
+		vector<Point2f> construct_joint(jointPat pattern, int &mid);
 		//math
 
 

@@ -69,11 +69,15 @@ int main(int argc, char** argv)
 		int inner_one = 14;
 		int cand_one = 1;
 		jointPat sim_mid = tiling_opt->simulation_tar("307", inner_one, cand_one);  //
-		vector<Point2f> new_c = tiling_opt->construct_joint(sim_mid);
+		int mid = 0;
+		vector<Point2f> new_c = tiling_opt->construct_joint(sim_mid,mid);
 
 		//draw four_
-		Mat drawing_four = Mat(1800, 600, CV_8UC3, Scalar(255, 255, 255));
-		draw_poly(drawing_four, new_c, Point2f(300, 900));
+		Mat drawing_four = Mat(1800, 1000, CV_8UC3, Scalar(255, 255, 255));
+		draw_poly(drawing_four, new_c, Point2f(500, 900));
+		Point2f shift = Point2f(500, 900) - center_p(new_c);
+		circle(drawing_four, new_c[0] + shift, 3, Scalar(0, 0, 255), -1);
+		circle(drawing_four, new_c[mid] + shift, 3, Scalar(0, 0, 255), -1);
 		imshow("aaa", drawing_four);
 		imwrite("D:\\show\\111.png", drawing_four);
 		//Point2f shh = 0.25 * (center_p(sim_mid.four_contour[0]) + center_p(sim_mid.four_contour[1]) + center_p(sim_mid.four_contour[2]) + center_p(sim_mid.four_contour[3]));
