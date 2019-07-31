@@ -150,7 +150,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="math.cpp" />
+    <ClCompile Include="Tool.cpp" />
     <ClCompile Include="OpenglWindow.cpp" />
     <ClCompile Include="Prototile.cpp" />
     <ClCompile Include="tilingOpt.cpp" />

@@ -29,13 +29,13 @@
     <ClCompile Include="Prototile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="math.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="tilingOpt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="OpenglWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

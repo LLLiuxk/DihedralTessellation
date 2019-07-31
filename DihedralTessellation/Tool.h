@@ -100,6 +100,8 @@ namespace Tiling_tiles{
 	}
 	//file cout
 	void fileout(string filepath, vector<Point> contour_);
+	void write_obj(string filepath, vector<Point2f> contour, double height);
+
 	//bounding box
 	void bbx_center_point(vector<vector<Point2f>> all_point, vector<Point2f> &five_p);
 	vector<Point2f> b_box(vector<Point2f> contour);//返回的点是从左上方逆时针

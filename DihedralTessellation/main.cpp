@@ -71,15 +71,27 @@ int main(int argc, char** argv)
 		jointPat sim_mid = tiling_opt->simulation_tar("307", inner_one, cand_one);  //
 		int mid = 0;
 		vector<Point2f> new_c = tiling_opt->construct_joint(sim_mid,mid);
-
+		string file = "D:\\show\\model1.obj";
+		write_obj(file, new_c,30);
+		string file2 = "D:\\show\\cylinder.obj";
+		vector<Point2f> cylinder;
+		int r = 10;
+		for (int i = 0; i < 12; i++)
+		{
+			cylinder.push_back(Point2f(r*cos(2 * PI / 12 * i), r*sin(2 * PI / 12 * i)));
+		}
+		double length = length_two_point2f(new_c[mid], new_c[0]);
+		write_obj(file2, cylinder, length);
 		//draw four_
-		Mat drawing_four = Mat(1800, 1000, CV_8UC3, Scalar(255, 255, 255));
-		draw_poly(drawing_four, new_c, Point2f(500, 900));
+		//Mat drawing_four = Mat(1800, 1000, CV_8UC3, Scalar(255, 255, 255));
+
+		/*draw_poly(drawing_four, new_c, Point2f(500, 900));
 		Point2f shift = Point2f(500, 900) - center_p(new_c);
 		circle(drawing_four, new_c[0] + shift, 3, Scalar(0, 0, 255), -1);
 		circle(drawing_four, new_c[mid] + shift, 3, Scalar(0, 0, 255), -1);
 		imshow("aaa", drawing_four);
-		imwrite("D:\\show\\111.png", drawing_four);
+		imwrite("D:\\show\\111.png", drawing_four);*/
+
 		//Point2f shh = 0.25 * (center_p(sim_mid.four_contour[0]) + center_p(sim_mid.four_contour[1]) + center_p(sim_mid.four_contour[2]) + center_p(sim_mid.four_contour[3]));
 		//shh = Point2f(800, 800) - shh;
 		//cout << "mid:" << sim_mid.interval[0] << " " << sim_mid.interval[1] << " " << sim_mid.interval[2] << " " << sim_mid.interval[3] << endl;
