@@ -53,7 +53,8 @@ namespace Tiling_tiles{
 		Prototile(string rname,string tpath);
 		void Pro_clear();
 		
-		void getpath();
+		void setpath();
+		void setname(string con_name);
 		void loadTileData(string tile_data);
 		void contour_sam_cur();	
 		vector<vector<double>> compute_TAR(vector<Point2f> &contour_,double &shape_complexity, double frac = 0.25);
@@ -72,10 +73,10 @@ namespace Tiling_tiles{
 		void loadPoints(vector<Point2f> con_point);
 
 
-
 		string contourname;
 		string dataroot;
 		string txtpath;
+
 		vector<Point2f> contour;
 		//vector<double> cconvex;
 		vector<vector<Point2f>> contour_sample;

@@ -1,57 +1,10 @@
-﻿Build started 2019/7/31 16:34:32.
+﻿Build started 2019/8/6 11:14:27.
      1>Project "D:\VisualStudioProjects\DihedralTessellation\DihedralTessellation\DihedralTessellation.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /IC:\local\opencv\build\include /IC:\local\opencv\build\include\opencv /IC:\local\opencv\build\include\opencv2 /Zi /nologo /W3 /WX- /O2 /Oi /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Release\\" /Fd"x64\Release\vc120.pdb" /Gd /TP /errorReport:prompt Tool.cpp main.cpp
-         Tool.cpp
-     1>Tool.cpp(31): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>Tool.cpp(54): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>Tool.cpp(79): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>Tool.cpp(103): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
-     1>Tool.cpp(104): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>Tool.cpp(126): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>Tool.cpp(177): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>Tool.cpp(278): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>Tool.cpp(378): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>Tool.cpp(448): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>Tool.cpp(470): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>Tool.cpp(544): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>Tool.cpp(545): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>Tool.cpp(579): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>Tool.cpp(750): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>Tool.cpp(772): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>Tool.cpp(799): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>Tool.cpp(875): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>Tool.cpp(896): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>Tool.cpp(897): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>Tool.cpp(927): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>Tool.cpp(967): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>Tool.cpp(1063): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>Tool.cpp(1107): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>Tool.cpp(1147): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>Tool.cpp(1148): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>Tool.cpp(1149): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>Tool.cpp(1150): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>Tool.cpp(1151): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>Tool.cpp(1169): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>Tool.cpp(1170): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>Tool.cpp(1171): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>Tool.cpp(1172): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>Tool.cpp(1180): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>Tool.cpp(1195): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>Tool.cpp(1213): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>Tool.cpp(1226): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>Tool.cpp(1275): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>Tool.cpp(1346): warning C4553: '==' : operator has no effect; did you intend '='?
-     1>Tool.cpp(1404): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>Tool.cpp(1408): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>Tool.cpp(1409): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>Tool.cpp(1452): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
-     1>Tool.cpp(1454): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>Tool.cpp(1473): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>Tool.cpp(1503): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /IC:\local\opencv\build\include /IC:\local\opencv\build\include\opencv /IC:\local\opencv\build\include\opencv2 /Zi /nologo /W3 /WX- /O2 /Oi /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Release\\" /Fd"x64\Release\vc120.pdb" /Gd /TP /errorReport:prompt main.cpp
          main.cpp
-     1>main.cpp(657): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>main.cpp(779): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>main.cpp(668): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>main.cpp(790): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"D:\VisualStudioProjects\DihedralTessellation\x64\Release\DihedralTessellation.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:C:\local\opencv\build\x64\vc12\lib opencv_calib3d248.lib opencv_contrib248.lib opencv_core248.lib opencv_features2d248.lib opencv_flann248.lib opencv_gpu248.lib opencv_highgui248.lib opencv_imgproc248.lib opencv_legacy248.lib opencv_ml248.lib opencv_objdetect248.lib opencv_ts248.lib opencv_video248.lib glut64.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\VisualStudioProjects\DihedralTessellation\x64\Release\DihedralTessellation.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\VisualStudioProjects\DihedralTessellation\x64\Release\DihedralTessellation.lib" /MACHINE:X64 x64\Release\main.obj
          x64\Release\Tool.obj
@@ -65,4 +18,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:05.08
+Time Elapsed 00:00:04.20

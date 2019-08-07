@@ -31,16 +31,21 @@ namespace Tiling_tiles{
 		center_point = Point2f(0,0);
 	}
 
-	void Prototile::getpath()
+	void Prototile::setpath()
 	{
 		if (dataroot.empty()) dataroot = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\";
 		if (txtpath.empty()) txtpath = "D:\\VisualStudioProjects\\DihedralTessellation\\contours\\";
 
 	}
 
+	void Prototile::setname(string con_name)
+	{
+		contourname = con_name;
+	}
+
 	void Prototile::loadTileData(string tile_data)
 	{
-		getpath();
+		setpath();
 		//vector<double> cos_vec_contour;
 		//vector<int> index_cos;		
 		contourname = tile_data;
@@ -62,7 +67,7 @@ namespace Tiling_tiles{
 	void Prototile::imgtocout(string tile_image, int raw)
 	{
 		int show = 1;
-		getpath();
+		setpath();
 		Mat src;
 		Mat src_gray;
 		Mat src_2;

@@ -43,10 +43,10 @@ namespace Tiling_tiles{
 		for (int i = 0; i <= all_types; i++)
 		{
 			prototile_second->Pro_clear();
-			prototile_second->getpath();
+			prototile_second->setpath();
 			string image = int2string(i);
 			vector<Point2f> data_;
-			prototile_second->contourname = image;
+			prototile_second->setname(image);
 
 			//imgtocout();
 			data_ = prototile_second->readTxt();

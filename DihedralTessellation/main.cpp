@@ -25,16 +25,27 @@ int main(int argc, char** argv)
 	//8:morphing  9:draw  10:math  11:check  12:thickness  13:color  14:windows
 	if (f == 111) //test
 	{
+		prototile_first->setname("show8");
+		vector<Point2f> new_c = prototile_first->readTxt();
+		string file = "D:\\show\\show8.obj";
+		write_obj(file, new_c, 50);
+
+		/*prototile_second->setname("show7");
+		vector<Point2f> new_c2 = prototile_second->readTxt();
+		string file2 = "D:\\show\\right.obj";
+		
+		write_obj(file2, new_c2, 50);*/
+
 		//string fff = "hahahah.txt";
 		//cout << fff.size()<<endl;
 		//string t = fff.substr(fff.size() - 3, fff.size() - 1);
 		//cout << t;
 		//读一张图像数据
-		Mat drawing5 = Mat(600, 600, CV_8UC3, Scalar(255, 255, 255));
-		vector<Point2f> p = { Point2f(10, 10), Point2f(20, 10), Point2f(20, 15), Point2f(25, 15), Point2f(20, 20), Point2f(10, 20) };
+		//Mat drawing5 = Mat(1800, 900, CV_8UC3, Scalar(255, 255, 255));
+		//vector<Point2f> p = { Point2f(10, 10), Point2f(20, 10), Point2f(20, 15), Point2f(25, 15), Point2f(20, 20), Point2f(10, 20) };
 		//Line_Seg t(Point2f(20,0),Point2f(20,25));
 		//line_polygon(t,p);
-		draw_poly(drawing5,p,Point2f(300,300));
+		//draw_poly(drawing5,new_c,Point2f(300,900));
 
 		//vector<int> p_p_index = prototile_first->partition_points("test14");
 		//Mat drawing5 = Mat(600, 600, CV_8UC3, Scalar(255, 255, 255));
@@ -46,7 +57,7 @@ int main(int argc, char** argv)
 		//	circle(drawing5, conr[j], 2, Scalar(0, 0, 0), -1);
 		//	//MyLine(drawing5, conr[j], conr[(j + 1) % contoursize], "pink");
 		//}
-		imshow("sample", drawing5);
+		//imshow("sample", drawing5);
 	}
 	if (f == 0) //已有dataset, 计算结果
 	{
@@ -66,12 +77,12 @@ int main(int argc, char** argv)
 	if (f == 1)  //simulation
 	{
 		tiling_opt->Tiling_clear();
-		int inner_one = 14;
-		int cand_one = 1;
-		jointPat sim_mid = tiling_opt->simulation_tar("307", inner_one, cand_one);  //
+		int inner_one = 147;
+		int cand_one = 0;
+		jointPat sim_mid = tiling_opt->simulation_tar("302", inner_one, cand_one);  //
 		int mid = 0;
 		vector<Point2f> new_c = tiling_opt->construct_joint(sim_mid,mid);
-		string file = "D:\\show\\model1.obj";
+		/*string file = "D:\\show\\model1.obj";
 		write_obj(file, new_c,30);
 		string file2 = "D:\\show\\cylinder.obj";
 		vector<Point2f> cylinder;
@@ -81,16 +92,16 @@ int main(int argc, char** argv)
 			cylinder.push_back(Point2f(r*cos(2 * PI / 12 * i), r*sin(2 * PI / 12 * i)));
 		}
 		double length = length_two_point2f(new_c[mid], new_c[0]);
-		write_obj(file2, cylinder, length);
+		write_obj(file2, cylinder, length);*/
 		//draw four_
-		//Mat drawing_four = Mat(1800, 1000, CV_8UC3, Scalar(255, 255, 255));
+		Mat drawing_four = Mat(1800, 1000, CV_8UC3, Scalar(255, 255, 255));
 
-		/*draw_poly(drawing_four, new_c, Point2f(500, 900));
+		draw_poly(drawing_four, new_c, Point2f(500, 900));
 		Point2f shift = Point2f(500, 900) - center_p(new_c);
 		circle(drawing_four, new_c[0] + shift, 3, Scalar(0, 0, 255), -1);
 		circle(drawing_four, new_c[mid] + shift, 3, Scalar(0, 0, 255), -1);
 		imshow("aaa", drawing_four);
-		imwrite("D:\\show\\111.png", drawing_four);*/
+		imwrite("D:\\show\\2\\111.png", drawing_four);
 
 		//Point2f shh = 0.25 * (center_p(sim_mid.four_contour[0]) + center_p(sim_mid.four_contour[1]) + center_p(sim_mid.four_contour[2]) + center_p(sim_mid.four_contour[3]));
 		//shh = Point2f(800, 800) - shh;
@@ -130,7 +141,7 @@ int main(int argc, char** argv)
 	}
 	if (f == 2) //批量读图
 	{
-		string image = "488";//int2string(i);
+		string image = "show8";//int2string(i);
 
 		prototile_first->txtpath = "D:\\VisualStudioProjects\\DihedralTessellation\\contours\\";
 		prototile_first->dataroot = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\";
