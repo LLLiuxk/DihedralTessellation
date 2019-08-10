@@ -105,6 +105,7 @@ namespace Tiling_tiles{
 	//bounding box
 	void bbx_center_point(vector<vector<Point2f>> all_point, vector<Point2f> &five_p);
 	vector<Point2f> b_box(vector<Point2f> contour);//返回的点是从左上方逆时针
+	vector<Point2f> b_box_int(vector<Point> contour);//返回的点是从左上方逆时针
 
 	//openglwindow
 

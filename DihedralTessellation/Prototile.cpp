@@ -129,7 +129,11 @@ namespace Tiling_tiles{
 		
 		if (show == 1)
 		{
-			Mat drwa = Mat::zeros(800, 800, CV_8UC3);
+			vector<Point2f> bbb = b_box_int(contours[0]);
+			int raw = abs(bbb[0].y - bbb[2].y) + 200;
+			int col = abs(bbb[0].x - bbb[2].x) + 200;
+
+			Mat drwa = Mat::zeros(raw, col, CV_8UC3);
 			int i = 0;
 			for (; i < contours[0].size() / 4; i++)
 			{

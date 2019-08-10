@@ -20,15 +20,15 @@ int main(int argc, char** argv)
 	Tiling_tiles::Prototile *prototile_third;
 	prototile_third = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
-	int f = 1;
+	int f = 111;
 	//0:result  1:simulation  2:批量读图  3:feature points  4:compute_TAR  5:min_minsmatch  6:extract_contour  7:compare and choose
 	//8:morphing  9:draw  10:math  11:check  12:thickness  13:color  14:windows
 	if (f == 111) //test
 	{
-		prototile_first->setname("show8");
+		prototile_first->setname("eagle");
 		vector<Point2f> new_c = prototile_first->readTxt();
-		string file = "D:\\show\\show8.obj";
-		write_obj(file, new_c, 50);
+		string file = "D:\\show\\3\\eagle.obj";
+		write_obj(file, new_c, 30);
 
 		/*prototile_second->setname("show7");
 		vector<Point2f> new_c2 = prototile_second->readTxt();
@@ -77,9 +77,9 @@ int main(int argc, char** argv)
 	if (f == 1)  //simulation
 	{
 		tiling_opt->Tiling_clear();
-		int inner_one = 147;
+		int inner_one = 201;
 		int cand_one = 0;
-		jointPat sim_mid = tiling_opt->simulation_tar("302", inner_one, cand_one);  //
+		jointPat sim_mid = tiling_opt->simulation_tar("272", inner_one, cand_one);  //
 		int mid = 0;
 		vector<Point2f> new_c = tiling_opt->construct_joint(sim_mid,mid);
 		/*string file = "D:\\show\\model1.obj";
@@ -94,14 +94,17 @@ int main(int argc, char** argv)
 		double length = length_two_point2f(new_c[mid], new_c[0]);
 		write_obj(file2, cylinder, length);*/
 		//draw four_
-		Mat drawing_four = Mat(1800, 1000, CV_8UC3, Scalar(255, 255, 255));
+		vector<Point2f> boxbox= b_box(new_c);
+		int raw = abs(boxbox[2].y - boxbox[0].y) + 600;
+		int col = abs(boxbox[2].x - boxbox[0].x) + 600;
+		Mat drawing_four = Mat( raw,col, CV_8UC3, Scalar(255, 255, 255));
 
-		draw_poly(drawing_four, new_c, Point2f(500, 900));
-		Point2f shift = Point2f(500, 900) - center_p(new_c);
-		circle(drawing_four, new_c[0] + shift, 3, Scalar(0, 0, 255), -1);
-		circle(drawing_four, new_c[mid] + shift, 3, Scalar(0, 0, 255), -1);
+		draw_poly(drawing_four, new_c, Point2f(col / 2, raw / 2));
+		Point2f shift = Point2f(col/2, raw/2) - center_p(new_c);
+		//circle(drawing_four, new_c[0] + shift, 3, Scalar(0, 0, 255), -1);
+		//circle(drawing_four, new_c[mid] + shift, 3, Scalar(0, 0, 255), -1);
 		imshow("aaa", drawing_four);
-		imwrite("D:\\show\\2\\111.png", drawing_four);
+		imwrite("D:\\show\\3\\111.png", drawing_four);
 
 		//Point2f shh = 0.25 * (center_p(sim_mid.four_contour[0]) + center_p(sim_mid.four_contour[1]) + center_p(sim_mid.four_contour[2]) + center_p(sim_mid.four_contour[3]));
 		//shh = Point2f(800, 800) - shh;
@@ -141,7 +144,7 @@ int main(int argc, char** argv)
 	}
 	if (f == 2) //批量读图
 	{
-		string image = "show8";//int2string(i);
+		string image = "eagle";//int2string(i);
 
 		prototile_first->txtpath = "D:\\VisualStudioProjects\\DihedralTessellation\\contours\\";
 		prototile_first->dataroot = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\";
