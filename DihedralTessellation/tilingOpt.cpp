@@ -65,11 +65,11 @@ namespace Tiling_tiles{
 			return;
 		}
 		int all_num = contour_dataset.size();
+		cout << "all_num?" << all_num << endl;
 		for (int i = 0; i < all_num; i++)
 		{
 			prototile_second->Pro_clear();
 			prototile_second->loadPoints(contour_dataset[i]);
-			
 			double shape_com;
 			vector<vector<double>> tar_all = prototile_second->compute_TAR(prototile_second->contour_sample[num_c], shape_com);//(num_c+1)*100 points
 			vector<vector<double>> tar_all_flip = prototile_second->compute_TAR(prototile_second->contour_sample_flip[num_c], shape_com);
@@ -92,6 +92,7 @@ namespace Tiling_tiles{
 			vector<vector<double>> tar_fea;
 			vector<vector<double>> tar_fea_flip;
 			vector<int> cand_points_index = most_convex_p(prototile_second->contour_sample[num_c], curvature_com(prototile_second->contour_sample[num_c]),30);
+			
 			for (int j = 0; j < cand_points_index.size(); j++)
 			{
 				tar_fea.push_back(tar_all[cand_points_index[j]]);
@@ -103,11 +104,10 @@ namespace Tiling_tiles{
 				tar_fea_flip.push_back(tar_all_flip[cand_points_index[j]]);
 			}
 			all_fea_tars_flip.push_back(tar_fea_flip);
-
+			
 			all_con_tars.push_back(tar_all);
 			all_con_tars_flip.push_back(tar_all_flip);
 			all_shape_complexity.push_back(shape_com);
-
 
 			//double shape_com1;
 			//vector<vector<double>> tar_all1 = prototile_second->compute_TAR(prototile_second->contour_sample[0], shape_com1);//(num_c+1)*100 points
@@ -150,6 +150,7 @@ namespace Tiling_tiles{
 		bool check_self_intersect = true;
 		int num_c = 1;//选择(num_c+1)*100个点
 		vector<int> p_p_index = prototile_first->partition_points(imaname);
+		cout << "p_p_index: " << p_p_index.size() << endl;
 		vector<Point2f> contour_ = prototile_first->contour;
 		vector<Point2f> cont_orig = prototile_first->contour_sample[1];
 		int contsize = contour_.size();
@@ -341,7 +342,7 @@ namespace Tiling_tiles{
 			double sc_inner = 0;
 			vector<vector<double>> inner_tar = prototile_mid->compute_TAR(contour_inner, sc_inner);
 
-			for (int j = 0; j <5; j++) //candida_contours.size()
+			for (int j = 0; j <5; j++) //candida_contours.size()6                        
 			{
 				//将所有的结果保存下来
 				vector<int> mid_inter = mid_inter_;
@@ -1523,7 +1524,7 @@ namespace Tiling_tiles{
 	vector<Point2f> Tiling_opt::construct_joint(jointPat pattern, int &mid)
 	{
 		int n = 3;
-		int margin = 3;
+		int margin = 0;
 		vector<Point2f> origin = pattern.four_contour[2];
 		int size_o = origin.size();
 		int start = pattern.interval[0];
@@ -1772,7 +1773,7 @@ namespace Tiling_tiles{
 					all_final[j] = all_final[j + 1];
 					all_final[j + 1] = tempp;
 				}
-		cout << "the fianl order: " << endl;
+		//cout << "the fianl order: " << endl;
 		vector<pair<int, bool>> all_total_mid;
 		for (int t = total_num - 1; t > total_num - 150; t--)
 		{
@@ -1797,7 +1798,7 @@ namespace Tiling_tiles{
 		double shape_com_mid;
 		vector<vector<double>> tar_mid = prototile_mid->compute_TAR(contour_mid, shape_com_mid);
 		vector<int> cand_points_index = most_convex_p(contour_mid, curvature_com(contour_mid), 30); 
-		//cout << "feature :" << cand_points_index.size() << endl;
+		//cout << "feature :" << cand_points_index.size()  << "total_num:  " << total_num<<endl;
 		vector<vector<double>> tar_fea;
 		for (int j = 0; j < cand_points_index.size(); j++)
 		{
@@ -1811,7 +1812,7 @@ namespace Tiling_tiles{
 			//vector<vector<double>> tar_sec_f = all_con_tars_flip[can_num];
 			vector<vector<double>> tar_sec = all_fea_tars[can_num];
 			vector<vector<double>> tar_sec_f = all_fea_tars_flip[can_num];
-			//cout << "tar_sec :" << tar_sec.size() << "   tar_sec_f: " << tar_sec_f.size() << endl;
+			//cout << "can_num: " << can_num <<  " tar_sec :" << tar_sec.size() << "   tar_sec_f: " << tar_sec_f.size() << endl;
 			vector<pair<int, int>> path;
 			int shift = 0;
 			//double re = tar_mismatch(tar_mid, tar_sec, path, shift, match_width);
@@ -1831,8 +1832,9 @@ namespace Tiling_tiles{
 				all_result.push_back(re2);
 				all_total.push_back(make_pair(can_num, true));
 			}
-
 		}
+
+		cout << "all_result.size :  " << all_result.size() << "all_total: " << all_total.size() << endl;
 		double temp;
 		pair<int, bool> tempp;
 		int all_size = all_result.size();
@@ -1853,8 +1855,8 @@ namespace Tiling_tiles{
 			all_total_mid.push_back(all_total[t]);
 			//cout << "order: " << all_total[t].first << "  flip: " << all_total[t].second << " value: " << all_result[t] << " complxeity: " << all_shape_complexity[all_total[t].first] << endl;
 		}
-		//int midsize = all_total_mid.size();
-		//cout <<" midsize: "<< midsize << endl;
+		int midsize = all_total_mid.size();
+		cout <<" midsize: "<< midsize << endl;
 		all_total.swap(all_total_mid);
 		return all_total;
 	}
@@ -2054,6 +2056,7 @@ namespace Tiling_tiles{
 	{
 		int first_num = first_arr.size();
 		int second_num = second_arr.size(); //first 作为y轴 ,second为x轴
+		//cout <<  first_num << " - " << second_num << endl;
 		//width = 30;
 		if (first_num != second_num)
 		{

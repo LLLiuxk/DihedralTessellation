@@ -1295,6 +1295,7 @@ namespace Tiling_tiles{
 		double arl = arcLength(contour_, true);
 		dmin = dmin * arl / contoursize;
 		dmax = dmax * arl / contoursize;
+		double dmid = (dmin + dmax) / 2;
 
 		for (int i = 0; i < contoursize; i++)
 		{
@@ -1360,14 +1361,14 @@ namespace Tiling_tiles{
 			{
 				length_op = length_two_point2f(contour_[(i + contoursize - k) % contoursize], contour_[(i + k) % contoursize]);
 				double angle1 = cos_3edges(length_l, length_r, length_op);
-				if (angle1 < angle_cos)
+				if (angle1 < angle_cos)  //角度大于angle_cos的度数
 				{
 					f == 1;
 					break;
 				}
 				else
 				{
-					if (angle1 < angle) angle = angle1;
+					if (angle1 < angle) angle = angle1;    //满足条件的所有角里度数最大的那个
 					k++;
 					length_l = length_two_point2f(contour_[i], contour_[(i + contoursize - k) % contoursize]);
 					length_r = length_two_point2f(contour_[i], contour_[(i + k) % contoursize]);
@@ -1383,7 +1384,7 @@ namespace Tiling_tiles{
 				}
 				else
 				{
-					if (length_two_point2f(contour_[index_num.back()], contour_[i]) > dmax)
+					if (length_two_point2f(contour_[index_num.back()], contour_[i]) > dmid)
 					{
 						angle_back = angle;
 						index_num.push_back(i);
@@ -1407,14 +1408,24 @@ namespace Tiling_tiles{
 		{
 			if (angle_back > angle_start)
 			{ 
-				index_num[0] = index_num.back();
+				vector<int> index2;
+				index2.assign(index_num.begin() + 1, index_num.end());
+				index_num.swap(index2);
+				//index_num[0] = index_num.back();
 			}
 			index_num.pop_back();			
 		}
-		cout << index_num.size() << endl;
 		return index_num;
 	}
 	
+	vector<int> simple_with_feature(vector<Point2f> contour_, int totalnum)
+	{
+		vector<int> ttt;
+
+		return  ttt;
+	}
+
+
 	// Morph points
 	void MorphPoints(const vector<Point2f>& srcPts1, const vector<Point2f>& srcPts2, vector<Point2f>& dstPts, float s)
 	{
@@ -1508,16 +1519,19 @@ namespace Tiling_tiles{
 		return cont_s;
 	}
 
-	vector<Point2f> sampling(vector<Point2f> &contour_, int points_num)
+	vector<Point2f> sampling_ave(vector<Point2f> &contour_, int points_num, vector<int> &contour_sam_index)  //points_num是采样点的个数
 	{
 		double length = contour_length(contour_);
-		int sam_num = points_num * 100;
-		double Lambda = length / sam_num;
+		double Lambda = length / points_num;
 
-		vector<Point2f> contour_sam;
+		/*int sam_num = points_num * 100;
+		double Lambda = length / sam_num;*/
+
+		vector<Point2f> contour_sam;	
 		Point2f sample;
 
 		contour_sam.push_back(contour_[0]);
+		contour_sam_index.push_back(0);
 		sample = contour_[0];
 		int csize = contour_.size();
 		for (int t = 1; t <= csize; t++)
@@ -1528,9 +1542,10 @@ namespace Tiling_tiles{
 				Point2f vec = unit_vec(contour_[t%csize] - sample);
 				sample = sample + Lambda * vec;
 				contour_sam.push_back(sample);
+				contour_sam_index.push_back(t%csize);
 				t = t - 1;
 			}
-			else if (t < contour_.size())
+			else if (t < csize)
 			{
 				while ((length_ + length_two_point2f(contour_[t], contour_[(t + 1)%csize])) < Lambda)
 				{
@@ -1542,10 +1557,69 @@ namespace Tiling_tiles{
 				Point2f vec = unit_vec(contour_[(t + 1)%csize] - contour_[t]);
 				sample = contour_[t] + (Lambda - length_) * vec;
 				contour_sam.push_back(sample);
+				contour_sam_index.push_back((t + 1) % csize);
 			}
 		}
-		if (length_two_point2f(contour_sam[0], contour_sam[contour_sam.size() - 1])<1) contour_sam.pop_back();
+		if (length_two_point2f(contour_sam[0], contour_sam[contour_sam.size() - 1]) < 1)
+		{
+			contour_sam.pop_back();
+			contour_sam_index.pop_back();
+		}
 
 		return contour_sam;
 	}
+
+	vector<Point2f> sampling(vector<Point2f> &contour_, int points_num)
+	{
+		vector<int> contour_sam_index;
+		vector<Point2f> sampling_p = sampling_ave(contour_, points_num * 100, contour_sam_index);
+		vector<int> feature_index = feature_points(contour_, 1, 10, cos(PI * 160 / 180));
+		int fpsize = feature_index.size();
+		int spsize = sampling_p.size();
+		//for (int dd = 0; dd < fpsize; dd++)
+		//	cout << feature_index[dd] << "  " << contour_[feature_index[dd]] << endl;
+		//cout << "sampling_p: " << sampling_p.size() << "  feature_index: " << feature_index.size() << endl;
+		
+		int step = 0;
+		vector<pair<pair<int, int>, double>> order;
+		for (int i = 0; i < fpsize; i++)
+		{
+			int index_f = feature_index[i];
+			double lengthmin = 100000;
+
+			for (int j = step; j < spsize; j++)
+			{
+				double length = length_two_point2f(contour_[index_f], sampling_p[j]);
+				int index_l = abs(index_f - contour_sam_index[j]);
+				if ((length < lengthmin) && index_l < 10)
+				{
+					lengthmin = length;
+					step = j;
+				}
+			}
+			pair<pair<int, int>, double> mindis = make_pair(make_pair(step, index_f), lengthmin);
+			if (!order.empty())
+			{
+				if (mindis.first.first == order.back().first.first)
+				{
+					if (mindis.second < order.back().second)
+					{
+						order.pop_back();
+					}
+					else continue;
+				}
+			}
+			order.push_back(mindis);
+		}
+		for (int t = 0; t < order.size(); t++)
+		{
+			//cout << order[t].first.first << "  " << sampling_p[order[t].first.first] << "  "
+			//	<< order[t].first.second << "  " << contour_[order[t].first.second] << endl;
+			sampling_p[order[t].first.first] = contour_[order[t].first.second];
+			
+		}
+		
+		return sampling_p;
+	}
+
 }

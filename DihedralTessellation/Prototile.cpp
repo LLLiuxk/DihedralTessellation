@@ -52,7 +52,7 @@ namespace Tiling_tiles{
 		//imgtocout();
 		contour = readTxt();
 		if (contour.empty()) exit(0);
-		//采样并求曲率
+		//采样
 		contour_sam_cur();
 		
 		//cur_normalize();
@@ -311,14 +311,14 @@ namespace Tiling_tiles{
 		c_length = contour_length(contour);
 		// center point
 		center_point = center_p(contour);
-
 		//sampling and computing curvature
 		for (int i = 1; i < 6; i++)  //确定采样点数，此处为500点
 		{			
 			vector<Point2f> contour_sam;
 			vector<Point2f> contour_sam_flip;
-			contour_sam = sampling(contour,i); //点数为 i*100
-			
+			vector<int> contour_sam_index;
+			//contour_sam = sampling_ave(contour, i * 100, contour_sam_index); //点数为 i*100
+			contour_sam = sampling(contour, i); //点数为 i*100
 			contour_sample.push_back(contour_sam);
 			//contour_curva.push_back(curvature_com(contour_sam));
 
@@ -327,18 +327,19 @@ namespace Tiling_tiles{
 			//contour_curva_flip.push_back(curvature_com(contour_sam_flip));
 			//_________________________show the result
 
-			//Mat drawing4 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+			Mat drawing4 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 
-			//for (int j = 0; j < contour_sam.size(); j++)
-			//{
-			//	circle(drawing4, contour_sam[j], 1, Scalar(0, 0, 0), -1);
-			//	//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
-			//}
-			//string name = "the ";
-			//name = name + char(i + 48) + " sample contour ";
-			//imshow(name, drawing4);
+			for (int j = 0; j < contour_sam.size(); j++)
+			{
+				circle(drawing4, contour_sam[j], 1, Scalar(0, 0, 0), -1);
+				//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
+			}
+			string name = "the ";
+			name = name + char(i + 48) + " sample contour ";
+			imshow(name, drawing4);
 			//________________________ show over
-		}		
+		}	
+
 	}
 
 
@@ -387,9 +388,9 @@ namespace Tiling_tiles{
 		//排序，找最大的max_cur_num个凹凸点
 		contour.swap(vector<Point2f>());
 		int sam_num = contour_sample.size();	
-		contour = contour_sample[sam_num - 1];
+		contour = contour_sample[sam_num-1];
 		//cconvex = curvature_com(contour);
-		cout << "contour_sample num: " << contour_sample[sam_num - 1].size() << endl;
+		cout << "contour_sample num: " << contour_sample[sam_num-1].size() << endl;
 		vector<int> cand_points_index;
 		//cand_points_index = most_convex_p(contour, cconvex, max_cur_num);
 		cand_points_index = feature_points(contour, 1, 3, cos(PI * 160 / 180));

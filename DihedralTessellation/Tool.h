@@ -55,10 +55,14 @@ namespace Tiling_tiles{
 	int cur_char_length(char a, char b);
 	double cur_length_two_p(double cur1, double cur2);
 	vector<Point2f> sampling(vector<Point2f> &contour_, int points_num);
+	vector<Point2f> sampling_ave(vector<Point2f> &contour_, int points_num, vector<int> &contour_sam_index);
 	vector<double> curvature_com_k(vector<Point2f> &contour_sam);
 	vector<double> curvature_com(const vector<Point2f> &contour_sam); //¼ÇÂ¼cosÖµ
 	vector<int> most_convex_p(vector<Point2f> contour_, vector<double> cont_c, int max_cur_num);
 	vector<int> feature_points(vector<Point2f> contour_, double dmin, double dmax, double angle_cos);//amax 165; dmin 0.015Ls
+	vector<int> simple_with_feature(vector<Point2f> contour_,int totalnum);
+
+
 	//translate tool
 	string int2string(int number);
 	string double2string(double number);

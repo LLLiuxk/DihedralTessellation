@@ -20,21 +20,21 @@ int main(int argc, char** argv)
 	Tiling_tiles::Prototile *prototile_third;
 	prototile_third = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
-	int f = 111;
+	int f = 0;
 	//0:result  1:simulation  2:批量读图  3:feature points  4:compute_TAR  5:min_minsmatch  6:extract_contour  7:compare and choose
 	//8:morphing  9:draw  10:math  11:check  12:thickness  13:color  14:windows
 	if (f == 111) //test
 	{
-		prototile_first->setname("eagle");
+		prototile_first->setname("flower22");
 		vector<Point2f> new_c = prototile_first->readTxt();
-		string file = "D:\\show\\3\\eagle.obj";
-		write_obj(file, new_c, 30);
+		string file = "D:\\show\\6\\flower22.obj";
+		write_obj(file, new_c, 35);
 
-		/*prototile_second->setname("show7");
+		/*prototile_second->setname("gezi_m");
 		vector<Point2f> new_c2 = prototile_second->readTxt();
-		string file2 = "D:\\show\\right.obj";
+		string file2 = "D:\\show\\4\\gezi_m.obj";
 		
-		write_obj(file2, new_c2, 50);*/
+		write_obj(file2, new_c2, 20);*/
 
 		//string fff = "hahahah.txt";
 		//cout << fff.size()<<endl;
@@ -62,7 +62,7 @@ int main(int argc, char** argv)
 	if (f == 0) //已有dataset, 计算结果
 	{
 
-		tiling_opt->tiliing_generation("492");
+		tiling_opt->tiliing_generation("307");
 
 		//批量计算
 		//int iii[20] = {48,75,80,124,220,218,212,228,248,251,280,312,317};//{484,483,482,482,480,479,478,474,472,467,451}; 
@@ -77,34 +77,35 @@ int main(int argc, char** argv)
 	if (f == 1)  //simulation
 	{
 		tiling_opt->Tiling_clear();
-		int inner_one = 201;
-		int cand_one = 0;
-		jointPat sim_mid = tiling_opt->simulation_tar("272", inner_one, cand_one);  //
-		int mid = 0;
-		vector<Point2f> new_c = tiling_opt->construct_joint(sim_mid,mid);
-		/*string file = "D:\\show\\model1.obj";
-		write_obj(file, new_c,30);
-		string file2 = "D:\\show\\cylinder.obj";
-		vector<Point2f> cylinder;
-		int r = 10;
-		for (int i = 0; i < 12; i++)
-		{
-			cylinder.push_back(Point2f(r*cos(2 * PI / 12 * i), r*sin(2 * PI / 12 * i)));
-		}
-		double length = length_two_point2f(new_c[mid], new_c[0]);
-		write_obj(file2, cylinder, length);*/
-		//draw four_
-		vector<Point2f> boxbox= b_box(new_c);
-		int raw = abs(boxbox[2].y - boxbox[0].y) + 600;
-		int col = abs(boxbox[2].x - boxbox[0].x) + 600;
-		Mat drawing_four = Mat( raw,col, CV_8UC3, Scalar(255, 255, 255));
+		int inner_one = 1;
+		int cand_one = 1;
+		jointPat sim_mid = tiling_opt->simulation_tar("307", inner_one, cand_one);  //
 
-		draw_poly(drawing_four, new_c, Point2f(col / 2, raw / 2));
-		Point2f shift = Point2f(col/2, raw/2) - center_p(new_c);
-		//circle(drawing_four, new_c[0] + shift, 3, Scalar(0, 0, 255), -1);
-		//circle(drawing_four, new_c[mid] + shift, 3, Scalar(0, 0, 255), -1);
-		imshow("aaa", drawing_four);
-		imwrite("D:\\show\\3\\111.png", drawing_four);
+		//int mid = 0;
+		//vector<Point2f> new_c = tiling_opt->construct_joint(sim_mid,mid);
+		///*string file = "D:\\show\\model1.obj";
+		//write_obj(file, new_c,30);
+		//string file2 = "D:\\show\\cylinder.obj";
+		//vector<Point2f> cylinder;
+		//int r = 10;
+		//for (int i = 0; i < 12; i++)
+		//{
+		//	cylinder.push_back(Point2f(r*cos(2 * PI / 12 * i), r*sin(2 * PI / 12 * i)));
+		//}
+		//double length = length_two_point2f(new_c[mid], new_c[0]);
+		//write_obj(file2, cylinder, length);*/
+		////draw four_
+		//vector<Point2f> boxbox= b_box(new_c);
+		//int raw = abs(boxbox[2].y - boxbox[0].y) + 600;
+		//int col = abs(boxbox[2].x - boxbox[0].x) + 600;
+		//Mat drawing_four = Mat( raw,col, CV_8UC3, Scalar(255, 255, 255));
+
+		//draw_poly(drawing_four, new_c, Point2f(col / 2, raw / 2));
+		//Point2f shift = Point2f(col/2, raw/2) - center_p(new_c);
+		////circle(drawing_four, new_c[0] + shift, 3, Scalar(0, 0, 255), -1);
+		////circle(drawing_four, new_c[mid] + shift, 3, Scalar(0, 0, 255), -1);
+		//imshow("aaa", drawing_four);
+		//imwrite("D:\\show\\4\\111.png", drawing_four);
 
 		//Point2f shh = 0.25 * (center_p(sim_mid.four_contour[0]) + center_p(sim_mid.four_contour[1]) + center_p(sim_mid.four_contour[2]) + center_p(sim_mid.four_contour[3]));
 		//shh = Point2f(800, 800) - shh;
@@ -144,11 +145,20 @@ int main(int argc, char** argv)
 	}
 	if (f == 2) //批量读图
 	{
-		string image = "eagle";//int2string(i);
+		string image = "ttt";//int2string(i);
 
 		prototile_first->txtpath = "D:\\VisualStudioProjects\\DihedralTessellation\\contours\\";
 		prototile_first->dataroot = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\";
 		prototile_first->imgtocout(image); //default  raw=0
+		
+		//prototile_first->setname(image);
+		//string filepath = "D:\\VisualStudioProjects\\DihedralTessellation\\contours\\aaa.txt";
+		//prototile_first->contour=prototile_first->readTxt();
+		//vector<Point2f> ta = sampling_ave(prototile_first->contour,500);
+		//vector<Point> aa;
+		//for (int g = 0; g < ta.size(); g++)
+		//	aa.push_back((Point)ta[g]);
+		//fileout(filepath, aa);
 
 		//读取txt文件保存为新的png
 		//prototile_first->contourname = image;
@@ -182,14 +192,14 @@ int main(int argc, char** argv)
 	{
 		// ________________feature_points___________________________
 
-		//Mat drawing2 = Mat(600, 600, CV_8UC1, Scalar(255));
-		//prototile_first->loadTileData("0");
-		//vector<Point2f> a = prototile_first->contour_sample[2];
-		//Point2f cent = center_p(a);	
-		//draw_poly(drawing2, a, cent);
-		//circle(drawing2, Point2f(300,300), 2, Scalar(255), -1);
-		//circle(drawing2, cent, 2, Scalar(255), -1);
-		//imshow("as", drawing2);
+		Mat drawing2 = Mat(600, 600, CV_8UC1, Scalar(255));
+		prototile_first->loadTileData("6");
+		vector<Point2f> a = prototile_first->contour_sample[2];
+		Point2f cent = center_p(a);	
+		draw_poly(drawing2, a, cent);
+		circle(drawing2, Point2f(300,300), 2, Scalar(255), -1);
+		circle(drawing2, cent, 2, Scalar(255), -1);
+		imshow("as", drawing2);
 		//vector<Point2f> a = prototile_first->contour_sample[prototile_first->contour_sample.size()-1];
 		//vector<double> b = curvature_com(a);
 		//cout << a.size() << endl;
@@ -682,11 +692,11 @@ int main(int argc, char** argv)
 
 		Mat src, erosion_dst;
 		int erosion_elem = 1;
-		int erosion_size = 1;
+		int erosion_size = 2;
 		int const max_elem = 2;
 		int const max_kernel_size = 21;
 
-		string name = "D:\\model.png";//"D:\\result.png";
+		string name = "D:\\show\\4\\bird.png";//"D:\\result.png";
 		//string name = "D:\\print.png";
 		src = imread(name, IMREAD_COLOR);
 		if (src.empty())
@@ -703,7 +713,7 @@ int main(int argc, char** argv)
 			Size(2 * erosion_size + 1, 2 * erosion_size + 1),
 			Point(erosion_size, erosion_size));
 		erode(src, erosion_dst, element);
-		imwrite("D:\\Erosion Demo.png", erosion_dst);
+		imwrite("D:\\show\\4\\Erosion Demo.png", erosion_dst);
 		int row = erosion_dst.rows;
 		int col = erosion_dst.cols;
 		Mat flip1 = Mat(row, col, CV_8UC3, Scalar(0, 0, 0));
@@ -731,7 +741,7 @@ int main(int argc, char** argv)
 				}
 			}
 		//erode(src, src, element);
-		imwrite("D:\\printre.png", src);
+		imwrite("D:\\show\\4\\printre.png", src);
 		int erosion_size1 = 0;
 		int erosion_size2 = 0;
 		Mat element1 = getStructuringElement(erosion_type,
@@ -748,8 +758,8 @@ int main(int argc, char** argv)
 		flip1.at<Vec3b>(i, j) = Vec3b(255, 255, 255) - flip1.at<Vec3b>(i, j);
 		flip2.at<Vec3b>(i, j) = Vec3b(255, 255, 255) - flip2.at<Vec3b>(i, j);
 		}*/
-		imwrite("D:\\flip1.png", flip1);
-		imwrite("D:\\flip2.png", flip2);
+		imwrite("D:\\show\\4\\flip1.png", flip1);
+		imwrite("D:\\show\\4\\flip2.png", flip2);
 
 	}
 
