@@ -350,7 +350,7 @@ namespace Tiling_tiles{
 		int tar_num = frac * consize - 1;
 		shape_complexity = 0;
 		//cout << "consize: " << consize << " tar_num: " << tar_num << endl;
-		vector<double> maxtar(tar_num, 0);
+		vector<double> maxtar(tar_num, 0);// 记录最大值来进行归一化
 		for (int i = 0; i < consize; i++)
 		{
 			vector<double> one_p_tar;
@@ -358,7 +358,7 @@ namespace Tiling_tiles{
 			{
 				Point2f vpsubts_vp = contour_[(i - j - 1 + consize) % consize] - contour_[i];
 				Point2f vpplusts_vp = contour_[(i + j + 1) % consize] - contour_[i];
-				double tar = 0.5 * tar_sin_2vector(vpplusts_vp,vpsubts_vp);
+				double tar = 0.5 * tar_2vector(vpplusts_vp,vpsubts_vp);
 				//cout << vpsubts_vp << "  " << vpplusts_vp << endl;
 				one_p_tar.push_back(tar);
 				if (abs(tar) > maxtar[j]) maxtar[j] = abs(tar);

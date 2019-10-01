@@ -25,10 +25,10 @@ int main(int argc, char** argv)
 	//8:morphing  9:draw  10:math  11:check  12:thickness  13:color  14:windows
 	if (f == 111) //test
 	{
-		prototile_first->setname("flower22");
+		prototile_first->setname("swan2");
 		vector<Point2f> new_c = prototile_first->readTxt();
-		string file = "D:\\show\\6\\flower22.obj";
-		write_obj(file, new_c, 35);
+		string file = "D:\\swan2.obj";
+		write_obj(file, new_c, 40);
 
 		/*prototile_second->setname("gezi_m");
 		vector<Point2f> new_c2 = prototile_second->readTxt();
@@ -62,7 +62,7 @@ int main(int argc, char** argv)
 	if (f == 0) //已有dataset, 计算结果
 	{
 
-		tiling_opt->tiliing_generation("307");
+		tiling_opt->tiliing_generation("491");
 
 		//批量计算
 		//int iii[20] = {48,75,80,124,220,218,212,228,248,251,280,312,317};//{484,483,482,482,480,479,478,474,472,467,451}; 
@@ -145,7 +145,7 @@ int main(int argc, char** argv)
 	}
 	if (f == 2) //批量读图
 	{
-		string image = "ttt";//int2string(i);
+		string image = "swan2";//int2string(i);
 
 		prototile_first->txtpath = "D:\\VisualStudioProjects\\DihedralTessellation\\contours\\";
 		prototile_first->dataroot = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\";
@@ -233,7 +233,7 @@ int main(int argc, char** argv)
 	{
 		//-----------------test compute_TAR----------------------
 
-		/*vector<Point2f> a;
+		vector<Point2f> a;
 		a.push_back(Point2f(100,10));
 		a.push_back(Point2f(150, 10));
 		a.push_back(Point2f(150, 60));
@@ -245,15 +245,31 @@ int main(int argc, char** argv)
 		a.push_back(Point2f(50, 110));
 		a.push_back(Point2f(50,60));
 		a.push_back(Point2f(100, 60));
-		Mat drawing_ = Mat(300, 300, CV_8UC3, Scalar(255,255,255));
-		draw_poly(drawing_,a,Point2f(150,150));*/
+		//Mat drawing_ = Mat(300, 300, CV_8UC3, Scalar(255, 255, 255));
+		//draw_poly(drawing_, a, Point2f(150, 150));
+		int t = 1;
+		Mat draw;
+		if (t == 1)
+		{
+			Mat drawing_ = Mat(300, 300, CV_8UC3, Scalar(255, 255, 255));
+			draw_poly(drawing_, a, Point2f(150, 150));
+			draw = drawing_(Rect(150,0,150,150));
+			cout << "A.data的地址" << (void*)drawing_.data << endl;
+			
+		}
+		imshow("aaa", draw);
+		cout << "B.data的地址" << (void*)draw.data << endl;
+
 		//double shape_com;
-		//vector<vector<double>> tar_all = prototile_first->compute_TAR(a, shape_com);
-		//double b = sin_2vector_convexc(Point2f(5,0), Point2f(0,5));
-		//cout << b << endl;
+		//vector<vector<double>> tar_all = prototile_first->compute_TAR(a, shape_com,0.5);
+		//cout << "shape_com" << shape_com<<endl;
+		////double b = sin_2vector_convexc(Point2f(5,0), Point2f(0,5));
+		////cout << b << endl;
 		//for (int i = 0; i < tar_all.size(); i++)
 		//{
-		//	cout << tar_all[i][0] << "  ";
+		//	for (int j = 0; j < tar_all[i].size();j++)
+		//		cout << tar_all[i][j] << "  ";
+		//	cout << endl;
 		//}
 		//imshow("aaaa", drawing_);	
 		//prototile_second->loadTileData("157");
@@ -689,14 +705,14 @@ int main(int argc, char** argv)
 	{
 		//tiling_opt->Tiling_clear();
 		//vector<Point2f> sim_mid = tiling_opt->simulation_tar("302", 96, 0);
-
+		//腐蚀白色区域
 		Mat src, erosion_dst;
-		int erosion_elem = 1;
-		int erosion_size = 2;
+		int erosion_elem = 2;
+		int erosion_size = 1;
 		int const max_elem = 2;
 		int const max_kernel_size = 21;
 
-		string name = "D:\\show\\4\\bird.png";//"D:\\result.png";
+		string name = "L:\\rabbit_bat_sim.png";//"D:\\result.png";
 		//string name = "D:\\print.png";
 		src = imread(name, IMREAD_COLOR);
 		if (src.empty())
@@ -713,7 +729,8 @@ int main(int argc, char** argv)
 			Size(2 * erosion_size + 1, 2 * erosion_size + 1),
 			Point(erosion_size, erosion_size));
 		erode(src, erosion_dst, element);
-		imwrite("D:\\show\\4\\Erosion Demo.png", erosion_dst);
+		imwrite("L:\\Erosion Demo.png", erosion_dst);
+
 		int row = erosion_dst.rows;
 		int col = erosion_dst.cols;
 		Mat flip1 = Mat(row, col, CV_8UC3, Scalar(0, 0, 0));
@@ -722,7 +739,7 @@ int main(int argc, char** argv)
 		for (int i = 0; i < row; i++)
 			for (int j = 0; j < col; j++)
 			{
-				//src.at<Vec3b>(i, j) = Vec3b(255, 255, 255) - src.at<Vec3b>(i, j);
+				//cout << src.at<Vec3b>(i, j);// = Vec3b(255, 255, 255) - src.at<Vec3b>(i, j);
 				if ((int)src.at<Vec3b>(i, j)[0] == 255 && (int)src.at<Vec3b>(i, j)[1] == 255 && (int)src.at<Vec3b>(i, j)[2] == 255)
 				{
 					//cout << "youle" << " ";
@@ -741,9 +758,10 @@ int main(int argc, char** argv)
 				}
 			}
 		//erode(src, src, element);
-		imwrite("D:\\show\\4\\printre.png", src);
-		int erosion_size1 = 0;
-		int erosion_size2 = 0;
+		imwrite("L:\\printre.png", src);
+
+		int erosion_size1 = 3;
+		int erosion_size2 = 3;
 		Mat element1 = getStructuringElement(erosion_type,
 			Size(2 * erosion_size1 + 1, 2 * erosion_size1 + 1),
 			Point(erosion_size1, erosion_size1));
@@ -758,8 +776,8 @@ int main(int argc, char** argv)
 		flip1.at<Vec3b>(i, j) = Vec3b(255, 255, 255) - flip1.at<Vec3b>(i, j);
 		flip2.at<Vec3b>(i, j) = Vec3b(255, 255, 255) - flip2.at<Vec3b>(i, j);
 		}*/
-		imwrite("D:\\show\\4\\flip1.png", flip1);
-		imwrite("D:\\show\\4\\flip2.png", flip2);
+		imwrite("L:\\flip1.png", flip1);
+		imwrite("L:\\flip2.png", flip2);
 
 	}
 
@@ -779,10 +797,13 @@ int main(int argc, char** argv)
 		//imshow("zala", src);
 		//imshow("nine", dst);
 		Vec3b color1, color2;
-		Scalar t = colorbar[6].second;
-		color1 = Vec3b(t.val[0], t.val[1], t.val[2]);
-		t = colorbar[7].second;
-		color2 = Vec3b(t.val[0], t.val[1], t.val[2]);
+		//Scalar t = colorbar[6].second;
+		//color1 = Vec3b(t.val[0], t.val[1], t.val[2]);
+		//t = colorbar[7].second;
+		//color2 = Vec3b(t.val[0], t.val[1], t.val[2]);
+
+		color1 = Vec3b(255, 255, 255);
+		color2 = Vec3b(0, 0, 0);
 
 		for (int i = 0; i < src.rows; i++)
 			for (int j = 0; j < src.cols; j++)

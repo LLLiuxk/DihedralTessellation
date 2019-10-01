@@ -59,6 +59,7 @@ namespace Tiling_tiles{
 	vector<double> curvature_com_k(vector<Point2f> &contour_sam);
 	vector<double> curvature_com(const vector<Point2f> &contour_sam); //¼ÇÂ¼cosÖµ
 	vector<int> most_convex_p(vector<Point2f> contour_, vector<double> cont_c, int max_cur_num);
+	vector<int> most_p_features(vector<Point2f> contour_, vector<double> cont_c, int max_cur_num);
 	vector<int> feature_points(vector<Point2f> contour_, double dmin, double dmax, double angle_cos);//amax 165; dmin 0.015Ls
 	vector<int> simple_with_feature(vector<Point2f> contour_,int totalnum);
 
@@ -82,7 +83,7 @@ namespace Tiling_tiles{
 	double cos_3edges(double l1, double l2, double l3);
 	double cos_two_vector(Point2f &v0, Point2f &v1);
 	double sin_two_vector(Point2f &v0, Point2f &v1);
-	double tar_sin_2vector(Point2f &v0, Point2f &v1);
+	double tar_2vector(Point2f &v0, Point2f &v1);
 	vector<double> recover_consin(const vector<double> &former);
 
 	void sort_comb(vector<double> vect, vector<int> &index_num);

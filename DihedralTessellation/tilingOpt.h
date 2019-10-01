@@ -57,7 +57,7 @@ namespace Tiling_tiles{
 		void setname(string con_name);
 		void loadTileData(string tile_data);
 		void contour_sam_cur();	
-		vector<vector<double>> compute_TAR(vector<Point2f> &contour_,double &shape_complexity, double frac = 0.25);
+		vector<vector<double>> compute_TAR(vector<Point2f> &contour_,double &shape_complexity, double frac = 0.25); //frac*num是计算的点数目
 
 		vector<int> cand_tiling_v(int max_cur_num);       //求轮廓上值最大的10个不临近的凸点
 		vector<int> partition_points(string imaname);  //求得用做划分的点
@@ -101,8 +101,7 @@ namespace Tiling_tiles{
 		void points_dividing(string imaname);
 		void tiliing_generation(string imaname);
 
-		//collision
-		
+		//collision		
 		bool coll_detec_bbx(vector<Point2f> contour1, vector<Point2f> contour2, int threshold);
 		bool vertex_angle(vector<Point2f> angle1, vector<Point2f> angle2);
 
@@ -185,6 +184,7 @@ namespace Tiling_tiles{
 		double distance[202][202];
 		int step[202][202];//记录总的步数
 		int all_types;
+		int sampling_num;
 		Prototile *prototile_first;
 		Prototile *prototile_mid;
 		Prototile *prototile_second;

@@ -15,6 +15,7 @@ namespace Tiling_tiles{
 		prototile_second = new Prototile();
 		prototile_tem = new Prototile();
 		all_types = 500;
+		sampling_num = 3;
 		//memset(dp, 0, sizeof(dp));
 		//memset(dp_inver, 0, sizeof(dp_inver));
 
