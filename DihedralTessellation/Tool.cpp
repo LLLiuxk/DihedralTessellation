@@ -1289,7 +1289,8 @@ namespace Tiling_tiles{
 
 	vector<int> most_p_features(vector<Point2f> contour_, vector<double> cont_c, int max_cur_num)
 	{
-
+		vector<int> ttt;
+		return ttt;
 	}
 
 	vector<int> feature_points(vector<Point2f> contour_, double dmin, double dmax, double angle_cos)
@@ -1444,6 +1445,45 @@ namespace Tiling_tiles{
 			dstPts[i].x = (1.0 - s) * srcPts1[i].x + s * srcPts2[i].x;
 			dstPts[i].y = (1.0 - s) * srcPts1[i].y + s * srcPts2[i].y;
 		}
+	}
+
+	vector<Point2f> morph_hierarchical(vector<Point2f>& srcP1, vector<Point2f>& srcP2, vector<int> &mid_inter, vector<pair<int, int>> &path, int shift)
+	{
+		//将两个轮廓按照对应关系对齐
+		vector<Point2f> final_pettern;
+		vector<int> mid_inter_new;
+		vector<Point2f> contour_mid;
+		int c2size = srcP2.size();
+		for (int i = shift; i < shift + c2size; i++)  // 首先计算偏移量
+		{
+			contour_mid.push_back(srcP2[i % c2size]);
+		}
+		cout << srcP1.size() << "   " << c2size << "  c3: " << contour_mid.size() << endl;
+		srcP2 = contour_mid;
+		double scale = arcLength(srcP1, true) / arcLength(srcP2, true);
+		//cout << "scale: " << scale << endl;
+		for (int i = 0; i < c2size; i++)
+		{
+			srcP2[i] = srcP2[i] * scale;
+		}
+		Point2f cen1 = center_p(srcP1);
+		Point2f cen2 = center_p(srcP2);
+		Point2f shift2 = cen1 - cen2;
+		for (int i = 0; i < c2size; i++)
+		{
+			srcP2[i] = srcP2[i] + shift2;
+		}
+		Point2f v0 = srcP1[0] - cen1;
+		Point2f v1 = srcP2[0] - cen1;
+		double angle = acos(cos_two_vector(v0, v1)) / PI * 180;
+		if (sin_two_vector(v0, v1) < 0) angle = -angle;
+		Mat rot_mat(2, 3, CV_32FC1);
+		rot_mat = getRotationMatrix2D(cen1, angle, 1);
+		transform(srcP2, contour_mid, rot_mat);
+		srcP2 = contour_mid;
+ 
+
+
 	}
 
 
@@ -1626,6 +1666,39 @@ namespace Tiling_tiles{
 		}
 		
 		return sampling_p;
+	}
+
+
+
+	void compute_TAR_new(vector<Point2f> &contour_)
+	{
+		double ratio = sqrt(contourArea(contour_))/arcLength(contour_,true);
+		
+		vector<vector<double>> all_tar;
+		int consize = contour_.size();
+		int tar_num = consize/2 - 1;
+		double shape_complexity = 0;
+		//cout << "consize: " << consize << " tar_num: " << tar_num << endl;
+		vector<double> maxtar(tar_num, 0);// 记录最大值来进行归一化
+		for (int i = 0; i < consize; i++)
+		{
+			double max = 0;
+			double min = 100000;
+			vector<double> one_p_tar;
+			for (int j = 0; j < tar_num; j++)
+			{
+				Point2f vpsubts_vp = contour_[(i - j - 1 + consize) % consize] - contour_[i];
+				Point2f vpplusts_vp = contour_[(i + j + 1) % consize] - contour_[i];
+				double tar = abs(0.5 * tar_2vector(vpplusts_vp, vpsubts_vp));
+				//cout << vpsubts_vp << "  " << vpplusts_vp << endl;
+				//one_p_tar.push_back(tar);
+				if (tar > max) max = tar;
+				if (tar < min) min = tar;
+			}
+			shape_complexity = shape_complexity + abs(max - min);
+		}
+		shape_complexity = shape_complexity / consize;
+		cout <<"ratio: " <<ratio<< "    shape_com: " << shape_complexity << endl;
 	}
 
 }

@@ -78,6 +78,7 @@ namespace Tiling_tiles{
 		string txtpath;
 
 		vector<Point2f> contour;
+		vector<Point2f> contour_r;
 		//vector<double> cconvex;
 		vector<vector<Point2f>> contour_sample;
 		vector<vector<Point2f>> contour_sample_flip;
@@ -111,7 +112,7 @@ namespace Tiling_tiles{
 		void check_Repetitive_pattern();
 		
 		//three placement rules
-		vector<vector<int>> find_rota_tilingV(vector<Point2f> cont, vector<int> mark_13);
+		vector<vector<int>> find_rota_tilingV(vector<Point2f> &cont, vector<int> mark_13, vector<vector<int>>all_r_index);
 		bool translation_placement(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname);
 		bool rotation_placement(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname);
 		bool flipping_placement(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname,int type);

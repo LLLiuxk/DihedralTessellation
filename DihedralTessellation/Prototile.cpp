@@ -317,7 +317,8 @@ namespace Tiling_tiles{
 			vector<Point2f> contour_sam;
 			vector<Point2f> contour_sam_flip;
 			vector<int> contour_sam_index;
-			//contour_sam = sampling_ave(contour, i * 100, contour_sam_index); //点数为 i*100
+			//contour_sam = 
+			sampling_ave(contour, i * 100, contour_sam_index); //点数为 i*100
 			contour_sam = sampling(contour, i); //点数为 i*100
 			contour_sample.push_back(contour_sam);
 			//contour_curva.push_back(curvature_com(contour_sam));
@@ -383,14 +384,15 @@ namespace Tiling_tiles{
 		return all_tar;
 	}
 
+
 	vector<int> Prototile::cand_tiling_v(int max_cur_num)
 	{
 		//排序，找最大的max_cur_num个凹凸点
 		contour.swap(vector<Point2f>());
 		int sam_num = contour_sample.size();	
-		contour = contour_sample[sam_num-1];
+		contour = contour_sample[sam_num-4]; // 这里统一将初始轮廓选为200个点
 		//cconvex = curvature_com(contour);
-		cout << "contour_sample num: " << contour_sample[sam_num-1].size() << endl;
+		cout << "contour_sample num: " << contour_sample[sam_num-4].size() << endl;
 		vector<int> cand_points_index;
 		//cand_points_index = most_convex_p(contour, cconvex, max_cur_num);
 		cand_points_index = feature_points(contour, 1, 3, cos(PI * 160 / 180));
@@ -415,14 +417,15 @@ namespace Tiling_tiles{
 	vector<int> Prototile::partition_points(string imaname)
 	{
 		cout << imaname << endl;
-		int cur_p_num = 20;   //cur_p_num 个不相邻的最大cos值点
-		int margin = 12;      //margin个点的采样间隔
+		//int cur_p_num = 20;   //cur_p_num 个不相邻的最大cos值点
+		int sam_p = 30;//目标采样点个数
 		double ratio = 0.012; //筛选间隔与周长之比
 		vector<int> max_order;
 		//imgtocout(imaname);
 		loadTileData(imaname);
-		max_order = cand_tiling_v(cur_p_num);
-		int contoursize = contour.size();
+		max_order = cand_tiling_v(sam_p);
+		int contoursize = contour.size();  //200个点
+		int margin = contoursize / sam_p;      //margin个点的采样间隔
 		vector<int> all_order = max_order;
 
 		for (int i = 0; i < contoursize; i = i + margin)

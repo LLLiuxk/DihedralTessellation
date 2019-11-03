@@ -20,15 +20,28 @@ int main(int argc, char** argv)
 	Tiling_tiles::Prototile *prototile_third;
 	prototile_third = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
-	int f = 0;
+	int f = 111;
 	//0:result  1:simulation  2:ÅúÁ¿¶ÁÍ¼  3:feature points  4:compute_TAR  5:min_minsmatch  6:extract_contour  7:compare and choose
-	//8:morphing  9:draw  10:math  11:check  12:thickness  13:color  14:windows
+	//8:morphing  9:draw  10:math  11:check  12:thickness  13:color  14:windows 15:evalua_deformation
 	if (f == 111) //test
 	{
-		prototile_first->setname("swan2");
-		vector<Point2f> new_c = prototile_first->readTxt();
-		string file = "D:\\swan2.obj";
-		write_obj(file, new_c, 40);
+		Point2f st = Point2f(10, 10);
+		Point2f end = Point2f(10, 40);
+		vector<Point2f> ttt;
+		ttt.push_back(st);
+		ttt.push_back(end);
+
+		Point2f cen1 = Point2f(10, 25);
+		double angle = 90;
+		Mat rot_mat(2, 3, CV_32FC1);
+		rot_mat = getRotationMatrix2D(cen1, angle, 1);
+		transform(ttt, ttt, rot_mat);
+		cout << ttt[0] << "  " << ttt[1] << endl;
+
+		//prototile_first->setname("swan2");
+		//vector<Point2f> new_c = prototile_first->readTxt();
+		//string file = "D:\\swan2.obj";
+		//write_obj(file, new_c, 40);
 
 		/*prototile_second->setname("gezi_m");
 		vector<Point2f> new_c2 = prototile_second->readTxt();
@@ -708,11 +721,11 @@ int main(int argc, char** argv)
 		//¸¯Ê´°×É«ÇøÓò
 		Mat src, erosion_dst;
 		int erosion_elem = 2;
-		int erosion_size = 1;
+		int erosion_size = 6;
 		int const max_elem = 2;
 		int const max_kernel_size = 21;
 
-		string name = "L:\\rabbit_bat_sim.png";//"D:\\result.png";
+		string name = "L:\\mmm.png";//"D:\\result.png";
 		//string name = "D:\\print.png";
 		src = imread(name, IMREAD_COLOR);
 		if (src.empty())
@@ -839,6 +852,50 @@ int main(int argc, char** argv)
 		//initial();
 		//glutMainLoop();
 
+	}
+	if (f == 15)
+	{
+		vector<Point2f> ww;
+		ww.push_back(Point2f(10, 10));
+		ww.push_back(Point2f(10, 110));
+		ww.push_back(Point2f(110, 110));
+		ww.push_back(Point2f(110, 10));
+		prototile_first->loadTileData("161");
+		//prototile_second->loadTileData("308");
+		//tiling_opt->evalua_deformation(prototile_first->contour, prototile_second->contour);
+		compute_TAR_new(prototile_first->contour_sample[1]);//prototile_first->contour_sample[1]
+	}
+	if (f == 16)
+	{
+		//vector<Point2f> sim_mid = tiling_opt->simulation_tar("302", 96, 0);
+		//¸¯Ê´°×É«ÇøÓò
+		Mat src, dilation_dst;
+		int dilation_elem = 2;
+		int dilation_size = 6;
+		//int const max_elem = 2;
+		//int const max_kernel_size = 21;
+
+		string name = "L:\\bmm.png";//"D:\\result.png";
+		//string name = "D:\\print.png";
+		src = imread(name, IMREAD_COLOR);
+		if (src.empty())
+		{
+			return -1;
+		}
+		int dilation_type = 0;
+		namedWindow("Erosion Demo", WINDOW_AUTOSIZE);
+		if (dilation_elem == 0){ dilation_type = MORPH_RECT; }
+		else if (dilation_elem == 1){ dilation_type = MORPH_CROSS; }
+		else if (dilation_elem == 2) { dilation_type = MORPH_ELLIPSE; }
+		Mat element = getStructuringElement(dilation_type,
+			Size(2 * dilation_size + 1, 2 * dilation_size + 1),
+			Point(dilation_size, dilation_size));
+		dilate(src, dilation_dst, element);
+		imwrite("L:\\Erosion Demo2.png", dilation_dst);
+
+		//int row = dilation_dst.rows;
+		//int col = dilation_dst.cols;
+	
 	}
 	finish = clock();
 	cout << endl << "All time consumption: " << (double)(finish - start) / CLOCKS_PER_SEC << " s " << endl;
