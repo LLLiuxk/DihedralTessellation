@@ -111,12 +111,20 @@ namespace Tiling_tiles{
 		void com_all_TARs(int num_c);
 		void check_Repetitive_pattern();
 		
-		//three placement rules
-		vector<vector<int>> find_rota_tilingV(vector<Point2f> &cont, vector<int> mark_13, vector<vector<int>>all_r_index);
+
+		//three tiling rules
+		int Rotation_rule(vector<int> part_points_index, vector<Point2f> &contour_s, string rootname);
+		int Tanslation_rule(vector<int> part_points_index, vector<Point2f> &contour_s, string rootname);
+		int Flipping_rule(vector<int> part_points_index, vector<Point2f> &contour_s, string rootname);
+
+		vector<vector<Point2f>> find_rota_tilingV(vector<Point2f> &cont, vector<int> mark_13, vector<pair<Point2f, int>> &all_insert_points);
 		bool translation_placement(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname);
 		bool rotation_placement(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname);
 		bool flipping_placement(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname,int type);
 		vector<Point2f> extract_contour(vector<Point2f> contour_, vector<int> mark_p, vector<int> &midmark_p, vector<vector<Point2f>> &four_place, int type);
+		
+		//match candidate patterns
+		void match_candidate(int Tiling_index);
 
 		//shapes comparing and candidate contour choosing
 		vector<pair<int, bool>> compare_choose_TAR(vector<Point2f> inner_c); //得到选择出的pattern的序号和是否翻转的标志
@@ -125,16 +133,18 @@ namespace Tiling_tiles{
 		double tar_mismatch(vector<vector<double>> first_arr, vector<vector<double>> second_arr, vector<pair<int, int>>& path, int &sec_shift, int width = 4);//点对应匹配的筛选框宽度
 		void print_TAR_Path(double d[][202], double dp[][202], int i, int j, vector<pair<int, int>>& path);
 		vector<int> search_align_p(Point2f cent, Point2f end, vector<Point2f> cand_temp);
-
 		//relocation
 		vector<int> joint_relocate(vector<Point2f> contour_, vector<int> joint_index, int num_c);
+
+		//morphing
+		vector<int> morphed_results(vector<Point2f> &morphed_A, int Candidate_index, int Tiling_index);
+		void contour_fine_tuning(vector<Point2f> &contour_, int first, int second);
 		
 		//morphing
 		//提高cos值权重+重采样
 		vector<Point2f> morphing_2_patterns(vector<Point2f> &contour1, vector<Point2f> &contour2, vector<double> &concur1, vector<double> &concur2, vector<int> &mid_inter, float shape_ratio);
 		//morphing by tar
 		vector<Point2f> morphing_tar(vector<Point2f> &contour1, vector<Point2f> &contour2, vector<int> &mid_inter, vector<pair<int, int>> &path, int shift);
-		void contour_fine_tuning(vector<Point2f> &contour_, int first,int second );
 
 		//迭代morph	
 		vector<Point2f> morphing_patterns_iter(vector<Point2f> contour1, vector<Point2f> contour2, vector<double> concur1, vector<double> concur2, float shape_ratio);//, vector<int> mid_inter, float shape_ratio);
@@ -196,6 +206,14 @@ namespace Tiling_tiles{
 		vector<vector<vector<double>>> all_fea_tars;
 		vector<vector<vector<double>>> all_fea_tars_flip;
 		vector<double> all_shape_complexity;
+		vector<inPat> all_inner_conts;
+
+		vector<vector<Point2f>> candidate_contours;
+		vector<vector<pair<int, int>>> cand_paths;
+		vector<int> mid_inter; //每个tiling placement对应一个mid_inter
+		vector<int> mid_inter_morphed; //变形后的mid_inter
+
+
 	};
 
 }

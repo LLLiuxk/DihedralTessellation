@@ -121,8 +121,10 @@ namespace Tiling_tiles{
 	vector<Point2f> morph_hierarchical(vector<Point2f>& srcP1, vector<Point2f>& srcP2, vector<int> &mid_inter, vector<pair<int, int>> &path, int shift);
 	void MorphPoints(const std::vector<cv::Point2f>& srcPts1, const std::vector<cv::Point2f>& srcPts2, std::vector<cv::Point2f>& dstPts, float s);
 	//void merge_close_p(vector<Point2f> &contour_);
-
+	
 	void compute_TAR_new(vector<Point2f> &contour_);
+
+	void insert_vector(vector<Point2f> &vec, int index_p, Point2f insert_p);
 
 }
 

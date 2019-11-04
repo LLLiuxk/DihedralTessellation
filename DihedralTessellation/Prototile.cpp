@@ -297,7 +297,7 @@ namespace Tiling_tiles{
 		{
 			circle(drwa, con_point[i], 1, Scalar(0, 0, 255), -1);
 		}
-		imshow("contour" + contourname, drwa);*/
+		imshow("contour" + co ntourname, drwa);*/
 		in.close();
 		return con_point;
 
