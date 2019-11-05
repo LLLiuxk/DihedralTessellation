@@ -260,6 +260,8 @@ namespace Tiling_tiles{
 		int contsize = contour_s.size();
 		Point2f cent_cont = center_p(contour_s);
 		vector<pair<Point2f, int>> insert_points;
+		vector<vector<Point2f>> all_result_points;
+		vector<vector<int>> all_result_index; //通过重新定位确定点的下标序列
 		for (int i = 0; i < ppindex; i++)
 		{
 			for (int j = i + 1; j < ppindex; j++)
@@ -269,43 +271,69 @@ namespace Tiling_tiles{
 				vector<int> mark_13;
 				mark_13.push_back(part_points_index[i]);
 				mark_13.push_back(part_points_index[j]);
-				vector<vector<int>> all_result_index = find_rota_tilingV(contour_s, mark_13, insert_points);
-				int allresultsize = all_result_index.size();
+
+				vector<vector<Point2f>> all_result_p = find_rota_tilingV(contour_s, mark_13, insert_points);
+				int allresultsize = all_result_p.size();
 				for (int num = 0; num < allresultsize; num++)
 				{
-					Mat drawing1 = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
-					if (!rotation_placement(all_result_index[num], contour_s, inner_contour, mid_interval, drawing1))
-					{
-						cout << ++rotas << " Rotation succeed" << endl;
-						inPat one_situation;
-						one_situation.in_contour = inner_contour;
-						one_situation.in_interval = mid_interval;
-						one_situation.type = 1;
-						all_inner_conts.push_back(one_situation);
-						inner_contour.swap(vector<Point2f>());
-						mid_interval.swap(vector<int>());
-
-						Point2f shift2 = Point2f(400, 400) - cent_cont;
-						for (int jj = 0; jj < contsize; jj++)
-						{
-							circle(drawing1, contour_s[jj] + shift2, 1, Scalar(0, 0, 0), -1);
-
-							//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
-						}
-						for (int jj = 0; jj < ppindex; jj++)
-						{
-							circle(drawing1, contour_s[part_points_index[jj]] + shift2, 4, Scalar(0, 0, 255), -1);
-						}
-						for (int jj = 0; jj < 4; jj++)
-						{
-							circle(drawing1, contour_s[all_result_index[num][jj]] + shift2, 8, Scalar(0, 255, 0), -1);
-						}
-						string filename = rootname + "\\" + int2string(rotas - 1) + "rota_PlacingResult.png";
-						imwrite(filename, drawing1);
-						//Mat draw = drawing1(Rect(800, 0, 800, 800));
-						//all_tiling_Mat.push_back(draw);
-					}
+					all_result_points.push_back(all_result_p[num]);
 				}
+			}
+		}
+		//将新点插入轮廓点集，先对insert_points进行排序，然后从后往前排，因为insert里记录的也是序列，如果从前往后就会出错
+
+		void sort_comb(vector<double> vect, vector<int> &index_num) //将下标和数值联合排序，只保留下标的排序,从大到小
+		{
+			int i, j;
+			double temp;
+			int num;
+			for (i = 0; i < vect.size() - 1; i++)
+				for (j = 0; j < vect.size() - 1 - i; j++)
+					if (vect[j] < vect[j + 1])
+					{
+						temp = vect[j];
+						vect[j] = vect[j + 1];
+						vect[j + 1] = temp;
+						num = index_num[j];
+						index_num[j] = index_num[j + 1];
+						index_num[j + 1] = num;
+					}
+		}
+
+
+		for (int num = 0; num < allresultsize; num++)
+		{
+			Mat drawing1 = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
+			if (!rotation_placement(all_result_index[num], contour_s, inner_contour, mid_interval, drawing1))
+			{
+				cout << ++rotas << " Rotation succeed" << endl;
+				inPat one_situation;
+				one_situation.in_contour = inner_contour;
+				one_situation.in_interval = mid_interval;
+				one_situation.type = 1;
+				all_inner_conts.push_back(one_situation);
+				inner_contour.swap(vector<Point2f>());
+				mid_interval.swap(vector<int>());
+
+				Point2f shift2 = Point2f(400, 400) - cent_cont;
+				for (int jj = 0; jj < contsize; jj++)
+				{
+					circle(drawing1, contour_s[jj] + shift2, 1, Scalar(0, 0, 0), -1);
+
+					//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
+				}
+				for (int jj = 0; jj < ppindex; jj++)
+				{
+					circle(drawing1, contour_s[part_points_index[jj]] + shift2, 4, Scalar(0, 0, 255), -1);
+				}
+				for (int jj = 0; jj < 4; jj++)
+				{
+					circle(drawing1, contour_s[all_result_index[num][jj]] + shift2, 8, Scalar(0, 255, 0), -1);
+				}
+				string filename = rootname + "\\" + int2string(rotas - 1) + "rota_PlacingResult.png";
+				imwrite(filename, drawing1);
+				//Mat draw = drawing1(Rect(800, 0, 800, 800));
+				//all_tiling_Mat.push_back(draw);
 			}
 		}
 		return rotas;
@@ -315,7 +343,6 @@ namespace Tiling_tiles{
 	vector<vector<Point2f>> Tiling_opt::find_rota_tilingV(vector<Point2f>&cont, vector<int> mark_13, vector<pair<Point2f, int>> &all_insert_points)
 	{
 		vector<vector<Point2f>> all_result_points;
-
 		int contsize = cont.size();
 		double line_length = arcLength(cont, 1) / 2;
 		double margin = 2 * line_length / contsize;
@@ -405,7 +432,7 @@ namespace Tiling_tiles{
 			//计算在mark参数下所有的平行四边形，将左边全部返回
 
 		}
-		
+		cout << "rotation all_result_points num:" << all_result_points.size() << endl;
 		return all_result_points;
 	}
 
