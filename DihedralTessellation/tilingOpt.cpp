@@ -253,12 +253,12 @@ namespace Tiling_tiles{
 		return trans;
 	}
 
-	int Tiling_opt::Rotation_rule(vector<int> part_points_index, vector<Point2f> &contour_s, string rootname)
+	int Tiling_opt::Rotation_rule(vector<int> part_points_index, vector<Point2f> &contour_r, string rootname)
 	{
 		int rotas = 0;
 		int ppindex = part_points_index.size();
-		int contsize = contour_s.size();
-		Point2f cent_cont = center_p(contour_s);
+		int contsize = contour_r.size();
+		Point2f cent_cont = center_p(contour_r);
 		vector<pair<Point2f, int>> insert_points;
 		vector<vector<Point2f>> all_result_points;
 		vector<vector<int>> all_result_index; //通过重新定位确定点的下标序列
@@ -272,7 +272,7 @@ namespace Tiling_tiles{
 				mark_13.push_back(part_points_index[i]);
 				mark_13.push_back(part_points_index[j]);
 
-				vector<vector<Point2f>> all_result_p = find_rota_tilingV(contour_s, mark_13, insert_points);
+				vector<vector<Point2f>> all_result_p = find_rota_tilingV(contour_r, mark_13, insert_points);
 				int allresultsize = all_result_p.size();
 				for (int num = 0; num < allresultsize; num++)
 				{
@@ -280,28 +280,24 @@ namespace Tiling_tiles{
 				}
 			}
 		}
-		//将新点插入轮廓点集，先对insert_points进行排序，然后从后往前排，因为insert里记录的也是序列，如果从前往后就会出错
-
-		void sort_comb(vector<double> vect, vector<int> &index_num) //将下标和数值联合排序，只保留下标的排序,从大到小
+		int allinsertsize = insert_points.size();
+		//将新点插入轮廓点集，先对insert_points进行从大到小排序，然后从后往前排，因为insert里记录的也是序列，如果从前往后就会出错
+		int ii, jj;
+		pair<Point2f, int> temp;
+		for (ii = 0; ii < allinsertsize - 1; ii++)
+			for (jj = 0; jj <allinsertsize - 1 - ii; jj++)
+				if (insert_points[jj].second < insert_points[jj + 1].second)
+				{
+					temp = insert_points[jj];
+					insert_points[jj] = insert_points[jj + 1];
+					insert_points[jj + 1] = temp;
+				}
+		//排序后对轮廓进行插值。可能会遇到对同一条边插值的情况
+		for (int num = 0; num < allinsertsize; num++)
 		{
-			int i, j;
-			double temp;
-			int num;
-			for (i = 0; i < vect.size() - 1; i++)
-				for (j = 0; j < vect.size() - 1 - i; j++)
-					if (vect[j] < vect[j + 1])
-					{
-						temp = vect[j];
-						vect[j] = vect[j + 1];
-						vect[j + 1] = temp;
-						num = index_num[j];
-						index_num[j] = index_num[j + 1];
-						index_num[j + 1] = num;
-					}
+
 		}
-
-
-		for (int num = 0; num < allresultsize; num++)
+		for (int num = 0; num < allinsertsize; num++)
 		{
 			Mat drawing1 = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
 			if (!rotation_placement(all_result_index[num], contour_s, inner_contour, mid_interval, drawing1))
