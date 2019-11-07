@@ -125,6 +125,7 @@ namespace Tiling_tiles{
 	void compute_TAR_new(vector<Point2f> &contour_);
 
 	void insert_vector(vector<Point2f> &vec, int index_p, Point2f insert_p);
+	int location(vector<Point2f> &vec, Point2f input);
 
 }
 

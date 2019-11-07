@@ -292,15 +292,41 @@ namespace Tiling_tiles{
 					insert_points[jj] = insert_points[jj + 1];
 					insert_points[jj + 1] = temp;
 				}
-		//排序后对轮廓进行插值。可能会遇到对同一条边插值的情况
+				else if (insert_points[jj].second == insert_points[jj + 1].second)  //可能会遇到对同一条边插值的情况，在这里也对其区分清楚
+				{
+					double leng1 = length_two_point2f(insert_points[jj].first, contour_r[insert_points[jj].second]);
+					double leng2 = length_two_point2f(insert_points[jj + 1].first, contour_r[insert_points[jj + 1].second]);
+					if (leng1 < leng2)
+					{
+						temp = insert_points[jj];
+						insert_points[jj] = insert_points[jj + 1];
+						insert_points[jj + 1] = temp;
+					}
+				}
+		//排序后对轮廓进行插值		
 		for (int num = 0; num < allinsertsize; num++)
 		{
-
+			insert_vector(contour_r, insert_points[num].second, insert_points[num].first);
 		}
-		for (int num = 0; num < allinsertsize; num++)
+		//对all_result_points里的点进行定位，确定其下标
+		for (int n = 0; n < all_result_points.size(); n++)
 		{
+			vector<int> one_result;
+			int resultnum = all_result_points[n].size();
+			for (int m = 0; m < resultnum; m++)
+			{
+				one_result.push_back(location(contour_r,all_result_points[n][m]));
+			}
+			all_result_index.push_back(one_result);
+		}
+		int allindexsize = all_result_index.size();
+		for (int num = 0; num < allindexsize; num++)
+		{
+			vector<Point2f> inner_contour;
+			vector<int> mid_interval; //mid_interval存储的是组合成的inner 的分段连接点
+			//vector<int> result_index; //1.translation：以下所有该类摆放都以1-3,2-4为轴摆放
 			Mat drawing1 = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
-			if (!rotation_placement(all_result_index[num], contour_s, inner_contour, mid_interval, drawing1))
+			if (!rotation_placement(all_result_index[num], contour_r, inner_contour, mid_interval, drawing1))
 			{
 				cout << ++rotas << " Rotation succeed" << endl;
 				inPat one_situation;
@@ -308,29 +334,29 @@ namespace Tiling_tiles{
 				one_situation.in_interval = mid_interval;
 				one_situation.type = 1;
 				all_inner_conts.push_back(one_situation);
-				inner_contour.swap(vector<Point2f>());
-				mid_interval.swap(vector<int>());
 
 				Point2f shift2 = Point2f(400, 400) - cent_cont;
 				for (int jj = 0; jj < contsize; jj++)
 				{
-					circle(drawing1, contour_s[jj] + shift2, 1, Scalar(0, 0, 0), -1);
+					circle(drawing1, contour_r[jj] + shift2, 1, Scalar(0, 0, 0), -1);
 
 					//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
 				}
 				for (int jj = 0; jj < ppindex; jj++)
 				{
-					circle(drawing1, contour_s[part_points_index[jj]] + shift2, 4, Scalar(0, 0, 255), -1);
+					circle(drawing1, contour_r[part_points_index[jj]] + shift2, 4, Scalar(0, 0, 255), -1);
 				}
 				for (int jj = 0; jj < 4; jj++)
 				{
-					circle(drawing1, contour_s[all_result_index[num][jj]] + shift2, 8, Scalar(0, 255, 0), -1);
+					circle(drawing1, contour_r[all_result_index[num][jj]] + shift2, 8, Scalar(0, 255, 0), -1);
 				}
 				string filename = rootname + "\\" + int2string(rotas - 1) + "rota_PlacingResult.png";
 				imwrite(filename, drawing1);
 				//Mat draw = drawing1(Rect(800, 0, 800, 800));
 				//all_tiling_Mat.push_back(draw);
 			}
+			inner_contour.swap(vector<Point2f>());
+			mid_interval.swap(vector<int>());
 		}
 		return rotas;
 

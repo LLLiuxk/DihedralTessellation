@@ -1718,4 +1718,22 @@ namespace Tiling_tiles{
 		vec = vec1;
 	}
 
+	int location(vector<Point2f> &vec, Point2f input)
+	{
+		int con_size = vec.size();
+		int index_ = 0;
+		double dist = 10000;
+		for (int t = 0; t <con_size; t++)
+		{
+			double length = length_two_point2f(vec[t], input);
+			if ( length < dist)
+			{
+				dist = length;
+				index_ = t;
+			}
+		}
+		return index_;
+	}
+
+
 }
