@@ -318,7 +318,7 @@ namespace Tiling_tiles{
 			vector<Point2f> contour_sam_flip;
 			vector<int> contour_sam_index;
 			//contour_sam = 
-			sampling_ave(contour, i * 100, contour_sam_index); //点数为 i*100
+			//sampling_ave(contour, i * 100, contour_sam_index); //点数为 i*100
 			contour_sam = sampling(contour, i); //点数为 i*100
 			contour_sample.push_back(contour_sam);
 			//contour_curva.push_back(curvature_com(contour_sam));

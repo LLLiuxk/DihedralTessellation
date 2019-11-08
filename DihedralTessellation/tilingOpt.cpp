@@ -255,9 +255,17 @@ namespace Tiling_tiles{
 
 	int Tiling_opt::Rotation_rule(vector<int> part_points_index, vector<Point2f> &contour_r, string rootname)
 	{
+		//part_points_index保存的初始的所有候选点集，需要保留用作后续的变形。但是保留下标无法应对后续的插值等操作
+		//因此首先根据初始点集计算应插值的坐标，然后保留四点坐标，并记录应插值的点（过程中插值会导致后续的误差）
+		//然后统一将应插值的点插入到轮廓点集中及候选点集中，然后对点集进行保留候选点集的重采样，保证点数在200
+		//然后根据坐标，将候选点集和所有的四点进行下标重定位
 		int rotas = 0;
 		int ppindex = part_points_index.size();
-		int contsize = contour_r.size();
+		vector<Point2f> part_points_;  //初始候选点集的坐标
+		for (int i = 0; i < ppindex; i++)
+		{
+			part_points_.push_back(contour_r[part_points_index[i]]);
+		}
 		Point2f cent_cont = center_p(contour_r);
 		vector<pair<Point2f, int>> insert_points;
 		vector<vector<Point2f>> all_result_points;
@@ -303,11 +311,32 @@ namespace Tiling_tiles{
 						insert_points[jj + 1] = temp;
 					}
 				}
-		//排序后对轮廓进行插值		
+		//排序后对轮廓进行插值，并将插值点放入到候选点集中，此时候选点集是一个有序点集
 		for (int num = 0; num < allinsertsize; num++)
 		{
 			insert_vector(contour_r, insert_points[num].second, insert_points[num].first);
+			part_points_.push_back(insert_points[num].first);
 		}
+		//此时轮廓中有不定个点，需要维持200个点的数量。所以根据候选点集对轮廓进行重采样
+		int contsize = contour_r.size();
+		int ppointsize = part_points_.size();
+		double length = contour_length(contour_r);
+		double Lambda = length / contsize;  //采样间隔
+		vector<Point2f> contour_sam;
+		Point2f sample = contour_r[0];
+		for (int nn = 0; nn < contsize;nn++)
+		{
+			for (int num = 0; num < ppointsize; num++)
+			{
+				if (length_two_point2f(sample, part_points_[num]) < Lambda/3)
+				{
+
+				}
+			}
+		}
+		contour_sam.push_back(contour_r[0]);
+
+
 		//对all_result_points里的点进行定位，确定其下标
 		for (int n = 0; n < all_result_points.size(); n++)
 		{
