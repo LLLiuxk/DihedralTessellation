@@ -318,21 +318,72 @@ namespace Tiling_tiles{
 			part_points_.push_back(insert_points[num].first);
 		}
 		//此时轮廓中有不定个点，需要维持200个点的数量。所以根据候选点集对轮廓进行重采样
+		//重采样之前需要有候选点集的下标序列
 		int contsize = contour_r.size();
 		int ppointsize = part_points_.size();
+		cout << "part_points_ num:" << ppointsize << endl;
+		vector<int> pp_index;
+		for (int n = 0; n < ppointsize; n++)
+		{
+			pp_index.push_back(location(contour_r, part_points_[n]));
+		}
+		//候选点集排序
+		int temp1;
+		Point2f tempp;
+		for (ii = 0; ii < ppointsize - 1; ii++)
+			for (jj = 0; jj <ppointsize - 1 - ii; jj++)
+				if (pp_index[jj]< pp_index[jj + 1])
+				{
+					temp1 = pp_index[jj];
+					tempp = part_points_[jj];
+					pp_index[jj] = pp_index[jj + 1];
+					part_points_[jj] = part_points_[jj + 1];
+					pp_index[jj + 1] = temp1;
+					part_points_[jj + 1] = tempp;
+				}
+		//根据候选点集采样
 		double length = contour_length(contour_r);
 		double Lambda = length / contsize;  //采样间隔
 		vector<Point2f> contour_sam;
 		Point2f sample = contour_r[0];
-		for (int nn = 0; nn < contsize;nn++)
+		int ppnum = 0;
+		for (int nn = 1; nn <= contsize;nn++)
 		{
-			for (int num = 0; num < ppointsize; num++)
+			if (length_two_point2f(sample, part_points_[ppnum]) < Lambda)
 			{
-				if (length_two_point2f(sample, part_points_[num]) < Lambda/3)
-				{
-
-				}
+				contour_sam.push_back(part_points_[ppnum]);
+				ppnum++;
+				sample = part_points_[ppnum];
 			}
+			else
+			{
+				contour_sam.push_back(sample);
+				//计算新的sample点
+				double length_ = length_two_point2f(sample, contour_r[nn%contsize]);
+				if (length_ > Lambda)
+				{
+					Point2f vec = unit_vec(contour_r[nn%contsize] - sample);
+					sample = sample + Lambda * vec;
+					
+					nn = nn - 1;
+				}
+				else if (nn < contsize)
+				{
+					while ((length_ + length_two_point2f(contour_r[nn], contour_r[(nn + 1) % contsize])) < Lambda)
+					{
+						length_ = length_ + length_two_point2f(contour_r[nn], contour_r[(nn + 1) % contsize]);
+						nn++;
+						if (nn > contsize - 1) break;
+					}
+					if (nn > contsize - 1) break;
+					Point2f vec = unit_vec(contour_r[(nn + 1) % contsize] - contour_r[nn]);
+					sample = contour_r[nn] + (Lambda - length_) * vec;
+				}
+				contour_sam.push_back(sample);
+				//contour_sam_index.push_back(t%csize);
+
+			}
+			
 		}
 		contour_sam.push_back(contour_r[0]);
 
