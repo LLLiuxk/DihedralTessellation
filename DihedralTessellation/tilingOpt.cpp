@@ -155,7 +155,7 @@ namespace Tiling_tiles{
 		cout << "p_p_index: " << p_p_index.size() << endl;
 		vector<Point2f> contour_ = prototile_first->contour;
 		vector<Point2f> cont_orig = prototile_first->contour_sample[1];
-		vector<Point2f> cont_rota = prototile_first->contour_sample[4]; //旋转暂时用500个点
+		vector<Point2f> cont_rota = prototile_first->contour_sample[1]; //旋转暂时用500个点
 		int contsize = contour_.size();
 		Point2f cent_cont = center_p(contour_);
 		//vector<Point2f> contour_ = prototile_first->contour;
@@ -172,9 +172,9 @@ namespace Tiling_tiles{
 		}
 		mkdir(na);
 
-		int trans = Tanslation_rule(p_p_index, contour_, rootname);
-		int rotas = Rotation_rule(p_p_index, contour_, rootname);
-		int flips = Flipping_rule(p_p_index, contour_, rootname);
+		int trans = Tanslation_rule(p_p_index, cont_orig, rootname);
+		int rotas = Rotation_rule(p_p_index, cont_rota, rootname);
+		int flips = Flipping_rule(p_p_index, cont_orig, rootname);
 		int count = trans + rotas + flips;
 		cout << "succeed count: " << count << " trans: " << trans << " rotat: " << rotas << " flips: " << flips << endl;
 		//midtime = clock();
@@ -351,44 +351,53 @@ namespace Tiling_tiles{
 		{
 			if (length_two_point2f(sample, part_points_[ppnum]) < Lambda)
 			{
-				contour_sam.push_back(part_points_[ppnum]);
-				ppnum++;
 				sample = part_points_[ppnum];
+				contour_sam.push_back(sample);	
+				nn = pp_index[ppnum] + 1;
+				ppnum++;
+				
 			}
 			else
 			{
 				contour_sam.push_back(sample);
-				//计算新的sample点
-				double length_ = length_two_point2f(sample, contour_r[nn%contsize]);
-				if (length_ > Lambda)
+			}
+			//计算新的sample点
+			double length_ = length_two_point2f(sample, contour_r[nn%contsize]);
+			if (length_ > Lambda)
+			{
+				Point2f vec = unit_vec(contour_r[nn%contsize] - sample);
+				sample = sample + Lambda * vec;
+				nn = nn - 1;
+			}
+			else if (nn < contsize)
+			{
+				while ((length_ + length_two_point2f(contour_r[nn], contour_r[(nn + 1) % contsize])) < Lambda)
 				{
-					Point2f vec = unit_vec(contour_r[nn%contsize] - sample);
-					sample = sample + Lambda * vec;
-					
-					nn = nn - 1;
-				}
-				else if (nn < contsize)
-				{
-					while ((length_ + length_two_point2f(contour_r[nn], contour_r[(nn + 1) % contsize])) < Lambda)
-					{
-						length_ = length_ + length_two_point2f(contour_r[nn], contour_r[(nn + 1) % contsize]);
-						nn++;
-						if (nn > contsize - 1) break;
-					}
+					length_ = length_ + length_two_point2f(contour_r[nn], contour_r[(nn + 1) % contsize]);
+					nn++;
 					if (nn > contsize - 1) break;
-					Point2f vec = unit_vec(contour_r[(nn + 1) % contsize] - contour_r[nn]);
-					sample = contour_r[nn] + (Lambda - length_) * vec;
 				}
-				contour_sam.push_back(sample);
-				//contour_sam_index.push_back(t%csize);
-
+				if (nn > contsize - 1) break;
+				Point2f vec = unit_vec(contour_r[(nn + 1) % contsize] - contour_r[nn]);
+				sample = contour_r[nn] + (Lambda - length_) * vec;
 			}
 			
 		}
-		contour_sam.push_back(contour_r[0]);
-
-
-		//对all_result_points里的点进行定位，确定其下标
+		//最后检测数组里是否为200个点
+		if (contour_sam.size() == 200)
+		{
+			contour_r = contour_sam;
+		}
+		else
+		{
+			contour_r = contour_sam;
+		}
+		//确定候选点集part_points_的下标，以及all_result_points里的点的下标
+		part_points_index.swap(vector<int>());
+		for (int n = 0; n < ppointsize; n++)
+		{
+			part_points_index.push_back(location(contour_r, part_points_[n]));
+		}
 		for (int n = 0; n < all_result_points.size(); n++)
 		{
 			vector<int> one_result;
@@ -650,7 +659,8 @@ namespace Tiling_tiles{
 		vector<pair<int, bool>> candidate_patterns;
 		candidate_patterns = compare_choose_TAR(all_inner_conts[Tiling_index].in_contour);
 
-		mid_inter = joint_relocate(all_inner_conts[Tiling_index].in_contour, all_inner_conts[Tiling_index].in_interval, num_c);
+		//对中间图案采样200点并重新确认候选点坐标
+		//mid_inter = joint_relocate(all_inner_conts[Tiling_index].in_contour, all_inner_conts[Tiling_index].in_interval, num_c);
 
 		vector<Point2f> contour_inner = prototile_mid->contour_sample[1];
 		double sc_inner = 0;

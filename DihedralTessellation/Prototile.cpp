@@ -312,7 +312,7 @@ namespace Tiling_tiles{
 		// center point
 		center_point = center_p(contour);
 		//sampling and computing curvature
-		for (int i = 1; i < 6; i++)  //确定采样点数，此处为500点
+		for (int i = 1; i < 4; i++)  //确定采样点数，此处为500点
 		{			
 			vector<Point2f> contour_sam;
 			vector<Point2f> contour_sam_flip;
@@ -339,7 +339,12 @@ namespace Tiling_tiles{
 			name = name + char(i + 48) + " sample contour ";
 			imshow(name, drawing4);
 			//________________________ show over
-		}	
+		}
+		contour.swap(vector<Point2f>());
+		//int sam_num = contour_sample.size();
+		contour = contour_sample[1]; // 这里统一将初始轮廓选为200个点
+		//cconvex = curvature_com(contour);
+		cout << "contour_sample num: " << contour_sample[1].size() << endl;
 
 	}
 
@@ -385,53 +390,43 @@ namespace Tiling_tiles{
 	}
 
 
-	vector<int> Prototile::cand_tiling_v(int max_cur_num)
-	{
-		//排序，找最大的max_cur_num个凹凸点
-		contour.swap(vector<Point2f>());
-		int sam_num = contour_sample.size();	
-		contour = contour_sample[sam_num-4]; // 这里统一将初始轮廓选为200个点
-		//cconvex = curvature_com(contour);
-		cout << "contour_sample num: " << contour_sample[sam_num-4].size() << endl;
-		vector<int> cand_points_index;
-		//cand_points_index = most_convex_p(contour, cconvex, max_cur_num);
-		cand_points_index = feature_points(contour, 1, 3, cos(PI * 160 / 180));
-		//// show convex points
-		//Mat drawing5 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-
-		//for (int j = 0; j < contour.size(); j++)
-		//{
-		//	circle(drawing5, contour[j], 1, Scalar(0, 0, 0), -1);
-
-		//	//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
-		//}
-		//for (int j = 0; j < 20; j++)
-		//{
-		//	circle(drawing5, contour[index_num[j]], 4, Scalar(0, 0, 255), -1);
-		//}		
-		//imshow("convex points: ", drawing5);
-		
-		return cand_points_index;
-	}
-
 	vector<int> Prototile::partition_points(string imaname)
 	{
 		cout << imaname << endl;
 		//int cur_p_num = 20;   //cur_p_num 个不相邻的最大cos值点
-		int sam_p = 30;//目标采样点个数
-		double ratio = 0.012; //筛选间隔与周长之比
-		vector<int> max_order;
-		//imgtocout(imaname);
+		int sam_p = 20;//目标特征点个数
+		int cand_num = 50; //目标候选点个数
+		double ratio = 0.012; //筛选间隔与周长之比,略小于50个点的0.02，防止点间隔过小
 		loadTileData(imaname);
-		max_order = cand_tiling_v(sam_p);
+
+		//计算特征点
+		double angle = 160;
+		int times = 1;
+		vector<int> cand_points_index;
+		//cand_points_index = most_convex_p(contour, cconvex, max_cur_num);
+		cand_points_index = feature_points(contour, 1, 3, cos(PI * angle / 180));
+		int diff_num = cand_points_index.size() - sam_p;
+		while (abs(diff_num) > 10)
+		{
+			if (diff_num < -10)  angle += 2;
+			else angle -= 2;
+			cand_points_index = feature_points(contour, 1, 3, cos(PI * angle / 180));
+			diff_num = cand_points_index.size() - sam_p;
+			times++;
+			if (times == 5) break;
+		}
+		cout << "Feature points: " << cand_points_index.size() << endl;
+		feature_p = cand_points_index;
+
+		//在特征点间隙取更多采样点做候选点
 		int contoursize = contour.size();  //200个点
-		int margin = contoursize / sam_p;      //margin个点的采样间隔
-		vector<int> all_order = max_order;
+		int margin = contoursize / cand_num;      //margin个点的采样间隔
+		vector<int> all_order = feature_p;
 
 		for (int i = 0; i < contoursize; i = i + margin)
 		{
 			int flag = 0;
-			for (vector<int>::iterator it = max_order.begin(); it != max_order.end(); it++)
+			for (vector<int>::iterator it = feature_p.begin(); it != feature_p.end(); it++)
 			{
 				double leng = length_two_point2f(contour[i], contour[*it]);
 				if (leng < ratio*c_length)
@@ -440,11 +435,7 @@ namespace Tiling_tiles{
 					break;
 				}
 			}
-
-			if (flag == 0)
-			{
-				all_order.push_back(i);
-			}
+			if (flag == 0)  all_order.push_back(i);
 		}		
 		cout << "all_order.size:"<<all_order.size() << endl;
 		sort_bub(all_order);
@@ -461,16 +452,14 @@ namespace Tiling_tiles{
 
 			//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
 		}
-		for (int j = 0; j < max_order.size(); j++)
+		for (int j = 0; j < feature_p.size(); j++)
 		{
-			circle(drawing5, contour[max_order[j]], 6, Scalar(0, 0, 255), -1);
+			circle(drawing5, contour[feature_p[j]], 6, Scalar(0, 0, 255), -1);
 		}
-		
 		for (int j = 0; j < all_order.size(); j++)
 		{
 			//circle(drawing5, contour[all_order[j]], 3, Scalar(128, 128, 128), -1);
-		}
-		
+		}		
 		imshow("convex points: ", drawing5);
 
 		return all_order;

@@ -59,7 +59,7 @@ namespace Tiling_tiles{
 		void contour_sam_cur();	
 		vector<vector<double>> compute_TAR(vector<Point2f> &contour_,double &shape_complexity, double frac = 0.25); //frac*num是计算的点数目
 
-		vector<int> cand_tiling_v(int max_cur_num);       //求轮廓上值最大的10个不临近的凸点
+		//vector<int> cand_tiling_v(int max_cur_num);       //求轮廓上值最大的10个不临近的凸点
 		vector<int> partition_points(string imaname);  //求得用做划分的点
 
 		//void cur_normalize();
@@ -82,6 +82,7 @@ namespace Tiling_tiles{
 		//vector<double> cconvex;
 		vector<vector<Point2f>> contour_sample;
 		vector<vector<Point2f>> contour_sample_flip;
+		vector<int> feature_p;
 		//vector<vector<double>> contour_curva;
 		//vector<vector<double>> contour_curva_flip;
 		//char cur_string[6][600];
