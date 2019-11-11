@@ -45,6 +45,7 @@ namespace Tiling_tiles{
 
 	void Prototile::loadTileData(string tile_data)
 	{
+		int show_mat = 1;
 		setpath();
 		//vector<double> cos_vec_contour;
 		//vector<int> index_cos;		
@@ -53,7 +54,7 @@ namespace Tiling_tiles{
 		contour = readTxt();
 		if (contour.empty()) exit(0);
 		//采样
-		contour_sam_cur();
+		contour_sam_cur(show_mat);
 		
 		//cur_normalize();
 	}
@@ -304,7 +305,7 @@ namespace Tiling_tiles{
 	}
 
 
-	void Prototile::contour_sam_cur()
+	void Prototile::contour_sam_cur(int show_mat)
 	{
 		double Lambda = 0;
 		int sam_num = 0;
@@ -328,23 +329,26 @@ namespace Tiling_tiles{
 			//contour_curva_flip.push_back(curvature_com(contour_sam_flip));
 			//_________________________show the result
 
-			Mat drawing4 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-
-			for (int j = 0; j < contour_sam.size(); j++)
+			if (show_mat == 1)
 			{
-				circle(drawing4, contour_sam[j], 1, Scalar(0, 0, 0), -1);
-				//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
+				Mat drawing4 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+
+				for (int j = 0; j < contour_sam.size(); j++)
+				{
+					circle(drawing4, contour_sam[j], 1, Scalar(0, 0, 0), -1);
+					//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
+				}
+				string name = "the ";
+				name = name + char(i + 48) + " sample contour ";
+				imshow(name, drawing4);
 			}
-			string name = "the ";
-			name = name + char(i + 48) + " sample contour ";
-			imshow(name, drawing4);
 			//________________________ show over
 		}
 		contour.swap(vector<Point2f>());
 		//int sam_num = contour_sample.size();
 		contour = contour_sample[1]; // 这里统一将初始轮廓选为200个点
-		//cconvex = curvature_com(contour);
-		cout << "contour_sample num: " << contour_sample[1].size() << endl;
+		contour_r = contour_sample[1];
+		//cout << "contour_sample num: " << contour_sample[1].size() << endl;
 
 	}
 
@@ -400,29 +404,42 @@ namespace Tiling_tiles{
 		loadTileData(imaname);
 
 		//计算特征点
-		double angle = 160;
+		double angle = 165;
 		int times = 1;
 		vector<int> cand_points_index;
 		//cand_points_index = most_convex_p(contour, cconvex, max_cur_num);
-		cand_points_index = feature_points(contour, 1, 3, cos(PI * angle / 180));
+		cand_points_index = feature_points(contour, Feature_Min, Feature_Max, cos(PI * angle / 180));
 		int diff_num = cand_points_index.size() - sam_p;
 		while (abs(diff_num) > 10)
 		{
 			if (diff_num < -10)  angle += 2;
 			else angle -= 2;
-			cand_points_index = feature_points(contour, 1, 3, cos(PI * angle / 180));
+			cand_points_index = feature_points(contour, Feature_Min, Feature_Max, cos(PI * angle / 180));
 			diff_num = cand_points_index.size() - sam_p;
 			times++;
 			if (times == 5) break;
 		}
+		cout << times <<"  "<<angle<< endl;
 		cout << "Feature points: " << cand_points_index.size() << endl;
 		feature_p = cand_points_index;
-
-		//在特征点间隙取更多采样点做候选点
+		//获得带特征的轮廓点集
 		int contoursize = contour.size();  //200个点
+		int f_index = 0;
+		for (int i = 0; i < contoursize; i++)
+		{
+			Point_f one;
+			one.point = contour[i];
+			if (i == feature_p[f_index])
+			{
+				one.type = 2;
+				f_index++;
+			}
+			else one.type = 0;
+			contour_f.push_back(one);
+		}
+		//在特征点间隙取更多采样点做候选点
 		int margin = contoursize / cand_num;      //margin个点的采样间隔
 		vector<int> all_order = feature_p;
-
 		for (int i = 0; i < contoursize; i = i + margin)
 		{
 			int flag = 0;
@@ -435,14 +452,26 @@ namespace Tiling_tiles{
 					break;
 				}
 			}
-			if (flag == 0)  all_order.push_back(i);
+			if (flag == 0)
+			{
+				all_order.push_back(i);
+				contour_f[i].type = 1;
+			}
 		}		
 		cout << "all_order.size:"<<all_order.size() << endl;
 		sort_bub(all_order);
-		/*for (int t = 0; t < all_order.size(); t++)
-		{
-			cout << all_order[t] << " ";
-		}*/
+		//for (int t = 0; t < all_order.size(); t++)
+		//{
+		//	cout << all_order[t] << " ";
+		//}
+		//cout << endl;
+		//for (int i = 0; i < contoursize; i++)
+		//{
+		//	if (contour_f[i].type == 1 || contour_f[i].type == 2)
+		//	{
+		//		cout << i << " ";
+		//	}
+		//}
 		// show convex points
 		Mat drawing5 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 
@@ -458,7 +487,7 @@ namespace Tiling_tiles{
 		}
 		for (int j = 0; j < all_order.size(); j++)
 		{
-			//circle(drawing5, contour[all_order[j]], 3, Scalar(128, 128, 128), -1);
+			circle(drawing5, contour[all_order[j]], 3, Scalar(128, 128, 128), -1);
 		}		
 		imshow("convex points: ", drawing5);
 

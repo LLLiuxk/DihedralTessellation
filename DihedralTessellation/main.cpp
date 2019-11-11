@@ -75,7 +75,7 @@ int main(int argc, char** argv)
 	if (f == 0) //已有dataset, 计算结果
 	{
 
-		tiling_opt->tiliing_generation("491");
+		tiling_opt->tiliing_generation("307");
 
 		//批量计算
 		//int iii[20] = {48,75,80,124,220,218,212,228,248,251,280,312,317};//{484,483,482,482,480,479,478,474,472,467,451}; 

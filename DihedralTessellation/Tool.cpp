@@ -1302,75 +1302,31 @@ namespace Tiling_tiles{
 		double arl = arcLength(contour_, true);
 		dmin = dmin * arl / contoursize;
 		dmax = dmax * arl / contoursize;
-		double dmid = (dmin + dmax) / 2;
+		double dmid = dmin * 3;
 
 		for (int i = 0; i < contoursize; i++)
 		{
 			int k = 1;
 			double length_l = length_two_point2f(contour_[i], contour_[(i + contoursize - k) % contoursize]);
 			double length_r = length_two_point2f(contour_[i], contour_[(i + k) % contoursize]);
-			while (length_l < dmin || length_r < dmin)
-			{
-				k++;
-				length_l = length_two_point2f(contour_[i], contour_[(i + contoursize - k) % contoursize]);
-				length_r = length_two_point2f(contour_[i], contour_[(i + k) % contoursize]);
-			}
+			//while (length_l < dmin || length_r < dmin)
+			//{
+			//	k++;
+			//	length_l = length_two_point2f(contour_[i], contour_[(i + contoursize - k) % contoursize]);
+			//	length_r = length_two_point2f(contour_[i], contour_[(i + k) % contoursize]);
+			//}
 			//cout << "ok" << endl;
 			double length_op = 0;
 			double angle = 2; 
 			int f = 0;
-			/*while (length_l < dmax && length_r < dmax)
-			{
-				length_op = length_two_point2f(contour_[(i + contoursize - k) % contoursize], contour_[(i + k) % contoursize]);
-				double angle1 = cos_3edges(length_l, length_r, length_op);
-				k++;
-				length_l = length_two_point2f(contour_[i], contour_[(i + contoursize - k) % contoursize]);
-				length_r = length_two_point2f(contour_[i], contour_[(i + k) % contoursize]);
-				if (angle1 > angle_cos)
-				{
-					f = 1;
-					if (angle1 > angle) angle = angle1;
-				}
-
-			}
-
-			if (f == 1 && angle != -2)
-			{
-				if (index_num.empty())
-				{
-					cout << "zahuishi" << endl;
-					angle_start = angle;
-					angle_back = angle;
-					index_num.push_back(i);
-				}
-				else
-				{
-					if (length_two_point2f(contour_[index_num.back()], contour_[i]) > dmax)
-					{
-						angle_back = angle;
-						index_num.push_back(i);
-					}
-					else
-					{
-						if (angle > angle_back)
-						{
-							index_num.pop_back();
-							angle_back = angle;
-							if (index_num.empty())
-								angle_start = angle;
-							index_num.push_back(i);
-						}
-					}
-				}
-			}*/
-
+		
 			while (length_l < dmax && length_r < dmax)
 			{
 				length_op = length_two_point2f(contour_[(i + contoursize - k) % contoursize], contour_[(i + k) % contoursize]);
 				double angle1 = cos_3edges(length_l, length_r, length_op);
 				if (angle1 < angle_cos)  //角度大于angle_cos的度数
 				{
-					f == 1;
+					f = 1;
 					break;
 				}
 				else
