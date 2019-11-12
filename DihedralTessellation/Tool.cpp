@@ -1364,16 +1364,32 @@ namespace Tiling_tiles{
 					else 
 					{
 						double multicross1 = multicross_2vector(contour_[(i + contoursize - 1) % contoursize] - contour_[i], contour_[(i + 1) % contoursize] - contour_[i]);
-						double multicross2 = multicross_2vector(contour_[(i + contoursize - 1) % contoursize] - contour_[i], contour_[(i + 1) % contoursize] - contour_[i]);
-						if ()
-						if (angle > angle_back)
+						int back = index_num.back();
+						double multicross2 = multicross_2vector(contour_[(back + contoursize - 1) % contoursize] - contour_[back], contour_[(back + 1) % contoursize] - contour_[back]);
+						//判断是凸点还是凹点，凸点优先，如果凹凸性一致，比较角度
+						if (multicross1 > 0)
 						{
-							index_num.pop_back();
-							angle_back = angle;
-							if (index_num.empty())
-								angle_start = angle;
-							index_num.push_back(i);
+							if ((multicross2 > 0) && (angle > angle_back) || multicross2 < 0)
+							{
+								index_num.pop_back();
+								angle_back = angle;
+								if (index_num.empty())
+									angle_start = angle;
+								index_num.push_back(i);
+							}
 						}
+						else
+						{
+							if ((multicross2 < 0) && (angle > angle_back))
+							{
+								index_num.pop_back();
+								angle_back = angle;
+								if (index_num.empty())
+									angle_start = angle;
+								index_num.push_back(i);
+							}
+						}
+						
 					}	
 				}	
 			}
