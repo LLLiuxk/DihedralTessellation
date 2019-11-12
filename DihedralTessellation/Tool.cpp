@@ -977,7 +977,9 @@ namespace Tiling_tiles{
 
 	double cos_two_vector(Point2f &v0, Point2f &v1)
 	{
-		return unit_vec(v0).x*unit_vec(v1).x + unit_vec(v0).y*unit_vec(v1).y;
+		Point2f v0u = unit_vec(v0);
+		Point2f v1u = unit_vec(v1);
+		return v0u.x*v1u.x + v0u.y*v1u.y;
 	}
 
 	double cos_3edges(double l1, double l2, double l3)
@@ -988,7 +990,14 @@ namespace Tiling_tiles{
 
 	double sin_two_vector(Point2f &v0, Point2f &v1)
 	{
-		return unit_vec(v0).x*unit_vec(v1).y - unit_vec(v0).y*unit_vec(v1).x;
+		Point2f v0u = unit_vec(v0);
+		Point2f v1u = unit_vec(v1);
+		return v0u.x*v1u.y - v0u.y*v1u.x;
+	}
+
+	double multicross_2vector(Point2f &v0, Point2f &v1)
+	{
+		return v0.x*v1.y - v0.y*v1.x;
 	}
 
 	double tar_2vector(Point2f &v0, Point2f &v1)
@@ -1354,6 +1363,9 @@ namespace Tiling_tiles{
 					}
 					else 
 					{
+						double multicross1 = multicross_2vector(contour_[(i + contoursize - 1) % contoursize] - contour_[i], contour_[(i + 1) % contoursize] - contour_[i]);
+						double multicross2 = multicross_2vector(contour_[(i + contoursize - 1) % contoursize] - contour_[i], contour_[(i + 1) % contoursize] - contour_[i]);
+						if ()
 						if (angle > angle_back)
 						{
 							index_num.pop_back();
@@ -1367,7 +1379,7 @@ namespace Tiling_tiles{
 			}
 		}
 		
-		if (length_two_point2f(contour_[index_num.back()], contour_[index_num[0]]) < dmax)
+		if (length_two_point2f(contour_[index_num.back()], contour_[index_num[0]]) < dmid)
 		{
 			if (angle_back > angle_start)
 			{ 
@@ -1439,7 +1451,7 @@ namespace Tiling_tiles{
 		srcP2 = contour_mid;
  
 
-
+		return final_pettern;
 	}
 
 

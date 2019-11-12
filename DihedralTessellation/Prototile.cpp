@@ -419,8 +419,8 @@ namespace Tiling_tiles{
 			times++;
 			if (times == 5) break;
 		}
-		cout << times <<"  "<<angle<< endl;
-		cout << "Feature points: " << cand_points_index.size() << endl;
+		int fpointsnum = cand_points_index.size();
+		cout << times << "  " << angle << endl << "Feature points: " << fpointsnum << endl;
 		feature_p = cand_points_index;
 		//获得带特征的轮廓点集
 		int contoursize = contour.size();  //200个点
@@ -429,16 +429,19 @@ namespace Tiling_tiles{
 		{
 			Point_f one;
 			one.point = contour[i];
-			if (i == feature_p[f_index])
+			if (f_index == fpointsnum)	one.type = 0;
+			else if (i == feature_p[f_index])
 			{
 				one.type = 2;
 				f_index++;
+				//cout << "f_index: " << f_index << endl;
 			}
 			else one.type = 0;
 			contour_f.push_back(one);
 		}
 		//在特征点间隙取更多采样点做候选点
 		int margin = contoursize / cand_num;      //margin个点的采样间隔
+		
 		vector<int> all_order = feature_p;
 		for (int i = 0; i < contoursize; i = i + margin)
 		{

@@ -131,8 +131,8 @@ namespace Tiling_tiles{
 		bool translation_placement(vector<int> &feature_p, vector<int> results, vector<Point_f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname);
 		bool rotation_placement(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname);
 		bool flipping_placement(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname,int type);
-		vector<Point2f> extract_contour(vector<Point_f> contour_, vector<int> mark_p, vector<int> &feature_p, vector<int> &midmark_p, vector<vector<Point_f>> &four_place, int type);
-		
+		vector<Point2f> extract_contour_f(vector<Point_f> contour_, vector<int> mark_p, vector<int> &feature_p, vector<int> &midmark_p, vector<vector<Point_f>> &four_place, int type);
+		vector<Point2f> extract_contour(vector<Point2f> contour_, vector<int> mark_p, vector<int> &midmark_p, vector<vector<Point2f>> &four_place, int type);
 		//match candidate patterns
 		void match_candidate(int Tiling_index);
 

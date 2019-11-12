@@ -83,6 +83,7 @@ namespace Tiling_tiles{
 	double cos_3edges(double l1, double l2, double l3);
 	double cos_two_vector(Point2f &v0, Point2f &v1);
 	double sin_two_vector(Point2f &v0, Point2f &v1);
+	double multicross_2vector(Point2f &v0, Point2f &v1);
 	double tar_2vector(Point2f &v0, Point2f &v1);
 	vector<double> recover_consin(const vector<double> &former);
 
