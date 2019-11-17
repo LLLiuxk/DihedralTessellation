@@ -25,6 +25,12 @@ namespace Tiling_tiles{
 #define Feature_Min 1
 #define Feature_Max 3
 
+	typedef struct Point_feature
+	{
+		Point2f point;
+		int type; //0:普通点 1:候选点 2:特征点
+	}Point_f;
+
 	typedef struct candPat_angle_index_error
 	{
 		int number;
@@ -37,9 +43,8 @@ namespace Tiling_tiles{
 	typedef struct innerPat_pare
 	{
 		int type; //0:trans,1:rota,2:flip(13),3:flip(24)
-		vector<int> feature_index;
 		vector<int> in_interval;
-		vector<Point2f> in_contour;
+		vector<Point_f> in_contour;
 	}inPat;
 
 	typedef struct jointPat_four
@@ -49,11 +54,7 @@ namespace Tiling_tiles{
 		vector<vector<Point2f>> four_contour;
 	}jointPat;
 
-	typedef struct Point_feature
-	{
-		Point2f point;
-		int type; //0:普通点 1:候选点 2:特征点
-	}Point_f;
+
 
 	class Prototile{
 	public:
@@ -125,13 +126,13 @@ namespace Tiling_tiles{
 		//three tiling rules
 		int Rotation_rule(vector<int> part_points_index, vector<Point2f> &contour_s, string rootname);
 		int Tanslation_rule(vector<int> part_points_index, vector<Point_f> &contour_s, string rootname);
-		int Flipping_rule(vector<int> part_points_index, vector<Point2f> &contour_s, string rootname);
+		int Flipping_rule(vector<int> part_points_index, vector<Point_f> &contour_s, string rootname);
 
 		vector<vector<Point2f>> find_rota_tilingV(vector<Point2f> &cont, vector<int> mark_13, vector<pair<Point2f, int>> &all_insert_points);
-		bool translation_placement(vector<int> &feature_p, vector<int> results, vector<Point_f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname);
+		bool translation_placement(vector<int> results, vector<Point_f> &contour_s, vector<Point_f> &return_B, vector<int> &return_p, Mat &countname);
 		bool rotation_placement(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname);
-		bool flipping_placement(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname,int type);
-		vector<Point2f> extract_contour_f(vector<Point_f> contour_, vector<int> mark_p, vector<int> &feature_p, vector<int> &midmark_p, vector<vector<Point_f>> &four_place, int type);
+		bool flipping_placement(vector<int> results, vector<Point_f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname,int type);
+		vector<Point_f> extract_contour_f(vector<Point_f> contour_, vector<int> mark_p, vector<int> &midmark_p, vector<vector<Point_f>> &four_place, int type);
 		vector<Point2f> extract_contour(vector<Point2f> contour_, vector<int> mark_p, vector<int> &midmark_p, vector<vector<Point2f>> &four_place, int type);
 		//match candidate patterns
 		void match_candidate(int Tiling_index);
