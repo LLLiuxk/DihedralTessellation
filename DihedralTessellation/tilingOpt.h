@@ -115,6 +115,7 @@ namespace Tiling_tiles{
 
 		//collision		
 		bool coll_detec_bbx(vector<Point2f> contour1, vector<Point2f> contour2, int threshold);
+		bool coll_detec_geometry(vector<Point2f> contour1, vector<Point2f> contour2, int threshold);
 		bool vertex_angle(vector<Point2f> angle1, vector<Point2f> angle2);
 
 		//load dataset
@@ -131,7 +132,7 @@ namespace Tiling_tiles{
 		vector<vector<Point2f>> find_rota_tilingV(vector<Point2f> &cont, vector<int> mark_13, vector<pair<Point2f, int>> &all_insert_points);
 		bool translation_placement(vector<int> results, vector<Point_f> &contour_s, vector<Point_f> &return_B, vector<int> &return_p, Mat &countname);
 		bool rotation_placement(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname);
-		bool flipping_placement(vector<int> results, vector<Point_f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname,int type);
+		bool flipping_placement(vector<int> results, vector<Point_f> &contour_s, vector<Point_f> &return_B, vector<int> &return_p, Mat &countname,int type);
 		vector<Point_f> extract_contour_f(vector<Point_f> contour_, vector<int> mark_p, vector<int> &midmark_p, vector<vector<Point_f>> &four_place, int type);
 		vector<Point2f> extract_contour(vector<Point2f> contour_, vector<int> mark_p, vector<int> &midmark_p, vector<vector<Point2f>> &four_place, int type);
 		//match candidate patterns
