@@ -182,9 +182,9 @@ namespace Tiling_tiles{
 		vector<int> p_p_index = prototile_first->partition_points(imaname);
 		vector<int> ttt;
 		ttt.push_back(p_p_index[0]);
-		ttt.push_back(p_p_index[16]);
-		ttt.push_back(p_p_index[26]);
-		ttt.push_back(p_p_index[41]);
+		ttt.push_back(p_p_index[17]);
+		ttt.push_back(p_p_index[21]);
+		ttt.push_back(p_p_index[24]);
 		std::cout << "ttt: " << ttt.size() << endl;
 		vector<Point2f> contour_ = prototile_first->contour;
 		vector<Point_f> cont_orig = prototile_first->contour_f;
@@ -596,7 +596,7 @@ namespace Tiling_tiles{
 				{
 					for (int n = m + 1; n < ppindex; n++)
 					{
-						std::cout << i<<" "<<j<<" "<<m<<" "<<n << endl;
+						//std::cout << i<<" "<<j<<" "<<m<<" "<<n << endl;
 						vector<Point_f> inner_contour;
 						vector<int> mid_interval; //mid_interval存储的是组合成的inner 的分段连接点
 						vector<int> result_index; //1.translation：以下所有该类摆放都以1-3,2-4为轴摆放
@@ -1432,22 +1432,22 @@ namespace Tiling_tiles{
 		}
 		if (vertex_angle(a[0], b[0]) || vertex_angle(a[1], b[1]))
 		{
-			std::cout << "point collision" << endl;
+			//std::cout << "point collision" << endl;
 			return false;  //到这里用时0.009s
-		}
-		if (coll_detec_geometry(p2f2p_f(four_place[0]), p2f2p_f(four_place[1]), 5) || coll_detec_geometry(p2f2p_f(four_place[0]), p2f2p_f(four_place[2]), 10)
+		}		
+		if (coll_detec_geometry(p2f2p_f(four_place[0]), p2f2p_f(four_place[1]), 2) || coll_detec_geometry(p2f2p_f(four_place[0]), p2f2p_f(four_place[2]), 2) 
 			|| coll_detec_geometry(p2f2p_f(four_place[0]), p2f2p_f(four_place[3]), 0) || coll_detec_geometry(p2f2p_f(four_place[1]), p2f2p_f(four_place[2]), 0))
 		{
-			std::cout << "polygon collision" << endl;
+			//std::cout << "polygon collision" << endl;
 			return false;
 		}
-
-		/*if (coll_detec_bbx(p2f2p_f(four_place[0]), p2f2p_f(four_place[1]), 10) || coll_detec_bbx(p2f2p_f(four_place[0]), p2f2p_f(four_place[2]), 10)
-			|| coll_detec_bbx(p2f2p_f(four_place[0]), p2f2p_f(four_place[3]), 0) || coll_detec_bbx(p2f2p_f(four_place[1]), p2f2p_f(four_place[2]), 0))
+		if (coll_detec_bbx(p2f2p_f(four_place[0]), p2f2p_f(four_place[1]), 50) || coll_detec_bbx(p2f2p_f(four_place[0]), p2f2p_f(four_place[2]), 50))
+			//|| coll_detec_bbx(p2f2p_f(four_place[0]), p2f2p_f(four_place[3]), 0) || coll_detec_bbx(p2f2p_f(four_place[1]), p2f2p_f(four_place[2]), 0))
 		{
-			std::cout << "polygon collision" << endl;
+			//std::cout << "polygon collision" << endl;
 			return false;
-		}*/
+		}
+		
 		
 		if (type == 0) return_B = extract_contour_f(contour_s, results, return_p, four_place, 2);
 		if (type == 1) return_B = extract_contour_f(contour_s, results, return_p, four_place, 3);
@@ -2108,12 +2108,8 @@ namespace Tiling_tiles{
 				if ((int)drawing1.at<uchar>(i, j) == 0 && (int)drawing2.at<uchar>(i, j) == 0)
 				   count++;
 			}
-		//std::cout << count << endl;
-		if (count > threshold)
-		{
-			std::cout << "collision num: " << count << endl;
-			return true;
-		}
+		//std::cout << "collision num: " << count << endl;
+		if (count > threshold) return true;
 		else return false;
 
 	}
@@ -2123,7 +2119,7 @@ namespace Tiling_tiles{
 		vector<Point2f> all_colli_points = poly_poly(contour1, contour2);
 		cout << "all_colli_points.size: " << all_colli_points.size()<<endl;
 		if (all_colli_points.size() > threshold) return true;
-
+		return false;
 	}
 
 	bool Tiling_opt::vertex_angle(vector<Point2f> angle1, vector<Point2f> angle2)

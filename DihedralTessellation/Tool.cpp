@@ -886,8 +886,7 @@ namespace Tiling_tiles{
 			}
 			else if (f == 2) all_inter.push_back(0.5 * (line2.start + line2.end));
 		}
-		cout << "intersize :  "<<all_inter.size() 
-			<< all_inter [0]<<" "<<all_inter[1]<< endl;
+		//cout << "intersize :  "<<all_inter.size() << all_inter [0]<<" "<<all_inter[1]<< endl;
 		return all_inter;
 	}
 	
