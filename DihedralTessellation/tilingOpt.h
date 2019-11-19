@@ -125,13 +125,13 @@ namespace Tiling_tiles{
 		
 
 		//three tiling rules
-		int Rotation_rule(vector<int> part_points_index, vector<Point2f> &contour_s, string rootname);
+		int Rotation_rule(vector<int> part_points_index, vector<Point_f> &contour_s, string rootname);
 		int Tanslation_rule(vector<int> part_points_index, vector<Point_f> &contour_s, string rootname);
 		int Flipping_rule(vector<int> part_points_index, vector<Point_f> &contour_s, string rootname);
 
 		vector<vector<Point2f>> find_rota_tilingV(vector<Point2f> &cont, vector<int> mark_13, vector<pair<Point2f, int>> &all_insert_points);
 		bool translation_placement(vector<int> results, vector<Point_f> &contour_s, vector<Point_f> &return_B, vector<int> &return_p, Mat &countname);
-		bool rotation_placement(vector<int> results, vector<Point2f> &contour_s, vector<Point2f> &return_B, vector<int> &return_p, Mat &countname);
+		bool rotation_placement(vector<int> results, vector<Point_f> &contour_s, vector<Point_f> &return_B, vector<int> &return_p, Mat &countname);
 		bool flipping_placement(vector<int> results, vector<Point_f> &contour_s, vector<Point_f> &return_B, vector<int> &return_p, Mat &countname,int type);
 		vector<Point_f> extract_contour_f(vector<Point_f> contour_, vector<int> mark_p, vector<int> &midmark_p, vector<vector<Point_f>> &four_place, int type);
 		vector<Point2f> extract_contour(vector<Point2f> contour_, vector<int> mark_p, vector<int> &midmark_p, vector<vector<Point2f>> &four_place, int type);
@@ -171,7 +171,7 @@ namespace Tiling_tiles{
 		void pattern_joint(jointPat pattern);
 		vector<Point2f> construct_joint(jointPat pattern, int &mid);
 		//math
-		vector<Point2f> p2f2p_f(vector<Point_f> origin);
+		vector<Point2f> p_f2p2f(vector<Point_f> origin);
 
 		//from CandPat to contour
 		vector<Point2f> CandP2Contour(CandPat candp, int num);

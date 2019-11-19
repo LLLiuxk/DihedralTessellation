@@ -104,6 +104,7 @@ namespace Tiling_tiles{
 
 				}
 	}
+
 	//file cout
 	void fileout(string filepath, vector<Point> contour_);
 	void write_obj(string filepath, vector<Point2f> contour, double height);
@@ -125,7 +126,23 @@ namespace Tiling_tiles{
 	
 	void compute_TAR_new(vector<Point2f> &contour_);
 
-	void insert_vector(vector<Point2f> &vec, int index_p, Point2f insert_p);
+	template<typename T>
+	void insert_vector(vector<T> &vec, int index_p, T insert_p)
+	{
+		vector<T> vec1;
+		int vsize = vec.size();
+		for (int i = 0; i <= index_p; i++)
+		{
+			vec1.push_back(vec[i]);
+		}
+		vec1.push_back(insert_p);
+		for (int i = index_p + 1; i <vsize; i++)
+		{
+			vec1.push_back(vec[i]);
+		}
+		vec = vec1;
+	}
+	
 	int location(vector<Point2f> &vec, Point2f input);
 
 }

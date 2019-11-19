@@ -1684,23 +1684,6 @@ namespace Tiling_tiles{
 		cout <<"ratio: " <<ratio<< "    shape_com: " << shape_complexity << endl;
 	}
 
-
-	void insert_vector(vector<Point2f> &vec, int index_p, Point2f insert_p)
-	{
-		vector<Point2f> vec1;
-		int vsize = vec.size();
-		for (int i = 0; i <= index_p; i++)
-		{
-			vec1.push_back(vec[i]);
-		}
-		vec1.push_back(insert_p);
-		for (int i = index_p + 1; i <vsize; i++)
-		{
-			vec1.push_back(vec[i]);
-		}
-		vec = vec1;
-	}
-
 	int location(vector<Point2f> &vec, Point2f input)
 	{
 		int con_size = vec.size();

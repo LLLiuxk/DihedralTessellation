@@ -20,7 +20,7 @@ int main(int argc, char** argv)
 	Tiling_tiles::Prototile *prototile_third;
 	prototile_third = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
-	int f = 1;
+	int f = 0;
 	//0:result  1:simulation  2:≈˙¡ø∂¡Õº  3:feature points  4:compute_TAR  5:min_minsmatch  6:extract_contour  7:compare and choose
 	//8:morphing  9:draw  10:math  11:check  12:thickness  13:color  14:windows 15:evalua_deformation
 	if (f == 111) //test
