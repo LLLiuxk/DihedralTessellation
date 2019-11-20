@@ -141,7 +141,7 @@ namespace Tiling_tiles{
 		std::cout << "p_p_index: " << p_p_index.size() << endl;
 		vector<Point2f> contour_ = prototile_first->contour;
 		vector<Point_f> cont_orig = prototile_first->contour_f;
-		vector<Point2f> cont_rota = prototile_first->contour_r; //旋转暂时用500个点
+		vector<Point_f> cont_rota = prototile_first->contour_f; //旋转暂时用500个点
 		int contsize = contour_.size();
 		Point2f cent_cont = center_p(contour_);
 		//vector<Point2f> contour_ = prototile_first->contour;
@@ -159,7 +159,7 @@ namespace Tiling_tiles{
 		mkdir(na);
 
 		int trans = Tanslation_rule(p_p_index, cont_orig, rootname);
-		int rotas = 0;// Rotation_rule(p_p_index, cont_rota, rootname);
+		int rotas = Rotation_rule(p_p_index, cont_rota, rootname);
 		int flips = Flipping_rule(p_p_index, cont_orig, rootname);
 		int count = trans + rotas + flips;
 		std::cout << "succeed count: " << count << " trans: " << trans << " rotat: " << rotas << " flips: " << flips << endl;
@@ -230,7 +230,7 @@ namespace Tiling_tiles{
 		int contsize = contour_s.size();		
 		Point2f cent_cont = center_p(p_f2p2f(contour_s));
 		//std::cout << "contsize: " << cent_cont << endl;
-
+		int times = 0;
 		for (int i = 0; i < ppindex; i++)
 		{
 			for (int j = i + 1; j < ppindex; j++)
@@ -241,6 +241,7 @@ namespace Tiling_tiles{
 					//if (abs(part_points_index[m] - part_points_index[j]) < margin) continue;
 					for (int n = m + 1; n < ppindex; n++)
 					{
+						times++;
 						//std::cout << i<<" "<<j<<" "<<m<<" "<<n << endl;
 						//if (abs(part_points_index[n] - part_points_index[m]) < margin) continue;
 						vector<Point_f> inner_contour;
@@ -278,7 +279,7 @@ namespace Tiling_tiles{
 							}
 
 							string filename = rootname + "\\" + int2string(trans - 1) + "transPlacingResult.png";
-							imwrite(filename, drawing1);
+							cv::imwrite(filename, drawing1);
 							//Mat draw = drawing1(Rect(800, 0, 800, 800));
 							//all_tiling_Mat.push_back(draw);
 						}
@@ -286,6 +287,7 @@ namespace Tiling_tiles{
 				}
 			}
 		}
+		std::cout << "trans times: " << times << endl;
 		return trans;
 	}
 
@@ -297,9 +299,9 @@ namespace Tiling_tiles{
 		//然后根据坐标，将候选点集和所有的四点进行下标重定位
 		int rotas = 0;
 		int ppindex = part_points_index.size();
-		
 		vector<Point2f> contour_rota = p_f2p2f(contour_r);  //通过contour_rota来计算点的下标
 		Point2f cent_cont = center_p(contour_rota);
+
 		vector<pair<Point2f, int>> insert_points;
 		vector<vector<Point2f>> all_result_points;
 		vector<vector<int>> all_result_index; //通过重新定位确定点的下标序列
@@ -307,6 +309,7 @@ namespace Tiling_tiles{
 		{
 			for (int j = i + 1; j < ppindex; j++)
 			{
+				cout << i << " " << part_points_index[i] << "  " << j << "  "<<part_points_index[j] << endl;
 				vector<Point2f> inner_contour;
 				vector<int> mid_interval; //mid_interval存储的是组合成的inner 的分段连接点
 				vector<int> mark_13;
@@ -348,7 +351,7 @@ namespace Tiling_tiles{
 		{
 			Point_f one_p;
 			one_p.point = insert_points[num].first;
-			one_p.type = 2;
+			one_p.type = 1;
 			insert_vector(contour_r, insert_points[num].second, one_p);
 		}
 		
@@ -357,20 +360,20 @@ namespace Tiling_tiles{
 		vector<Point_f> part_points_;  //初始候选点集的坐标
 		vector<int> pp_index;
 		int contsize = contour_r.size();
+		cout << "contsize:  " << contsize << endl;
 		for (int it = 0; it < contsize; it++)
 		{
-			if (contour_r[it].type == 2)
+			if (contour_r[it].type != 0)
 			{
 				part_points_.push_back(contour_r[it]);
 				pp_index.push_back(it);
 			}
 		}
-		int ppointsize = part_points_.size();
-		std::cout << "part_points_ num:" << ppointsize << endl;
 		
 		//根据候选点集采样
 		double length = contour_length(p_f2p2f(contour_r));
-		double Lambda = length / contsize;  //采样间隔
+		int sample_num = 200;
+		double Lambda = length / (sample_num + 10);  //采样间隔
 		vector<Point_f> contour_sam;
 		Point_f sample = contour_r[0];
 		int ppnum = 0;
@@ -381,8 +384,7 @@ namespace Tiling_tiles{
 				sample = part_points_[ppnum];
 				contour_sam.push_back(sample);	
 				nn = pp_index[ppnum] + 1;
-				ppnum++;
-				
+				ppnum++;			
 			}
 			else
 			{
@@ -411,23 +413,50 @@ namespace Tiling_tiles{
 				sample.type = 0;
 			}		
 		}
+
+		int ppointsize = part_points_.size();
+		std::cout << "part_points_ num:" << ppointsize << endl;
+		
 		//最后检测数组里是否为200个点
-		if (contour_sam.size() == 200)
+		int dis = contour_sam.size();
+		if (dis != 200)
 		{
-			contour_r = contour_sam;
+			dis = dis - 200;
+			int changenum = 50;
+			while (dis != 0)
+			{
+				if (dis < 0) //添加点
+				{				
+					Point_f one_p;
+					one_p.point = 0.5 * (contour_sam[changenum].point + contour_sam[changenum + 1].point);
+					one_p.type = 0;
+					insert_vector(contour_sam, changenum, one_p);
+					changenum = changenum + 2;
+					dis = dis + 1;
+				}
+				else //删除点
+				{
+					if (contour_sam[changenum].type == 0)
+					{
+						Point_f one_p = delete_vector(contour_sam, changenum);
+						dis = dis - 1;
+					}
+					changenum++;
+				}
+			}
 		}
-		else
-		{
-			contour_r = contour_sam;
-		}
+		contour_r = contour_sam;
+		cout << "contour_r is: " << contour_sam.size()<< endl;
 		//确定候选点集part_points_的下标，以及all_result_points里的点的下标
 		part_points_index.swap(vector<int>());
 		contsize = contour_r.size();
 		for (int n = 0; n < contsize; n++)
 		{
-			if (contour_r[n].type == 2)
+			if (contour_r[n].type != 0)
 				part_points_index.push_back(n);
 		}
+		std::cout << "part_points_index num:" << part_points_index.size() << endl;
+
 		vector<Point2f> contourroat = p_f2p2f(contour_r);
 		for (int n = 0; n < all_result_points.size(); n++)
 		{
@@ -440,13 +469,15 @@ namespace Tiling_tiles{
 			all_result_index.push_back(one_result);
 		}
 		int allindexsize = all_result_index.size();
+		std::cout << "allindexsize num:" << allindexsize << endl;
+		
 		for (int num = 0; num < allindexsize; num++)
 		{
 			vector<Point_f> inner_contour;
 			vector<int> mid_interval; //mid_interval存储的是组合成的inner 的分段连接点
 			//vector<int> result_index; //1.translation：以下所有该类摆放都以1-3,2-4为轴摆放
 			Mat drawing1 = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
-			if (!rotation_placement(all_result_index[num], contour_r, inner_contour, mid_interval, drawing1))
+			if (rotation_placement(all_result_index[num], contour_r, inner_contour, mid_interval, drawing1))
 			{
 				std::cout << ++rotas << " Rotation succeed" << endl;
 				inPat one_situation;
@@ -457,23 +488,26 @@ namespace Tiling_tiles{
 				Point2f shift2 = Point2f(400, 400) - cent_cont;
 				for (int jj = 0; jj < contsize; jj++)
 				{
-					circle(drawing1, contour_r[jj] + shift2, 1, Scalar(0, 0, 0), -1);
+					if (contour_r[jj].type == 0)
+					{
+						circle(drawing1, contour_r[jj].point + shift2, 1, Scalar(0, 0, 0), -1);
+					}
+					else 
+					{
+						circle(drawing1, contour_r[jj].point + shift2, 4, Scalar(0, 0, 255), -1);
+					}
 					//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
-				}
-				for (int jj = 0; jj < ppindex; jj++)
-				{
-					circle(drawing1, contour_r[part_points_index[jj]] + shift2, 4, Scalar(0, 0, 255), -1);
 				}
 				for (int jj = 0; jj < 4; jj++)
 				{
-					circle(drawing1, contour_r[all_result_index[num][jj]] + shift2, 8, Scalar(0, 255, 0), -1);
+					circle(drawing1, contour_r[all_result_index[num][jj]].point + shift2, 8, Scalar(0, 255, 0), -1);
 				}
 				string filename = rootname + "\\" + int2string(rotas - 1) + "rota_PlacingResult.png";
 				imwrite(filename, drawing1);
 				//Mat draw = drawing1(Rect(800, 0, 800, 800));
 				//all_tiling_Mat.push_back(draw);
 			}
-			inner_contour.swap(vector<Point2f>());
+			inner_contour.swap(vector<Point_f>());
 			mid_interval.swap(vector<int>());
 		}
 		return rotas;
@@ -571,7 +605,12 @@ namespace Tiling_tiles{
 			//计算在mark参数下所有的平行四边形，将左边全部返回
 
 		}
-		std::cout << "rotation all_result_points num:" << all_result_points.size() << endl;
+		if (all_result_points.size() != 0)
+		{
+			std::cout << "rotation all_result_points num:" << all_result_points.size() << endl
+				<< cont[mark_13[0]] << "   " << cont[mark_13[1]] << endl
+				<< all_result_points[0][0] <<"  "<< all_result_points[0][1]<<"  " << all_result_points[0][2]<<"  " << all_result_points[0][3] << endl;
+		}
 		return all_result_points;
 	}
 
@@ -1259,8 +1298,7 @@ namespace Tiling_tiles{
 	}
 
 	bool Tiling_opt::rotation_placement(vector<int> results, vector<Point_f> &contour_s, vector<Point_f> &return_B, vector<int> &return_p, Mat &countname)
-	{
-		
+	{	
 		Line_Seg line1(contour_s[results[2]].point, contour_s[results[0]].point);
 		Line_Seg line2(contour_s[results[3]].point, contour_s[results[1]].point);
 		//std::cout << results[0] << " " << results[1] << " " << results[2] << " " << results[3] << endl;
@@ -1270,6 +1308,7 @@ namespace Tiling_tiles{
 		if (abs(length_two_point2f(contour_s[results[2]].point, cross_p) - length_two_point2f(contour_s[results[0]].point, cross_p)) > 5) return false;
 		if (abs(length_two_point2f(contour_s[results[3]].point, cross_p) - length_two_point2f(contour_s[results[1]].point, cross_p)) > 5) return false;
 		int csize = contour_s.size();
+		cout << "csize: " << csize << endl;
 		// 提取旋转围成的轮廓
 		vector<vector<Point_f>> four_place;
 		vector<Point2f> one_loca = p_f2p2f(contour_s);
@@ -1314,6 +1353,7 @@ namespace Tiling_tiles{
 		}                                                                                                         
 		if (vertex_angle(a[0], a[0]) || vertex_angle(a[1], a[1]) || vertex_angle(a[2], a[2]) || vertex_angle(a[3], a[3]))
 		{
+		//	cout << "vertex collision!" << endl;
 			return false; //到这里用时0.009s
 		}
 		for (int i = 0; i < 4; i++)
@@ -1321,9 +1361,13 @@ namespace Tiling_tiles{
 			for (int j = i + 1; j < 4; j++)
 			{
 				if (coll_detec_bbx(p_f2p2f(four_place[i]), p_f2p2f(four_place[j]), 50) || coll_detec_geometry(p_f2p2f(four_place[i]), p_f2p2f(four_place[j]), 2))
+				{
+					//cout << "collision!!!!!" << endl;
 					return false;
+				}
 			}
 		}
+		
 		return_B = extract_contour_f(contour_s, results, return_p, four_place,1);
 		//visual presentation
 		vector<Point2f> all_cent;
@@ -1783,6 +1827,11 @@ namespace Tiling_tiles{
 		vector<Point_f> morphed_B;
 		Point2f line1 = contour_[mark_p[2]].point - contour_[mark_p[0]].point;
 		Point2f line2 = contour_[mark_p[3]].point - contour_[mark_p[1]].point;
+		for (int t = 0; t < mark_p.size(); t++)
+		{
+			contour_[mark_p[t]].type = 2;
+		}
+		
 		midmark_p.swap(vector<int>()); //midmark_p有可能非空
 		if (type == 0)   // 提取translation围成的轮廓
 		{

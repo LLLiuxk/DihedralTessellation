@@ -142,6 +142,24 @@ namespace Tiling_tiles{
 		}
 		vec = vec1;
 	}
+
+	template<typename T>
+	T delete_vector(vector<T> &vec, int index_p)
+	{
+		vector<T> vec1;
+		int vsize = vec.size();
+		for (int i = 0; i < index_p; i++)
+		{
+			vec1.push_back(vec[i]);
+		}
+		T delete_p = vec[index_p];
+		for (int i = index_p + 1; i <vsize; i++)
+		{
+			vec1.push_back(vec[i]);
+		}
+		vec = vec1;
+		return delete_p;
+	}
 	
 	int location(vector<Point2f> &vec, Point2f input);
 
