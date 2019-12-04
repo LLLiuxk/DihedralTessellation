@@ -87,7 +87,7 @@ namespace Tiling_tiles{
 		string txtpath;
 
 		vector<Point2f> contour;
-		vector<Point2f> contour_r;
+		vector<Point_f> contour_r;
 		vector<Point_f> contour_f;
 		//vector<double> cconvex;
 		vector<vector<Point2f>> contour_sample;
@@ -223,8 +223,8 @@ namespace Tiling_tiles{
 		vector<double> all_shape_complexity;
 		vector<inPat> all_inner_conts;
 
-		vector<vector<Point2f>> candidate_contours;
-		vector<vector<pair<int, int>>> cand_paths;
+		vector<vector<vector<Point2f>>> candidate_contours;
+		vector<vector<vector<pair<int, int>>>> cand_paths;
 		vector<int> mid_inter; //每个tiling placement对应一个mid_inter
 		vector<int> mid_inter_morphed; //变形后的mid_inter
 

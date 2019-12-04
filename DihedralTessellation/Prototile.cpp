@@ -313,7 +313,7 @@ namespace Tiling_tiles{
 		// center point
 		center_point = center_p(contour);
 		//sampling and computing curvature
-		for (int i = 1; i < 4; i++)  //确定采样点数，此处为500点
+		for (int i = 1; i < 4; i++)  //确定采样点数，此处分别为100，200和300点
 		{			
 			vector<Point2f> contour_sam;
 			vector<Point2f> contour_sam_flip;
@@ -347,7 +347,7 @@ namespace Tiling_tiles{
 		contour.swap(vector<Point2f>());
 		//int sam_num = contour_sample.size();
 		contour = contour_sample[1]; // 这里统一将初始轮廓选为200个点
-		contour_r = contour_sample[1];
+		//contour_r = contour_sample[1];
 		//cout << "contour_sample num: " << contour_sample[1].size() << endl;
 
 	}
@@ -397,6 +397,8 @@ namespace Tiling_tiles{
 	vector<int> Prototile::partition_points(string imaname)
 	{
 		cout << imaname << endl;
+		contour_f.swap(vector<Point_f>());
+		contour_r.swap(vector<Point_f>());
 		//int cur_p_num = 20;   //cur_p_num 个不相邻的最大cos值点
 		int sam_p = 20;//目标特征点个数
 		int cand_num = 50; //目标候选点个数
@@ -460,7 +462,8 @@ namespace Tiling_tiles{
 				all_order.push_back(i);
 				contour_f[i].type = 1;
 			}
-		}		
+		}
+		contour_r = contour_f;
 		cout << "all_order.size:"<<all_order.size() << endl;
 		sort_bub(all_order);
 		//for (int t = 0; t < all_order.size(); t++)
