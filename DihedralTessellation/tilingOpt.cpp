@@ -14,7 +14,7 @@ namespace Tiling_tiles{
 		prototile_mid = new Prototile();
 		prototile_second = new Prototile();
 		prototile_tem = new Prototile();
-		all_types = 500;
+		all_types = 490;
 		sampling_num = 3;
 		//memset(dp, 0, sizeof(dp));
 		//memset(dp_inver, 0, sizeof(dp_inver));
@@ -41,7 +41,7 @@ namespace Tiling_tiles{
 	void Tiling_opt::load_dataset()
 	{
 		if (!contour_dataset.empty()) contour_dataset.swap(vector<vector<Point2f>>());
-		for (int i = 0; i <= all_types; i++)
+		for (int i = 0; i < all_types; i++)
 		{
 			prototile_second->Pro_clear();
 			prototile_second->setpath();
@@ -55,6 +55,8 @@ namespace Tiling_tiles{
 			if (!data_.empty())
 				contour_dataset.push_back(data_);
 		}
+		all_types = contour_dataset.size();
+		std::cout << "all_types： " << all_types << endl;
 		std::cout << "load over!" << endl;
 	}
 
@@ -65,9 +67,8 @@ namespace Tiling_tiles{
 			std::cout << "the TARs have been exist" << endl;
 			return;
 		}
-		int all_num = contour_dataset.size();
-		std::cout << "all_num： " << all_num << endl;
-		for (int i = 0; i < all_num; i++)
+		
+		for (int i = 0; i < all_types; i++)
 		{
 			prototile_second->Pro_clear();
 			prototile_second->loadPoints(contour_dataset[i]);
@@ -105,7 +106,7 @@ namespace Tiling_tiles{
 
 	void Tiling_opt::check_Repetitive_pattern()
 	{
-		for (int i = 0; i <= all_types; i++)
+		for (int i = 0; i < all_types; i++)
 		{
 			prototile_second->Pro_clear();
 			prototile_second->loadPoints(contour_dataset[i]);
@@ -158,13 +159,13 @@ namespace Tiling_tiles{
 		}
 		mkdir(na);
 
-		int trans = Tanslation_rule(p_p_index, cont_orig, rootname);
+		//int trans = Tanslation_rule(p_p_index, cont_orig, rootname);
 		int flips = Flipping_rule(p_p_index, cont_orig, rootname);
-		int rotas = Rotation_rule(p_p_index, cont_rota, rootname);
+		//int rotas = Rotation_rule(p_p_index, cont_rota, rootname);
 
-		int count = trans + rotas + flips;
+		int count = /*trans + rotas +*/ flips;
 		prototile_first->contour_r = cont_rota;
-		std::cout << "succeed count: " << count << " trans: " << trans << " rotat: " << rotas << " flips: " << flips << endl;
+		std::cout << "succeed count: " << count << /*" trans: " << trans <<  " rotat: " << rotas << */" flips: " << flips << endl;
 		//midtime = clock();
 		//std::cout << "Time consumption: " << (double)(midtime - start) / CLOCKS_PER_SEC << " s " << endl;
 		if (count == 0)
@@ -207,11 +208,10 @@ namespace Tiling_tiles{
 		ttt.push_back(p_p_index[21]);
 		ttt.push_back(p_p_index[24]);
 		std::cout << "ttt: " << ttt.size() << endl;
-		vector<Point2f> contour_ = prototile_first->contour;
 		vector<Point_f> cont_orig = prototile_first->contour_f;
 		vector<Point_f> cont_rota = prototile_first->contour_r; //旋转暂时用500个点
-		int contsize = contour_.size();
-		Point2f cent_cont = center_p(contour_);
+		//int contsize = contour_.size();
+		//Point2f cent_cont = center_p(contour_);
 		//vector<Point2f> contour_ = prototile_first->contour;
 		load_dataset();
 		com_all_TARs(num_c);
@@ -238,7 +238,25 @@ namespace Tiling_tiles{
 			std::cout << "no right placement" << endl;
 			return four_pattern;
 		}
-
+		int all_inner_num = all_inner_conts.size();
+		cout << "all_inner_num: " << all_inner_num << endl;
+		candidate_contours.swap(vector<vector<vector<Point2f>>>());
+		cand_paths.swap(vector<vector<vector<pair<int, int>>>>());
+		for (int i = 0; i < all_inner_num; i++)
+		{
+			match_candidate(i);
+			for (int j = 0; j < 5; j++)
+			{
+				vector<Point2f> morphed_A;
+				vector<int> mid_inter_morphed = morphed_results(morphed_A, j, i);
+				Mat drawing_pro = Mat(800, 2400, CV_8UC3, Scalar(255, 255, 255));
+				draw_poly(drawing_pro, prototile_mid->contour, Point2f(400, 400));
+				draw_poly(drawing_pro, candidate_contours[i][j], Point2f(1200, 400));
+				draw_poly(drawing_pro, morphed_A, Point2f(2000, 400));
+				string filename = rootname + "\\" + int2string(i) + "_Candidate_" + int2string(j) + ".png";
+				imwrite(filename, drawing_pro);
+			}
+		}
 		return four_pattern;
 		//return contour_inner;
 	}
@@ -251,7 +269,7 @@ namespace Tiling_tiles{
 		int contsize = contour_s.size();		
 		Point2f cent_cont = center_p(p_f2p2f(contour_s));
 		//std::cout << "contsize: " << cent_cont << endl;
-		int times = 0;
+		//int times = 0;
 		for (int i = 0; i < ppindex; i++)
 		{
 			for (int j = i + 1; j < ppindex; j++)
@@ -262,7 +280,7 @@ namespace Tiling_tiles{
 					//if (abs(part_points_index[m] - part_points_index[j]) < margin) continue;
 					for (int n = m + 1; n < ppindex; n++)
 					{
-						times++;
+						//times++;
 						//std::cout << i<<" "<<j<<" "<<m<<" "<<n << endl;
 						//if (abs(part_points_index[n] - part_points_index[m]) < margin) continue;
 						vector<Point_f> inner_contour;
@@ -308,7 +326,7 @@ namespace Tiling_tiles{
 				}
 			}
 		}
-		std::cout << "trans times: " << times << endl;
+		//std::cout << "trans times: " << times << endl;
 		return trans;
 	}
 
@@ -738,8 +756,11 @@ namespace Tiling_tiles{
 		}
 		int num_c = 1;//采样点数
 		vector<Point2f> compare_one = p_f2p2f(all_inner_conts[Tiling_index].in_contour);
+		mid_inter = all_inner_conts[Tiling_index].in_interval;
+		cout << "Tiling_index: " << compare_one.size() << "   " << mid_inter.size()<< endl;
 		vector<pair<int, bool>> candidate_patterns = compare_choose_TAR(compare_one);//当前中间图案对应的候选图案
-
+		cout << "This is the " << Tiling_index << "th inner contour" << endl<<
+			"candidate_patterns size: " << candidate_patterns.size() << endl;
 		//对中间图案采样200点并重新确认候选点坐标
 		//mid_inter = joint_relocate(all_inner_conts[Tiling_index].in_contour, all_inner_conts[Tiling_index].in_interval, num_c);
 
@@ -828,7 +849,7 @@ namespace Tiling_tiles{
 		{
 			int first = path[i].first;
 			int sec = path[i].second;
-			Point2f fin = 0.5 * contour1[first] + 0.5 * contour2[sec];;
+			Point2f fin = 0.5 * contour1[first] + 0.5 * contour2[sec];
 			if (t<4 && first == mid_inter[t])
 			{
 				//std::cout << t << " " << first << "  " << i << endl;
@@ -837,6 +858,7 @@ namespace Tiling_tiles{
 			}
 			final_pettern.push_back(fin);
 		}
+		cout << "final patten: " << final_pettern.size() << endl;
 		mid_inter_new = joint_relocate(final_pettern, mid_inter_new, 1);
 		final_pettern = sampling(final_pettern, 2);
 
@@ -864,7 +886,7 @@ namespace Tiling_tiles{
 		four_place.swap(vector<vector<Point2f>>());
 		mid_inter_new.swap(vector<int>());
 		final_pettern = extract_contour(morphed_A, return_p, mid_inter_new, four_place, all_inner_conts[Tiling_index].type);
-		std::cout << "lack of mid_inter_new: " << mid_inter_new.size() << endl;
+		std::cout << "num of mid_inter_new: " << mid_inter_new.size() << endl;
 		prototile_tem->loadPoints(final_pettern);
 		return mid_inter_new;
 	}
@@ -2270,9 +2292,9 @@ namespace Tiling_tiles{
 		int method = 2;
 		int match_width = 4;
 		vector<pair<int, bool>> all_total;
-		std::cout << "inner_c num:" << inner_c.size() << endl;
+		//std::cout << "inner_c num:" << inner_c.size() << endl;
 		prototile_mid->Pro_clear();
-		prototile_mid->contour.swap(inner_c);
+		prototile_mid->contour = inner_c;
 		vector<Point2f> contour_mid = inner_c;
 		//prototile_mid->loadPoints(inner_c);
 		//vector<Point2f> contour_mid = prototile_mid->contour_sample[1];
@@ -2286,11 +2308,11 @@ namespace Tiling_tiles{
 		vector<pair<int, bool>> all_final;
 		vector<double> all_result;
 		int total_num = all_total.size();
-		//std::cout << "all total" << total_num << endl;
+		std::cout << "all total" << total_num << endl;
 	
 		double shape_com_mid;
 		vector<vector<double>> tar_mid = prototile_mid->compute_TAR(contour_mid, shape_com_mid);
-		//std::cout << "contour_mid: " << contour_mid.size() << "  tar_mid: " << tar_mid.size() << endl;
+		std::cout << "contour_mid: " << contour_mid.size() << "  tar_mid: " << tar_mid.size() << endl;
 		for (int can_num = 0; can_num < total_num; can_num++)
 		{
 			int index = all_total[can_num].first;
@@ -2316,6 +2338,7 @@ namespace Tiling_tiles{
 				all_final.push_back(make_pair(index, true));
 				//std::cout << re2 << endl;
 			}
+			cout << "cand: " << can_num << "  " << all_result.back() << endl;
 		}
 		double temp;
 		pair<int,bool> tempp;

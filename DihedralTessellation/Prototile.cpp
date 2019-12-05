@@ -357,6 +357,7 @@ namespace Tiling_tiles{
 	{
 		vector<vector<double>> all_tar;
 		int consize = contour_.size();
+		cout << "consize: " << consize << endl;
 		int tar_num = frac * consize - 1;
 		shape_complexity = 0;
 		//cout << "consize: " << consize << " tar_num: " << tar_num << endl;
@@ -376,6 +377,7 @@ namespace Tiling_tiles{
 			}
 			all_tar.push_back(one_p_tar);
 		}
+		//cout << "what happened??" << endl;
 		for (int i = 0; i < consize; i++)
 		{
 			double max_tar_one = 0;

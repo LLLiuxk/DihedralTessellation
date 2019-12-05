@@ -20,7 +20,7 @@ int main(int argc, char** argv)
 	Tiling_tiles::Prototile *prototile_third;
 	prototile_third = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
-	int f = 0;
+	int f = 1;
 	//0:result  1:simulation  2:批量读图  3:feature points  4:compute_TAR  5:min_minsmatch  6:extract_contour  7:compare and choose
 	//8:morphing  9:draw  10:math  11:check  12:thickness  13:color  14:windows 15:evalua_deformation
 	if (f == 111) //test
@@ -258,20 +258,8 @@ int main(int argc, char** argv)
 		a.push_back(Point2f(50, 110));
 		a.push_back(Point2f(50,60));
 		a.push_back(Point2f(100, 60));
-		//Mat drawing_ = Mat(300, 300, CV_8UC3, Scalar(255, 255, 255));
+		Mat drawing_ = Mat(300, 300, CV_8UC3, Scalar(255, 255, 255));
 		//draw_poly(drawing_, a, Point2f(150, 150));
-		int t = 1;
-		Mat draw;
-		if (t == 1)
-		{
-			Mat drawing_ = Mat(300, 300, CV_8UC3, Scalar(255, 255, 255));
-			draw_poly(drawing_, a, Point2f(150, 150));
-			draw = drawing_(Rect(150,0,150,150));
-			cout << "A.data的地址" << (void*)drawing_.data << endl;
-			
-		}
-		imshow("aaa", draw);
-		cout << "B.data的地址" << (void*)draw.data << endl;
 
 		//double shape_com;
 		//vector<vector<double>> tar_all = prototile_first->compute_TAR(a, shape_com,0.5);
@@ -284,13 +272,13 @@ int main(int argc, char** argv)
 		//		cout << tar_all[i][j] << "  ";
 		//	cout << endl;
 		//}
-		//imshow("aaaa", drawing_);	
-		//prototile_second->loadTileData("157");
-		//double shape_com;
-		//double shape_com_flip;
-		//vector<vector<double>> tar_all = prototile_second->compute_TAR(prototile_second->contour_sample[1], shape_com);//(num_c+1)*100 points
-		//vector<vector<double>> tar_all_flip = prototile_second->compute_TAR(prototile_second->contour_sample_flip[1], shape_com_flip);
-		//cout << "shape_com: " << shape_com << "  shape_com_flip: " << shape_com_flip << endl;
+		imshow("aaaa", drawing_);	
+		prototile_second->loadTileData("157");
+		double shape_com;
+		double shape_com_flip;
+		vector<vector<double>> tar_all = prototile_second->compute_TAR(prototile_second->contour_sample[1], shape_com);//(num_c+1)*100 points
+		vector<vector<double>> tar_all_flip = prototile_second->compute_TAR(prototile_second->contour_sample_flip[1], shape_com_flip);
+		cout << "shape_com: " << shape_com << "  shape_com_flip: " << shape_com_flip << endl;
 
 
 	}
