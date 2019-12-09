@@ -286,42 +286,45 @@ int main(int argc, char** argv)
 	{
 		//-------------------test tar_mismatch函数--------------------
 
-		//tiling_opt->load_dataset();
-		//tiling_opt->com_all_TARs(1);
-		//prototile_first->loadTileData("test12");
-		//vector<Point2f> a = prototile_first->contour;// prototile_first->contour_sample[1];
-		//Mat drawing_ = Mat(600, 600, CV_8UC3, Scalar(255, 255, 255));
-		//int asize = a.size();
-		//cout << asize << endl;
-		//for (int i = 0; i < asize; i++)
-		//{
-		//	circle(drawing_, a[i], 2, Scalar(0, 255, 0), -1);
-		//}
-		//imshow("asa", drawing_);
-		////a.pop_back();
-		//double sca;
-		//vector<vector<double>> tar_all = prototile_first->compute_TAR(a, sca);
-		//vector<int> cand_points_index = most_convex_p(a, curvature_com(a), 30);
-		//cout << "feature :" << cand_points_index.size() << endl;
-		//vector<vector<double>> tar_fea;
-		//for (int j = 0; j < cand_points_index.size(); j++)
-		//{
-		//	tar_fea.push_back(tar_all[cand_points_index[j]]);
-		//}
-		///*prototile_second->loadTileData("23");
-		//vector<Point2f> b = prototile_second->contour_sample[1];
-		//vector<Point2f> c = prototile_second->contour_sample_flip[1];
-		//double scb;
-		//vector<vector<double>> tar_all1 = prototile_second->compute_TAR(b, scb);
-		//vector<vector<double>> tar_all2 = prototile_second->compute_TAR(c, scb);*/
-		//int num = 122;
-		//prototile_second->loadPoints(tiling_opt->contour_dataset[num]);
-		//vector<Point2f> b = prototile_second->contour_sample[1];
-		//vector<Point2f> c = prototile_second->contour_sample_flip[1];
-		//double scb = tiling_opt->all_shape_complexity[num];
-		//cout << "sca: " << sca << "   scb:  " << scb << endl;
-		//vector<vector<double>> tar_all1 = tiling_opt->all_con_tars[num];//prototile_second->compute_TAR(b, scb);
-		//vector<vector<double>> tar_all2 = tiling_opt->all_con_tars_flip[num];//prototile_second->compute_TAR(c, scb);
+		tiling_opt->load_dataset();
+		tiling_opt->com_all_TARs(1);
+		prototile_first->loadTileData("15");
+		vector<Point2f> a = prototile_first->contour;// prototile_first->contour_sample[1];
+		vector<Point2f> aaa = prototile_first->contour_sample_flip[1];
+		Mat drawing_ = Mat(600, 600, CV_8UC3, Scalar(255, 255, 255));
+		int asize = a.size();
+		cout << asize << endl;
+		for (int i = 0; i < asize; i++)
+		{
+			circle(drawing_, a[i], 2, Scalar(0, 255, 0), -1);
+		}
+		imshow("asa", drawing_);
+		//a.pop_back();
+		double sca;
+		vector<vector<double>> tar_all = prototile_first->compute_TAR(a, sca);
+		//double scaaa;
+		//vector<vector<double>> tar_allaa = prototile_first->compute_TAR(aaa, scaaa);
+		/*vector<int> cand_points_index = most_convex_p(a, curvature_com(a), 30);
+		cout << "feature :" << cand_points_index.size() << endl;
+		vector<vector<double>> tar_fea;
+		for (int j = 0; j < cand_points_index.size(); j++)
+		{
+			tar_fea.push_back(tar_all[cand_points_index[j]]);
+		}*/
+		/*prototile_second->loadTileData("23");
+		vector<Point2f> b = prototile_second->contour_sample[1];
+		vector<Point2f> c = prototile_second->contour_sample_flip[1];
+		double scb;
+		vector<vector<double>> tar_all1 = prototile_second->compute_TAR(b, scb);
+		vector<vector<double>> tar_all2 = prototile_second->compute_TAR(c, scb);*/
+		int num = 122;
+		prototile_second->loadPoints(tiling_opt->contour_dataset[num]);
+		vector<Point2f> b = prototile_second->contour_sample[1];
+		vector<Point2f> c = prototile_second->contour_sample_flip[1];
+		double scb = tiling_opt->all_shape_complexity[num];
+		cout << "sca: " << sca <<  "   scb:  " << scb << endl;
+		vector<vector<double>> tar_all1 = tiling_opt->all_con_tars[num];//prototile_second->compute_TAR(b, scb);
+		vector<vector<double>> tar_all2 = tiling_opt->all_con_tars_flip[num];//prototile_second->compute_TAR(c, scb);
 		//vector<vector<double>> tar_fea2;
 		//vector<vector<double>> tar_fea_flip2;
 		//cand_points_index = most_convex_p(b, curvature_com(b), 30);// feature_points(b, 1, 3, cos(PI * 160 / 180));
@@ -336,29 +339,29 @@ int main(int argc, char** argv)
 		//{
 		//	tar_fea_flip2.push_back(tar_all2[cand_points_index[j]]);
 		//}
-		//vector<pair<int, int>> path;
-		////double re = length_two_point_tar(tar_all[0], tar_all1[0]);
-		//int shift = 0;
-		//double re = tiling_opt->tar_mismatch(tar_all, tar_all1, path, shift);//点对应匹配的筛选框宽度
-		//cout << "result: " << re << "  shift:" << shift << endl;
-		//   double re2 = tiling_opt->tar_mismatch(tar_all, tar_all2, path, shift);
-		//cout << "result2: " << re2 << "  shift:" << shift << endl;
-		//double re3 = tiling_opt->tar_mismatch(tar_fea, tar_fea2, path, shift);
-		//cout << "result3: " << re3 << "  shift:" << shift << endl;
-		//double re4 = tiling_opt->tar_mismatch(tar_fea, tar_fea_flip2, path, shift);
-		//cout << "result4: " << re4 << "  shift:" << shift << endl;
-		//re = re / (1 + sca + scb);
-		//re2 = re2 / (1 + sca + scb);
+		vector<pair<int, int>> path;
+		//double re = length_two_point_tar(tar_all[0], tar_all1[0]);
+		int shift = 0;
+		double re = tiling_opt->tar_mismatch(tar_all, tar_all1, path, shift);//点对应匹配的筛选框宽度
+		cout << "result: " << re << "  shift:" << shift << endl;
+		double re2 = tiling_opt->tar_mismatch(tar_all, tar_all2, path, shift);
+		cout << "result2: " << re2 << "  shift:" << shift << endl;
+		/*double re3 = tiling_opt->tar_mismatch(tar_fea, tar_fea2, path, shift);
+		cout << "result3: " << re3 << "  shift:" << shift << endl;
+		double re4 = tiling_opt->tar_mismatch(tar_fea, tar_fea_flip2, path, shift);
+		cout << "result4: " << re4 << "  shift:" << shift << endl;*/
+		re = re / (1 + sca + scb);
+		re2 = re2 / (1 + sca + scb);
 		//re3 = re3 / (1 + sca + scb);
 		//re4 = re4 / (1 + sca + scb);
-		//
-		//cout << "result: " <<re<<"  result2: "<< re2 << "  shift:" << shift << endl;
+		
+		cout << "result: " <<re<<"  result2: "<< re2 << "  shift:" << shift << endl;
 		//cout << "result3: " << re3 << "  result4: " << re4 << "  shift:" << shift << endl;
-		//cout << path.size() << endl;
-		/*for (int i = 0; i < path.size(); i++)
+		cout << path.size() << endl;
+		for (int i = 0; i < path.size(); i++)
 		{
-		cout << path[i].first << "--"<<path[i].second << endl;
-		}*/
+		  cout << path[i].first << "--"<<path[i].second << endl;
+		}
 
 	}
 	if (f == 6)
@@ -445,7 +448,7 @@ int main(int argc, char** argv)
 	{
 		//---------------  test compare_choose_TAR-------------------
 
-		/*tiling_opt->load_dataset();
+		tiling_opt->load_dataset();
 		tiling_opt->com_all_TARs(1);
 		midtime = clock();
 
@@ -454,7 +457,7 @@ int main(int argc, char** argv)
 		draw_poly(draw, prototile_first->contour, Point2f(400, 400));
 		imshow("asd", draw);
 		vector<pair<int, bool>> all_total = tiling_opt->compare_choose_TAR(prototile_first->contour);
-		cout << endl << (double)(midtime - start) / CLOCKS_PER_SEC << " s " << endl;*/
+		cout << endl << (double)(midtime - start) / CLOCKS_PER_SEC << " s " << endl;
 		//-------------------------------------------
 
 	}

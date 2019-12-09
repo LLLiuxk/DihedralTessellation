@@ -14,8 +14,9 @@ namespace Tiling_tiles{
 		prototile_mid = new Prototile();
 		prototile_second = new Prototile();
 		prototile_tem = new Prototile();
-		all_types = 490;
+		all_types = 500;
 		sampling_num = 3;
+		allnum_inner_c = 0;
 		//memset(dp, 0, sizeof(dp));
 		//memset(dp_inver, 0, sizeof(dp_inver));
 
@@ -27,6 +28,9 @@ namespace Tiling_tiles{
 
 	void Tiling_opt::Tiling_clear()
 	{
+		all_types = 500;
+		sampling_num = 3;
+		allnum_inner_c = 0;
 		memset(dis, 0, sizeof(dis));
 		memset(dis_cur, 0, sizeof(dis_cur));
 		memset(distance, 0, sizeof(distance));
@@ -159,13 +163,14 @@ namespace Tiling_tiles{
 		}
 		mkdir(na);
 
-		//int trans = Tanslation_rule(p_p_index, cont_orig, rootname);
+		int trans = Tanslation_rule(p_p_index, cont_orig, rootname);
 		int flips = Flipping_rule(p_p_index, cont_orig, rootname);
 		//int rotas = Rotation_rule(p_p_index, cont_rota, rootname);
 
 		int count = /*trans + rotas +*/ flips;
 		prototile_first->contour_r = cont_rota;
 		std::cout << "succeed count: " << count << /*" trans: " << trans <<  " rotat: " << rotas << */" flips: " << flips << endl;
+		std::cout << "allnum_inner_c: " << allnum_inner_c << endl;
 		//midtime = clock();
 		//std::cout << "Time consumption: " << (double)(midtime - start) / CLOCKS_PER_SEC << " s " << endl;
 		if (count == 0)
@@ -295,6 +300,7 @@ namespace Tiling_tiles{
 						if (translation_placement(result_index, contour_s, inner_contour, mid_interval, drawing1))
 						{
 							std::cout << ++trans << " Translation succeed" << endl;
+							allnum_inner_c++;
 							inPat one_situation;
 							one_situation.in_contour = inner_contour;
 							one_situation.in_interval = mid_interval;
@@ -317,7 +323,7 @@ namespace Tiling_tiles{
 								circle(drawing1, contour_s[result_index[jj]].point + shift2, 8, Scalar(0, 255, 0), -1);
 							}
 
-							string filename = rootname + "\\" + int2string(trans - 1) + "transPlacingResult.png";
+							string filename = rootname + "\\" + int2string(allnum_inner_c - 1) + "transPlacingResult.png";
 							cv::imwrite(filename, drawing1);
 							//Mat draw = drawing1(Rect(800, 0, 800, 800));
 							//all_tiling_Mat.push_back(draw);
@@ -519,6 +525,7 @@ namespace Tiling_tiles{
 			if (rotation_placement(all_result_index[num], contour_r, inner_contour, mid_interval, drawing1))
 			{
 				std::cout << ++rotas << " Rotation succeed" << endl;
+				allnum_inner_c++;
 				inPat one_situation;
 				one_situation.in_contour = inner_contour;
 				one_situation.in_interval = mid_interval;
@@ -541,7 +548,7 @@ namespace Tiling_tiles{
 				{
 					circle(drawing1, contour_r[all_result_index[num][jj]].point + shift2, 8, Scalar(0, 255, 0), -1);
 				}
-				string filename = rootname + "\\" + int2string(rotas - 1) + "rota_PlacingResult.png";
+				string filename = rootname + "\\" + int2string(allnum_inner_c - 1) + "rota_PlacingResult.png";
 				imwrite(filename, drawing1);
 				//Mat draw = drawing1(Rect(800, 0, 800, 800));
 				//all_tiling_Mat.push_back(draw);
@@ -684,6 +691,7 @@ namespace Tiling_tiles{
 						if (flipping_placement(result_index, contour_s, inner_contour, mid_interval, drawing1, 0))
 						{
 							std::cout << ++flips << " Flipping succeed" << endl;
+							allnum_inner_c++;
 							inPat one_situation;
 							one_situation.in_contour = inner_contour;
 							one_situation.in_interval = mid_interval;
@@ -706,7 +714,7 @@ namespace Tiling_tiles{
 								circle(drawing1, contour_s[result_index[jj]].point + shift2, 8, Scalar(0, 255, 0), -1);
 							}
 
-							string filename = rootname + "\\" + int2string(flips - 1) + "flip(1-3)PlacingResult.png";
+							string filename = rootname + "\\" + int2string(allnum_inner_c - 1) + "flip(1-3)PlacingResult.png";
 							imwrite(filename, drawing1);
 							//Mat draw = drawing1(Rect(800, 0, 800, 800));
 							//all_tiling_Mat.push_back(draw);
@@ -714,6 +722,7 @@ namespace Tiling_tiles{
 						if (flipping_placement(result_index, contour_s, inner_contour, mid_interval, drawing2, 1))
 						{
 							std::cout << ++flips << " Flipping succeed" << endl;
+							allnum_inner_c++;
 							inPat one_situation;
 							one_situation.in_contour = inner_contour;
 							one_situation.in_interval = mid_interval;
@@ -735,7 +744,7 @@ namespace Tiling_tiles{
 								circle(drawing2, contour_s[result_index[jj]].point + shift2, 8, Scalar(0, 255, 0), -1);
 							}
 							circle(drawing2, contour_s[part_points_index[0]].point + shift2, 8, Scalar(255, 255, 0), -1);
-							string filename = rootname + "\\" + int2string(flips - 1) + "flip(2-4)PlacingResult.png";
+							string filename = rootname + "\\" + int2string(allnum_inner_c - 1) + "flip(2-4)PlacingResult.png";
 							imwrite(filename, drawing2);
 							//Mat draw = drawing2(Rect(800, 0, 800, 800));
 							//all_tiling_Mat.push_back(draw);
@@ -774,7 +783,6 @@ namespace Tiling_tiles{
 		{
 			//将所有的结果保存下来
 			prototile_second->loadPoints(contour_dataset[candidate_patterns[j].first]);
-
 			vector<Point2f> contour_cand;// = prototile_second->contour_sample[1];
 			vector<vector<double>> cand_tar;
 			if (candidate_patterns[j].second)
@@ -2291,11 +2299,13 @@ namespace Tiling_tiles{
 	{
 		int method = 2;
 		int match_width = 4;
+		double dis_threshold = 0.35;
 		vector<pair<int, bool>> all_total;
 		//std::cout << "inner_c num:" << inner_c.size() << endl;
 		prototile_mid->Pro_clear();
 		prototile_mid->contour = inner_c;
 		vector<Point2f> contour_mid = inner_c;
+		double iso_mid = isoperimetric_inequality(contour_mid);
 		//prototile_mid->loadPoints(inner_c);
 		//vector<Point2f> contour_mid = prototile_mid->contour_sample[1];
 
@@ -2313,20 +2323,30 @@ namespace Tiling_tiles{
 		double shape_com_mid;
 		vector<vector<double>> tar_mid = prototile_mid->compute_TAR(contour_mid, shape_com_mid);
 		std::cout << "contour_mid: " << contour_mid.size() << "  tar_mid: " << tar_mid.size() << endl;
+		int ttrt = 0;
 		for (int can_num = 0; can_num < total_num; can_num++)
 		{
 			int index = all_total[can_num].first;
 			//std::cout << index << "  : ";
+			//first filter by isoperimetric_inequality
+			double iso_cand = isoperimetric_inequality(contour_dataset[index]);
+			double diss = abs(iso_mid - iso_cand) / iso_mid;
+			if (diss > dis_threshold)
+			{
+				ttrt++;
+				continue;
+			}
 			vector<vector<double>> tar_sec = all_con_tars[index];
 			vector<vector<double>> tar_sec_f = all_con_tars_flip[index];
 			vector<pair<int, int>> path;
 			int shift = 0;
 			double re = tar_mismatch(tar_mid, tar_sec, path, shift, match_width);
-			double re2 = tar_mismatch(tar_mid, tar_sec_f, path, shift, match_width);
 			re = re / (1 + shape_com_mid + all_shape_complexity[index]);
+			re = 1 - re / path.size();
+			double re2 = tar_mismatch(tar_mid, tar_sec_f, path, shift, match_width);	
 			re2 = re2 / (1 + shape_com_mid + all_shape_complexity[index]);
-
-			if (re < re2)
+			re2 = 1 - re2 / path.size();
+			if (re > re2)
 			{
 				all_result.push_back(re);
 				all_final.push_back(make_pair(index, false));
@@ -2356,13 +2376,13 @@ namespace Tiling_tiles{
 				}
 		//std::cout << "the fianl order: " << endl;
 		vector<pair<int, bool>> all_total_mid;
-		for (int t = total_num - 1; t > total_num - 20; t--)
+		for (int t = 0; t < 10; t++)
 		{
 			all_total_mid.push_back(all_final[t]);
 			std::cout << "order: " << all_final[t].first << "  flip: " << all_final[t].second << " value: " << all_result[t] << " complxeity: " << all_shape_complexity[all_final[t].first] << endl;
 		}
 		all_final.swap(all_total_mid);
-			
+		cout << "ttrt: " << ttrt << endl;
 		return all_final;
 	}
 
@@ -2742,11 +2762,11 @@ namespace Tiling_tiles{
 			return;
 		}
 
-		if (abs(dp[i][j] - (dp[i - 1][j - 1] + dis[i][j])) < 0.001){
+		if (abs(dp[i][j] - (dp[i - 1][j - 1] + d[i][j])) < 0.001){
 			print_TAR_Path(d, dp, i - 1, j - 1, path);
 
 		}
-		else if (abs(dp[i][j] - (dp[i][j - 1] + dis[i][j])) < 0.001) {
+		else if (abs(dp[i][j] - (dp[i][j - 1] + d[i][j])) < 0.001) {
 			print_TAR_Path(d, dp, i, j - 1, path);
 
 		}

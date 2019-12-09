@@ -66,7 +66,7 @@ namespace Tiling_tiles{
 		void setname(string con_name);
 		void loadTileData(string tile_data);
 		void contour_sam_cur(int show_mat = 0);	
-		vector<vector<double>> compute_TAR(vector<Point2f> &contour_,double &shape_complexity, double frac = 0.25); //frac*num是计算的点数目
+		vector<vector<double>> compute_TAR(vector<Point2f> &contour_,double &shape_complexity, double frac = 0.5); //frac*num是计算的点数目
 
 		//vector<int> cand_tiling_v(int max_cur_num);       //求轮廓上值最大的10个不临近的凸点
 		vector<int> partition_points(string imaname);  //求得用做划分的点
@@ -211,6 +211,7 @@ namespace Tiling_tiles{
 		int step[202][202];//记录总的步数
 		int all_types;
 		int sampling_num;
+		int allnum_inner_c;
 		Prototile *prototile_first;
 		Prototile *prototile_mid;
 		Prototile *prototile_second;

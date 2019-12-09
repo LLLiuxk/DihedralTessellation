@@ -50,6 +50,7 @@ namespace Tiling_tiles{
 	double length_two_point2f(Point2f &u, Point2f &v);
 	double length_two_point_tar(vector<double> &p1, vector<double> &p2);
 	void move_con(vector<Point2f> &con, Point2f sh);
+	double isoperimetric_inequality(vector<Point2f> contour);
 
 
 	int cur_char_length(char a, char b);

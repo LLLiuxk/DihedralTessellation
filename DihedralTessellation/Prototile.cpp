@@ -45,6 +45,7 @@ namespace Tiling_tiles{
 
 	void Prototile::loadTileData(string tile_data)
 	{
+		Pro_clear();
 		int show_mat = 1;
 		setpath();
 		//vector<double> cos_vec_contour;
@@ -61,7 +62,8 @@ namespace Tiling_tiles{
 
 	void Prototile::loadPoints(vector<Point2f> con_point)
 	{
-		contour.swap(con_point);
+		Pro_clear();
+		contour = con_point;
 		contour_sam_cur();
 	}
 
@@ -357,7 +359,7 @@ namespace Tiling_tiles{
 	{
 		vector<vector<double>> all_tar;
 		int consize = contour_.size();
-		cout << "consize: " << consize << endl;
+		//cout << "consize: " << consize << endl;
 		int tar_num = frac * consize - 1;
 		shape_complexity = 0;
 		//cout << "consize: " << consize << " tar_num: " << tar_num << endl;

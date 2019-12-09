@@ -803,6 +803,13 @@ namespace Tiling_tiles{
 		}
 	}
 
+	double isoperimetric_inequality(vector<Point2f> contour)
+	{
+		double arcl = arcLength(contour, true);
+		double ratio = 4 * PI * contourArea(contour) / (arcl * arcl);
+		return ratio;
+	}
+
 	void sort_comb(vector<double> vect, vector<int> &index_num) //将下标和数值联合排序，只保留下标的排序,从大到小
 	{
 		int i, j;
@@ -1558,7 +1565,7 @@ namespace Tiling_tiles{
 
 		vector<Point2f> contour_sam;	
 		Point2f sample;
-
+		//contour_sam_index记录初步采样点是哪些点
 		contour_sam.push_back(contour_[0]);
 		contour_sam_index.push_back(0);
 		sample = contour_[0];
