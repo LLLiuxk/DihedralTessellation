@@ -1,76 +1,156 @@
-﻿Build started 2019/12/5 16:25:10.
+﻿Build started 2019/12/10 20:56:19.
      1>Project "D:\VisualStudioProjects\DihedralTessellation\DihedralTessellation\DihedralTessellation.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /IC:\local\opencv\build\include /IC:\local\opencv\build\include\opencv /IC:\local\opencv\build\include\opencv2 /Zi /nologo /W3 /WX- /Od /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Debug\\" /Fd"x64\Debug\vc120.pdb" /Gd /TP /errorReport:prompt tilingOpt.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /IC:\local\opencv\build\include /IC:\local\opencv\build\include\opencv /IC:\local\opencv\build\include\opencv2 /Zi /nologo /W3 /WX- /Od /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Debug\\" /Fd"x64\Debug\vc120.pdb" /Gd /TP /errorReport:prompt OpenglWindow.cpp Prototile.cpp Tool.cpp main.cpp tilingOpt.cpp
          tilingOpt.cpp
-     1>tilingOpt.cpp(58): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(160): warning C4996: 'mkdir': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _mkdir. See online help for details.
+     1>tilingOpt.cpp(63): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(163): warning C4996: 'mkdir': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _mkdir. See online help for details.
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\direct.h(140) : see declaration of 'mkdir'
-     1>tilingOpt.cpp(176): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(137): warning C4101: 'finish' : unreferenced local variable
-     1>tilingOpt.cpp(137): warning C4101: 'midtime' : unreferenced local variable
-     1>tilingOpt.cpp(227): warning C4996: 'mkdir': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _mkdir. See online help for details.
+     1>tilingOpt.cpp(180): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(140): warning C4101: 'finish' : unreferenced local variable
+     1>tilingOpt.cpp(140): warning C4101: 'midtime' : unreferenced local variable
+     1>tilingOpt.cpp(231): warning C4996: 'mkdir': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _mkdir. See online help for details.
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\direct.h(140) : see declaration of 'mkdir'
-     1>tilingOpt.cpp(241): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(200): warning C4101: 'finish' : unreferenced local variable
-     1>tilingOpt.cpp(200): warning C4101: 'midtime' : unreferenced local variable
-     1>tilingOpt.cpp(267): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(269): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(340): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(358): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(365): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(401): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(456): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(460): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(491): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(503): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(510): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(558): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(659): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(660): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(798): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(245): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(274): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(275): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(204): warning C4101: 'finish' : unreferenced local variable
+     1>tilingOpt.cpp(204): warning C4101: 'midtime' : unreferenced local variable
+     1>tilingOpt.cpp(269): warning C4101: 'con_sc' : unreferenced local variable
+     1>tilingOpt.cpp(305): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(307): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(379): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(397): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(404): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(440): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(495): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(499): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(530): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(542): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(549): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(598): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(699): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(700): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
      1>tilingOpt.cpp(842): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(1249): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(1352): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(1442): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(1606): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(1867): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(1947): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2150): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2266): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2310): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2345): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2375): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(883): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(884): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(885): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(950): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(1357): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(1460): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(1550): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(1714): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(1975): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(2055): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(2258): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(2374): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
      1>tilingOpt.cpp(2419): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2432): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2437): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2448): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2481): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(2464): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(2494): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(2538): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(2551): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(2556): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
      1>tilingOpt.cpp(2567): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2594): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2598): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2614): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2636): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2637): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2790): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2797): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2885): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2898): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>tilingOpt.cpp(2939): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-     1>d:\visualstudioprojects\dihedraltessellation\dihedraltessellation\Tool.h(133): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-                 tilingOpt.cpp(394) : see reference to function template instantiation 'void Tiling_tiles::insert_vector<Tiling_tiles::Point_f>(std::vector<Tiling_tiles::Point_f,std::allocator<_Ty>> &,int,T)' being compiled
+     1>tilingOpt.cpp(2600): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(2686): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(2713): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(2717): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(2733): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(2755): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(2756): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(2909): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(2916): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(3004): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(3017): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>tilingOpt.cpp(3058): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>d:\visualstudioprojects\dihedraltessellation\dihedraltessellation\Tool.h(136): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+                 tilingOpt.cpp(433) : see reference to function template instantiation 'void Tiling_tiles::insert_vector<Tiling_tiles::Point_f>(std::vector<Tiling_tiles::Point_f,std::allocator<_Ty>> &,int,T)' being compiled
                  with
                  [
                      _Ty=Tiling_tiles::Point_f
          ,            T=Tiling_tiles::Point_f
                  ]
-     1>d:\visualstudioprojects\dihedraltessellation\dihedraltessellation\Tool.h(150): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
-                 tilingOpt.cpp(480) : see reference to function template instantiation 'T Tiling_tiles::delete_vector<Tiling_tiles::Point_f>(std::vector<Tiling_tiles::Point_f,std::allocator<_Ty>> &,int)' being compiled
+     1>d:\visualstudioprojects\dihedraltessellation\dihedraltessellation\Tool.h(153): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+                 tilingOpt.cpp(519) : see reference to function template instantiation 'T Tiling_tiles::delete_vector<Tiling_tiles::Point_f>(std::vector<Tiling_tiles::Point_f,std::allocator<_Ty>> &,int)' being compiled
                  with
                  [
                      T=Tiling_tiles::Point_f
          ,            _Ty=Tiling_tiles::Point_f
                  ]
+         main.cpp
+     1>main.cpp(295): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>main.cpp(701): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>main.cpp(828): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+         Tool.cpp
+     1>Tool.cpp(31): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Tool.cpp(54): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Tool.cpp(79): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Tool.cpp(103): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
+     1>Tool.cpp(104): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Tool.cpp(126): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>Tool.cpp(177): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>Tool.cpp(278): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>Tool.cpp(378): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>Tool.cpp(448): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Tool.cpp(470): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>Tool.cpp(544): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Tool.cpp(545): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Tool.cpp(579): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>Tool.cpp(750): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>Tool.cpp(772): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Tool.cpp(799): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Tool.cpp(817): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Tool.cpp(819): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
+     1>Tool.cpp(926): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Tool.cpp(946): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Tool.cpp(947): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Tool.cpp(977): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Tool.cpp(1017): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>Tool.cpp(1122): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Tool.cpp(1166): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Tool.cpp(1206): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>Tool.cpp(1207): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>Tool.cpp(1208): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>Tool.cpp(1209): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>Tool.cpp(1210): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>Tool.cpp(1228): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>Tool.cpp(1229): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>Tool.cpp(1230): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>Tool.cpp(1231): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>Tool.cpp(1248): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>Tool.cpp(1249): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>Tool.cpp(1250): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>Tool.cpp(1251): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>Tool.cpp(1258): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Tool.cpp(1273): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Tool.cpp(1291): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Tool.cpp(1304): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Tool.cpp(1359): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Tool.cpp(1474): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Tool.cpp(1478): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>Tool.cpp(1479): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>Tool.cpp(1489): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Tool.cpp(1561): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
+     1>Tool.cpp(1563): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Tool.cpp(1582): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Tool.cpp(1615): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Tool.cpp(1656): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Tool.cpp(1657): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Tool.cpp(1711): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Tool.cpp(1739): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+         Prototile.cpp
+     1>Prototile.cpp(383): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Prototile.cpp(389): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>Prototile.cpp(393): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Prototile.cpp(397): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Prototile.cpp(475): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+         Generating Code...
+     1>d:\visualstudioprojects\dihedraltessellation\dihedraltessellation\tool.cpp(1103): warning C4715: 'Tiling_tiles::cur_char_length' : not all control paths return a value
+         Compiling...
+         OpenglWindow.cpp
+     1>OpenglWindow.cpp(22): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>OpenglWindow.cpp(195): warning C4390: ';' : empty controlled statement found; is this the intent?
+         Generating Code...
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.exe" /INCREMENTAL /NOLOGO /LIBPATH:C:\local\opencv\build\x64\vc12\lib opencv_calib3d248d.lib opencv_contrib248d.lib opencv_core248d.lib opencv_features2d248d.lib opencv_flann248d.lib opencv_gpu248d.lib opencv_highgui248d.lib opencv_imgproc248d.lib opencv_legacy248d.lib opencv_ml248d.lib opencv_objdetect248d.lib opencv_ts248d.lib opencv_video248d.lib glut64.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.lib" /MACHINE:X64 x64\Debug\main.obj
          x64\Debug\Tool.obj
@@ -82,4 +162,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:02.33
+Time Elapsed 00:00:09.85

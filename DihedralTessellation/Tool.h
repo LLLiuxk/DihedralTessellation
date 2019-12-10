@@ -52,6 +52,8 @@ namespace Tiling_tiles{
 	void move_con(vector<Point2f> &con, Point2f sh);
 	double isoperimetric_inequality(vector<Point2f> contour);
 
+	//TAR
+	vector<vector<double>> computeTAR(vector<Point2f> &contour_, double &shape_complexity, double frac); //frac*num是计算的点数目
 
 	int cur_char_length(char a, char b);
 	double cur_length_two_p(double cur1, double cur2);

@@ -150,6 +150,7 @@ namespace Tiling_tiles{
 
 		//morphing
 		vector<int> morphed_results(vector<Point2f> &morphed_A, int Candidate_index, int Tiling_index);
+		vector<Point2f> morphing(vector<Point_f> contour1, vector<Point_f> contour2, vector<pair<int, int>> path);
 		void contour_fine_tuning(vector<Point2f> &contour_, int first, int second);
 		
 		//morphing
@@ -212,6 +213,7 @@ namespace Tiling_tiles{
 		int all_types;
 		int sampling_num;
 		int allnum_inner_c;
+		int match_window_width;
 		Prototile *prototile_first;
 		Prototile *prototile_mid;
 		Prototile *prototile_second;

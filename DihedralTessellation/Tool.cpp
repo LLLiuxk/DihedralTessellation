@@ -810,6 +810,49 @@ namespace Tiling_tiles{
 		return ratio;
 	}
 
+
+	vector<vector<double>> computeTAR(vector<Point2f> &contour_, double &shape_complexity, double frac)
+	{
+		vector<vector<double>> all_tar;
+		int consize = contour_.size();
+		//cout << "consize: " << consize << endl;
+		int tar_num = frac * consize - 1;
+		shape_complexity = 0;
+		//cout << "consize: " << consize << " tar_num: " << tar_num << endl;
+		vector<double> maxtar(tar_num, 0);// 记录最大值来进行归一化
+		for (int i = 0; i < consize; i++)
+		{
+			vector<double> one_p_tar;
+			for (int j = 0; j < tar_num; j++)
+			{
+				Point2f vpsubts_vp = contour_[(i - j - 1 + consize) % consize] - contour_[i];
+				Point2f vpplusts_vp = contour_[(i + j + 1) % consize] - contour_[i];
+				double tar = 0.5 * tar_2vector(vpplusts_vp, vpsubts_vp);
+				//cout << vpsubts_vp << "  " << vpplusts_vp << endl;
+				one_p_tar.push_back(tar);
+				if (abs(tar) > maxtar[j]) maxtar[j] = abs(tar);
+
+			}
+			all_tar.push_back(one_p_tar);
+		}
+		//cout << "what happened??" << endl;
+		for (int i = 0; i < consize; i++)
+		{
+			double max_tar_one = 0;
+			double min_tar_one = 10000;
+			for (int j = 0; j < tar_num; j++)
+			{
+				all_tar[i][j] = all_tar[i][j] / maxtar[j];
+				if (all_tar[i][j] > max_tar_one) max_tar_one = all_tar[i][j];
+				if (all_tar[i][j] < min_tar_one) min_tar_one = all_tar[i][j];
+			}
+			shape_complexity += abs(max_tar_one - min_tar_one);
+		}
+		shape_complexity = shape_complexity / consize;
+		//cout << all_tar[0].size() << "    shape_com: " << shape_complexity << endl;
+		return all_tar;
+	}
+
 	void sort_comb(vector<double> vect, vector<int> &index_num) //将下标和数值联合排序，只保留下标的排序,从大到小
 	{
 		int i, j;
