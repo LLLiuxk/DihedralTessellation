@@ -17,7 +17,7 @@ namespace Tiling_tiles{
 		all_types = 500;
 		sampling_num = 3;
 		allnum_inner_c = 0;
-		match_window_width = 2;
+		match_window_width = 5;
 		//memset(dp, 0, sizeof(dp));
 		//memset(dp_inver, 0, sizeof(dp_inver));
 
@@ -889,6 +889,40 @@ namespace Tiling_tiles{
 		int cnum1 = contour1.size();
 		int cnum2 = contour2.size();
 		int psize = path.size();
+		//确定以下筛选原则：1.双边选择如果一方有>2的点，则将双方设置为>2
+		//2.对于多对1的情况：i.如果对面没有>2的，则选择距离最短的点; 2.如果对面有多个，则选择最后一个
+		for (int j = 0; j < psize; j++)
+		{
+			if (contour1[path[j].first].type > 1 || contour2[path[j].second].type > 1)
+			{
+				//判断有没有多对一的情况
+				vector<pair<int, int>> path_more;
+				path_more.push_back(path[j]);
+				int t = j + 1;
+				while (path[t].first == path[j].first || path[t].second == path[j].second)
+				{
+					path_more.push_back(path[t]);
+					t++;
+				}
+				if (path_more.size() > 1)  //说明有多个需要处理
+				{
+
+				}
+				else
+				{
+					j = t - 1;
+					if (contour1[path[j].first].type > 1) contour2[path[j].second].type = contour1[path[j].first].type;
+					else contour1[path[j].first].type = contour2[path[j].second].type;
+				}
+				
+			}
+			//length += length_two_point2f(contour1[path[j].first].point, contour2[path[j].second].point);
+			cout << path[j].first << " : " << contour1[path[j].first].type << "    " << path[j].second << " : " << contour2[path[j].second].type << endl;
+			//MyLine(drawing1, contour1[path[j].first].point + shift1, contour2[path[j].second].point + shift1, "gray");
+		}
+
+
+
 		Point2f cen1 = center_p(p_f2p2f(contour1));
 		Point2f cen2 = center_p(p_f2p2f(contour2));
 		cout << "cen1:  "<<cen1<<"   cen2"<<cen2<<endl;
@@ -912,11 +946,11 @@ namespace Tiling_tiles{
 		}
 		//MyLine(drawing1, cen1 + shift1, contour1[path[0].first].point + shift1, "red");
 		double length = 0;
-		for (int j = 0; j < 1; j++)
+		for (int j = 0; j < psize; j++)
 		{
-			length += length_two_point2f(contour1[path[j].first].point, contour2[path[j].second].point);
-			//cout << path[j].first << "   " << path[j].second << endl;
-			MyLine(drawing1, contour1[path[j].first].point + shift1, contour2[path[j].second].point + shift1, "gray");
+			//length += length_two_point2f(contour1[path[j].first].point, contour2[path[j].second].point);
+			cout << path[j].first << " : " << contour1[path[j].first].type << "    " << path[j].second <<" : "<< contour2[path[j].second].type << endl;
+			//MyLine(drawing1, contour1[path[j].first].point + shift1, contour2[path[j].second].point + shift1, "gray");
 		}
 		
 		cout << "path length: " << length<<endl;
@@ -2263,7 +2297,7 @@ namespace Tiling_tiles{
 		imshow("extracted contour",drawing_ttt);*/
 		for (int g = 0; g < midmark_p.size(); g++)
 		{
-			morphed_B[g].type = 3;
+			morphed_B[midmark_p[g]].type = 3;
 		}
 		return morphed_B;
 	}
