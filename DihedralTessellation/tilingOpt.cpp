@@ -890,37 +890,75 @@ namespace Tiling_tiles{
 		int cnum2 = contour2.size();
 		int psize = path.size();
 		//确定以下筛选原则：1.双边选择如果一方有>2的点，则将双方设置为>2
-		//2.对于多对1的情况：i.如果对面没有>2的，则选择距离最短的点; 2.如果对面有多个，则选择最后一个
+		//2.对于多对1的情况：i.如果对面没有>2的，则选择距离最短的点; 2.如果对面有多个，则选择距离最短的; 3如果对面有一个，则选这一个
+		vector<pair<int, int>> final_pair;
+		int lock_l = -1;
+		int lock_r = -1;  //被锁上的序号不会被再次使用
 		for (int j = 0; j < psize; j++)
 		{
+			if (path[j].first == lock_l || path[j].second == lock_r) continue; //把锁住的情况跳过
 			if (contour1[path[j].first].type > 1 || contour2[path[j].second].type > 1)
 			{
-				//判断有没有多对一的情况
-				vector<pair<int, int>> path_more;
-				path_more.push_back(path[j]);
-				int t = j + 1;
-				while (path[t].first == path[j].first || path[t].second == path[j].second)
+				int t = j + 1;    //t是下一点
+				if (path[t].first != path[j].first && path[t].second != path[j].second)  //两边都没有多对一
 				{
-					path_more.push_back(path[t]);
-					t++;
-				}
-				if (path_more.size() > 1)  //说明有多个需要处理
-				{
-
-				}
-				else
-				{
-					j = t - 1;
 					if (contour1[path[j].first].type > 1) contour2[path[j].second].type = contour1[path[j].first].type;
 					else contour1[path[j].first].type = contour2[path[j].second].type;
+					lock_l = path[j].first;
+					lock_r = path[j].second;
 				}
-				
+				else if (path[t].first == path[j].first && path[t].second != path[j].second)  //左边一对多
+				{
+					double length_min = length_two_point2f(contour1[path[j].first].point, contour2[path[j].second].point);
+					int type_max = contour2[path[j].second].type;
+					int index = j;
+					while (path[t].first == path[j].first)
+					{
+						if (contour2[path[t].second].type > type_max || (contour2[path[t].second].type == type_max && length_two_point2f(contour1[path[t].first].point, contour2[path[t].second].point) < length_min))
+						{
+							length_min = length_two_point2f(contour1[path[t].first].point, contour2[path[t].second].point);
+							type_max = contour2[path[t].second].type;
+							index = t;
+						}
+						t++;
+					}
+					//lock
+					lock_l = path[j].first;
+					lock_r = path[index].second;
+					j = t - 1;
+				}
+				else if (path[t].first != path[j].first && path[t].second == path[j].second)  //右边一对多
+				{
+					double length_min = length_two_point2f(contour1[path[j].first].point, contour2[path[j].second].point);
+					int type_max = contour1[path[j].second].type;
+					int index = j;
+					while (path[t].second == path[j].second)
+					{
+						if (contour1[path[t].first].type > type_max || (contour1[path[t].first].type == type_max && length_two_point2f(contour1[path[t].first].point, contour2[path[t].second].point) < length_min))
+						{
+							length_min = length_two_point2f(contour1[path[t].first].point, contour2[path[t].second].point);
+							type_max = contour1[path[t].first].type;
+							index = t;
+						}
+						t++;
+					}
+					//lock
+					lock_l = path[index].first;
+					lock_r = path[j].second;
+					j = t - 1;
+				}
+				if (lock_l != -1 && lock_r != -1) final_pair.push_back(make_pair(lock_l, lock_r));
 			}
+				
 			//length += length_two_point2f(contour1[path[j].first].point, contour2[path[j].second].point);
 			cout << path[j].first << " : " << contour1[path[j].first].type << "    " << path[j].second << " : " << contour2[path[j].second].type << endl;
 			//MyLine(drawing1, contour1[path[j].first].point + shift1, contour2[path[j].second].point + shift1, "gray");
 		}
-
+		cout << "final_pair : " << endl;
+		for (int g = 0; g < final_pair.size(); g++)
+		{
+			cout << final_pair[g].first << "  :  " << final_pair[g].second << endl;
+		}
 
 
 		Point2f cen1 = center_p(p_f2p2f(contour1));
