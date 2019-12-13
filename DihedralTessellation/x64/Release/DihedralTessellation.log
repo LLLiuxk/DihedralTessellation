@@ -1,7 +1,20 @@
-﻿Build started 2019/12/12 16:55:53.
+﻿Build started 2019/12/13 16:50:40.
      1>Project "D:\VisualStudioProjects\DihedralTessellation\DihedralTessellation\DihedralTessellation.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /IC:\local\opencv\build\include /IC:\local\opencv\build\include\opencv /IC:\local\opencv\build\include\opencv2 /Zi /nologo /W3 /WX- /O2 /Oi /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Release\\" /Fd"x64\Release\vc120.pdb" /Gd /TP /errorReport:prompt tilingOpt.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /IC:\local\opencv\build\include /IC:\local\opencv\build\include\opencv /IC:\local\opencv\build\include\opencv2 /Zi /nologo /W3 /WX- /O2 /Oi /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Release\\" /Fd"x64\Release\vc120.pdb" /Gd /TP /errorReport:prompt OpenglWindow.cpp Prototile.cpp main.cpp tilingOpt.cpp
+         OpenglWindow.cpp
+     1>OpenglWindow.cpp(22): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>OpenglWindow.cpp(195): warning C4390: ';' : empty controlled statement found; is this the intent?
+         Prototile.cpp
+     1>Prototile.cpp(383): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Prototile.cpp(389): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+     1>Prototile.cpp(393): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Prototile.cpp(397): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>Prototile.cpp(475): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+         main.cpp
+     1>main.cpp(295): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>main.cpp(701): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+     1>main.cpp(828): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
          tilingOpt.cpp
      1>tilingOpt.cpp(63): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
      1>tilingOpt.cpp(163): warning C4996: 'mkdir': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _mkdir. See online help for details.
@@ -90,4 +103,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:05.06
+Time Elapsed 00:00:07.42

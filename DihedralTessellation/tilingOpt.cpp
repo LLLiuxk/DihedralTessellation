@@ -902,8 +902,8 @@ namespace Tiling_tiles{
 				int t = j + 1;    //t是下一点
 				if (path[t].first != path[j].first && path[t].second != path[j].second)  //两边都没有多对一
 				{
-					if (contour1[path[j].first].type > 1) contour2[path[j].second].type = contour1[path[j].first].type;
-					else contour1[path[j].first].type = contour2[path[j].second].type;
+					//if (contour1[path[j].first].type > 1) contour2[path[j].second].type = contour1[path[j].first].type;
+					//else contour1[path[j].first].type = contour2[path[j].second].type;
 					lock_l = path[j].first;
 					lock_r = path[j].second;
 				}
@@ -958,6 +958,7 @@ namespace Tiling_tiles{
 		for (int g = 0; g < final_pair.size(); g++)
 		{
 			cout << final_pair[g].first << "  :  " << final_pair[g].second << endl;
+
 		}
 
 
@@ -1022,8 +1023,10 @@ namespace Tiling_tiles{
 		contour2_tar = computeTAR(contour_, con_sc, 0.5);*/
 		//以上数据准备完毕
 
+	}
 
-
+	vector<Point_f> Tiling_opt::morph_segment(vector<Point_f> seg1, vector<Point_f> seg2)
+	{
 
 	}
 
