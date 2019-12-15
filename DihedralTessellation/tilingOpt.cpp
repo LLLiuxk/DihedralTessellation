@@ -1030,22 +1030,28 @@ namespace Tiling_tiles{
 		double length_ave;
 		double angle_ave;
 		Point_f end = seg1.back();
+		//确定框架的参数
 		if (end.type == 3)
 		{
+			Point2f axis = end.point - start.point;
 			length_ave = length_two_point2f(start.point, end.point);
-			angle_ave = 0;
+			angle_ave = acos(cos_two_vector(Point2f(1, 0), axis)) / PI * 180;
 		}
 		else
 		{
-			Line_Seg line1(seg1.back().point, seg1[0].point);
-			Line_Seg line2(seg2.back().point, seg2[0].point);
-			double angle1 = 0;
-			double angle2 = 0;
-			double length_ave;
+			//Line_Seg line1(seg1.back().point, seg1[0].point);
+			//Line_Seg line2(seg2.back().point, seg2[0].point);
+			double angle1 = acos(cos_two_vector(Point2f(1, 0), seg1.back().point - seg1[0].point)) / PI * 180;
+			double angle2 = acos(cos_two_vector(Point2f(1, 0), seg2.back().point - seg2[0].point)) / PI * 180;
+			angle_ave = (angle1 + angle2) / 2;
 			length_ave = 0.5*(length_two_point2f(seg1.back().point, seg1[0].point) + length_two_point2f(seg2.back().point, seg2[0].point));
 		}
 		int number_new = 0.5*(seg1.size() + seg2.size());
-		//按照number_new进行重采样
+		//按照number_new进行重采样,这里我们在原样的基础上进行变形
+		vector<Point2f> seg_sam1 = sampling_seg(p_f2p2f(seg1), number_new);
+		vector<Point2f> seg_sam2 = sampling_seg(p_f2p2f(seg2), number_new);
+		vector<Point2f> contour_sam;
+		Point2f sample;
 
 
 

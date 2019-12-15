@@ -1648,6 +1648,52 @@ namespace Tiling_tiles{
 		return contour_sam;
 	}
 
+	vector<Point2f> sampling_seg(vector<Point2f> &segment, int points_num)
+	{
+		if (points_num <= 2) return segment;
+		double length = contour_length(segment);
+		double Lambda = length / points_num;
+
+		/*int sam_num = points_num * 100;
+		double Lambda = length / sam_num;*/
+
+		vector<Point2f> contour_sam;
+		Point2f sample;
+		//contour_sam_index记录初步采样点是哪些点
+		//contour_sam.push_back(contour_[0]);
+		
+		sample = segment[0];
+		int csize = segment.size();
+		for (int t = 1; t <= csize; t++)
+		{
+			if (contour_sam.size() == points_num - 2) break;
+			double length_ = length_two_point2f(sample, segment[t%csize]);
+			if (length_ > Lambda)
+			{
+				Point2f vec = unit_vec(segment[t%csize] - sample);
+				sample = sample + Lambda * vec;
+				contour_sam.push_back(sample);
+				t = t - 1;
+			}
+			else
+			{
+				while ((length_ + length_two_point2f(segment[t], segment[(t + 1) % csize])) < Lambda)
+				{
+					length_ = length_ + length_two_point2f(segment[t], segment[(t + 1) % csize]);
+					t++;
+				}
+				Point2f vec = unit_vec(segment[(t + 1) % csize] - segment[t]);
+				sample = segment[t] + (Lambda - length_) * vec;
+				contour_sam.push_back(sample);
+			}
+		}
+		/*if (length_two_point2f(contour_sam[0], contour_sam[contour_sam.size() - 1]) < 1)
+		{
+			contour_sam.pop_back();
+		}*/
+		return contour_sam;
+	}
+
 	vector<Point2f> sampling(vector<Point2f> &contour_, int points_num)
 	{
 		vector<int> contour_sam_index;

@@ -59,6 +59,7 @@ namespace Tiling_tiles{
 	double cur_length_two_p(double cur1, double cur2);
 	vector<Point2f> sampling(vector<Point2f> &contour_, int points_num);
 	vector<Point2f> sampling_ave(vector<Point2f> &contour_, int points_num, vector<int> &contour_sam_index);
+	vector<Point2f> sampling_seg(vector<Point2f> &segment, int points_num);
 	vector<double> curvature_com_k(vector<Point2f> &contour_sam);
 	vector<double> curvature_com(const vector<Point2f> &contour_sam); //¼ÇÂ¼cosÖµ
 	vector<int> most_convex_p(vector<Point2f> contour_, vector<double> cont_c, int max_cur_num);
