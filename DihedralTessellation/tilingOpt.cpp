@@ -1025,8 +1025,29 @@ namespace Tiling_tiles{
 
 	}
 
-	vector<Point_f> Tiling_opt::morph_segment(vector<Point_f> seg1, vector<Point_f> seg2)
+	vector<Point_f> Tiling_opt::morph_segment(vector<Point_f> seg1, vector<Point_f> seg2, Point_f start)
 	{
+		double length_ave;
+		double angle_ave;
+		Point_f end = seg1.back();
+		if (end.type == 3)
+		{
+			length_ave = length_two_point2f(start.point, end.point);
+			angle_ave = 0;
+		}
+		else
+		{
+			Line_Seg line1(seg1.back().point, seg1[0].point);
+			Line_Seg line2(seg2.back().point, seg2[0].point);
+			double angle1 = 0;
+			double angle2 = 0;
+			double length_ave;
+			length_ave = 0.5*(length_two_point2f(seg1.back().point, seg1[0].point) + length_two_point2f(seg2.back().point, seg2[0].point));
+		}
+		int number_new = 0.5*(seg1.size() + seg2.size());
+		//按照number_new进行重采样
+
+
 
 	}
 
