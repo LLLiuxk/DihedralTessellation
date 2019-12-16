@@ -174,7 +174,7 @@ namespace Tiling_tiles{
 		vector<Point2f> construct_joint(jointPat pattern, int &mid);
 		//math
 		vector<Point2f> p_f2p2f(vector<Point_f> origin);
-
+		vector<Point_f> p2f2p_f(vector<Point2f> origin);
 		//from CandPat to contour
 		vector<Point2f> CandP2Contour(CandPat candp, int num);
 		//bool coll_detection(Point2f shifting1, Point2f shifting2, vector<Point2f> &contour_s);

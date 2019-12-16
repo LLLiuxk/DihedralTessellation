@@ -1651,8 +1651,13 @@ namespace Tiling_tiles{
 	vector<Point2f> sampling_seg(vector<Point2f> &segment, int points_num)
 	{
 		if (points_num <= 2) return segment;
-		double length = contour_length(segment);
-		double Lambda = length / points_num;
+		double length = 0; //contour_length(segment);
+		for (int i = 0; i < segment.size() - 1; i++)
+		{
+			length += length_two_point2f(segment[i] , segment[i + 1]);
+		}
+		//cout << length << endl;
+		double Lambda = length / (points_num - 1);
 
 		/*int sam_num = points_num * 100;
 		double Lambda = length / sam_num;*/
@@ -1663,10 +1668,11 @@ namespace Tiling_tiles{
 		//contour_sam.push_back(contour_[0]);
 		
 		sample = segment[0];
+		contour_sam.push_back(sample);
 		int csize = segment.size();
 		for (int t = 1; t <= csize; t++)
 		{
-			if (contour_sam.size() == points_num - 2) break;
+			if (contour_sam.size() == points_num - 1) break;
 			double length_ = length_two_point2f(sample, segment[t%csize]);
 			if (length_ > Lambda)
 			{
@@ -1691,6 +1697,7 @@ namespace Tiling_tiles{
 		{
 			contour_sam.pop_back();
 		}*/
+		contour_sam.push_back(segment.back());
 		return contour_sam;
 	}
 

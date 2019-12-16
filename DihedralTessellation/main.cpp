@@ -30,13 +30,22 @@ int main(int argc, char** argv)
 		vector<Point2f> ttt;
 		ttt.push_back(st);
 		ttt.push_back(end);
+		
+		vector<Point2f> gg = sampling_seg(ttt,10);
+		int gs = gg.size();
+		cout << gs << endl;
+		for (int g = 0; g < gs; g++)
+		{
+			cout << gg[g] << endl;
+		}
+		
 
-		Point2f cen1 = Point2f(10, 25);
+		/*Point2f cen1 = Point2f(10, 25);
 		double angle = 90;
 		Mat rot_mat(2, 3, CV_32FC1);
 		rot_mat = getRotationMatrix2D(cen1, angle, 1);
 		transform(ttt, ttt, rot_mat);
-		cout << ttt[0] << "  " << ttt[1] << endl;
+		cout << ttt[0] << "  " << ttt[1] << endl;*/
 
 		//prototile_first->setname("swan2");
 		//vector<Point2f> new_c = prototile_first->readTxt();

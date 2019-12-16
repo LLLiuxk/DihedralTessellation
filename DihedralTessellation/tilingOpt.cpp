@@ -951,14 +951,22 @@ namespace Tiling_tiles{
 			}
 				
 			//length += length_two_point2f(contour1[path[j].first].point, contour2[path[j].second].point);
-			cout << path[j].first << " : " << contour1[path[j].first].type << "    " << path[j].second << " : " << contour2[path[j].second].type << endl;
+			cout << j<<"--"<<path[j].first << " : " << contour1[path[j].first].type << "    " << path[j].second << " : " << contour2[path[j].second].type << endl;
 			//MyLine(drawing1, contour1[path[j].first].point + shift1, contour2[path[j].second].point + shift1, "gray");
 		}
 		cout << "final_pair : " << endl;
-		for (int g = 0; g < final_pair.size(); g++)
+		vector<vector<Point_f>> contour1_seg;
+		vector<vector<Point_f>> contour2_seg;
+		int final_size = final_pair.size();
+		for (int g = 0; g < final_size; g++)
 		{
+			vector<Point_f> c_seg1;
+			vector<Point_f> c_seg2;
 			cout << final_pair[g].first << "  :  " << final_pair[g].second << endl;
-
+			for (int n = final_pair[g].first; n <= final_pair[(g + 1)%final_size].first; n++) c_seg1.push_back(contour1[n]);
+			for (int n = final_pair[g].second; n <= final_pair[(g + 1) % final_size].second; n++) c_seg2.push_back(contour2[n]);
+			contour1_seg.push_back(c_seg1);
+			contour2_seg.push_back(c_seg2);
 		}
 
 
@@ -1025,35 +1033,60 @@ namespace Tiling_tiles{
 
 	}
 
-	vector<Point_f> Tiling_opt::morph_segment(vector<Point_f> seg1, vector<Point_f> seg2, Point_f start)
+	vector<Point_f> Tiling_opt::morph_segment(vector<Point_f> seg1, vector<Point_f> seg2, Point_f start) //start 是上一个的尾端，是固定的
 	{
-		double length_ave;
+		Point_f end = seg1.back();  //如果end.type==3, end 不需要变
+		double length_ave = length_two_point2f(start.point, end.point);
 		double angle_ave;
-		Point_f end = seg1.back();
+		
 		//确定框架的参数
-		if (end.type == 3)
+		if (end.type != 3) // 确定新的end点
 		{
-			Point2f axis = end.point - start.point;
-			length_ave = length_two_point2f(start.point, end.point);
-			angle_ave = acos(cos_two_vector(Point2f(1, 0), axis)) / PI * 180;
-		}
-		else
-		{
-			//Line_Seg line1(seg1.back().point, seg1[0].point);
-			//Line_Seg line2(seg2.back().point, seg2[0].point);
-			double angle1 = acos(cos_two_vector(Point2f(1, 0), seg1.back().point - seg1[0].point)) / PI * 180;
-			double angle2 = acos(cos_two_vector(Point2f(1, 0), seg2.back().point - seg2[0].point)) / PI * 180;
+			double angle1 = acos(cos_two_vector(Point2f(1, 0), seg1.back().point - seg1[0].point));
+			double angle2 = acos(cos_two_vector(Point2f(1, 0), seg2.back().point - seg2[0].point));
 			angle_ave = (angle1 + angle2) / 2;
 			length_ave = 0.5*(length_two_point2f(seg1.back().point, seg1[0].point) + length_two_point2f(seg2.back().point, seg2[0].point));
+			Point2f vec_fin = Point2f(cos(angle_ave), sin(angle_ave));
+			end.point = start.point + length_ave*vec_fin;
+			//Point2f rota_cent = Point2f(0,0);
+			//Mat rot_mat = getRotationMatrix2D(rota_cent, angle_ave, 1);
+			//cv::transform(one_loca, one_loca, rot_mat);
+			//Point2f axis = end.point - start.point;
 		}
+		Point2f mid_des = start.point + 0.5*length_ave * vertical_vec(end.point - start.point);
+		vector<Point2f> aff_des;
+		aff_des.push_back(start.point);
+		aff_des.push_back(end.point);
+		aff_des.push_back(mid_des);
+		//计算feature
 		int number_new = 0.5*(seg1.size() + seg2.size());
 		//按照number_new进行重采样,这里我们在原样的基础上进行变形
 		vector<Point2f> seg_sam1 = sampling_seg(p_f2p2f(seg1), number_new);
 		vector<Point2f> seg_sam2 = sampling_seg(p_f2p2f(seg2), number_new);
-		vector<Point2f> contour_sam;
-		Point2f sample;
+		vector<Point2f> contour_morphed;
+		if (seg_sam1.size() == seg_sam2.size() && seg_sam1.size() == number_new)
+		{
+			cout << "seg_sam1.size() = seg_sam2.size() = number_new" << endl;
+		}
+		for (int j = 0; j < number_new; j++)
+		{
+			contour_morphed.push_back(0.5*(seg_sam1[j] + seg_sam2[j]));
+		}
+		//计算仿射变换矩阵
+		Point2f st_ori = contour_morphed[0];
+		Point2f end_ori = contour_morphed.back();
+		Point2f mid_ori = st_ori + 0.5*length_two_point2f(st_ori, end_ori)*vertical_vec(end_ori - st_ori);
+		vector<Point2f> aff_ori;
+		aff_ori.push_back(st_ori);
+		aff_ori.push_back(end_ori);
+		aff_ori.push_back(mid_ori);
+		vector<Point2f> contour_final;
+		//将变形得到的feature通过仿射变换移到目的位置
+		Mat M1 = getAffineTransform(aff_ori, aff_des);
+		cv::transform(contour_morphed, contour_final, M1);
+		vector<Point_f> contour_final_ = p2f2p_f(contour_final);
 
-
+		return contour_final_;
 
 	}
 
@@ -3122,6 +3155,20 @@ namespace Tiling_tiles{
 		for (int i = 0; i < originsize; i++)
 		{
 			new_c.push_back(origin[i].point);
+		}
+		return new_c;
+	}
+
+	vector<Point_f> Tiling_opt::p2f2p_f(vector<Point2f> origin)
+	{
+		vector<Point_f> new_c;
+		int originsize = origin.size();
+		for (int i = 0; i < originsize; i++)
+		{
+			Point_f one;
+			one.point = origin[i];
+			one.type = 0;
+			new_c.push_back(one);
 		}
 		return new_c;
 	}
