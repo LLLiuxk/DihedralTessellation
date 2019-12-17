@@ -17,7 +17,7 @@ namespace Tiling_tiles{
 		all_types = 500;
 		sampling_num = 3;
 		allnum_inner_c = 0;
-		match_window_width = 5;
+		match_window_width = 6;
 		//memset(dp, 0, sizeof(dp));
 		//memset(dp_inver, 0, sizeof(dp_inver));
 
@@ -162,7 +162,7 @@ namespace Tiling_tiles{
 		}
 		mkdir(na);
 
-		int trans = Tanslation_rule(p_p_index, cont_orig, rootname);
+		//int trans = Tanslation_rule(p_p_index, cont_orig, rootname);
 		int flips = Flipping_rule(p_p_index, cont_orig, rootname);
 		//int rotas = Rotation_rule(p_p_index, cont_rota, rootname);
 
@@ -208,9 +208,9 @@ namespace Tiling_tiles{
 		vector<int> p_p_index = prototile_first->partition_points(imaname);
 		vector<int> ttt;
 		ttt.push_back(p_p_index[0]);
-		ttt.push_back(p_p_index[17]);
-		ttt.push_back(p_p_index[21]);
-		ttt.push_back(p_p_index[24]);
+		ttt.push_back(p_p_index[16]);
+		ttt.push_back(p_p_index[26]);
+		ttt.push_back(p_p_index[41]);
 		std::cout << "ttt: " << ttt.size() << endl;
 		vector<Point_f> cont_orig = prototile_first->contour_f;
 		vector<Point_f> cont_rota = prototile_first->contour_r; //旋转暂时用500个点
@@ -249,7 +249,7 @@ namespace Tiling_tiles{
 		for (int i = 0; i < all_inner_num; i++)
 		{
 			match_candidate(i);
-			/*for (int j = 0; j < 5; j++)
+			/*for (int j = 2; j < 3; j++)
 			{
 				vector<Point2f> morphed_A;
 				vector<int> mid_inter_morphed = morphed_results(morphed_A, j, i);
@@ -260,7 +260,7 @@ namespace Tiling_tiles{
 				string filename = rootname + "\\" + int2string(i) + "_Candidate_" + int2string(j) + ".png";
 				imwrite(filename, drawing_pro);
 			}*/
-			for (int j = 0; j < 1; j++)
+			for (int j = 3; j < 4; j++)
 			{
 				vector<pair<int, int>> path = cand_paths[i][j];
 				vector<Point_f> contour1 = prototile_mid->contour_f;  
@@ -835,7 +835,7 @@ namespace Tiling_tiles{
 			}
 			vector<pair<int, int>> path;
 			int shift = 0;
-			int width = match_window_width; //
+			int width = 6;// match_window_width; //
 			double re = tar_mismatch(inner_tar, cand_tar, path, shift, width);
 
 			vector<Point2f> contour_mid;
@@ -868,11 +868,11 @@ namespace Tiling_tiles{
 			rot_mat = getRotationMatrix2D(cen1, angle, 1);
 			cv::transform(contour_cand, contour_mid, rot_mat);
 
-			/*Point2f shifttt = contour_inner[0] - contour_mid[0];
+			Point2f shifttt = contour_inner[0] - contour_mid[0];
 			for (int i = 0; i < contour_cand.size(); i++)
 			{
 				contour_cand[i] = contour_mid[i] + shifttt;
-			}*/
+			}
 			contour_cand = contour_mid;
 
 			candidate_contour.push_back(contour_cand);
@@ -952,29 +952,68 @@ namespace Tiling_tiles{
 				
 			//length += length_two_point2f(contour1[path[j].first].point, contour2[path[j].second].point);
 			cout << j<<"--"<<path[j].first << " : " << contour1[path[j].first].type << "    " << path[j].second << " : " << contour2[path[j].second].type << endl;
-			//MyLine(drawing1, contour1[path[j].first].point + shift1, contour2[path[j].second].point + shift1, "gray");
+			
 		}
 		cout << "final_pair : " << endl;
+		//将两个轮廓分段存储
 		vector<vector<Point_f>> contour1_seg;
 		vector<vector<Point_f>> contour2_seg;
-		int final_size = final_pair.size();
-		for (int g = 0; g < final_size; g++)
+		int final_pair_size = final_pair.size();
+		vector<Point_f> c_seg1;
+		vector<Point_f> c_seg2;
+		for (int g = 0; g < final_pair_size - 1; g++)
 		{
-			vector<Point_f> c_seg1;
-			vector<Point_f> c_seg2;
 			cout << final_pair[g].first << "  :  " << final_pair[g].second << endl;
-			for (int n = final_pair[g].first; n <= final_pair[(g + 1)%final_size].first; n++) c_seg1.push_back(contour1[n]);
-			for (int n = final_pair[g].second; n <= final_pair[(g + 1) % final_size].second; n++) c_seg2.push_back(contour2[n]);
+			for (int n = final_pair[g].first; n <= final_pair[g + 1].first; n++)
+				c_seg1.push_back(contour1[n]);
+			for (int n = final_pair[g].second; n <= final_pair[g + 1].second; n++) 
+				c_seg2.push_back(contour2[n]);
 			contour1_seg.push_back(c_seg1);
 			contour2_seg.push_back(c_seg2);
+			c_seg1.swap(vector<Point_f>());
+			c_seg2.swap(vector<Point_f>());
 		}
+		for (int n = final_pair[final_pair_size - 1].first; n <= cnum1; n++)
+			c_seg1.push_back(contour1[n % cnum1]);
+		for (int n = final_pair[final_pair_size - 1].second; n <= cnum2; n++)
+			c_seg2.push_back(contour2[n % cnum2]);
+		contour1_seg.push_back(c_seg1);
+		contour2_seg.push_back(c_seg2);
 
-
+		cout << "contour1_seg:  " << contour1_seg.size() << "    :   " << final_pair_size << endl
+			<< contour1_seg.back().back().point << "   " << contour1_seg.back().back().type << endl;
+		vector<Point_f> contour_fin;
+		contour_fin = morph_segment(contour1_seg[0], contour2_seg[0], contour1_seg[0][0]);
+		
+		for (int g = 1; g < final_pair_size; g++)
+		{
+			vector<Point_f> contour_tem = morph_segment(contour1_seg[g], contour2_seg[g], contour_fin.back());
+			contour_fin.insert(contour_fin.end(), contour_tem.begin(), contour_tem.end());
+		}
+		final_pettern = p_f2p2f(contour_fin);
 		Point2f cen1 = center_p(p_f2p2f(contour1));
 		Point2f cen2 = center_p(p_f2p2f(contour2));
 		cout << "cen1:  "<<cen1<<"   cen2"<<cen2<<endl;
 		cout << "cnum1:  " << cnum1 << "   cnum2" << cnum1 << "  psize:" << psize<<endl;
 		Point2f shift1 = Point2f(400, 400) - cen1;
+
+		Mat drawing3 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		for (int i = 0; i <contour1_seg[0].size(); i++)
+		{
+			circle(drawing3, contour1_seg[0][i].point + shift1, 3, Scalar(255, 0, 0), -1);
+		}
+		for (int i = 0; i <contour2_seg[0].size(); i++)
+		{
+			circle(drawing3, contour2_seg[0][i].point + shift1, 3, Scalar(0, 255, 0), -1);
+		}
+		for (int i = 0; i <contour_fin.size(); i++)
+		{
+			circle(drawing3, contour_fin[i].point + shift1, 3, Scalar(0, 0, 255), -1);
+		}
+		imshow("morphing show", drawing3);
+
+
+
 		Mat drawing1 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 		for (int i = 0; i <cnum1; i++)
 		{
@@ -995,6 +1034,7 @@ namespace Tiling_tiles{
 		double length = 0;
 		for (int j = 0; j < psize; j++)
 		{
+			if (contour1[path[j].first].type>1)	MyLine(drawing1, contour1[path[j].first].point + shift1, contour2[path[j].second].point + shift1, "gray");
 			//length += length_two_point2f(contour1[path[j].first].point, contour2[path[j].second].point);
 			cout << path[j].first << " : " << contour1[path[j].first].type << "    " << path[j].second <<" : "<< contour2[path[j].second].type << endl;
 			//MyLine(drawing1, contour1[path[j].first].point + shift1, contour2[path[j].second].point + shift1, "gray");
@@ -1038,21 +1078,23 @@ namespace Tiling_tiles{
 		Point_f end = seg1.back();  //如果end.type==3, end 不需要变
 		double length_ave = length_two_point2f(start.point, end.point);
 		double angle_ave;
-		
+		cout << "start: " << start.point << "     --end: " << end.point << endl;
 		//确定框架的参数
 		if (end.type != 3) // 确定新的end点
 		{
 			double angle1 = acos(cos_two_vector(Point2f(1, 0), seg1.back().point - seg1[0].point));
+			if (sin_two_vector(Point2f(1, 0), seg1.back().point - seg1[0].point) < 0) angle1 = -angle1;
 			double angle2 = acos(cos_two_vector(Point2f(1, 0), seg2.back().point - seg2[0].point));
+			if (sin_two_vector(Point2f(1, 0), seg2.back().point - seg2[0].point) < 0) angle2 = -angle2;
+			//cout << "angle1: " << seg1.back().point <<"    :   "<< seg1[0].point <<endl;
+			//cout << "angle2: " << seg2.back().point << "    :   " << seg2[0].point << endl;
+			//cout << "angle1: " << angle1 << "   --angle2: " << angle2 << endl;
 			angle_ave = (angle1 + angle2) / 2;
 			length_ave = 0.5*(length_two_point2f(seg1.back().point, seg1[0].point) + length_two_point2f(seg2.back().point, seg2[0].point));
 			Point2f vec_fin = Point2f(cos(angle_ave), sin(angle_ave));
 			end.point = start.point + length_ave*vec_fin;
-			//Point2f rota_cent = Point2f(0,0);
-			//Mat rot_mat = getRotationMatrix2D(rota_cent, angle_ave, 1);
-			//cv::transform(one_loca, one_loca, rot_mat);
-			//Point2f axis = end.point - start.point;
 		}
+		//cout << "start: " << start.point << "     --end: " << end.point << endl;
 		Point2f mid_des = start.point + 0.5*length_ave * vertical_vec(end.point - start.point);
 		vector<Point2f> aff_des;
 		aff_des.push_back(start.point);
@@ -1085,6 +1127,8 @@ namespace Tiling_tiles{
 		Mat M1 = getAffineTransform(aff_ori, aff_des);
 		cv::transform(contour_morphed, contour_final, M1);
 		vector<Point_f> contour_final_ = p2f2p_f(contour_final);
+		contour_final_[0].type = seg1[0].type;
+		contour_final_.back().type = seg1.back().type;
 
 		return contour_final_;
 
@@ -1119,7 +1163,7 @@ namespace Tiling_tiles{
 		cout << "final patten: " << final_pettern.size() << endl;
 		mid_inter_new = joint_relocate(final_pettern, mid_inter_new, 1);
 		final_pettern = sampling(final_pettern, 2);
-
+		//morphed_A = final_pettern;
 		if (mid_inter_new.size() != 4)
 		{
 			std::cout << "lack of tiling vertices!" << endl;
@@ -1144,6 +1188,7 @@ namespace Tiling_tiles{
 		four_place.swap(vector<vector<Point2f>>());
 		mid_inter_new.swap(vector<int>());
 		final_pettern = extract_contour(morphed_A, return_p, mid_inter_new, four_place, all_inner_conts[Tiling_index].type);
+
 		std::cout << "num of mid_inter_new: " << mid_inter_new.size() << endl;
 		prototile_tem->loadPoints(final_pettern);
 		return mid_inter_new;
@@ -2548,7 +2593,7 @@ namespace Tiling_tiles{
 	vector<pair<int,bool>> Tiling_opt::compare_choose_TAR(vector<Point2f> inner_c)
 	{
 		int method = 2;
-		int match_width = match_window_width;
+		int match_width = 4;// match_window_width;
 		double dis_threshold = 0.35;
 		vector<pair<int, bool>> all_total;
 		//std::cout << "inner_c num:" << inner_c.size() << endl;
@@ -2591,10 +2636,10 @@ namespace Tiling_tiles{
 			int shift = 0;
 			double re = tar_mismatch(tar_mid, tar_sec, path, shift, match_width);
 			re = re / (1 + shape_com_mid + all_shape_complexity[index]);
-			re = 1 - re / path.size();
+			re = 1 - 0.5*re / path.size();
 			double re2 = tar_mismatch(tar_mid, tar_sec_f, path, shift, match_width);	
 			re2 = re2 / (1 + shape_com_mid + all_shape_complexity[index]);
-			re2 = 1 - re2 / path.size();
+			re2 = 1 - 0.5*re2 / path.size();
 			if (re > re2)
 			{
 				all_result.push_back(re);
