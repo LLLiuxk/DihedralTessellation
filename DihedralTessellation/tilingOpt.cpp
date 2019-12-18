@@ -260,39 +260,47 @@ namespace Tiling_tiles{
 				string filename = rootname + "\\" + int2string(i) + "_Candidate_" + int2string(j) + ".png";
 				imwrite(filename, drawing_pro);
 			}*/
-			for (int j = 3; j < 4; j++)
+			for (int j = 2; j < 3; j++)
 			{
 				vector<pair<int, int>> path = cand_paths[i][j];
 				vector<Point_f> contour1 = prototile_mid->contour_f;  
 				vector<Point2f> contour_ = candidate_contours[i][j];
-				vector<Point_f> contour2;
+				vector<Point_f> contour2 = p2f2p_f(contour_);
 				double con_sc;
 				vector<vector<double>> contour2_tar;
 				//求contour_对应的point_f和tar值
+				//contour2_tar = computeTAR(contour_, con_sc, 0.5);
 				double angle = 165;
 				vector<int> cand_points_index = feature_points(contour_, Feature_Min, Feature_Max, cos(PI * angle / 180));
-				int contour2_num = contour_.size();
 				int can_fea_num = cand_points_index.size();
-				int f_index = 0;
-				cout << contour2_num << "    " << contour2_num << endl;
-				for (int i = 0; i < contour2_num; i++)
-				{
-					Point_f one;
-					one.point = contour_[i];
-					if (f_index < can_fea_num && i == cand_points_index[f_index])
-					{
-						one.type = 2;
-						f_index++;
-					}
-					else one.type = 0;
-					contour2.push_back(one);
-				}
-				//contour2_tar = computeTAR(contour_, con_sc, 0.5);
-				vector<Point2f> morphed_A = morphing(contour1, contour2, path);
-				Mat drawing_pro = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+				for (int i = 0; i < can_fea_num; i++) contour2[cand_points_index[i]].type = 2;
+				
+				vector<Point2f> final_pettern = morphing(contour1, contour2, path);
+				Mat drawing_pro = Mat(800, 3200, CV_8UC3, Scalar(255, 255, 255));
+				draw_poly(drawing_pro, prototile_mid->contour, Point2f(400, 400));
+				draw_poly(drawing_pro, contour_, Point2f(1200, 400));
+				draw_poly(drawing_pro, final_pettern, Point2f(2000, 400));
 
-				//draw_poly(drawing_pro, morphed_A, Point2f(400, 400));
-				//imshow("morphed result", morphed_A);
+				//cout << "zahuishi?*****************" << endl;
+				//vector<int> return_p;
+				//vector<vector<Point2f>> four_place;
+				//vector<Point2f> morphed_A = extract_contour(final_pettern, mid_inter_morphed, return_p, four_place, all_inner_conts[i].type);   //
+
+				////int times = 0;
+				////while (self_intersect(morphed_A, first, second) && (times < 3))
+				////{
+				////	++times;
+				////	std::cout << "morphed_A self_intersect is repairing" << endl;
+				////	contour_fine_tuning(morphed_A, first, second);
+				////}
+				//////std::cout << "times" << times << endl;
+				////four_place.swap(vector<vector<Point2f>>());
+				////mid_inter_new.swap(vector<int>());
+				////final_pettern = extract_contour(morphed_A, return_p, mid_inter_new, four_place, all_inner_conts[Tiling_index].type);
+				//prototile_tem->loadPoints(final_pettern);
+				//draw_poly(drawing_pro, morphed_A, Point2f(2800, 400));
+				string filename = rootname + "\\" + int2string(i) + "_Candidate_" + int2string(j) + ".png";
+				imwrite(filename, drawing_pro);
 			}
 		}
 		return four_pattern;
@@ -797,12 +805,13 @@ namespace Tiling_tiles{
 			return;
 		}
 		int num_c = 1;//采样点数
-		vector<Point2f> compare_one = p_f2p2f(all_inner_conts[Tiling_index].in_contour);
+		vector<Point2f> compare_one;
 		mid_inter = all_inner_conts[Tiling_index].in_interval;
 		cout << "Tiling_index: " << compare_one.size() << "   " << mid_inter.size()<< endl;
 		prototile_mid->Pro_clear();
-		prototile_mid->contour = compare_one;
 		prototile_mid->contour_f = all_inner_conts[Tiling_index].in_contour;
+		prototile_mid->contour = p_f2p2f(prototile_mid->contour_f);
+		compare_one = prototile_mid->contour;
 		vector<pair<int, bool>> candidate_patterns = compare_choose_TAR(compare_one);//当前中间图案对应的候选图案
 		cout << "This is the " << Tiling_index << "th inner contour" << endl<<
 			"candidate_patterns size: " << candidate_patterns.size() << endl;
@@ -835,8 +844,13 @@ namespace Tiling_tiles{
 			}
 			vector<pair<int, int>> path;
 			int shift = 0;
-			int width = 6;// match_window_width; //
+			int width = match_window_width; //
 			double re = tar_mismatch(inner_tar, cand_tar, path, shift, width);
+
+			vector<pair<int, int>> path_min;
+			for (int n = 0; n < path.size(); n++)
+				if (prototile_mid->contour_f[path[n].first].type>1)
+					path_min.push_back(path[n]);
 
 			vector<Point2f> contour_mid;
 			int c2size = contour_cand.size();
@@ -860,19 +874,37 @@ namespace Tiling_tiles{
 			{
 				contour_cand[i] = contour_cand[i] + shift2;
 			}
-			Point2f v0 = contour_inner[0] - cen1;
-			Point2f v1 = contour_cand[0] - cen1;
-			double angle = acos(cos_two_vector(v0, v1)) / PI * 180;
-			if (sin_two_vector(v0, v1) < 0) angle = -angle;
-			Mat rot_mat(2, 3, CV_32FC1);
-			rot_mat = getRotationMatrix2D(cen1, angle, 1);
-			cv::transform(contour_cand, contour_mid, rot_mat);
+			double length_min = 100000;
+			int angle_min = 0;
 
-			Point2f shifttt = contour_inner[0] - contour_mid[0];
-			for (int i = 0; i < contour_cand.size(); i++)
+			//Point2f v0 = contour_inner[0] - cen1;
+			//Point2f v1 = contour_cand[0] - cen1;
+			//double angle1 = acos(cos_two_vector(v0, v1)) / PI * 180;
+			//if (sin_two_vector(v0, v1) < 0) angle1 = -angle1;
+
+			cout << "path_min_size:  " << path_min.size() << endl;
+			for (int angle = 0; angle < 360; angle = angle + 5)
 			{
-				contour_cand[i] = contour_mid[i] + shifttt;
+				double leng = 0;
+				Mat rot_mat(2, 3, CV_32FC1);
+				rot_mat = getRotationMatrix2D(cen1, angle, 1);
+				cv::transform(contour_cand, contour_mid, rot_mat);
+				for (int m = 0; m < path_min.size(); m++)
+				{
+					leng += length_two_point2f(contour_inner[path_min[m].first], contour_mid[path_min[m].second]);
+				}
+				if (leng < length_min)
+				{
+					angle_min = angle;
+					length_min = leng;
+				}
 			}
+			cout << "angle_min: " << angle_min << "   --  " << length_min<<endl;
+
+			Mat rot_mat1(2, 3, CV_32FC1);
+			rot_mat1 = getRotationMatrix2D(cen1, angle_min, 1);
+			cv::transform(contour_cand, contour_mid, rot_mat1);
+
 			contour_cand = contour_mid;
 
 			candidate_contour.push_back(contour_cand);
@@ -885,7 +917,6 @@ namespace Tiling_tiles{
 	vector<Point2f> Tiling_opt::morphing(vector<Point_f> contour1, vector<Point_f> contour2, vector<pair<int, int>> path)
 	{
 		vector<Point2f> final_pettern;
-		vector<int> mid_inter_new;
 		int cnum1 = contour1.size();
 		int cnum2 = contour2.size();
 		int psize = path.size();
@@ -951,8 +982,7 @@ namespace Tiling_tiles{
 			}
 				
 			//length += length_two_point2f(contour1[path[j].first].point, contour2[path[j].second].point);
-			cout << j<<"--"<<path[j].first << " : " << contour1[path[j].first].type << "    " << path[j].second << " : " << contour2[path[j].second].type << endl;
-			
+			//cout << j<<"--"<<path[j].first << " : " << contour1[path[j].first].type << "    " << path[j].second << " : " << contour2[path[j].second].type << endl;		
 		}
 		cout << "final_pair : " << endl;
 		//将两个轮廓分段存储
@@ -973,9 +1003,9 @@ namespace Tiling_tiles{
 			c_seg1.swap(vector<Point_f>());
 			c_seg2.swap(vector<Point_f>());
 		}
-		for (int n = final_pair[final_pair_size - 1].first; n <= cnum1; n++)
+		for (int n = final_pair[final_pair_size - 1].first; n <= final_pair[0].first + cnum1; n++)
 			c_seg1.push_back(contour1[n % cnum1]);
-		for (int n = final_pair[final_pair_size - 1].second; n <= cnum2; n++)
+		for (int n = final_pair[final_pair_size - 1].second; n <= final_pair[0].second + cnum2; n++)
 			c_seg2.push_back(contour2[n % cnum2]);
 		contour1_seg.push_back(c_seg1);
 		contour2_seg.push_back(c_seg2);
@@ -984,13 +1014,20 @@ namespace Tiling_tiles{
 			<< contour1_seg.back().back().point << "   " << contour1_seg.back().back().type << endl;
 		vector<Point_f> contour_fin;
 		contour_fin = morph_segment(contour1_seg[0], contour2_seg[0], contour1_seg[0][0]);
-		
 		for (int g = 1; g < final_pair_size; g++)
 		{
 			vector<Point_f> contour_tem = morph_segment(contour1_seg[g], contour2_seg[g], contour_fin.back());
+			//cout << "end and start : "<<contour_fin.back().point << "   :   " << contour_tem[0].point << endl;
+			contour_fin.pop_back();
 			contour_fin.insert(contour_fin.end(), contour_tem.begin(), contour_tem.end());
 		}
+		contour_fin.pop_back();
+		int cfinsize = contour_fin.size();
+		for (int n = 0; n < cfinsize;n++)
+			if (contour_fin[n].type == 3) mid_inter_morphed.push_back(n);
+		cout << "cfinsize: " << cfinsize << "  ==  " << mid_inter_morphed.size() << endl;
 		final_pettern = p_f2p2f(contour_fin);
+
 		Point2f cen1 = center_p(p_f2p2f(contour1));
 		Point2f cen2 = center_p(p_f2p2f(contour2));
 		cout << "cen1:  "<<cen1<<"   cen2"<<cen2<<endl;
@@ -1000,19 +1037,20 @@ namespace Tiling_tiles{
 		Mat drawing3 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 		for (int i = 0; i <contour1_seg[0].size(); i++)
 		{
+			//cout << "contour1_seg: "<<contour1_seg[0][i].point + shift1 << endl;
 			circle(drawing3, contour1_seg[0][i].point + shift1, 3, Scalar(255, 0, 0), -1);
 		}
 		for (int i = 0; i <contour2_seg[0].size(); i++)
 		{
+			//cout << "contour2_seg: " << contour2_seg[0][i].point + shift1 << endl;
 			circle(drawing3, contour2_seg[0][i].point + shift1, 3, Scalar(0, 255, 0), -1);
 		}
 		for (int i = 0; i <contour_fin.size(); i++)
 		{
+			//cout << "contour_fin: " << contour_fin[i].point + shift1 << endl;
 			circle(drawing3, contour_fin[i].point + shift1, 3, Scalar(0, 0, 255), -1);
 		}
 		imshow("morphing show", drawing3);
-
-
 
 		Mat drawing1 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
 		for (int i = 0; i <cnum1; i++)
@@ -1044,32 +1082,6 @@ namespace Tiling_tiles{
 		imshow("path show",drawing1);
 
 		return final_pettern;
-		//vector<pair<int, int>> path = cand_paths[Tiling_index][Candidate_index];
-		//vector<Point_f> contour1 = prototile_mid->contour_f;  
-		//vector<Point2f> contour_ = candidate_contours[Tiling_index][Candidate_index];
-		//vector<Point_f> contour2;
-		//double con_sc;
-		//vector<vector<double>> contour2_tar;
-		//求contour_对应的point_f和tar值
-		//double angle = 165;
-		/*vector<int> cand_points_index = feature_points(contour_, Feature_Min, Feature_Max, cos(PI * angle / 180));
-		int contour2_num = contour_.size();
-		int can_fea_num = cand_points_index.size();
-		int f_index = 0;
-		for (int i = 0; i < contour2_num; i++)
-		{
-			Point_f one;
-			one.point = contour_[i];
-			if (f_index < can_fea_num && i == cand_points_index[f_index])
-			{
-				one.type = 2;
-				f_index++;
-			}
-			else one.type = 0;
-			contour2.push_back(one);
-		}
-		contour2_tar = computeTAR(contour_, con_sc, 0.5);*/
-		//以上数据准备完毕
 
 	}
 
@@ -1078,8 +1090,8 @@ namespace Tiling_tiles{
 		Point_f end = seg1.back();  //如果end.type==3, end 不需要变
 		double length_ave = length_two_point2f(start.point, end.point);
 		double angle_ave;
-		cout << "start: " << start.point << "     --end: " << end.point << endl;
-		//确定框架的参数
+		//cout << "start: " << start.point << "     --end: " << end.point << endl;
+		//确定框架的参数 
 		if (end.type != 3) // 确定新的end点
 		{
 			double angle1 = acos(cos_two_vector(Point2f(1, 0), seg1.back().point - seg1[0].point));
@@ -1100,16 +1112,40 @@ namespace Tiling_tiles{
 		aff_des.push_back(start.point);
 		aff_des.push_back(end.point);
 		aff_des.push_back(mid_des);
+		//x轴上的仿射变化
+		Point2f mid_des_x = Point2f(0, 0) + 0.5*length_ave * vertical_vec(Point2f(length_ave, 0));
+		vector<Point2f> aff_des_x;
+		aff_des_x.push_back(Point2f(0, 0));
+		aff_des_x.push_back(Point2f(length_ave, 0));
+		aff_des_x.push_back(mid_des_x);
 		//计算feature
+		for (int m = 0; m < 3; m++)
+		{
+			cout << "aff_des_x: " << aff_des_x[m];
+		}
 		int number_new = 0.5*(seg1.size() + seg2.size());
 		//按照number_new进行重采样,这里我们在原样的基础上进行变形
 		vector<Point2f> seg_sam1 = sampling_seg(p_f2p2f(seg1), number_new);
 		vector<Point2f> seg_sam2 = sampling_seg(p_f2p2f(seg2), number_new);
-		vector<Point2f> contour_morphed;
 		if (seg_sam1.size() == seg_sam2.size() && seg_sam1.size() == number_new)
 		{
 			cout << "seg_sam1.size() = seg_sam2.size() = number_new" << endl;
 		}
+		vector<Point2f> aff_seg1;
+		aff_seg1.push_back(seg_sam1[0]);
+		aff_seg1.push_back(seg_sam1.back());
+		aff_seg1.push_back(seg_sam1[0] + 0.5*length_two_point2f(seg_sam1.back(),seg_sam1[0]) * vertical_vec(seg_sam1.back() - seg_sam1[0]));
+		Mat M_seg1 = getAffineTransform(aff_seg1, aff_des_x);
+		//cout << "M_seg1: " << M_seg1 << endl;
+		cv::transform(seg_sam1, seg_sam1, M_seg1);
+		vector<Point2f> aff_seg2;
+		aff_seg2.push_back(seg_sam2[0]);
+		aff_seg2.push_back(seg_sam2.back());
+		aff_seg2.push_back(seg_sam2[0] + 0.5*length_two_point2f(seg_sam2.back(), seg_sam2[0]) * vertical_vec(seg_sam2.back() - seg_sam2[0]));
+		Mat M_seg2 = getAffineTransform(aff_seg2, aff_des_x);
+		cv::transform(seg_sam2, seg_sam2, M_seg2);
+
+		vector<Point2f> contour_morphed;
 		for (int j = 0; j < number_new; j++)
 		{
 			contour_morphed.push_back(0.5*(seg_sam1[j] + seg_sam2[j]));
@@ -1160,6 +1196,7 @@ namespace Tiling_tiles{
 			}
 			final_pettern.push_back(fin);
 		}
+
 		cout << "final patten: " << final_pettern.size() << endl;
 		mid_inter_new = joint_relocate(final_pettern, mid_inter_new, 1);
 		final_pettern = sampling(final_pettern, 2);
@@ -2593,7 +2630,7 @@ namespace Tiling_tiles{
 	vector<pair<int,bool>> Tiling_opt::compare_choose_TAR(vector<Point2f> inner_c)
 	{
 		int method = 2;
-		int match_width = 4;// match_window_width;
+		int match_width = match_window_width;
 		double dis_threshold = 0.35;
 		vector<pair<int, bool>> all_total;
 		//std::cout << "inner_c num:" << inner_c.size() << endl;

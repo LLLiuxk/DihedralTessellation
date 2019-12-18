@@ -1020,7 +1020,7 @@ namespace Tiling_tiles{
 
 	Point2f vertical_vec(Point2f vec)
 	{
-		Point2f vvec = Point2f(1, -vec.x / vec.y);
+		Point2f vvec = Point2f(-vec.y, vec.x);
 		return unit_vec(vvec);
 	}
 
