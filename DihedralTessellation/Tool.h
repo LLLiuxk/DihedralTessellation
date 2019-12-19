@@ -152,6 +152,7 @@ namespace Tiling_tiles{
 	{
 		vector<T> vec1;
 		int vsize = vec.size();
+		//cout << vsize << "  " << index_p << endl;
 		for (int i = 0; i < index_p; i++)
 		{
 			vec1.push_back(vec[i]);

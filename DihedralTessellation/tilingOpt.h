@@ -150,8 +150,8 @@ namespace Tiling_tiles{
 
 		//morphing
 		vector<int> morphed_results(vector<Point2f> &morphed_A, int Candidate_index, int Tiling_index);
-		vector<Point2f> morphing(vector<Point_f> contour1, vector<Point_f> contour2, vector<pair<int, int>> path);
-		vector<Point_f> morph_segment(vector<Point_f> seg1, vector<Point_f> seg2, Point_f start);
+		vector<Point2f> morphing(vector<Point_f> contour1, vector<Point_f> contour2, vector<pair<int, int>> path,double ratio=0.5);
+		vector<Point_f> morph_segment(vector<Point_f> seg1, vector<Point_f> seg2, Point_f start, double ratio = 0.5);
 		void contour_fine_tuning(vector<Point2f> &contour_, int first, int second);
 		
 		//morphing
