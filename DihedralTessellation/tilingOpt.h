@@ -211,10 +211,13 @@ namespace Tiling_tiles{
 		double dis_cur[202][202];//两组点之间的曲率差异
 		double distance[202][202];
 		int step[202][202];//记录总的步数
+
 		int all_types;
 		int sampling_num;
 		int allnum_inner_c;
 		int match_window_width;
+		int tolerance;
+		int morph_ratio;
 		Prototile *prototile_first;
 		Prototile *prototile_mid;
 		Prototile *prototile_second;

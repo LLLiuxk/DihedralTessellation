@@ -18,6 +18,8 @@ namespace Tiling_tiles{
 		sampling_num = 3;
 		allnum_inner_c = 0;
 		match_window_width = 6;
+		tolerance = 5;
+		morph_ratio = 0.5;
 		//memset(dp, 0, sizeof(dp));
 		//memset(dp_inver, 0, sizeof(dp_inver));
 
@@ -200,6 +202,7 @@ namespace Tiling_tiles{
 
 	jointPat Tiling_opt::simulation_tar(string imaname, int inner_one, int cand_one)
 	{
+		double ratio = 	morph_ratio;
 		jointPat four_pattern;
 		clock_t start, midtime, finish;
 		start = clock();
@@ -246,7 +249,7 @@ namespace Tiling_tiles{
 		cout << "all_inner_num: " << all_inner_num << endl;
 		candidate_contours.swap(vector<vector<vector<Point2f>>>());
 		cand_paths.swap(vector<vector<vector<pair<int, int>>>>());
-		double ratio = 0.2;
+
 		for (int i = 0; i < all_inner_num; i++)
 		{
 			match_candidate(i);
@@ -918,7 +921,6 @@ namespace Tiling_tiles{
 	vector<Point2f> Tiling_opt::morphing(vector<Point_f> contour1, vector<Point_f> contour2, vector<pair<int, int>> path, double ratio)
 	{
 		vector<Point2f> final_pettern;
-		int tolerance = 10;
 		int cnum1 = contour1.size();
 		int cnum2 = contour2.size();
 		int psize = path.size();
@@ -1061,6 +1063,9 @@ namespace Tiling_tiles{
 		contour2_seg[0] = p2f2p_f(ttt2);*/
 		int ttt = 0;
 		contour_fin = morph_segment(contour1_seg[ttt], contour2_seg[ttt], contour1_seg[ttt][0], ratio);
+		Mat drawing31 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		Point2f shhh = Point2f(200, 200) - contour_fin[0].point;
+		MyLine(drawing31, Point2f(200, 200), contour_fin.back().point + shhh, "green1");
 		/*for (int nm = 0; nm < contour1_seg[ttt].size(); nm++)
 			cout << "contour1_seg[g]:" <<contour1_seg[ttt][nm].point << endl;
 		for (int nm = 0; nm < contour2_seg[ttt].size(); nm++)
@@ -1069,15 +1074,18 @@ namespace Tiling_tiles{
 		{
 			cout << "contour_fin: " << contour_fin[g].point << endl;
 		}*/
-		for (int g = 1; g < contour1_seg.size(); g++)
+		for (int g = 1; g < contour1_seg.size(); g++)//contour1_seg.size()
 		{
+			//cout << "end and start before: " << contour_fin.back().point << "   :   " << contour_tem.back().point << endl;
 			vector<Point_f> contour_tem = morph_segment(contour1_seg[g], contour2_seg[g], contour_fin.back(),ratio);
+			MyLine(drawing31, contour_tem[0].point + shhh, contour_tem.back().point + shhh, "green1");
 			//for (int nm = 0; nm < contour_tem.size(); nm++)
 			//	cout << "contour1_seg[g]:" << contour_tem[nm].point << endl;
-			//cout << "end and start : "<<contour_fin.back().point << "   :   " << contour_tem[0].point << endl;
+			//cout << "end and start : "<<contour_fin.back().point << "   :   " << contour_tem.back().point << endl;
 			contour_fin.pop_back();
 			contour_fin.insert(contour_fin.end(), contour_tem.begin(), contour_tem.end());
 		}
+		imwrite("D://VisualStudioProjects//DihedralTessellation//frame.png",drawing31);
 		contour_fin.pop_back();
 		int cfinsize = contour_fin.size();
 		for (int n = 0; n < cfinsize;n++)
@@ -1171,19 +1179,19 @@ namespace Tiling_tiles{
 		//确定框架的参数 
 		if (end.type != 3) // 确定新的end点
 		{
-			double angle1 = acos(cos_two_vector(Point2f(1, 0), seg1.back().point - seg1[0].point));
-			if (sin_two_vector(Point2f(1, 0), seg1.back().point - seg1[0].point) < 0) angle1 = -angle1;
-			/*double angle2 = acos(cos_two_vector(Point2f(1, 0), seg2.back().point - seg2[0].point));
-			if (sin_two_vector(Point2f(1, 0), seg2.back().point - seg2[0].point) < 0) angle2 = 2*PI-angle2;
-			cout << "angle1: " << seg1.back().point <<"    :   "<< seg1[0].point <<endl;
-			cout << "angle2: " << seg2.back().point << "    :   " << seg2[0].point << endl;
-			cout << "angle1: " << angle1 << "   --angle2: " << angle2 << endl;*/
-			double angle_12 = acos(cos_two_vector(seg1.back().point - seg1[0].point, seg2.back().point - seg2[0].point));
-			if (sin_two_vector(seg1.back().point - seg1[0].point, seg2.back().point - seg2[0].point) < 0) angle_12 = - angle_12;
-			angle_ave = angle1 + angle_12 / 2;
-			length_ave = 0.5*(length_two_point2f(seg1.back().point, seg1[0].point) + length_two_point2f(seg2.back().point, seg2[0].point));
-			Point2f vec_fin = Point2f(cos(angle_ave), sin(angle_ave));
-			end.point = start.point + length_ave*vec_fin;
+			//double angle1 = acos(cos_two_vector(Point2f(1, 0), seg1.back().point - seg1[0].point));
+			//if (sin_two_vector(Point2f(1, 0), seg1.back().point - seg1[0].point) < 0) angle1 = -angle1;
+			//double angle_12 = acos(cos_two_vector(seg1.back().point - seg1[0].point, seg2.back().point - seg2[0].point));
+			//if (sin_two_vector(seg1.back().point - seg1[0].point, seg2.back().point - seg2[0].point) < 0) angle_12 = - angle_12;
+			//angle_ave = angle1 + angle_12 / 2;
+			length_ave = ratio*length_two_point2f(seg1.back().point, seg1[0].point) + (1.0 - ratio)* length_two_point2f(seg2.back().point, seg2[0].point);
+			cout << "1-ratio: " << 1 - ratio;
+			//length_ave = 0.5*length_two_point2f(seg1.back().point, seg1[0].point) + 0.5* length_two_point2f(seg2.back().point, seg2[0].point);
+			//length_ave = 0.5*(length_two_point2f(seg1.back().point, seg1[0].point)+ length_two_point2f(seg2.back().point, seg2[0].point));
+			//Point2f vec_fin = Point2f(cos(angle_ave), sin(angle_ave));
+			//end.point = start.point + length_ave*vec_fin;
+			end.point = start.point + length_ave*unit_vec(end.point - start.point);
+			//end.point = start.point + length_ave*unit_vec(seg1.back().point - seg1[0].point);
 		}
 		//cout << "2----start: " << start.point << "     --end: " << end.point << endl;
 		Point2f mid_des = start.point + 0.5*length_ave * vertical_vec(end.point - start.point);
