@@ -18,8 +18,8 @@ namespace Tiling_tiles{
 		sampling_num = 3;
 		allnum_inner_c = 0;
 		match_window_width = 6;
-		tolerance = 5;
-		morph_ratio = 0.5;
+		tolerance = 6;
+		morph_ratio = 0.4;
 		//memset(dp, 0, sizeof(dp));
 		//memset(dp_inver, 0, sizeof(dp_inver));
 
@@ -202,7 +202,6 @@ namespace Tiling_tiles{
 
 	jointPat Tiling_opt::simulation_tar(string imaname, int inner_one, int cand_one)
 	{
-		double ratio = 	morph_ratio;
 		jointPat four_pattern;
 		clock_t start, midtime, finish;
 		start = clock();
@@ -279,7 +278,7 @@ namespace Tiling_tiles{
 				int can_fea_num = cand_points_index.size();
 				for (int i = 0; i < can_fea_num; i++) contour2[cand_points_index[i]].type = 2;
 				
-				vector<Point2f> final_pettern = morphing(contour1, contour2, path, ratio);
+				vector<Point2f> final_pettern = morphing(contour1, contour2, path, morph_ratio);
 				Mat drawing_pro = Mat(800, 3200, CV_8UC3, Scalar(255, 255, 255));
 				draw_poly(drawing_pro, prototile_mid->contour, Point2f(400, 400));
 				draw_poly(drawing_pro, contour_, Point2f(1200, 400));
@@ -288,7 +287,13 @@ namespace Tiling_tiles{
 				//cout << "zahuishi?*****************" << endl;
 				vector<int> return_p;
 				vector<vector<Point2f>> four_place;
-				vector<Point2f> morphed_A = extract_contour(final_pettern, mid_inter_morphed, return_p, four_place, all_inner_conts[i].type);   //
+				vector<Point2f> morphed_A = extract_contour(final_pettern, mid_inter_morphed, return_p, four_place, all_inner_conts[i].type); 
+				return_p.swap(vector<int>());
+				four_place.swap(vector<vector<Point2f>>());
+				vector<Point2f> morphed_A_ori = extract_contour(prototile_mid->contour, mid_inter, return_p, four_place, all_inner_conts[i].type);
+
+				double evaluation1 = evalua_deformation(final_pettern, contour_);
+				double evaluation2 = evalua_deformation(morphed_A, morphed_A_ori);
 
 				//int times = 0;
 				//while (self_intersect(morphed_A, first, second) && (times < 3))
@@ -302,6 +307,7 @@ namespace Tiling_tiles{
 				//mid_inter_new.swap(vector<int>());
 				//final_pettern = extract_contour(morphed_A, return_p, mid_inter_new, four_place, all_inner_conts[Tiling_index].type);
 				prototile_tem->loadPoints(final_pettern);
+
 				draw_poly(drawing_pro, morphed_A, Point2f(2800, 400));
 				string filename = rootname + "\\" + int2string(i) + "_Candidate_" + int2string(j) + ".png";
 				imwrite(filename, drawing_pro);
@@ -1175,6 +1181,7 @@ namespace Tiling_tiles{
 		Point_f end = seg1.back();  //如果end.type==3, end 不需要变
 		double length_ave = length_two_point2f(start.point, end.point);
 		double angle_ave;
+
 		//cout << "1----start: " << start.point << "     --end: " << end.point << endl;
 		//确定框架的参数 
 		if (end.type != 3) // 确定新的end点
@@ -1184,10 +1191,7 @@ namespace Tiling_tiles{
 			//double angle_12 = acos(cos_two_vector(seg1.back().point - seg1[0].point, seg2.back().point - seg2[0].point));
 			//if (sin_two_vector(seg1.back().point - seg1[0].point, seg2.back().point - seg2[0].point) < 0) angle_12 = - angle_12;
 			//angle_ave = angle1 + angle_12 / 2;
-			length_ave = ratio*length_two_point2f(seg1.back().point, seg1[0].point) + (1.0 - ratio)* length_two_point2f(seg2.back().point, seg2[0].point);
-			cout << "1-ratio: " << 1 - ratio;
-			//length_ave = 0.5*length_two_point2f(seg1.back().point, seg1[0].point) + 0.5* length_two_point2f(seg2.back().point, seg2[0].point);
-			//length_ave = 0.5*(length_two_point2f(seg1.back().point, seg1[0].point)+ length_two_point2f(seg2.back().point, seg2[0].point));
+			length_ave = ratio*length_two_point2f(seg1.back().point, seg1[0].point) + (1 - ratio)* length_two_point2f(seg2.back().point, seg2[0].point);
 			//Point2f vec_fin = Point2f(cos(angle_ave), sin(angle_ave));
 			//end.point = start.point + length_ave*vec_fin;
 			end.point = start.point + length_ave*unit_vec(end.point - start.point);
@@ -3197,8 +3201,7 @@ namespace Tiling_tiles{
 
 	double Tiling_opt::evalua_deformation(vector<Point2f> contour1, vector<Point2f> contour2)
 	{
-		//储存顺序为 mid sec result
-		
+		//储存顺序为 mid sec result		
 		double total_score = 0;
 		prototile_second->Pro_clear();
 		prototile_second->loadPoints(contour1);

@@ -217,7 +217,7 @@ namespace Tiling_tiles{
 		int allnum_inner_c;
 		int match_window_width;
 		int tolerance;
-		int morph_ratio;
+		double morph_ratio;
 		Prototile *prototile_first;
 		Prototile *prototile_mid;
 		Prototile *prototile_second;
