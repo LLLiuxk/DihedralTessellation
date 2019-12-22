@@ -293,7 +293,7 @@ namespace Tiling_tiles{
 				vector<Point2f> morphed_A_ori = extract_contour(prototile_mid->contour, mid_inter, return_p, four_place, all_inner_conts[i].type);
 
 				double evaluation1 = evalua_deformation(final_pettern, contour_);
-				double evaluation2 = evalua_deformation(morphed_A, morphed_A_ori);
+				//double evaluation2 = evalua_deformation(morphed_A, morphed_A_ori);
 
 				//int times = 0;
 				//while (self_intersect(morphed_A, first, second) && (times < 3))
@@ -3201,27 +3201,29 @@ namespace Tiling_tiles{
 
 	double Tiling_opt::evalua_deformation(vector<Point2f> contour1, vector<Point2f> contour2)
 	{
+		int match_width = match_window_width;
+		int shift = 0;
+		int shift2 = 0;
+		int Lab = 0;
+		double shape_com1 = 0;
+		double shape_com2 = 0;
 		//储存顺序为 mid sec result		
 		double total_score = 0;
 		prototile_second->Pro_clear();
 		prototile_second->loadPoints(contour1);
-		double shape_com1 = 0;
 		vector<vector<double>> tar_all = prototile_second->compute_TAR(prototile_second->contour_sample[1], shape_com1);//(num_c+1)*100 points
 		prototile_tem->Pro_clear();
 		prototile_tem->loadPoints(contour2);
-		double shape_com2;
 		vector<vector<double>> tar_all1 = prototile_tem->compute_TAR(prototile_tem->contour_sample[1], shape_com2);
 		vector<vector<double>> tar_all2 = prototile_tem->compute_TAR(prototile_tem->contour_sample_flip[1], shape_com2);
 		vector<pair<int, int>> path;
 		vector<pair<int, int>> path2;
-		int shift = 0;
-		int shift2 = 0;
-		int Lab = 0;
+
 		vector<Point2f> contour_1 = prototile_second->contour_sample[1];
 		vector<Point2f> contour_2 = prototile_tem->contour_sample[1];
 		//计算出来最匹配的路径	
-		double re = tar_mismatch(tar_all, tar_all1, path, shift);
-		double re2 = tar_mismatch(tar_all, tar_all2, path2, shift2);
+		double re = tar_mismatch(tar_all, tar_all1, path, shift, match_width);
+		double re2 = tar_mismatch(tar_all, tar_all2, path2, shift2, match_width);
 		if (re > re2)
 		{
 			re = re2;
@@ -3229,43 +3231,42 @@ namespace Tiling_tiles{
 			path = path2;
 			contour_2 = prototile_tem->contour_sample_flip[1];
 		}
-		Lab = path.size();
-		
+		Lab = path.size();		
 		//tar 对比得分
-		//total_score = re / (1 + shape_com1 + shape_com2);
 		total_score = 1 - (re / (1 + shape_com1 + shape_com2)) / (2 * Lab);
-		//将contour_2进行变换，缩放及旋转
-		vector<Point2f> contour_mid;
-		int c2size = contour_2.size();
-		for (int i = shift; i < shift + c2size; i++)
-		{
-			contour_mid.push_back(contour_2[i % c2size]);
-		}
-		//std::cout << contour_1.size() << "   " << c2size << "  c3: " << contour_mid.size() << endl;
-		contour_2 = contour_mid;
-		double scale = arcLength(contour_1, true) / arcLength(contour_2, true);
+		//以下计算面积：T并S-T交S，因为事先处理过，所以不需要重新计算位置，直接进行像素计算即可
 
-		for (int i = 0; i < c2size; i++)
-		{
-			contour_2[i] = contour_2[i] * scale;
-		}
-		std::cout << "shift:  " << shift << "  Lab: " << Lab<<"   scale : " << scale << endl;
-		
-		Point2f cen1 = center_p(contour_1);
-		Point2f cen2 = center_p(contour_2);
-		Point2f shift_p = cen1 - cen2;
-		for (int i = 0; i < c2size; i++)
-		{
-			contour_2[i] = contour_2[i] + shift_p;
-		}
-		Point2f v0 = contour_1[0] - cen1;
-		Point2f v1 = contour_2[0] - cen1;
-		double angle = acos(cos_two_vector(v0, v1)) / PI * 180;
-		if (sin_two_vector(v0, v1) < 0) angle = -angle;
-		Mat rot_mat(2, 3, CV_32FC1);
-		rot_mat = getRotationMatrix2D(cen1, angle, 1);
-		cv::transform(contour_2, contour_mid, rot_mat);
-		contour_2 = contour_mid;
+		////将contour_2进行变换，缩放及旋转
+		//vector<Point2f> contour_mid;
+		//int c2size = contour_2.size();
+		//for (int i = shift; i < shift + c2size; i++)
+		//{
+		//	contour_mid.push_back(contour_2[i % c2size]);
+		//}
+		////std::cout << contour_1.size() << "   " << c2size << "  c3: " << contour_mid.size() << endl;
+		//contour_2 = contour_mid;
+		//double scale = arcLength(contour_1, true) / arcLength(contour_2, true);
+		//for (int i = 0; i < c2size; i++)
+		//{
+		//	contour_2[i] = contour_2[i] * scale;
+		//}
+		//std::cout << "shift:  " << shift << "  Lab: " << Lab<<"   scale : " << scale << endl;
+		//
+		//Point2f cen1 = center_p(contour_1);
+		//Point2f cen2 = center_p(contour_2);
+		//Point2f shift_p = cen1 - cen2;
+		//for (int i = 0; i < c2size; i++)
+		//{
+		//	contour_2[i] = contour_2[i] + shift_p;
+		//}
+		//Point2f v0 = contour_1[0] - cen1;
+		//Point2f v1 = contour_2[0] - cen1;
+		//double angle = acos(cos_two_vector(v0, v1)) / PI * 180;
+		//if (sin_two_vector(v0, v1) < 0) angle = -angle;
+		//Mat rot_mat(2, 3, CV_32FC1);
+		//rot_mat = getRotationMatrix2D(cen1, angle, 1);
+		//cv::transform(contour_2, contour_mid, rot_mat);
+		//contour_2 = contour_mid;
 
 		//使用像素级的方法计算两个形状的面积差
 		/*vector<Point2f> bbx1 = b_box(contour_1);
@@ -3274,23 +3275,27 @@ namespace Tiling_tiles{
 		std::cout << bbx2[0] << "  " << bbx2[2];
 		int raw = (abs(bbx1[0].y - bbx1[1].y) > abs(bbx2[0].y - bbx2[1].y)) ? abs(bbx1[0].y - bbx1[1].y) : abs(bbx2[0].y - bbx2[1].y);
 		int col = (abs(bbx1[1].x - bbx1[2].x) > abs(bbx2[1].x - bbx2[2].x)) ? abs(bbx1[1].x - bbx1[2].x) : abs(bbx2[1].x - bbx2[2].x);
-		std::cout << raw << "  " << col;*/
+		std::cout << raw << "  " << col;
+		raw = raw + 100;
+		col = col + 100;*/
 		int raw = 1000;
 		int col = 1000;
+		Point2f shift_m = Point2f(col / 2, raw / 2) - center_p(contour_1);
+		Point2f cen2_new = shift_m + center_p(contour_2);
 		Mat drawing_1 = Mat(raw, col, CV_8UC3, Scalar(255, 255, 255));
 		Mat drawing_2 = Mat(raw, col, CV_8UC3, Scalar(255, 255, 255));
 		Mat drawing_3 = Mat(raw, col, CV_8UC3, Scalar(255, 255, 255));
 		draw_poly(drawing_1, contour_1, Point2f(col / 2, raw / 2), 0);
-		draw_poly(drawing_2, contour_2, Point2f(col / 2, raw / 2), 0);
+		draw_poly(drawing_2, contour_2, cen2_new, 0);
 		imshow("poly1", drawing_1);
 		imshow("poly2", drawing_2);
 		cvtColor(drawing_1, drawing_1, COLOR_BGR2GRAY);
 		threshold(drawing_1, drawing_1, 128, 1, cv::THRESH_BINARY);
 		cvtColor(drawing_2, drawing_2, COLOR_BGR2GRAY);
 		threshold(drawing_2, drawing_2, 128, 1, cv::THRESH_BINARY);
-		int poly1 = 0;
-		int poly2 = 0;
-		int poly_ = 0;
+		int poly1 = 0;//T并S-T交S
+		int poly2 = 0;//T并S
+		int poly_ = 0;//T交S
 		for (int i = 0; i < col; i++)
 		{
 			for (int j = 0; j < raw; j++)
@@ -3298,19 +3303,20 @@ namespace Tiling_tiles{
 				if ((int)drawing_1.at<uchar>(i, j) ==0 && (int)drawing_2.at<uchar>(i, j) ==0)
 				{
 					poly_++;
-					//drawing_3.at<uchar>
+					poly2++;
+					drawing_3.at<Vec3b>(i, j) = Vec3b(255, 0, 0);
 				}
-				else if ((int)drawing_1.at<uchar>(i, j) == 0)
+				else if ((int)drawing_1.at<uchar>(i, j) == 0 || (int)drawing_2.at<uchar>(i, j) == 0)
 				{
 					poly1++;
-				}
-				else if ((int)drawing_2.at<uchar>(i, j) ==0)
-				{
 					poly2++;
+					drawing_3.at<Vec3b>(i, j) = Vec3b(5, 250, 0);
 				}
+
 			}
 		}
-		double area_score = 1 - (poly1 + poly2) / poly_;
+		imshow("poly3", drawing_3);
+		double area_score = (double)poly1 / poly2;
 
 		std::cout << "dianshu:  " << poly1 << "    " << poly2 << "    " << poly_ << endl;
 		std::cout << "total_score: " << total_score << " area_score" << area_score << endl;
