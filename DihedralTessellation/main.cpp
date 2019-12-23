@@ -25,7 +25,7 @@ int main(int argc, char** argv)
 	//8:morphing  9:draw  10:math  11:check  12:thickness  13:color  14:windows 15:evalua_deformation
 	if (f == 111) //test
 	{
-		vector<vector<Point> > contours = extract_contours("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\502.png");
+		vector<vector<Point2f>> contours = extract_contours("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\502.png");
 		/*vector<Point2f> gg = sampling_seg(ttt,10);
 		int gs = gg.size();
 		cout << gs << endl;

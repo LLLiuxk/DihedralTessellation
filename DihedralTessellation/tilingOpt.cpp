@@ -1383,11 +1383,11 @@ namespace Tiling_tiles{
 	}
 
 	//compute final tessellation
-	vector<vector<Point2f>> Tiling_opt::tesse_all(vector<Point2f> contour, vector<int>inter_index, int type)
+	vector<vector<Point2f>> Tiling_opt::tesse_all(vector<Point2f> contour, vector<int>inter_index, int type, double scale)
 	{
-		int drawrow = 5000;
-		int drawcol = 5000;
-		int border = 500;
+		int drawrow = 5000 * scale;
+		int drawcol = 5000 * scale;
+		int border = 300 * scale;
 		int con_size = contour.size();		
 		double length_ = arcLength(contour, 1) / con_size;
 		Point2f center = center_p(contour);

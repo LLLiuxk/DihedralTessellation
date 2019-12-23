@@ -773,7 +773,7 @@ namespace Tiling_tiles{
 	}
 
 
-	vector<vector<Point>> extract_contours(string imaname)
+	vector<vector<Point2f>> extract_contours(string imaname)
 	{
 		Mat src;
 		Mat src_gray;
@@ -782,6 +782,7 @@ namespace Tiling_tiles{
 		int max_thresh = 255;
 		Mat canny_output;
 		//考虑到可能有多个轮廓
+		vector<vector<Point2f>> contours_;
 		vector<vector<Point>> contours;
 		vector<Vec4i> hierarchy;
 		//read image
@@ -803,14 +804,19 @@ namespace Tiling_tiles{
 		Mat drwa = Mat::zeros(8000, 8000, CV_8UC3);
 		for (int t = 0; t < contours.size(); t++)
 		{
+			cout << " contours[t].size(): " << contours[t].size() << endl;
+			vector<Point2f> one;
 			for (int i = 0; i < contours[t].size(); i++)
 			{
+				one.push_back(Point2f(contours[t][i].x, contours[t][i].y));
 				circle(drwa, 10 * contours[t][i], 2, Scalar(255, 0, 0), -1);
 			}
+			vector<Point2f> one_new = sampling(one,one.size());
+			contours_.push_back(one_new);
 		}
 
 		imwrite("D://VisualStudioProjects//DihedralTessellation//contours.png", drwa);
-		return contours;
+		return contours_;
 	}
 	
 

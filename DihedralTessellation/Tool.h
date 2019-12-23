@@ -46,7 +46,10 @@ namespace Tiling_tiles{
 	vector<Point2f> contour_erode(vector<Point2f> contour, double step_leng);
 
 	void draw_two(Mat &drawing_, vector<Point2f> &contour_1, vector<int> vec_1, vector<Point2f> &contour_2, vector<int> vec_2, double scale = 1, int type = 0);//draw connection area
-	vector<vector<Point>>  extract_contours(string imaname);
+	
+	//application
+	vector<vector<Point2f>> extract_contours(string imaname);
+	void halftone_gen(vector<Point2f>);
 	
 
 	//math tool
