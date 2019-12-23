@@ -20,24 +20,19 @@ int main(int argc, char** argv)
 	Tiling_tiles::Prototile *prototile_third;
 	prototile_third = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
-	int f = 1;
+	int f = 111;
 	//0:result  1:simulation  2:批量读图  3:feature points  4:compute_TAR  5:min_minsmatch  6:extract_contour  7:compare and choose
 	//8:morphing  9:draw  10:math  11:check  12:thickness  13:color  14:windows 15:evalua_deformation
 	if (f == 111) //test
 	{
-		Point2f st = Point2f(10, 10);
-		Point2f end = Point2f(10, 40);
-		vector<Point2f> ttt;
-		ttt.push_back(st);
-		ttt.push_back(end);
-		
-		vector<Point2f> gg = sampling_seg(ttt,10);
+		vector<vector<Point> > contours = extract_contours("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\502.png");
+		/*vector<Point2f> gg = sampling_seg(ttt,10);
 		int gs = gg.size();
 		cout << gs << endl;
 		for (int g = 0; g < gs; g++)
 		{
 			cout << gg[g] << endl;
-		}
+		}*/
 		
 
 		/*Point2f cen1 = Point2f(10, 25);
@@ -167,7 +162,7 @@ int main(int argc, char** argv)
 	}
 	if (f == 2) //批量读图
 	{
-		string image = "swan2";//int2string(i);
+		string image = "502";//int2string(i);
 
 		prototile_first->txtpath = "D:\\VisualStudioProjects\\DihedralTessellation\\contours\\";
 		prototile_first->dataroot = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\";

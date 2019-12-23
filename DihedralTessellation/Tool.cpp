@@ -743,6 +743,77 @@ namespace Tiling_tiles{
 		}
 	}
 
+	vector<Point2f> contour_dilate(vector<Point2f> contour, double step_leng)
+	{
+		vector<Point2f> dilation_c;
+		int csize = contour.size();
+		for (int i = 0; i < csize; i++)
+		{
+			double dx = contour[(i + 1) % csize].x - contour[(i + csize - 1) % csize].x;
+			double dy = contour[(i + 1) % csize].y - contour[(i + csize - 1) % csize].y;
+			Point2f step = unit_vec(Point2f(-dy, dx));
+			dilation_c.push_back(contour[i] + step_leng*step);
+		}
+		return dilation_c;
+	}
+
+
+	vector<Point2f> contour_erode(vector<Point2f> contour, double step_leng)
+	{
+		vector<Point2f> dilation_c;
+		int csize = contour.size();
+		for (int i = 0; i < csize; i++)
+		{
+			double dx = contour[(i + 1) % csize].x - contour[(i + csize - 1) % csize].x;
+			double dy = contour[(i + 1) % csize].y - contour[(i + csize - 1) % csize].y;
+			Point2f step = unit_vec(Point2f(dy, -dx));
+			dilation_c.push_back(contour[i] + step_leng*step);
+		}
+		return dilation_c;
+	}
+
+
+	vector<vector<Point>> extract_contours(string imaname)
+	{
+		Mat src;
+		Mat src_gray;
+		Mat src_2;
+		int thresh = 100;
+		int max_thresh = 255;
+		Mat canny_output;
+		//考虑到可能有多个轮廓
+		vector<vector<Point>> contours;
+		vector<Vec4i> hierarchy;
+		//read image
+		String imageName = imaname;
+		cout << imageName << endl;
+		src = imread(imageName, IMREAD_COLOR);
+		//src = imread(imageName, CV_LOAD_IMAGE_UNCHANGED);
+		if (src.empty())
+		{
+			cerr << "No image supplied ..." << endl;
+		}
+		cvtColor(src, src_gray, COLOR_BGR2GRAY);
+		blur(src_gray, src_gray, Size(3, 3));
+		//imshow("src_gray_blur", src_gray);
+		Canny(src_gray, canny_output, thresh, thresh * 2, 3);
+		//imshow("canny_output", canny_output);
+		findContours(canny_output, contours, hierarchy, CV_RETR_LIST, CHAIN_APPROX_SIMPLE, Point(0, 0));
+		cout << "contours num:" << contours.size() << endl;
+		Mat drwa = Mat::zeros(8000, 8000, CV_8UC3);
+		for (int t = 0; t < contours.size(); t++)
+		{
+			for (int i = 0; i < contours[t].size(); i++)
+			{
+				circle(drwa, 10 * contours[t][i], 2, Scalar(255, 0, 0), -1);
+			}
+		}
+
+		imwrite("D://VisualStudioProjects//DihedralTessellation//contours.png", drwa);
+		return contours;
+	}
+	
+
 	Point2f center_p(vector<Point2f> contour_)
 	{
 		//利用轮廓的矩

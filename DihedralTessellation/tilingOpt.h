@@ -152,8 +152,13 @@ namespace Tiling_tiles{
 		vector<int> morphed_results(vector<Point2f> &morphed_A, int Candidate_index, int Tiling_index);
 		vector<Point2f> morphing(vector<Point_f> contour1, vector<Point_f> contour2, vector<pair<int, int>> path,double ratio=0.5);
 		vector<Point_f> morph_segment(vector<Point_f> seg1, vector<Point_f> seg2, Point_f start, double ratio = 0.5);
-		void contour_fine_tuning(vector<Point2f> &contour_, int first, int second);
 		
+		//compute final tessellation
+		vector<vector<Point2f>> tesse_all(vector<Point2f> contour, vector<int>inter_index, int type);
+		
+		void contour_fine_tuning(vector<Point2f> &contour_, int first, int second);
+
+
 		//morphing
 		//提高cos值权重+重采样
 		vector<Point2f> morphing_2_patterns(vector<Point2f> &contour1, vector<Point2f> &contour2, vector<double> &concur1, vector<double> &concur2, vector<int> &mid_inter, float shape_ratio);

@@ -18,8 +18,8 @@ namespace Tiling_tiles{
 		sampling_num = 3;
 		allnum_inner_c = 0;
 		match_window_width = 6;
-		tolerance = 6;
-		morph_ratio = 0.6;
+		tolerance = 0;
+		morph_ratio = 0.7;
 		//memset(dp, 0, sizeof(dp));
 		//memset(dp_inver, 0, sizeof(dp_inver));
 
@@ -277,26 +277,47 @@ namespace Tiling_tiles{
 				vector<int> cand_points_index = feature_points(contour_, Feature_Min, Feature_Max, cos(PI * angle / 180));
 				int can_fea_num = cand_points_index.size();
 				for (int i = 0; i < can_fea_num; i++) contour2[cand_points_index[i]].type = 2;
+				double ratio_min = 100;
+				double result_score = 0;
+				int ratio = 30;
+				for (; ratio <= 95; ratio += 5)
+				{
+					double ratio_d = ratio / 100.0;
+					cout << "ratio_d: " << ratio_d << endl;
+					vector<Point2f> final_pettern = morphing(contour1, contour2, path, ratio_d);
+					vector<int> return_p;
+					vector<vector<Point2f>> four_place;
+					vector<Point2f> morphed_A = extract_contour(final_pettern, mid_inter_morphed, return_p, four_place, all_inner_conts[i].type);
+					return_p.swap(vector<int>());
+					four_place.swap(vector<vector<Point2f>>());
+					vector<Point2f> morphed_A_ori = extract_contour(prototile_mid->contour, mid_inter, return_p, four_place, all_inner_conts[i].type);
+
+					double evaluation1 = evalua_deformation(final_pettern, contour_);
+					double evaluation2 = evalua_deformation(morphed_A, morphed_A_ori);
+					double score_ave = (1 - ratio_d)*evaluation2 + ratio_d*evaluation1;
+					if (score_ave > result_score)
+					{
+						result_score = score_ave;
+						ratio_min = ratio_d;
+					}
+				}
+
+				vector<Point2f> final_pettern = morphing(contour1, contour2, path, ratio_min);
 				
-				vector<Point2f> final_pettern = morphing(contour1, contour2, path, morph_ratio);
-				Mat drawing_pro = Mat(800, 3200, CV_8UC3, Scalar(255, 255, 255));
-				draw_poly(drawing_pro, prototile_mid->contour, Point2f(400, 400));
-				draw_poly(drawing_pro, contour_, Point2f(1200, 400));
-				draw_poly(drawing_pro, final_pettern, Point2f(2000, 400));
 
 				//cout << "zahuishi?*****************" << endl;
 				vector<int> return_p;
 				vector<vector<Point2f>> four_place;
 				vector<Point2f> morphed_A = extract_contour(final_pettern, mid_inter_morphed, return_p, four_place, all_inner_conts[i].type); 
-				return_p.swap(vector<int>());
-				four_place.swap(vector<vector<Point2f>>());
-				vector<Point2f> morphed_A_ori = extract_contour(prototile_mid->contour, mid_inter, return_p, four_place, all_inner_conts[i].type);
+				vector<int> return_p2;
+				vector<vector<Point2f>> four_place2;
+				vector<Point2f> morphed_A_ori = extract_contour(prototile_mid->contour, mid_inter, return_p2, four_place2, all_inner_conts[i].type);
 
-				double evaluation1 = evalua_deformation(final_pettern, contour_);
-				double evaluation2 = 0;//evalua_deformation(morphed_A, morphed_A_ori);
-				//double eva_ave = (evaluation1 + evaluation2) / 2;
-				double result_score = evaluation1 + evaluation2;
-				cout << "morph_ratio: " << morph_ratio<<"  --  result_score:  " << result_score << endl;
+				cout << "ratio_min: " << ratio_min << "  --  result_score:  " << result_score << endl;
+				Mat drawing_pro = Mat(800, 3200, CV_8UC3, Scalar(255, 255, 255));
+				draw_poly(drawing_pro, prototile_mid->contour, Point2f(400, 400));
+				draw_poly(drawing_pro, contour_, Point2f(1200, 400));
+				draw_poly(drawing_pro, final_pettern, Point2f(2000, 400));
 				//int times = 0;
 				//while (self_intersect(morphed_A, first, second) && (times < 3))
 				//{
@@ -313,6 +334,19 @@ namespace Tiling_tiles{
 				draw_poly(drawing_pro, morphed_A, Point2f(2800, 400));
 				string filename = rootname + "\\" + int2string(i) + "_Candidate_" + int2string(j) + ".png";
 				imwrite(filename, drawing_pro);
+
+				Mat drawing_tesse = Mat(5000, 5000, CV_8UC3, Scalar(255, 255, 255));
+				vector<vector<Point2f>> all_tiles = tesse_all(morphed_A, return_p, all_inner_conts[i].type);
+				for (int m = 0; m < all_tiles.size(); m++)
+				{				
+					vector<Point2f> tile_dilate = contour_dilate(all_tiles[m], 5);
+					vector<Point2f> tile_erode = contour_erode(all_tiles[m], 8);
+					//draw_poly(drawing_tesse, tile_dilate, center_p(tile_dilate));
+					//draw_poly(drawing_tesse, tile_erode, center_p(tile_erode), 1);
+					draw_poly(drawing_tesse, all_tiles[m], center_p(all_tiles[m]));
+				}
+				string filename2 = rootname + "\\" + int2string(i) + "_TessellationResult_" + int2string(j) + ".png";
+				imwrite(filename2, drawing_tesse);
 			}
 		}
 		return four_pattern;
@@ -886,39 +920,61 @@ namespace Tiling_tiles{
 			{
 				contour_cand[i] = contour_cand[i] + shift2;
 			}
-			double length_min = 100000;
+			double length_min = 1000000;
 			int angle_min = 0;
-
+			int times = 0;
+			double angl_al = 0;
+			Point2f sh_al = Point2f(0, 0);
+			Point2f shift_t = Point2f(1000, 1000);
 			//Point2f v0 = contour_inner[0] - cen1;
 			//Point2f v1 = contour_cand[0] - cen1;
 			//double angle1 = acos(cos_two_vector(v0, v1)) / PI * 180;
 			//if (sin_two_vector(v0, v1) < 0) angle1 = -angle1;
 
-			cout << "path_min_size:  " << path_min.size() << endl;
-			for (int angle = 0; angle < 360; angle = angle + 5)
+			cout << j << "  path_min_size:  " << path_min.size() << "  cent:" << cen2<<endl;
+			while (times < 3 || length_two_point2f(shift_t, Point2f(0, 0)) > 100 || angle_min > 10)
 			{
-				double leng = 0;
-				Mat rot_mat(2, 3, CV_32FC1);
-				rot_mat = getRotationMatrix2D(cen1, angle, 1);
-				cv::transform(contour_cand, contour_mid, rot_mat);
+				length_min = 1000000;
+				angle_min = 0;
+				cen2 = center_p(contour_cand);
+				//找到距离最近的角度
+				for (int angle = 0; angle < 360; angle = angle + 5)
+				{
+					double leng = 0;
+					Mat rot_mat(2, 3, CV_32FC1);
+					rot_mat = getRotationMatrix2D(cen2, angle, 1);
+					cv::transform(contour_cand, contour_mid, rot_mat);
+					for (int m = 0; m < path_min.size(); m++)
+					{
+						leng += length_two_point2f(contour_inner[path_min[m].first], contour_mid[path_min[m].second]);
+					}
+					if (leng < length_min)
+					{
+						angle_min = angle;
+						length_min = leng;
+					}
+				}
+				Mat rot_mat1(2, 3, CV_32FC1);
+				rot_mat1 = getRotationMatrix2D(cen2, angle_min, 1);
+				cv::transform(contour_cand, contour_mid, rot_mat1);
+				angl_al += angle_min;
+				//contour_cand = contour_mid;
+				//移动重心
+				shift_t = Point2f(0, 0);
 				for (int m = 0; m < path_min.size(); m++)
 				{
-					leng += length_two_point2f(contour_inner[path_min[m].first], contour_mid[path_min[m].second]);
+					shift_t += contour_inner[path_min[m].first] - contour_mid[path_min[m].second];
 				}
-				if (leng < length_min)
+				shift_t = Point2f(shift_t.x / path_min.size(), shift_t.y / path_min.size());
+				for (int i = 0; i < contour_cand.size(); i++)
 				{
-					angle_min = angle;
-					length_min = leng;
+					contour_cand[i] = contour_mid[i] + shift_t;
 				}
+				sh_al += shift_t;
+				times++;
 			}
-			cout << "angle_min: " << angle_min << "   --  " << length_min<<endl;
-			//angle_min = 239;
-			Mat rot_mat1(2, 3, CV_32FC1);
-			rot_mat1 = getRotationMatrix2D(cen1, angle_min, 1);
-			cv::transform(contour_cand, contour_mid, rot_mat1);
-
-			contour_cand = contour_mid;
-
+			//cout << "angle_al: " << angl_al << "   --  " << length_min << "    sh_al: " << sh_al << endl;
+			
 			candidate_contour.push_back(contour_cand);
 			cand_path.push_back(path);
 		}
@@ -994,7 +1050,7 @@ namespace Tiling_tiles{
 			}
 				
 			//length += length_two_point2f(contour1[path[j].first].point, contour2[path[j].second].point);
-			cout << j<<"--"<<path[j].first << " : " << contour1[path[j].first].type << "    " << path[j].second << " : " << contour2[path[j].second].type << endl;		
+			//cout << j<<"--"<<path[j].first << " : " << contour1[path[j].first].type << "    " << path[j].second << " : " << contour2[path[j].second].type << endl;		
 		}
 		int final_pair_size = final_pair.size();
 
@@ -1035,7 +1091,7 @@ namespace Tiling_tiles{
 		vector<Point_f> c_seg2;
 		for (int g = 0; g < final_pair_size - 1; g++)
 		{
-			cout << final_pair[g].first << "  :  " << final_pair[g].second << endl;
+			//cout << final_pair[g].first << "  :  " << final_pair[g].second << endl;
 			for (int n = final_pair[g].first; n <= final_pair[g + 1].first; n++)
 				c_seg1.push_back(contour1[n]);
 			for (int n = final_pair[g].second; n <= final_pair[g + 1].second; n++) 
@@ -1052,8 +1108,8 @@ namespace Tiling_tiles{
 		contour1_seg.push_back(c_seg1);
 		contour2_seg.push_back(c_seg2);
 
-		cout << "contour1_seg:  " << contour1_seg.size() << "    :   " << final_pair_size << endl
-			<< contour1_seg.back().back().point << "   " << contour1_seg.back().back().type << endl;
+		//cout << "contour1_seg:  " << contour1_seg.size() << "    :   " << final_pair_size << endl
+		//	<< contour1_seg.back().back().point << "   " << contour1_seg.back().back().type << endl;
 		vector<Point_f> contour_fin;
 		/*vector<Point2f> ttt1;
 		vector<Point2f> ttt2;
@@ -1103,8 +1159,8 @@ namespace Tiling_tiles{
 
 		Point2f cen1 = center_p(p_f2p2f(contour1));
 		Point2f cen2 = center_p(p_f2p2f(contour2));
-		cout << "cen1:  "<<cen1<<"   cen2"<<cen2<<endl;
-		cout << "cnum1:  " << cnum1 << "   cnum2" << cnum1 << "  psize:" << psize<<endl;
+		//cout << "cen1:  "<<cen1<<"   cen2"<<cen2<<endl;
+		//cout << "cnum1:  " << cnum1 << "   cnum2" << cnum1 << "  psize:" << psize<<endl;
 		Point2f shift1 = Point2f(400, 400) - cen1;
 
 		Mat drawing3 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
@@ -1145,34 +1201,34 @@ namespace Tiling_tiles{
 		//MyLine(drawing3, contour2_seg[1][0].point + shift1, contour2_seg[1][0].point + 2 * (contour2_seg[1][1].point - contour2_seg[1][0].point )+ shift1, "cyan");
 		imshow("morphing show", drawing3);
 
-		//Mat drawing1 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		//for (int i = 0; i <cnum1; i++)
-		//{
-		//	if (contour1[i].type == 0)
-		//	{
-		//		circle(drawing1, contour1[i].point + shift1, 3, Scalar(255, 0, 0), -1);
-		//		circle(drawing1, contour2[i].point + shift1, 3, Scalar(255, 125, 0), -1);
-		//	}
-		//	else
-		//	{
-		//		circle(drawing1, contour1[i].point + shift1, 3, Scalar(255, 0, 0), -1);
-		//		circle(drawing1, contour2[i].point + shift1, 3, Scalar(255, 125, 0), -1);
-		//		//circle(drawing1, contour1[i].point + shift1, 5, Scalar(0, 255, 0), -1);
-		//		//circle(drawing1, contour2[i].point + shift1, 5, Scalar(125, 255, 0), -1);
-		//	}
-		//}
-		////MyLine(drawing1, cen1 + shift1, contour1[path[0].first].point + shift1, "red");
-		//double length = 0;
-		//for (int j = 0; j < psize; j++)
-		//{
-		//	if (contour1[path[j].first].type>1)	MyLine(drawing1, contour1[path[j].first].point + shift1, contour2[path[j].second].point + shift1, "gray");
-		//	//length += length_two_point2f(contour1[path[j].first].point, contour2[path[j].second].point);
-		//	cout << path[j].first << " : " << contour1[path[j].first].type << "    " << path[j].second <<" : "<< contour2[path[j].second].type << endl;
-		//	//MyLine(drawing1, contour1[path[j].first].point + shift1, contour2[path[j].second].point + shift1, "gray");
-		//}
-		//
-		//cout << "path length: " << length<<endl;
-		//imshow("path show",drawing1);
+		Mat drawing1 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		for (int i = 0; i <cnum1; i++)
+		{
+			if (contour1[i].type == 0)
+			{
+				circle(drawing1, contour1[i].point + shift1, 3, Scalar(255, 0, 0), -1);
+				circle(drawing1, contour2[i].point + shift1, 3, Scalar(255, 125, 0), -1);
+			}
+			else
+			{
+				circle(drawing1, contour1[i].point + shift1, 3, Scalar(255, 0, 0), -1);
+				circle(drawing1, contour2[i].point + shift1, 3, Scalar(255, 125, 0), -1);
+				//circle(drawing1, contour1[i].point + shift1, 5, Scalar(0, 255, 0), -1);
+				//circle(drawing1, contour2[i].point + shift1, 5, Scalar(125, 255, 0), -1);
+			}
+		}
+		//MyLine(drawing1, cen1 + shift1, contour1[path[0].first].point + shift1, "red");
+		double length = 0;
+		for (int j = 0; j < psize; j++)
+		{
+			if (contour1[path[j].first].type>1)	MyLine(drawing1, contour1[path[j].first].point + shift1, contour2[path[j].second].point + shift1, "gray");
+			//length += length_two_point2f(contour1[path[j].first].point, contour2[path[j].second].point);
+			cout << path[j].first << " : " << contour1[path[j].first].type << "    " << path[j].second <<" : "<< contour2[path[j].second].type << endl;
+			//MyLine(drawing1, contour1[path[j].first].point + shift1, contour2[path[j].second].point + shift1, "gray");
+		}
+		
+		cout << "path length: " << length<<endl;
+		imshow("path show",drawing1);
 
 		return final_pettern;
 
@@ -1324,6 +1380,311 @@ namespace Tiling_tiles{
 		std::cout << "num of mid_inter_new: " << mid_inter_new.size() << endl;
 		prototile_tem->loadPoints(final_pettern);
 		return mid_inter_new;
+	}
+
+	//compute final tessellation
+	vector<vector<Point2f>> Tiling_opt::tesse_all(vector<Point2f> contour, vector<int>inter_index, int type)
+	{
+		int drawrow = 5000;
+		int drawcol = 5000;
+		int border = 500;
+		int con_size = contour.size();		
+		double length_ = arcLength(contour, 1) / con_size;
+		Point2f center = center_p(contour);
+		vector<vector<Point2f>> all_tiles;
+		vector<Point2f> allcent_in_plane;
+		vector<Point2f> allcent_in_plane_;
+		//vector<vector<Point2f>> four_place;
+		//vector<Point2f> one_loca;
+		if (type == 0) //translation
+		{
+			stack<Point2f> cent_stack;
+			Point2f step[4];
+			step[0] = contour[inter_index[2]] - contour[inter_index[0]];
+			step[1] = contour[inter_index[3]] - contour[inter_index[1]];
+			step[2] = -step[0];
+			step[3] = -step[1];
+
+			Point2f cenp = Point2f(drawrow / 2, drawcol / 2);
+			cent_stack.push(cenp);
+			allcent_in_plane.push_back(cenp);
+			while (!cent_stack.empty())
+			{
+				//cout << cent_stack.size() << endl;
+				if (cent_stack.size() >= 500000) break;
+				Point2f top_p = cent_stack.top();
+				cent_stack.pop();
+				for (int i = 0; i < 4; i++)
+				{
+					cenp = top_p + step[i];
+					if ((cenp.x<drawcol + border) && (cenp.x>-border) && (cenp.y<drawrow + border) && (cenp.y>-border))
+					{
+						int flag = 0;
+						for (vector<Point2f>::iterator it = allcent_in_plane.begin(); it != allcent_in_plane.end(); it++)
+						{
+							double leng = length_two_point2f(cenp, *it);
+							if (leng < length_)
+							{
+								flag = 1;
+								break;
+							}
+						}
+						if (flag == 0)
+						{
+							cent_stack.push(cenp);
+							allcent_in_plane.push_back(cenp);
+						}
+					}
+				}
+			}
+			for (int j = 0; j < allcent_in_plane.size(); j++)
+			{
+				Point2f shift1 = allcent_in_plane[j] - center;
+				vector<Point2f> one_tile;
+				for (int n = 0; n < con_size; n++) one_tile.push_back(contour[n] + shift1);
+				all_tiles.push_back(one_tile);
+			}
+		}
+		else if (type == 1) //rotation
+		{
+			vector<Point2f> contour_r;
+			Point2f rota_cent = contour[inter_index[0]];
+			Mat rot_mat = getRotationMatrix2D(rota_cent, 180, 1);
+			transform(contour, contour_r, rot_mat);
+			Point2f cen_r = center_p(contour_r);
+			Point2f shift = cen_r - center;
+
+			stack<Point2f> cent_stack;
+			stack<Point2f> cent_stack_r;
+			Point2f step[4];
+			step[0] = 2 * (contour[inter_index[1]] - contour[inter_index[0]]);
+			step[1] = 2 * (contour[inter_index[3]] - contour[inter_index[0]]);
+			step[2] = -step[0];
+			step[3] = -step[1];
+
+			Point2f cenp = Point2f(drawrow / 2, drawcol / 2);
+			Point2f cenp_r = cenp + shift;
+
+			cent_stack.push(cenp);
+			allcent_in_plane.push_back(cenp);
+			cent_stack_r.push(cenp_r);
+			allcent_in_plane_.push_back(cenp_r);
+			while (!cent_stack.empty())
+			{
+				Point2f top_p = cent_stack.top();
+				cent_stack.pop();
+				for (int i = 0; i < 4; i++)
+				{
+					cenp = top_p + step[i];
+					if ((cenp.x<drawcol + border) && (cenp.x>-border) && (cenp.y<drawrow + border) && (cenp.y>-border))
+					{
+						int flag = 0;
+						for (vector<Point2f>::iterator it = allcent_in_plane.begin(); it != allcent_in_plane.end(); it++)
+						{
+							double leng = length_two_point2f(cenp, *it);
+							if (leng < length_)
+							{
+								flag = 1;
+								break;
+							}
+						}
+						if (flag == 0)
+						{
+							cent_stack.push(cenp);
+							allcent_in_plane.push_back(cenp);
+						}
+					}
+				}
+			}
+			while (!cent_stack_r.empty())
+			{
+				Point2f top_p = cent_stack_r.top();
+				cent_stack_r.pop();
+				for (int i = 0; i < 4; i++)
+				{
+					cenp_r = top_p + step[i];
+					if ((cenp_r.x<drawcol + border) && (cenp_r.x>-border) && (cenp_r.y<drawrow + border) && (cenp_r.y>-border))
+					{
+						int flag = 0;
+						for (vector<Point2f>::iterator it = allcent_in_plane_.begin(); it != allcent_in_plane_.end(); it++)
+						{
+							double leng = length_two_point2f(cenp_r, *it);
+							if (leng < length_)
+							{
+								flag = 1;
+								break;
+							}
+						}
+						if (flag == 0)
+						{
+							cent_stack_r.push(cenp_r);
+							allcent_in_plane_.push_back(cenp_r);
+						}
+					}
+				}
+			}
+			for (int j = 0; j < allcent_in_plane.size(); j++)
+			{
+				Point2f shift1 = allcent_in_plane[j] - center;
+				vector<Point2f> one_tile;
+				for (int n = 0; n < con_size; n++) one_tile.push_back(contour[n] + shift1);
+				all_tiles.push_back(one_tile);
+			}
+			for (int j = 0; j < allcent_in_plane_.size(); j++)
+			{
+				Point2f shift1 = allcent_in_plane_[j] - cen_r;
+				vector<Point2f> one_tile;
+				for (int n = 0; n < con_size; n++) one_tile.push_back(contour_r[n] + shift1);
+				all_tiles.push_back(one_tile);
+			}
+		}
+		else if (type == 2 || type == 3) //2是flipping (1-3)，3是flipping (2-4)
+		{
+			Point2f line1 = contour[inter_index[2]] - contour[inter_index[0]];
+			Point2f line2 = contour[inter_index[3]] - contour[inter_index[1]]; 
+			vector<Point2f> contour_r = flip_only_coord(contour);
+			Point2f cen_r; //变换后的contour_r的重心坐标
+			stack<Point2f> cent_stack;
+			stack<Point2f> cent_stack_r;
+			Point2f step[4];
+			Point2f cenp; //contour的第一个重心
+			Point2f cenp_r;   //contour_r的第一个重心
+			if (type == 2)
+			{
+				Point2f line1_cent = 0.5 * contour[inter_index[2]] + 0.5 * contour[inter_index[0]];
+				Point2f s_axis(line2.y, -line2.x);
+				Line_Seg symmetry_axis(line1_cent + 5 * s_axis, line1_cent - 5 * s_axis);
+				double rota_angle = acos(cos_two_vector(Point2f(0, 1), s_axis)) / PI * 180;
+				if (sin_two_vector(Point2f(0, 1), s_axis) > 0) rota_angle = -rota_angle;
+				//cout << rota_angle << endl;
+				Point2f cross;
+				if (line_intersection(Line_Seg(symmetry_axis), Line_Seg(center - 5 * line2, center + 5 * line2), cross) != 1) cout << "Error!" << endl;  //没有交点说明出错了
+				Point2f cent_shift = 2 * (cross - center);
+				
+				Mat rot_mat = getRotationMatrix2D(center, 2 * rota_angle, 1);
+				transform(contour_r, contour_r, rot_mat);
+				//将以上所得翻转的轮廓沿相对应的轴平移，计算该位置
+				double cos_ax_1_3 = cos_two_vector(s_axis, line1);
+				Point2f line3 = s_axis;
+				if (cos_ax_1_3 < 0) line3 = -s_axis;
+				//这里line3代表对称轴上与line1成锐角夹角方向的向量，长度为line1在对称轴上的投影
+				line3 = line3*(abs(line1.x*line3.x + line1.y*line3.y) / (line3.x*line3.x + line3.y*line3.y));
+				Point2f shift = cent_shift + line3;
+				cen_r = center_p(contour_r);
+
+				step[0] = 2 * line3;
+				step[1] = line2;
+				step[2] = -step[0];
+				step[3] = -step[1];
+				cenp = Point2f(drawrow / 2, drawcol / 2); //contour的第一个重心
+				cenp_r = cenp + shift;   //contour_r的第一个重心
+			}
+			if (type == 3) //flipping (2-4)
+			{
+
+				Point2f line2_cent = 0.5 * contour[inter_index[3]] + 0.5 * contour[inter_index[1]];
+				Point2f s_axis(line1.y, -line1.x);
+				Line_Seg symmetry_axis(line2_cent + 5 * s_axis, line2_cent - 5 * s_axis);
+				//计算翻转后的轮廓，因为直接任意轴对称翻转比较耗时，因此先以x轴为对称轴翻转，然后旋转相应角度
+				double rota_angle = acos(cos_two_vector(Point2f(0, 1), s_axis)) / PI * 180;
+				if (sin_two_vector(Point2f(0, 1), s_axis) > 0) rota_angle = -rota_angle;
+				//cout << rota_angle << endl;
+				Point2f cross;
+				if (line_intersection(Line_Seg(symmetry_axis), Line_Seg(center - 5 * line1, center + 5 * line1), cross) != 1) cout << "Error!" << endl;  //没有交点说明出错了
+				Point2f cent_shift = 2 * (cross - center);
+				Mat rot_mat = getRotationMatrix2D(center, 2 * rota_angle, 1);
+				transform(contour_r, contour_r, rot_mat);
+				//将以上所得翻转的轮廓沿相对应的轴平移，计算该位置
+				double cos_ax_2_4 = cos_two_vector(s_axis, line2);
+				Point2f line3 = s_axis;
+				if (cos_ax_2_4 < 0) line3 = -s_axis;
+				//这里line3代表对称轴上与line2成锐角夹角方向的向量，长度为line2在对称轴上的投影
+				line3 = line3*(abs(line2.x*line3.x + line2.y*line3.y) / (line3.x*line3.x + line3.y*line3.y));
+				Point2f shift = cent_shift + line3;
+				cen_r = center_p(contour_r);
+
+				step[0] = line1;
+				step[1] = 2 * line3;
+				step[2] = -step[0];
+				step[3] = -step[1];
+
+				cenp = Point2f(drawrow / 2, drawcol / 2);
+				cenp_r = cenp + shift;
+			}
+			cent_stack.push(cenp);
+			cent_stack_r.push(cenp_r);
+			allcent_in_plane.push_back(cenp);
+			allcent_in_plane_.push_back(cenp_r);
+			while (!cent_stack.empty())
+			{
+				Point2f top_p = cent_stack.top();
+				cent_stack.pop();
+				for (int i = 0; i < 4; i++)
+				{
+					cenp = top_p + step[i];
+					if ((cenp.x<drawcol + border) && (cenp.x>-border) && (cenp.y<drawrow + border) && (cenp.y>-border))
+					{
+						int flag = 0;
+						for (vector<Point2f>::iterator it = allcent_in_plane.begin(); it != allcent_in_plane.end(); it++)
+						{
+							double leng = length_two_point2f(cenp, *it);
+							if (leng < length_)
+							{
+								flag = 1;
+								break;
+							}
+						}
+						if (flag == 0)
+						{
+							cent_stack.push(cenp);
+							allcent_in_plane.push_back(cenp);
+						}
+					}
+				}
+			}
+			while (!cent_stack_r.empty())
+			{
+				Point2f top_p = cent_stack_r.top();
+				cent_stack_r.pop();
+				for (int i = 0; i < 4; i++)
+				{
+					cenp_r = top_p + step[i];
+					if ((cenp_r.x<drawcol + border) && (cenp_r.x>-border) && (cenp_r.y<drawrow + border) && (cenp_r.y>-border))
+					{
+						int flag = 0;
+						for (vector<Point2f>::iterator it = allcent_in_plane_.begin(); it != allcent_in_plane_.end(); it++)
+						{
+							double leng = length_two_point2f(cenp_r, *it);
+							if (leng < length_)
+							{
+								flag = 1;
+								break;
+							}
+						}
+						if (flag == 0)
+						{
+							cent_stack_r.push(cenp_r);
+							allcent_in_plane_.push_back(cenp_r);
+						}
+					}
+				}
+			}
+			for (int j = 0; j < allcent_in_plane.size(); j++)
+			{
+				Point2f shift1 = allcent_in_plane[j] - center;
+				vector<Point2f> one_tile;
+				for (int n = 0; n < con_size; n++) one_tile.push_back(contour[n] + shift1);
+				all_tiles.push_back(one_tile);
+			}
+			for (int j = 0; j < allcent_in_plane_.size(); j++)
+			{
+				Point2f shift1 = allcent_in_plane_[j] - cen_r;
+				vector<Point2f> one_tile;
+				for (int n = con_size - 1; n >=0; n--) one_tile.push_back(contour_r[n] + shift1);
+				all_tiles.push_back(one_tile);
+			}
+		}	
+		return all_tiles;
 	}
 
 	/*void Tiling_opt::tiliing_generation(string imaname)
@@ -3204,7 +3565,7 @@ namespace Tiling_tiles{
 
 	double Tiling_opt::evalua_deformation(vector<Point2f> contour1, vector<Point2f> contour2)
 	{
-		cout << "contour1.size: " << contour1.size() << "   contour2size: " << contour2.size() << endl;
+		//cout << "contour1.size: " << contour1.size() << "   contour2size: " << contour2.size() << endl;
 		int match_width = match_window_width;
 		int shift = 0;
 		int shift2 = 0;
@@ -3279,8 +3640,8 @@ namespace Tiling_tiles{
 		imshow("poly3", drawing_3);
 		double area_score = (double)poly_ / poly2;
 
-		std::cout << "dianshu:  " << poly1 << "    " << poly2 << "    " << poly_ << endl;
-		std::cout << "total_score: " << total_score << " area_score" << area_score << endl;
+		//std::cout << "dianshu:  " << poly1 << "    " << poly2 << "    " << poly_ << endl;
+		//std::cout << "total_score: " << total_score << " area_score" << area_score << endl;
 
 		
 		//score_mid_r = contourArea(contour[2]) / contourArea(contour[0]);

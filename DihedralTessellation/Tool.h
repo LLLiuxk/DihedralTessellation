@@ -42,8 +42,13 @@ namespace Tiling_tiles{
 	void draw_poly(Mat &drawing_, vector<Point2f> contour_s, Point2f center, int color = 0);
 	void draw_allplane(Mat &drawing_, vector<Point2f> contour_, vector<int> vec_, double scale = 1, int type = 0);
 	void draw_result(Mat &drawing_, vector<Point2f> contour_, vector<int> vec_, double scale = 1, int type = 0, Point2f shift = Point2f(0, 0));
+	vector<Point2f> contour_dilate(vector<Point2f> contour,double step_leng);
+	vector<Point2f> contour_erode(vector<Point2f> contour, double step_leng);
 
 	void draw_two(Mat &drawing_, vector<Point2f> &contour_1, vector<int> vec_1, vector<Point2f> &contour_2, vector<int> vec_2, double scale = 1, int type = 0);//draw connection area
+	vector<vector<Point>>  extract_contours(string imaname);
+	
+
 	//math tool
 	Point2f center_p(vector<Point2f> contour_);
 	double contour_length(vector<Point2f> contour);
