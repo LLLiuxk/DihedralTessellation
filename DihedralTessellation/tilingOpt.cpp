@@ -334,16 +334,22 @@ namespace Tiling_tiles{
 				draw_poly(drawing_pro, morphed_A, Point2f(2800, 400));
 				string filename = rootname + "\\" + int2string(i) + "_Candidate_" + int2string(j) + ".png";
 				imwrite(filename, drawing_pro);
+				int halftone_num = 30000;
+				Mat drawing_tesse = Mat(halftone_num, halftone_num, CV_8UC3, Scalar(255, 255, 255));
+				vector<vector<Point2f>> all_tiles = tesse_all(morphed_A, return_p, all_inner_conts[i].type, halftone_num);
 
-				Mat drawing_tesse = Mat(5000, 5000, CV_8UC3, Scalar(255, 255, 255));
-				vector<vector<Point2f>> all_tiles = tesse_all(morphed_A, return_p, all_inner_conts[i].type);
+				//halftone
+				vector<vector<Point2f>> out_contours = extract_contours("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\503.png", halftone_num);
+				halftone_gen(out_contours, all_tiles, halftone_num);
+
 				for (int m = 0; m < all_tiles.size(); m++)
-				{				
-					vector<Point2f> tile_dilate = contour_dilate(all_tiles[m], 5);
-					vector<Point2f> tile_erode = contour_erode(all_tiles[m], 8);
-					//draw_poly(drawing_tesse, tile_dilate, center_p(tile_dilate));
-					//draw_poly(drawing_tesse, tile_erode, center_p(tile_erode), 1);
-					draw_poly(drawing_tesse, all_tiles[m], center_p(all_tiles[m]));
+				{			
+					//¿ò¼ÜÍ¼
+					//vector<Point2f> tile_dilate = contour_dilate(all_tiles[m], 5);
+					//vector<Point2f> tile_erode = contour_erode(all_tiles[m], 8);
+					////draw_poly(drawing_tesse, tile_dilate, center_p(tile_dilate));
+					////draw_poly(drawing_tesse, tile_erode, center_p(tile_erode), 1);
+					//draw_poly(drawing_tesse, all_tiles[m], center_p(all_tiles[m]));
 				}
 				string filename2 = rootname + "\\" + int2string(i) + "_TessellationResult_" + int2string(j) + ".png";
 				imwrite(filename2, drawing_tesse);
@@ -1383,11 +1389,11 @@ namespace Tiling_tiles{
 	}
 
 	//compute final tessellation
-	vector<vector<Point2f>> Tiling_opt::tesse_all(vector<Point2f> contour, vector<int>inter_index, int type, double scale)
+	vector<vector<Point2f>> Tiling_opt::tesse_all(vector<Point2f> contour, vector<int>inter_index, int type, int col_raw_num)
 	{
-		int drawrow = 5000 * scale;
-		int drawcol = 5000 * scale;
-		int border = 300 * scale;
+		int drawrow = col_raw_num;
+		int drawcol = col_raw_num;
+		int border = 0.06 * col_raw_num;
 		int con_size = contour.size();		
 		double length_ = arcLength(contour, 1) / con_size;
 		Point2f center = center_p(contour);

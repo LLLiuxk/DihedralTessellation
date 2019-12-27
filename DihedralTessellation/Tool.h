@@ -48,8 +48,8 @@ namespace Tiling_tiles{
 	void draw_two(Mat &drawing_, vector<Point2f> &contour_1, vector<int> vec_1, vector<Point2f> &contour_2, vector<int> vec_2, double scale = 1, int type = 0);//draw connection area
 	
 	//application
-	vector<vector<Point2f>> extract_contours(string imaname);
-	void halftone_gen(vector<Point2f>);
+	vector<vector<Point2f>> extract_contours(string imaname, int halftone_num = 5000);
+	void halftone_gen(vector<vector<Point2f>> out_contours, vector<vector<Point2f>> tiling_contours, int halftone_num = 5000);
 	
 
 	//math tool
@@ -65,7 +65,7 @@ namespace Tiling_tiles{
 
 	int cur_char_length(char a, char b);
 	double cur_length_two_p(double cur1, double cur2);
-	vector<Point2f> sampling(vector<Point2f> &contour_, int points_num);
+	vector<Point2f> sampling(vector<Point2f> &contour_, double points_num);
 	vector<Point2f> sampling_ave(vector<Point2f> &contour_, int points_num, vector<int> &contour_sam_index);
 	vector<Point2f> sampling_seg(vector<Point2f> &segment, int points_num);
 	vector<double> curvature_com_k(vector<Point2f> &contour_sam);
@@ -175,7 +175,7 @@ namespace Tiling_tiles{
 	}
 	
 	int location(vector<Point2f> &vec, Point2f input);
-
+	void read_2dtriangle(string pathname, vector<Point2f>& vertices, vector<vector<int>>& faces);
 }
 
 #endif

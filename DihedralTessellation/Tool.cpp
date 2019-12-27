@@ -37,7 +37,7 @@ namespace Tiling_tiles{
 				break;
 			}
 		}
-		int thickness = 2;
+		int thickness = 10;
 		int lineType = 8;
 		line(img,
 			start,
@@ -57,6 +57,7 @@ namespace Tiling_tiles{
 		for (int t = 0; t < n; t++)
 		{
 			rook_points[0][t] = contour_s[t];
+			//cout << contour_s[t] << endl;
 		}
 		const Point* ppt[1] = { rook_points[0] };
 		int npt[] = { n };
@@ -773,8 +774,9 @@ namespace Tiling_tiles{
 	}
 
 
-	vector<vector<Point2f>> extract_contours(string imaname)
+	vector<vector<Point2f>> extract_contours(string imaname, int halftone_num)
 	{
+		double scale = halftone_num/600;
 		Mat src;
 		Mat src_gray;
 		Mat src_2;
@@ -797,28 +799,88 @@ namespace Tiling_tiles{
 		cvtColor(src, src_gray, COLOR_BGR2GRAY);
 		blur(src_gray, src_gray, Size(3, 3));
 		//imshow("src_gray_blur", src_gray);
+		threshold(src_gray, src_gray, 128, 255, cv::THRESH_BINARY); //255 white
+		//imshow("threshold", src_gray);
 		Canny(src_gray, canny_output, thresh, thresh * 2, 3);
 		//imshow("canny_output", canny_output);
-		findContours(canny_output, contours, hierarchy, CV_RETR_LIST, CHAIN_APPROX_SIMPLE, Point(0, 0));
+		findContours(canny_output, contours, hierarchy, RETR_CCOMP, CHAIN_APPROX_SIMPLE, Point(0, 0));
 		cout << "contours num:" << contours.size() << endl;
-		Mat drwa = Mat::zeros(8000, 8000, CV_8UC3);
-		for (int t = 0; t < contours.size(); t++)
+		/*for (int t = 0; t < contours.size();)
 		{
 			cout << " contours[t].size(): " << contours[t].size() << endl;
+			cout << " hierarchy: " << hierarchy[t] << endl;
+		}*/
+
+		//Mat drwa = Mat::zeros(8000, 8000, CV_8UC3);
+		for (int t = 0; t < contours.size(); )
+		{
+			cout << " contours[t].size(): " << contours[t].size() << endl;
+			//cout << " hierarchy: " << hierarchy[t] << endl;
 			vector<Point2f> one;
 			for (int i = 0; i < contours[t].size(); i++)
-			{
-				one.push_back(Point2f(contours[t][i].x, contours[t][i].y));
-				circle(drwa, 10 * contours[t][i], 2, Scalar(255, 0, 0), -1);
+			{ 
+				one.push_back(Point2f(scale*contours[t][i].x, scale*contours[t][i].y));
+				//circle(drwa, one.back(), 2, Scalar(255, 0, 0), -1);
 			}
-			vector<Point2f> one_new = sampling(one,one.size());
+			double sample_num = (double)one.size() / 100;
+			vector<Point2f> one_new = sampling(one, sample_num);
 			contours_.push_back(one_new);
+			t = hierarchy[t][0];
+			if (t == -1) break;
 		}
-
-		imwrite("D://VisualStudioProjects//DihedralTessellation//contours.png", drwa);
+		//cout << "over" << endl;
+		//imwrite("D://VisualStudioProjects//DihedralTessellation//contours.png", drwa);
 		return contours_;
 	}
 	
+
+	void halftone_gen(vector<vector<Point2f>> out_contours, vector<vector<Point2f>> tiling_contours, int halftone_num)
+	{
+		Mat drawing_pro = Mat(halftone_num, halftone_num, CV_8UC3, Scalar(255, 255, 255));
+		int tilis_num = tiling_contours.size();
+		int outc_num = out_contours.size();
+		for (int j = 0; j < outc_num; j++)
+		{
+			int out1size = out_contours[j].size();
+			for (int t = 0; t < out1size; t++)
+			{
+				MyLine(drawing_pro, out_contours[j][t], out_contours[j][(t + 1) % out1size],"red");
+			}
+		}
+		for (int i = 0; i < tilis_num; i++)
+		{
+			vector<Point2f> tileone = tiling_contours[i];
+			Point2f center1 = center_p(tileone);
+			double l_min = 100000;
+			for (int j = 0; j < outc_num; j++)
+			{
+				double a0 = abs(pointPolygonTest(out_contours[j], center1, true));
+				if (a0 < l_min) l_min = a0;
+			}
+			if (l_min < 300)
+			{
+				vector<Point2f> tile_dilate = contour_dilate(tileone, 12);
+				draw_poly(drawing_pro, tile_dilate, center_p(tile_dilate));
+			}
+			else if (l_min < 600)
+			{
+				vector<Point2f> tile_dilate = contour_dilate(tileone, 8);
+				draw_poly(drawing_pro, tile_dilate, center_p(tile_dilate));
+			}
+			else if (l_min < 1600)
+			{
+				vector<Point2f> tile_erode = contour_erode(tileone, 8);
+				draw_poly(drawing_pro, tile_erode, center_p(tile_erode));
+			}
+			else
+			{
+				vector<Point2f> tile_erode = contour_erode(tileone, 12);
+				draw_poly(drawing_pro, tile_erode, center_p(tile_erode));
+			}
+			
+		}
+		imwrite("D:\\VisualStudioProjects\\DihedralTessellation\\halftone.png", drawing_pro);
+	}
 
 	Point2f center_p(vector<Point2f> contour_)
 	{
@@ -1778,7 +1840,7 @@ namespace Tiling_tiles{
 		return contour_sam;
 	}
 
-	vector<Point2f> sampling(vector<Point2f> &contour_, int points_num)
+	vector<Point2f> sampling(vector<Point2f> &contour_, double points_num)
 	{
 		vector<int> contour_sam_index;
 		vector<Point2f> sampling_p = sampling_ave(contour_, points_num * 100, contour_sam_index);
@@ -1833,7 +1895,7 @@ namespace Tiling_tiles{
 
 
 
-	void compute_TAR_new(vector<Point2f> &contour_)
+	void compute_TAR_new(vector<Point2f> &contour_)   //没有归一化
 	{
 		double ratio = sqrt(contourArea(contour_))/arcLength(contour_,true);
 		
@@ -1881,5 +1943,45 @@ namespace Tiling_tiles{
 		return index_;
 	}
 
+	void read_2dtriangle(string pathname, vector<Point2f>& vertices, vector<vector<int>>& faces)
+	{
+		vector<Point2f> triangle2d;
+		std::ifstream fin(pathname, std::ios::in);
+		if (fin) // 有该文件
+		{
+			string line;
+			std::string x = "";
+			std::string y = "";
+			std::string z = "";
+			getline(fin, line);
+			cout << line << endl;
+			while (getline(fin, line)) // line中不包括每行的换行符
+			{
+				std::stringstream word(line);
+				word >> x;
+				word >> y;
+				word >> z;
+				if (z.compare("") == 0)
+				{
+					vertices.push_back(Point2f(stod(x), stod(y)));
+					//std::cout << "x: " << x << std::endl;
+					//std::cout << "y: " << y << std::endl;
+				}
+				else
+				{
+					vector<int> one_face;
+					one_face.push_back(stoi(x));
+					one_face.push_back(stoi(y));
+					one_face.push_back(stoi(z));
+					faces.push_back(one_face);
+					//std::cout << "z: " << z << std::endl;
+				}			
+			}
 
+		}
+		else // 没有该文件
+		{
+			cout << "no such file" << endl;
+		}
+	}
 }

@@ -25,7 +25,49 @@ int main(int argc, char** argv)
 	//8:morphing  9:draw  10:math  11:check  12:thickness  13:color  14:windows 15:evalua_deformation
 	if (f == 111) //test
 	{
-		vector<vector<Point2f>> contours = extract_contours("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\502.png");
+		string pathname = "D:/libigl/tutorial/build/503_ARAPParam/2dtriangle.txt";
+		vector<Point2f> ttt;
+		vector<vector<int>> ttt4;
+		read_2dtriangle(pathname,ttt,ttt4);
+		for (int i = 0; i < ttt.size(); i++)
+		{
+			cout << ttt[i] << endl;
+		}
+		cout << ttt4[0][0] << "  " << ttt4[0][1] << "  " << ttt4[0][2]<< endl;
+		//Point2f a(600, 200);
+		//vector<vector<Point2f>> contours = extract_contours("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\502.png");
+		//Mat drawing_pro = Mat(20000, 20000, CV_8UC3, Scalar(255, 255, 255));
+		//int outc_num = contours.size();
+		//cout << " outc_num: " << outc_num << endl;
+		//for (int j = 0; j < outc_num; j++)
+		//{
+		//	int out1size = contours[j].size();
+		//	cout << " out1size: " << out1size << endl;
+		//	for (int t = 0; t < out1size; t++)
+		//	{
+		//		//cout << " contours: " << contours[j][t] << endl;
+		//		//circle(drawing_pro, contours[j][t], 10, Scalar(0, 255, 0), -1);
+		//		MyLine(drawing_pro, contours[j][t], contours[j][(t + 1) % out1size], "red");
+		//	}
+		//}
+		//imwrite("D:\\VisualStudioProjects\\DihedralTessellation\\halftone22.png", drawing_pro);
+		////true表示点到轮廓的距离
+		//vector<Point2f> c1;
+		///*c1.push_back(Point2f(200,200));
+		//c1.push_back(Point2f(400, 200));
+		//c1.push_back(Point2f(400, 400));
+		//c1.push_back(Point2f(200, 400));*/
+		//c1 = contours[0];
+		//cout << "c1_size: " << c1.size() << endl;
+		//double a0 = pointPolygonTest(c1, a, true);
+		////false表示计算点与轮廓的位置关系-1表示外部，0在轮廓上，1在轮廓内
+		//double b0 = pointPolygonTest(c1, a, false);
+		//cout << a0 << "  :  " << b0 << endl;
+		//Mat drawing5 = draw_polygen("hahahah", c1);
+		//circle(drawing5,a,6,Scalar(0,255,0),-1);
+		//imshow("rrr", drawing5);
+
+		//--------------sampling_seg------------------
 		/*vector<Point2f> gg = sampling_seg(ttt,10);
 		int gs = gg.size();
 		cout << gs << endl;
