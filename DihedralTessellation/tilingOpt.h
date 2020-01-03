@@ -14,6 +14,7 @@
 #include <direct.h>
 #include "gl/glut.h"
 #include "Tool.h" 
+#include "cgal_tool.h"
 //#include "Morphing.h"
 
 

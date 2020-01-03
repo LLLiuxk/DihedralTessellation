@@ -25,7 +25,7 @@ namespace Tiling_tiles{
 	{ "lightpink", Scalar(244, 211, 247) } };
 
 
-	void MyLine(Mat img, Point2f start, Point2f end, string color1)
+	void MyLine(Mat img, Point2f start, Point2f end, string color1, int thickness)
 	{
 		Scalar color = Scalar(128);
 		int cosize = colorbar.size();
@@ -37,7 +37,6 @@ namespace Tiling_tiles{
 				break;
 			}
 		}
-		int thickness = 10;
 		int lineType = 8;
 		line(img,
 			start,
@@ -1370,7 +1369,7 @@ namespace Tiling_tiles{
 		four_cor.push_back(Point2f(bbx_max_x, bbx_max_y));
 		return four_cor;
 	}
-	vector<Point2f> b_box_int(vector<Point> contour)//返回的点是从左上方逆时针
+	vector<Point2f> b_box_int(vector<cv::Point> contour)//返回的点是从左上方逆时针
 	{
 		vector<Point2f> four_cor;
 		double bbx_max_x = -10000;

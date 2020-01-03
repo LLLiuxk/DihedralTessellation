@@ -345,7 +345,7 @@ namespace Tiling_tiles{
 				for (int m = 0; m < all_tiles.size(); m++)
 				{			
 					//¿ò¼ÜÍ¼
-					//vector<Point2f> tile_dilate = contour_dilate(all_tiles[m], 5);
+					vector<Point2f> tile_dilate = contour_dilate(all_tiles[m], 5);
 					//vector<Point2f> tile_erode = contour_erode(all_tiles[m], 8);
 					////draw_poly(drawing_tesse, tile_dilate, center_p(tile_dilate));
 					////draw_poly(drawing_tesse, tile_erode, center_p(tile_erode), 1);

@@ -1,7 +1,8 @@
 #include "tilingOpt.h"
 #include  <stdio.h>
 #include  <stdlib.h>
-
+//#include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
+//#include <CGAL/Triangulation_2.h>
 //#include "stdafx.h"
 
 using namespace Tiling_tiles;
@@ -20,20 +21,12 @@ int main(int argc, char** argv)
 	Tiling_tiles::Prototile *prototile_third;
 	prototile_third = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
-	int f = 111;
+	int f = 20;
 	//0:result  1:simulation  2:批量读图  3:feature points  4:compute_TAR  5:min_minsmatch  6:extract_contour  7:compare and choose
 	//8:morphing  9:draw  10:math  11:check  12:thickness  13:color  14:windows 15:evalua_deformation
+	//17:2Dtriangle  18:求差 19：三角化  20:contour_dilate
 	if (f == 111) //test
 	{
-		string pathname = "D:/libigl/tutorial/build/503_ARAPParam/2dtriangle.txt";
-		vector<Point2f> ttt;
-		vector<vector<int>> ttt4;
-		read_2dtriangle(pathname,ttt,ttt4);
-		for (int i = 0; i < ttt.size(); i++)
-		{
-			cout << ttt[i] << endl;
-		}
-		cout << ttt4[0][0] << "  " << ttt4[0][1] << "  " << ttt4[0][2]<< endl;
 		//Point2f a(600, 200);
 		//vector<vector<Point2f>> contours = extract_contours("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\502.png");
 		//Mat drawing_pro = Mat(20000, 20000, CV_8UC3, Scalar(255, 255, 255));
@@ -52,11 +45,29 @@ int main(int argc, char** argv)
 		//}
 		//imwrite("D:\\VisualStudioProjects\\DihedralTessellation\\halftone22.png", drawing_pro);
 		////true表示点到轮廓的距离
-		//vector<Point2f> c1;
-		///*c1.push_back(Point2f(200,200));
-		//c1.push_back(Point2f(400, 200));
-		//c1.push_back(Point2f(400, 400));
-		//c1.push_back(Point2f(200, 400));*/
+		vector<Point2f> c1;
+		c1.push_back(Point2f(200,200));
+		c1.push_back(Point2f(400, 200));
+		c1.push_back(Point2f(400, 400));
+		//c1.push_back(Point2f(300, 400));
+		vector<Point2f> c2;
+		c2.push_back(Point2f(35, 35));
+		c2.push_back(Point2f(70, 40));
+		c2.push_back(Point2f(80, 80));
+		for (int i = 0; i < c2.size(); i++)
+		{
+			c2[i] += Point2f(100, 100);
+		}
+		//c2.push_back(Point2f(500, 800));
+		Mat M_seg1 = getAffineTransform(c1, c2);
+		cout << "M_seg1: " << M_seg1 << endl;
+		c1.push_back(Point2f(300, 400));
+		cv::transform(c1, c2, M_seg1);
+		for (int i = 0; i < c2.size(); i++)
+		{
+			cout << "c2: " << c2[i] << endl;
+		}
+		//cv::transform(seg_sam1, seg_sam1, M_seg1);
 		//c1 = contours[0];
 		//cout << "c1_size: " << c1.size() << endl;
 		//double a0 = pointPolygonTest(c1, a, true);
@@ -777,7 +788,7 @@ int main(int argc, char** argv)
 		else if (erosion_elem == 2) { erosion_type = MORPH_ELLIPSE; }
 		Mat element = getStructuringElement(erosion_type,
 			Size(2 * erosion_size + 1, 2 * erosion_size + 1),
-			Point(erosion_size, erosion_size));
+			cv::Point(erosion_size, erosion_size));
 		erode(src, erosion_dst, element);
 		imwrite("L:\\Erosion Demo.png", erosion_dst);
 
@@ -814,10 +825,10 @@ int main(int argc, char** argv)
 		int erosion_size2 = 3;
 		Mat element1 = getStructuringElement(erosion_type,
 			Size(2 * erosion_size1 + 1, 2 * erosion_size1 + 1),
-			Point(erosion_size1, erosion_size1));
+			cv::Point(erosion_size1, erosion_size1));
 		Mat element2 = getStructuringElement(erosion_type,
 			Size(2 * erosion_size2 + 1, 2 * erosion_size2 + 1),
-			Point(erosion_size2, erosion_size2));
+			cv::Point(erosion_size2, erosion_size2));
 		erode(flip1, flip1, element1);
 		erode(flip2, flip2, element2);
 		/*for (int i = 0; i < row; i++)
@@ -926,13 +937,125 @@ int main(int argc, char** argv)
 		else if (dilation_elem == 2) { dilation_type = MORPH_ELLIPSE; }
 		Mat element = getStructuringElement(dilation_type,
 			Size(2 * dilation_size + 1, 2 * dilation_size + 1),
-			Point(dilation_size, dilation_size));
+			cv::Point(dilation_size, dilation_size));
 		dilate(src, dilation_dst, element);
 		imwrite("L:\\Erosion Demo2.png", dilation_dst);
 
 		//int row = dilation_dst.rows;
 		//int col = dilation_dst.cols;
 	
+	}
+	if (f == 17)
+	{
+		string pathname = "D:/2dtriangle.txt";
+		vector<Point2f> ttt;
+		vector<vector<int>> ttt4;
+		read_2dtriangle(pathname, ttt, ttt4);
+
+		cout << ttt4[0][0] << "  " << ttt4[0][1] << "  " << ttt4[0][2] << endl;
+		Mat drawing_pro = Mat(2000, 2000, CV_8UC3, Scalar(255, 255, 255));
+		vector<Point2f> bbx1 = b_box(ttt);
+		double l_max = max(abs(bbx1[0].y - bbx1[1].y), abs(bbx1[1].x - bbx1[2].x));
+		double sca = 1800 / l_max;
+		Point2f shift = Point2f(10, 10) - sca*bbx1[1];
+		for (int i = 0; i < ttt.size(); i++)
+		{
+			//cout << ttt[i] << endl;
+			ttt[i] = ttt[i] * sca + shift;
+		}
+		for (int i = 0; i < ttt4.size(); i++)
+		{
+			for (int j = 0; j < 3; j++)
+			{
+				MyLine(drawing_pro, ttt[ttt4[i][j]], ttt[ttt4[i][(j + 1) % 3]], "black");
+			}
+		}
+		imshow("2dtriangle", drawing_pro);
+		imwrite("D://2dtriangle.png", drawing_pro);
+	}
+	if (f == 18)
+	{
+		Polygon_set_2 S;
+		Polygon_2 ttt;
+		ttt.push_back(Point_2(0, 0));
+		ttt.push_back(Point_2(1, 0));
+		ttt.push_back(Point_2(0, 2));
+		Polygon_2 t;
+		t.push_back(Point_2(2, 0));
+		t.push_back(Point_2(4, 0));
+		t.push_back(Point_2(2, 2));
+
+		std::ostringstream os;
+		os << ttt[0];
+		std::string str = "100,100";//= os.str();
+		cout << str<< endl;
+		double aa = stod(str);
+		cout << aa << endl;
+		S.insert(ttt);
+		S.insert(t);
+		Polygon_2 rect2;
+		rect2.push_back(Point_2(1, 0));
+		rect2.push_back(Point_2(3, 0));
+		rect2.push_back(Point_2(3, 2));
+		rect2.push_back(Point_2(1, 2));
+		S = A_difference_B(S, rect2);
+
+
+		std::list<Polygon_with_holes_2> res;
+		std::list<Polygon_with_holes_2>::const_iterator it;
+		S.polygons_with_holes(std::back_inserter(res));
+		for (it = res.begin(); it != res.end(); ++it) {
+			std::cout << "--> ";
+			print_polygon_with_holes(*it);
+		}
+	}
+	if (f == 19)
+	{
+		//std::vector<Point> points = { Point(0, 0), Point(1, 0), Point(0, 1) };
+		//Triangulation T;
+		//T.insert(points.begin(), points.end());
+		//std::cout << "Triangulation_2::Finite_vertices_iterator is like a  Triangulation_2::Vertex_handle\n";
+		//for (Finite_vertices_iterator it = T.finite_vertices_begin();
+		//	it != T.finite_vertices_end();
+		//	++it){
+		//	std::cout << it->point() << std::endl;
+		//}
+		//std::cout << "Triangulation_2::Finite_vertex_handles::iterator dereferences to Triangulation_2::Vertex_handle\n";
+		//Finite_vertex_handles::iterator b, e;
+		//std::tie(b, e) = T.finite_vertex_handles();
+		//for (; b != e; ++b){
+		//	Vertex_handle vh = *b; // you must dereference the iterator to get a handle
+		//	std::cout << vh->point() << std::endl;
+		//}
+
+		//std::cout << "and you can use a C++11 for loop\n";
+		//for (Vertex_handle vh : T.finite_vertex_handles()){
+		//	std::cout << vh->point() << std::endl;
+		//}
+	}
+	if (f == 20)
+	{
+		Polygon2 poly;
+		poly.push_back(Point2(100, 100));
+		poly.push_back(Point2(105, 100));
+		poly.push_back(Point2(195, 100));
+		poly.push_back(Point2(200, 100));
+		poly.push_back(Point2(200, 105));
+		poly.push_back(Point2(200, 195));
+		poly.push_back(Point2(200, 200));
+		poly.push_back(Point2(100, 200));
+
+		Polygon2 out = offset_poly(15, poly);
+		int p_size = out.size();
+		cout << "out_contour" << endl;
+		for (int i = 0; i < p_size; i++)
+		{
+			cout << out[i] << endl;
+		}
+		//vector<Point2f> tile_erode = contour_erode(all_tiles[m], 8);
+		////draw_poly(drawing_tesse, tile_dilate, center_p(tile_dilate));
+		////draw_poly(drawing_tesse, tile_erode, center_p(tile_erode), 1);
+		
 	}
 	finish = clock();
 	cout << endl << "All time consumption: " << (double)(finish - start) / CLOCKS_PER_SEC << " s " << endl;

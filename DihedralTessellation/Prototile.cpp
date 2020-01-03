@@ -120,14 +120,14 @@ namespace Tiling_tiles{
 		}
 		Mat canny_output;
 		//考虑到可能有多个轮廓
-		vector<vector<Point> > contours;
+		vector<vector<cv::Point> > contours;
 		vector<Vec4i> hierarchy;
 
 		//用candy法由灰度图求出掩码图
 		Canny(src_gray, canny_output, thresh, thresh * 2, 3);
 		imshow("canny_output", canny_output);
 		//由掩码图求出有序轮廓点
-		findContours(canny_output, contours, hierarchy, CV_RETR_EXTERNAL, CHAIN_APPROX_SIMPLE, Point(0, 0));
+		findContours(canny_output, contours, hierarchy, CV_RETR_EXTERNAL, CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
 		cout << "contours num:" << contours.size() << endl;
 		
 		if (show == 1)
@@ -250,7 +250,7 @@ namespace Tiling_tiles{
 					bb = bb * 10 + (each_point[i] - 48);
 				}
 				each_point.swap(vector<char>());
-				con_point.push_back(Point(aa, bb));
+				con_point.push_back(cv::Point(aa, bb));
 			}
 		}
 		//while (in >> cc)

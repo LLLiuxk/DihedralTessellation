@@ -37,7 +37,7 @@ namespace Tiling_tiles{
 
 	//all kinds tools
 	//draw tool
-	void MyLine(Mat img, Point2f start, Point2f end, string color1);
+	void MyLine(Mat img, Point2f start, Point2f end, string color1,int thickness=1);
 	Mat draw_polygen(string win_name, vector<Point2f> contour_s);
 	void draw_poly(Mat &drawing_, vector<Point2f> contour_s, Point2f center, int color = 0);
 	void draw_allplane(Mat &drawing_, vector<Point2f> contour_, vector<int> vec_, double scale = 1, int type = 0);
@@ -118,13 +118,13 @@ namespace Tiling_tiles{
 	}
 
 	//file cout
-	void fileout(string filepath, vector<Point> contour_);
+	void fileout(string filepath, vector<cv::Point> contour_);
 	void write_obj(string filepath, vector<Point2f> contour, double height);
 
 	//bounding box
 	void bbx_center_point(vector<vector<Point2f>> all_point, vector<Point2f> &five_p);
 	vector<Point2f> b_box(vector<Point2f> contour);//返回的点是从左上方逆时针
-	vector<Point2f> b_box_int(vector<Point> contour);//返回的点是从左上方逆时针
+	vector<Point2f> b_box_int(vector<cv::Point> contour);//返回的点是从左上方逆时针
 
 	//openglwindow
 

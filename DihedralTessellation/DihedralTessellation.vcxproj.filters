@@ -21,6 +21,9 @@
     <ClInclude Include="Tool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="cgal_tool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -32,10 +35,10 @@
     <ClCompile Include="tilingOpt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OpenglWindow.cpp">
+    <ClCompile Include="Tool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Tool.cpp">
+    <ClCompile Include="cgal_tool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
