@@ -98,13 +98,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\local\opencv\build\include;C:\local\opencv\build\include\opencv;C:\local\opencv\build\include\opencv2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\local\opencv\build\include;C:\local\opencv\build\include\opencv;C:\local\opencv\build\include\opencv2;C:\local\CGAL-4.9\include;C:\local\boost_1_62_0;C:\local\CGAL-4.9\build\include;C:\local\CGAL-4.9\auxiliary\gmp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\local\opencv\build\x64\vc12\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_calib3d248d.lib;opencv_contrib248d.lib;opencv_core248d.lib;opencv_features2d248d.lib;opencv_flann248d.lib;opencv_gpu248d.lib;opencv_highgui248d.lib;opencv_imgproc248d.lib;opencv_legacy248d.lib;opencv_ml248d.lib;opencv_objdetect248d.lib;opencv_ts248d.lib;opencv_video248d.lib;glut64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\local\opencv\build\x64\vc12\lib;C:\local\CGAL-4.9\build\lib;C:\local\CGAL-4.9\build\lib\Release;C:\local\boost_1_62_0\lib64-msvc-12.0;C:\local\CGAL-4.9\auxiliary\gmp\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_calib3d248d.lib;opencv_contrib248d.lib;opencv_core248d.lib;opencv_features2d248d.lib;opencv_flann248d.lib;opencv_gpu248d.lib;opencv_highgui248d.lib;opencv_imgproc248d.lib;opencv_legacy248d.lib;opencv_ml248d.lib;opencv_objdetect248d.lib;opencv_ts248d.lib;opencv_video248d.lib;glut64.lib;libgmp-10.lib;libmpfr-4.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

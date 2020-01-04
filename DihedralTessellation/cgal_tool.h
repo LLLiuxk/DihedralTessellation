@@ -15,7 +15,7 @@
 #include<CGAL/create_offset_polygons_2.h>
 
 #include <list>
-#include "tilingOpt.h"
+
 
 typedef CGAL::Exact_predicates_exact_constructions_kernel Kernel;
 typedef Kernel::Point_2                                   Point_2;
@@ -47,15 +47,6 @@ typedef std::vector<PolygonPtr> PolygonPtrVector;
 
 Polygon_set_2  A_difference_B(Polygon_set_2 A, Polygon_2 B);
 
-vector<Point2f> Polygon_2vector(Polygon_2 poly);
-vector<Point2f> Polygon2vector(Polygon2 poly);
-
-Polygon_2 vectorPolygon_2(vector<Point2f> contour);
-Polygon2 vectorPolygon2(vector<Point2f> contour);
-
 Polygon2 offset_poly(double Offset, Polygon2 poly);//ÕýÖµÎª¸¯Ê´
-
-Point2f To_cvp(Point2 p);
-Point2f To_cvp(Point_2 p);
 
 #endif

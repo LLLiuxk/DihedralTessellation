@@ -1,6 +1,5 @@
 #ifndef TOOL_H
 #define TOOL_H
-
 #include <highgui/highgui.hpp>
 #include <imgproc/imgproc.hpp>
 #include <iostream>
@@ -11,6 +10,7 @@
 #include <io.h>
 #include <list>
 #include <direct.h>
+#include "cgal_tool.h"
 
 using namespace cv;
 using namespace std;
@@ -119,17 +119,13 @@ namespace Tiling_tiles{
 
 	//file cout
 	void fileout(string filepath, vector<cv::Point> contour_);
+	void fileout(string filepath, vector<cv::Point2f> contour_);
 	void write_obj(string filepath, vector<Point2f> contour, double height);
 
 	//bounding box
 	void bbx_center_point(vector<vector<Point2f>> all_point, vector<Point2f> &five_p);
 	vector<Point2f> b_box(vector<Point2f> contour);//返回的点是从左上方逆时针
 	vector<Point2f> b_box_int(vector<cv::Point> contour);//返回的点是从左上方逆时针
-
-	//openglwindow
-
-	void OpenWindow(int w, int h, vector<Point2f> contour1, vector<Point2f> contour2);
-
 
 	// Morph points
 	vector<Point2f> morph_hierarchical(vector<Point2f>& srcP1, vector<Point2f>& srcP2, vector<int> &mid_inter, vector<pair<int, int>> &path, int shift);
@@ -176,6 +172,21 @@ namespace Tiling_tiles{
 	
 	int location(vector<Point2f> &vec, Point2f input);
 	void read_2dtriangle(string pathname, vector<Point2f>& vertices, vector<vector<int>>& faces);
+
+
+	//cgal tool
+	vector<Point2f> Polygon_2vector(Polygon_2 poly);
+	vector<Point2f> Polygon2vector(Polygon2 poly);
+
+	Polygon_2 vectorPolygon_2(vector<Point2f> contour);
+	Polygon2 vectorPolygon2(vector<Point2f> contour);
+
+
+	Point2f To_cvp(Point2 p);
+	Point2f To_cvp(Point_2 p);
+
+
+
 }
 
 #endif

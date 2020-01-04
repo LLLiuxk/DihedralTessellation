@@ -45,86 +45,25 @@ Polygon_set_2 A_difference_B(Polygon_set_2 A, Polygon_2 B)
 	//return S;
 }
 
-
-vector<Point2f> Polygon_2vector(Polygon_2 poly)
-{
-	vector<Point2f> contour;
-	int p_size = poly.size();
-	for (int i = 0; i < p_size; i++)
-	{
-		contour.push_back(To_cvp(poly[i]));
-	}
-
-	return contour;
-}
-
-vector<Point2f> Polygon2vector(Polygon2 poly)
-{
-	vector<Point2f> contour;
-	int p_size = poly.size();
-	for (int i = 0; i < p_size; i++)
-	{
-		contour.push_back(To_cvp(poly[i]));
-	}
-	return contour;
-}
-
-Polygon_2 vectorPolygon_2(vector<Point2f> contour)
-{
-	Polygon_2 poly;
-	int c_size = contour.size();
-	for (int i = 0; i < c_size; i++)
-	{
-		poly.push_back(Point_2(contour[i].x, contour[i].y));
-	}
-	return poly;
-}
-
-Polygon2 vectorPolygon2(vector<Point2f> contour)
-{
-	Polygon2 poly;
-	int c_size = contour.size();
-	for (int i = 0; i < c_size; i++)
-	{
-		poly.push_back(Point2(contour[i].x, contour[i].y));
-	}
-	return poly;
-}
-
 Polygon2 offset_poly(double Offset, Polygon2 poly) //ÕýÖµÎª¸¯Ê´
 {
 	SsPtr ss = CGAL::create_interior_straight_skeleton_2(poly);
 	PolygonPtrVector offset_polygons = CGAL::create_offset_polygons_2<Polygon2>(Offset, *ss);
-	
-	std::cout << "Polygon list with " << offset_polygons.size() << " polygons" << std::endl;
-	
+
+	//std::cout << "Polygon list with " << offset_polygons.size() << " polygons" << std::endl;
+
 	PolygonPtrVector::const_iterator pi = offset_polygons.begin();
 	Polygon2 outp = **pi;
-	for (; pi != offset_polygons.end(); ++pi)
+	/*for (; pi != offset_polygons.end(); ++pi)
 	{
-		Polygon2 pt= **pi;
+		Polygon2 pt = **pi;
 		std::cout << "Polygon with " << pt.size() << " vertices" << std::endl;
 		for (Polygon2::Vertex_const_iterator vi = pt.vertices_begin(); vi != pt.vertices_end(); ++vi)
 		{
 			std::cout << "(" << (*vi).x() << "," << (*vi).y() << ")" << std::endl;
 		}
-	}
+	}*/
 	return outp;
 }
 
 
-Point2f To_cvp(Point2 p)
-{
-	std::ostringstream osx,osy;
-	osx << p.x();
-	osy << p.y();
-	return Point2f(stod(osx.str()), stod(osy.str()));
-}
-
-Point2f To_cvp(Point_2 p)
-{
-	std::ostringstream osx, osy;
-	osx << p.x();
-	osy << p.y();
-	return Point2f(stod(osx.str()), stod(osy.str()));
-}

@@ -746,13 +746,14 @@ namespace Tiling_tiles{
 	vector<Point2f> contour_dilate(vector<Point2f> contour, double step_leng)
 	{
 		vector<Point2f> dilation_c;
-		int csize = contour.size();
+		Polygon2 poly = vectorPolygon2(contour);
+		Polygon2 off_c = offset_poly(step_leng, poly);//正值为腐蚀,但点顺序不一样，因此变为膨胀
+		int csize = off_c.size();
 		for (int i = 0; i < csize; i++)
 		{
-			double dx = contour[(i + 1) % csize].x - contour[(i + csize - 1) % csize].x;
-			double dy = contour[(i + 1) % csize].y - contour[(i + csize - 1) % csize].y;
-			Point2f step = unit_vec(Point2f(-dy, dx));
-			dilation_c.push_back(contour[i] + step_leng*step);
+			Point2f new_one = To_cvp(off_c[i]);
+			if (abs(pointPolygonTest(contour, new_one, true)) > step_leng - 1)
+				dilation_c.push_back(new_one);
 		}
 		return dilation_c;
 	}
@@ -761,13 +762,25 @@ namespace Tiling_tiles{
 	vector<Point2f> contour_erode(vector<Point2f> contour, double step_leng)
 	{
 		vector<Point2f> dilation_c;
-		int csize = contour.size();
+		/*int csize = contour.size();
 		for (int i = 0; i < csize; i++)
 		{
 			double dx = contour[(i + 1) % csize].x - contour[(i + csize - 1) % csize].x;
 			double dy = contour[(i + 1) % csize].y - contour[(i + csize - 1) % csize].y;
 			Point2f step = unit_vec(Point2f(dy, -dx));
-			dilation_c.push_back(contour[i] + step_leng*step);
+			Point2f new_one = contour[i] + step_leng*step;
+			if (abs(pointPolygonTest(contour, new_one, true))>= step_leng - 1)
+				dilation_c.push_back(contour[i] + step_leng*step);
+		}
+		return dilation_c;*/
+		Polygon2 poly = vectorPolygon2(contour);
+		Polygon2 off_c = offset_poly(-step_leng, poly);//正值为腐蚀
+		int csize = off_c.size();
+		for (int i = 0; i < csize; i++)
+		{
+			Point2f new_one = To_cvp(off_c[i]);
+			if (abs(pointPolygonTest(contour, new_one, true)) >= step_leng - 1)
+				dilation_c.push_back(new_one);
 		}
 		return dilation_c;
 	}
@@ -835,6 +848,7 @@ namespace Tiling_tiles{
 
 	void halftone_gen(vector<vector<Point2f>> out_contours, vector<vector<Point2f>> tiling_contours, int halftone_num)
 	{
+		cout << "halftone_gen:" << endl;
 		Mat drawing_pro = Mat(halftone_num, halftone_num, CV_8UC3, Scalar(255, 255, 255));
 		int tilis_num = tiling_contours.size();
 		int outc_num = out_contours.size();
@@ -1240,7 +1254,7 @@ namespace Tiling_tiles{
 
 	}
 
-	void fileout(string filepath, vector<Point> contour_)
+	void fileout(string filepath, vector<cv::Point> contour_)
 	{
 		ofstream out(filepath);
 		if (out.is_open())
@@ -1248,6 +1262,20 @@ namespace Tiling_tiles{
 			out << contour_.size() << endl;//contours[0].size()
 			for (int j = 0; j < contour_.size(); j++)
 				out << contour_[j].x << "," << contour_[j].y << endl;
+			//out << contour_[0].x << "," << contour_[0].y << endl;  //首尾连起来
+		}
+		cout << "contours[0].size(): " << contour_.size() << endl;
+		out.close();
+	}
+
+	void fileout(string filepath, vector<cv::Point2f> contour_)
+	{
+		ofstream out(filepath);
+		if (out.is_open())
+		{
+			out << contour_.size() << endl;//contours[0].size()
+			for (int j = 0; j < contour_.size(); j++)
+				out << contour_[j].x << " " << contour_[j].y << endl;
 			//out << contour_[0].x << "," << contour_[0].y << endl;  //首尾连起来
 		}
 		cout << "contours[0].size(): " << contour_.size() << endl;
@@ -1982,5 +2010,67 @@ namespace Tiling_tiles{
 		{
 			cout << "no such file" << endl;
 		}
+	}
+
+	vector<Point2f> Polygon_2vector(Polygon_2 poly)
+	{
+		vector<Point2f> contour;
+		int p_size = poly.size();
+		for (int i = 0; i < p_size; i++)
+		{
+			contour.push_back(To_cvp(poly[i]));
+		}
+
+		return contour;
+	}
+
+	vector<Point2f> Polygon2vector(Polygon2 poly)
+	{
+		vector<Point2f> contour;
+		int p_size = poly.size();
+		for (int i = 0; i < p_size; i++)
+		{
+			contour.push_back(To_cvp(poly[i]));
+		}
+		return contour;
+	}
+
+	Polygon_2 vectorPolygon_2(vector<Point2f> contour)
+	{
+		Polygon_2 poly;
+		int c_size = contour.size();
+		for (int i = 0; i < c_size; i++)
+		{
+			poly.push_back(Point_2(contour[i].x, contour[i].y));
+		}
+		return poly;
+	}
+
+	Polygon2 vectorPolygon2(vector<Point2f> contour)
+	{
+		Polygon2 poly;
+		int c_size = contour.size();
+		for (int i = 0; i < c_size; i++)
+		{
+			poly.push_back(Point2(contour[i].x, contour[i].y));
+		}
+		return poly;
+	}
+
+
+	Point2f To_cvp(Point2 p)
+	{
+		std::ostringstream osx, osy;
+		osx << p.x();
+		osy << p.y();
+		return Point2f(stod(osx.str()), stod(osy.str()));
+	}
+
+	Point2f To_cvp(Point_2 p)
+	{
+		std::ostringstream osx, osy;
+		osx << p.x();
+		osy << p.y();
+		return Point2f(stod(osx.str()), stod(osy.str()));
 	}
 }

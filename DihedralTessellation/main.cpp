@@ -21,7 +21,7 @@ int main(int argc, char** argv)
 	Tiling_tiles::Prototile *prototile_third;
 	prototile_third = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
-	int f = 20;
+	int f = 0;
 	//0:result  1:simulation  2:批量读图  3:feature points  4:compute_TAR  5:min_minsmatch  6:extract_contour  7:compare and choose
 	//8:morphing  9:draw  10:math  11:check  12:thickness  13:color  14:windows 15:evalua_deformation
 	//17:2Dtriangle  18:求差 19：三角化  20:contour_dilate
@@ -884,8 +884,8 @@ int main(int argc, char** argv)
 		vector<Point2f> conr1 = prototile_second->contour_sample[1];
 		int contoursize = conr.size();
 
-		GLsizei wh = 800, ww = 1200;
-		OpenWindow(ww, wh, conr, conr1);
+		//GLsizei wh = 800, ww = 1200;
+		//OpenWindow(ww, wh, conr, conr1);
 		//glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA | GLUT_DEPTH);
 		//glutInitWindowSize(ww, wh);
 		////glutInitWindowPosition(100, 120);
@@ -1036,22 +1036,39 @@ int main(int argc, char** argv)
 	if (f == 20)
 	{
 		Polygon2 poly;
-		poly.push_back(Point2(100, 100));
+		/*poly.push_back(Point2(100, 100));
 		poly.push_back(Point2(105, 100));
 		poly.push_back(Point2(195, 100));
 		poly.push_back(Point2(200, 100));
 		poly.push_back(Point2(200, 105));
 		poly.push_back(Point2(200, 195));
 		poly.push_back(Point2(200, 200));
-		poly.push_back(Point2(100, 200));
+		poly.push_back(Point2(100, 200));*/
+		ifstream in("D://swan_after.txt");
+		if (!in) cout << "file error!" << endl;
+		
+		in >> poly;
 
-		Polygon2 out = offset_poly(15, poly);
-		int p_size = out.size();
-		cout << "out_contour" << endl;
-		for (int i = 0; i < p_size; i++)
-		{
-			cout << out[i] << endl;
-		}
+		//cout <<  poly<<endl;
+		Polygon2 off_c = offset_poly(-20, poly);//正值为腐蚀
+		cout << "off_c.size!" << off_c.size() << endl;
+		vector<Point2f> vec_c = Polygon2vector(poly);
+		cout << vec_c.size()<< endl;
+		vector<Point2f> vec_c2 = contour_dilate(vec_c,17);//Polygon2vector(off_c);
+		cout <<vec_c2.size() << endl;
+		Mat drawing_pro = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
+		draw_poly(drawing_pro, vec_c, Point2f(400,400));
+		draw_poly(drawing_pro, vec_c2, Point2f(1200, 400));
+		imwrite("D://asd.png", drawing_pro);
+		
+
+		//Polygon2 out = offset_poly(15, poly);
+		//int p_size = out.size();
+		//cout << "out_contour" << endl;
+		//for (int i = 0; i < p_size; i++)
+		//{
+		//	cout << out[i] << endl;
+		//}
 		//vector<Point2f> tile_erode = contour_erode(all_tiles[m], 8);
 		////draw_poly(drawing_tesse, tile_dilate, center_p(tile_dilate));
 		////draw_poly(drawing_tesse, tile_erode, center_p(tile_erode), 1);
