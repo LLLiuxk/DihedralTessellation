@@ -2012,6 +2012,14 @@ namespace Tiling_tiles{
 		}
 	}
 
+	bool contour_is_simple(vector<Point2f> contour)
+	{
+		bool is_simple = true;
+		Polygon2 poly = vectorPolygon2(contour);
+		is_simple = poly.is_simple();
+		return is_simple;
+	}
+
 	vector<Point2f> Polygon_2vector(Polygon_2 poly)
 	{
 		vector<Point2f> contour;

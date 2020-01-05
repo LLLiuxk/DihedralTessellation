@@ -169,12 +169,14 @@ namespace Tiling_tiles{
 		vec = vec1;
 		return delete_p;
 	}
-	
+
+
 	int location(vector<Point2f> &vec, Point2f input);
 	void read_2dtriangle(string pathname, vector<Point2f>& vertices, vector<vector<int>>& faces);
 
 
 	//cgal tool
+	bool contour_is_simple(vector<Point2f> contour);
 	vector<Point2f> Polygon_2vector(Polygon_2 poly);
 	vector<Point2f> Polygon2vector(Polygon2 poly);
 

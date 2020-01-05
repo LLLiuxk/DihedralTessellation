@@ -1,62 +1,10 @@
-﻿Build started 2020/1/4 16:37:27.
+﻿Build started 2020/1/5 17:43:26.
      1>Project "D:\VisualStudioProjects\DihedralTessellation\DihedralTessellation\DihedralTessellation.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /IC:\local\opencv\build\include /IC:\local\opencv\build\include\opencv /IC:\local\opencv\build\include\opencv2 /I"C:\local\CGAL-4.9\include" /IC:\local\boost_1_62_0 /I"C:\local\CGAL-4.9\build\include" /I"C:\local\CGAL-4.9\auxiliary\gmp\include" /Zi /nologo /W3 /WX- /Od /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Debug\\" /Fd"x64\Debug\vc120.pdb" /Gd /TP /errorReport:prompt cgal_tool.cpp main.cpp Tool.cpp Prototile.cpp tilingOpt.cpp
-         tilingOpt.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /IC:\local\opencv\build\include /IC:\local\opencv\build\include\opencv /IC:\local\opencv\build\include\opencv2 /I"C:\local\CGAL-4.9\include" /IC:\local\boost_1_62_0 /I"C:\local\CGAL-4.9\build\include" /I"C:\local\CGAL-4.9\auxiliary\gmp\include" /Zi /nologo /W3 /WX- /Od /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Debug\\" /Fd"x64\Debug\vc120.pdb" /Gd /TP /errorReport:prompt main.cpp
+         main.cpp
      1>C:\local\CGAL-4.9\include\CGAL/constructions/Straight_skeleton_cons_ftC2.h : warning C4819: The file contains a character that cannot be represented in the current code page (936). Save the file in Unicode format to prevent data loss
      1>C:\local\CGAL-4.9\include\CGAL/constructions/Polygon_offset_cons_ftC2.h : warning C4819: The file contains a character that cannot be represented in the current code page (936). Save the file in Unicode format to prevent data loss
-     1>tilingOpt.cpp(165): warning C4996: 'mkdir': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _mkdir. See online help for details.
-                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\direct.h(140) : see declaration of 'mkdir'
-     1>tilingOpt.cpp(213): warning C4258: 'i' : definition from the for loop is ignored; the definition from the enclosing scope is used
-                 tilingOpt.cpp(202) : definition of 'i' ignored
-                 tilingOpt.cpp(186) : definition of 'i' used
-     1>tilingOpt.cpp(216): warning C4258: 'i' : definition from the for loop is ignored; the definition from the enclosing scope is used
-                 tilingOpt.cpp(202) : definition of 'i' ignored
-                 tilingOpt.cpp(186) : definition of 'i' used
-     1>tilingOpt.cpp(232): warning C4258: 'i' : definition from the for loop is ignored; the definition from the enclosing scope is used
-                 tilingOpt.cpp(202) : definition of 'i' ignored
-                 tilingOpt.cpp(186) : definition of 'i' used
-     1>tilingOpt.cpp(235): warning C4258: 'i' : definition from the for loop is ignored; the definition from the enclosing scope is used
-                 tilingOpt.cpp(202) : definition of 'i' ignored
-                 tilingOpt.cpp(186) : definition of 'i' used
-     1>tilingOpt.cpp(245): warning C4258: 'i' : definition from the for loop is ignored; the definition from the enclosing scope is used
-                 tilingOpt.cpp(202) : definition of 'i' ignored
-                 tilingOpt.cpp(186) : definition of 'i' used
-     1>tilingOpt.cpp(249): warning C4258: 'i' : definition from the for loop is ignored; the definition from the enclosing scope is used
-                 tilingOpt.cpp(202) : definition of 'i' ignored
-                 tilingOpt.cpp(186) : definition of 'i' used
-     1>tilingOpt.cpp(260): warning C4258: 'i' : definition from the for loop is ignored; the definition from the enclosing scope is used
-                 tilingOpt.cpp(202) : definition of 'i' ignored
-                 tilingOpt.cpp(186) : definition of 'i' used
-     1>tilingOpt.cpp(142): warning C4101: 'finish' : unreferenced local variable
-     1>tilingOpt.cpp(142): warning C4101: 'midtime' : unreferenced local variable
-     1>tilingOpt.cpp(195): warning C4101: 'con_sc' : unreferenced local variable
-     1>tilingOpt.cpp(297): warning C4996: 'mkdir': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _mkdir. See online help for details.
-                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\direct.h(140) : see declaration of 'mkdir'
-     1>tilingOpt.cpp(354): warning C4258: 'i' : definition from the for loop is ignored; the definition from the enclosing scope is used
-                 tilingOpt.cpp(343) : definition of 'i' ignored
-                 tilingOpt.cpp(316) : definition of 'i' used
-     1>tilingOpt.cpp(357): warning C4258: 'i' : definition from the for loop is ignored; the definition from the enclosing scope is used
-                 tilingOpt.cpp(343) : definition of 'i' ignored
-                 tilingOpt.cpp(316) : definition of 'i' used
-     1>tilingOpt.cpp(375): warning C4258: 'i' : definition from the for loop is ignored; the definition from the enclosing scope is used
-                 tilingOpt.cpp(343) : definition of 'i' ignored
-                 tilingOpt.cpp(316) : definition of 'i' used
-     1>tilingOpt.cpp(378): warning C4258: 'i' : definition from the for loop is ignored; the definition from the enclosing scope is used
-                 tilingOpt.cpp(343) : definition of 'i' ignored
-                 tilingOpt.cpp(316) : definition of 'i' used
-     1>tilingOpt.cpp(399): warning C4258: 'i' : definition from the for loop is ignored; the definition from the enclosing scope is used
-                 tilingOpt.cpp(343) : definition of 'i' ignored
-                 tilingOpt.cpp(316) : definition of 'i' used
-     1>tilingOpt.cpp(405): warning C4258: 'i' : definition from the for loop is ignored; the definition from the enclosing scope is used
-                 tilingOpt.cpp(343) : definition of 'i' ignored
-                 tilingOpt.cpp(316) : definition of 'i' used
-     1>tilingOpt.cpp(420): warning C4258: 'i' : definition from the for loop is ignored; the definition from the enclosing scope is used
-                 tilingOpt.cpp(343) : definition of 'i' ignored
-                 tilingOpt.cpp(316) : definition of 'i' used
-     1>tilingOpt.cpp(270): warning C4101: 'finish' : unreferenced local variable
-     1>tilingOpt.cpp(270): warning C4101: 'midtime' : unreferenced local variable
-     1>tilingOpt.cpp(336): warning C4101: 'con_sc' : unreferenced local variable
      1>C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\xutility(2715): warning C4996: 'std::_Fill_n': Function call with parameters that may be unsafe - this call relies on the caller to check that the passed values are correct. To disable this warning, use -D_SCL_SECURE_NO_WARNINGS. See documentation on how to use Visual C++ 'Checked Iterators'
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\xutility(2701) : see declaration of 'std::_Fill_n'
                  C:\local\boost_1_62_0\boost/random/detail/polynomial.hpp(114) : see reference to function template instantiation '_OutIt std::fill_n<boost::random::detail::polynomial_ops::digit_t*,size_t,boost::random::detail::polynomial_ops::digit_t>(_OutIt,_Diff,const _Ty &)' being compiled
@@ -66,6 +14,15 @@
          ,            _Diff=size_t
          ,            _Ty=boost::random::detail::polynomial_ops::digit_t
                  ]
-         Prototile.cpp
-     1>C:\local\CGAL-4.9\include\CGAL/constructions/Straight_skeleton_cons_ftC2.h : warning C4819: The file contains a character that cannot be represented in the current code page (936). Save the file in Unicode format to prevent data loss
-     1>C:\local\CGAL-4.9\include\CGAL/constructions/Polygon_offset_cons_ftC2.h : warning C4819: The file contains a character that cannot be represented in the current code page (936). Save the file in Unicode format to prevent data loss
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.exe" /INCREMENTAL /NOLOGO /LIBPATH:C:\local\opencv\build\x64\vc12\lib /LIBPATH:"C:\local\CGAL-4.9\build\lib" /LIBPATH:"C:\local\CGAL-4.9\build\lib\Release" /LIBPATH:"C:\local\boost_1_62_0\lib64-msvc-12.0" /LIBPATH:"C:\local\CGAL-4.9\auxiliary\gmp\lib" opencv_calib3d248d.lib opencv_contrib248d.lib opencv_core248d.lib opencv_features2d248d.lib opencv_flann248d.lib opencv_gpu248d.lib opencv_highgui248d.lib opencv_imgproc248d.lib opencv_legacy248d.lib opencv_ml248d.lib opencv_objdetect248d.lib opencv_ts248d.lib opencv_video248d.lib glut64.lib "libgmp-10.lib" "libmpfr-4.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.lib" /MACHINE:X64 x64\Debug\cgal_tool.obj
+         x64\Debug\main.obj
+         x64\Debug\Tool.obj
+         x64\Debug\Prototile.obj
+         x64\Debug\tilingOpt.obj
+         DihedralTessellation.vcxproj -> D:\VisualStudioProjects\DihedralTessellation\x64\Debug\DihedralTessellation.exe
+     1>Done Building Project "D:\VisualStudioProjects\DihedralTessellation\DihedralTessellation\DihedralTessellation.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:10.24

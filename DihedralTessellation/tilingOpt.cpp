@@ -18,7 +18,7 @@ namespace Tiling_tiles{
 		sampling_num = 3;
 		allnum_inner_c = 0;
 		match_window_width = 6;
-		tolerance = 0;
+		tolerance = 5;
 		morph_ratio = 0.7;
 		//memset(dp, 0, sizeof(dp));
 		//memset(dp_inver, 0, sizeof(dp_inver));
@@ -200,13 +200,15 @@ namespace Tiling_tiles{
 				vector<int> cand_points_index = feature_points(contour_, Feature_Min, Feature_Max, cos(PI * angle / 180));
 				int can_fea_num = cand_points_index.size();
 				for (int i = 0; i < can_fea_num; i++) contour2[cand_points_index[i]].type = 2;
-				double ratio_min = 100;
+				double ratio_max = 100;
 				double result_score = 0;
 				int ratio = 30;
 				for (; ratio <= 90; ratio += 5)
 				{
+					//ratio越高，中间形状保持越多，对应的morphed_A的形状保持越多，eve2越高
 					double ratio_d = ratio / 100.0;
 					cout << "ratio_d: " << ratio_d << endl;
+					//这里final_pettern的点数不一定为200点，但是后续的计算中会重新采样
 					vector<Point2f> final_pettern = morphing(contour1, contour2, path, ratio_d);
 					vector<int> return_p;
 					vector<vector<Point2f>> four_place;
@@ -221,35 +223,43 @@ namespace Tiling_tiles{
 					if (score_ave > result_score)
 					{
 						result_score = score_ave;
-						ratio_min = ratio_d;
+						ratio_max = ratio_d;
 					}
 				}
 
-				vector<Point2f> final_pettern = morphing(contour1, contour2, path, ratio_min);
+				vector<Point2f> final_pettern = morphing(contour1, contour2, path, ratio_max);
 
 				vector<int> return_p;
 				vector<vector<Point2f>> four_place;
 				vector<Point2f> morphed_A = extract_contour(final_pettern, mid_inter_morphed, return_p, four_place, all_inner_conts[i].type);
-				vector<int> return_p2;
-				vector<vector<Point2f>> four_place2;
-				vector<Point2f> morphed_A_ori = extract_contour(prototile_mid->contour, mid_inter, return_p2, four_place2, all_inner_conts[i].type);
+				//vector<int> return_p2;
+				//vector<vector<Point2f>> four_place2;
+				//vector<Point2f> morphed_A_ori = extract_contour(prototile_mid->contour, mid_inter, return_p2, four_place2, all_inner_conts[i].type);
 
-				cout << "ratio_min: " << ratio_min << "  --  result_score:  " << result_score << endl;
+				cout << "ratio_max: " << ratio_max << "  --  result_score:  " << result_score << endl;
 				Mat drawing_pro = Mat(800, 3200, CV_8UC3, Scalar(255, 255, 255));
 				draw_poly(drawing_pro, prototile_mid->contour, Point2f(400, 400));
 				draw_poly(drawing_pro, contour_, Point2f(1200, 400));
 				draw_poly(drawing_pro, final_pettern, Point2f(2000, 400));
 				prototile_tem->loadPoints(final_pettern);
-
 				draw_poly(drawing_pro, morphed_A, Point2f(2800, 400));
-				string filename = rootname + "\\" + int2string(i) + "_Candidate_" + int2string(j) + "_" + double2string(ratio_min)+ "_" + double2string(result_score) + ".png";
+				string filename = rootname + "\\" + int2string(i) + "_Candidate_" + int2string(j) + "_" + double2string(ratio_max) + "_" + double2string(result_score) + ".png";
 				imwrite(filename, drawing_pro);
+				
+				//halftone generate
+				if (!contour_is_simple(morphed_A) || !contour_is_simple(final_pettern))
+				{
+					cout << "--------------Warning!!!-------------"
+						<<endl<< "The " << j << " candidate patterns are not simple! No results!" << endl<<endl;
+					continue;
+				}
 				int halftone_num = 5000;
 				double l_offset = 2;
 				Mat drawing_tesse = Mat(halftone_num, halftone_num, CV_8UC3, Scalar(255, 255, 255));
 				vector<vector<Point2f>> all_tiles = tesse_all(morphed_A, return_p, all_inner_conts[i].type, halftone_num, l_offset);
-
-				for (int m = 0; m < all_tiles.size(); m++)
+				int alltilesnum = all_tiles.size();
+				cout << "The num of tiles in final tesse result: " << alltilesnum << endl;
+				for (int m = 0; m < alltilesnum; m++)
 				{
 					//框架图
 					//vector<Point2f> tile_dilate = contour_dilate(all_tiles[m], 5);
@@ -275,9 +285,9 @@ namespace Tiling_tiles{
 		vector<int> p_p_index = prototile_first->partition_points(imaname);
 		vector<int> ttt;
 		ttt.push_back(p_p_index[0]);
-		ttt.push_back(p_p_index[16]);
-		ttt.push_back(p_p_index[26]);
-		ttt.push_back(p_p_index[41]);
+		ttt.push_back(p_p_index[14]);
+		ttt.push_back(p_p_index[21]);
+		ttt.push_back(p_p_index[28]);
 		std::cout << "ttt: " << ttt.size() << endl;
 		vector<Point_f> cont_orig = prototile_first->contour_f;
 		vector<Point_f> cont_rota = prototile_first->contour_r; //旋转暂时用500个点
@@ -286,7 +296,7 @@ namespace Tiling_tiles{
 		//vector<Point2f> contour_ = prototile_first->contour;
 		load_dataset();
 		com_all_TARs(num_c);
-		string rootname = "D:\\VisualStudioProjects\\DihedralTessellation\\result200\\" + prototile_first->contourname;
+		string rootname = "D:\\VisualStudioProjects\\DihedralTessellation\\result200\\simu\\" + prototile_first->contourname;
 		//string rootname = "D:\\VisualStudioProjects\\DihedralTessellation\\result_tuning\\" + prototile_first->contourname;
 		const char *na = rootname.c_str();
 		if (_access(na, 0) != -1)
@@ -297,9 +307,9 @@ namespace Tiling_tiles{
 		}
 		mkdir(na);
 
-		int trans = 0;// Tanslation_rule(p_p_index, cont_orig, rootname);
-		int rotas = 0;// Rotation_rule(p_p_index, cont_rota, rootname);
-		int flips = Flipping_rule(ttt, cont_orig, rootname);
+		int trans = Tanslation_rule(ttt, cont_orig, rootname);
+		int rotas = 0;// Rotation_rule(ttt, cont_rota, rootname);
+		int flips = 0;// Flipping_rule(ttt, cont_orig, rootname);
 		int count = trans + rotas + flips;
 		std::cout << "succeed count: " << count << " trans: " << trans << " rotat: " << rotas << " flips: " << flips << endl;
 		//midtime = clock();
@@ -328,10 +338,10 @@ namespace Tiling_tiles{
 				string filename = rootname + "\\" + int2string(i) + "_Candidate_" + int2string(j) + ".png";
 				imwrite(filename, drawing_pro);
 			}*/
-			for (int j = 0; j < 1; j++)
+			for (int j = 0; j < 5; j++)
 			{
 				vector<pair<int, int>> path = cand_paths[i][j];
-				vector<Point_f> contour1 = prototile_mid->contour_f;  
+				vector<Point_f> contour1 = prototile_mid->contour_f;
 				vector<Point2f> contour_ = candidate_contours[i][j];
 				vector<Point_f> contour2 = p2f2p_f(contour_);
 				double con_sc;
@@ -342,43 +352,48 @@ namespace Tiling_tiles{
 				vector<int> cand_points_index = feature_points(contour_, Feature_Min, Feature_Max, cos(PI * angle / 180));
 				int can_fea_num = cand_points_index.size();
 				for (int i = 0; i < can_fea_num; i++) contour2[cand_points_index[i]].type = 2;
-				double ratio_min = 100;
+				double ratio_max = 100;
 				double result_score = 0;
-				int ratio = 30;
+				int ratio = 0;
 				for (; ratio <= 95; ratio += 5)
 				{
+					//ratio越高，中间形状保持越多，对应的morphed_A的形状保持越多，eve2越高
 					double ratio_d = ratio / 100.0;
-					cout << "ratio_d: " << ratio_d << endl;
+					cout << "ratio_d: " << ratio_d << "  ";
 					vector<Point2f> final_pettern = morphing(contour1, contour2, path, ratio_d);
+					//这里final_pettern的点数不一定为200点，但是后续的计算中会重新采样
 					vector<int> return_p;
 					vector<vector<Point2f>> four_place;
 					vector<Point2f> morphed_A = extract_contour(final_pettern, mid_inter_morphed, return_p, four_place, all_inner_conts[i].type);
+
 					return_p.swap(vector<int>());
 					four_place.swap(vector<vector<Point2f>>());
 					vector<Point2f> morphed_A_ori = extract_contour(prototile_mid->contour, mid_inter, return_p, four_place, all_inner_conts[i].type);
 
 					double evaluation1 = evalua_deformation(final_pettern, contour_);
 					double evaluation2 = evalua_deformation(morphed_A, morphed_A_ori);
+					cout << "evaluation1: " << evaluation1 << "   " << "evaluation2: " << evaluation2 << "  ";
 					double score_ave = (1 - ratio_d)*evaluation2 + ratio_d*evaluation1;
+					cout << "score: " << score_ave << endl;
 					if (score_ave > result_score)
 					{
 						result_score = score_ave;
-						ratio_min = ratio_d;
+						ratio_max = ratio_d;
 					}
 				}
 
-				vector<Point2f> final_pettern = morphing(contour1, contour2, path, ratio_min);
-				
+				vector<Point2f> final_pettern = morphing(contour1, contour2, path, ratio_max);
 
-				//cout << "zahuishi?*****************" << endl;
+
+				cout << "zahuishi?*****************" << endl;
 				vector<int> return_p;
 				vector<vector<Point2f>> four_place;
-				vector<Point2f> morphed_A = extract_contour(final_pettern, mid_inter_morphed, return_p, four_place, all_inner_conts[i].type); 
-				vector<int> return_p2;
-				vector<vector<Point2f>> four_place2;
-				vector<Point2f> morphed_A_ori = extract_contour(prototile_mid->contour, mid_inter, return_p2, four_place2, all_inner_conts[i].type);
+				vector<Point2f> morphed_A = extract_contour(final_pettern, mid_inter_morphed, return_p, four_place, all_inner_conts[i].type);
+				//vector<int> return_p2;
+				//vector<vector<Point2f>> four_place2;
+				//vector<Point2f> morphed_A_ori = extract_contour(prototile_mid->contour, mid_inter, return_p2, four_place2, all_inner_conts[i].type);
 
-				cout << "ratio_min: " << ratio_min << "  --  result_score:  " << result_score << endl;
+				cout << "ratio_max: " << ratio_max << "  --  result_score:  " << result_score << endl;
 				Mat drawing_pro = Mat(800, 3200, CV_8UC3, Scalar(255, 255, 255));
 				draw_poly(drawing_pro, prototile_mid->contour, Point2f(400, 400));
 				draw_poly(drawing_pro, contour_, Point2f(1200, 400));
@@ -395,20 +410,25 @@ namespace Tiling_tiles{
 				//mid_inter_new.swap(vector<int>());
 				//final_pettern = extract_contour(morphed_A, return_p, mid_inter_new, four_place, all_inner_conts[Tiling_index].type);
 				prototile_tem->loadPoints(final_pettern);
-
 				draw_poly(drawing_pro, morphed_A, Point2f(2800, 400));
 				string filename = rootname + "\\" + int2string(i) + "_Candidate_" + int2string(j) + ".png";
 				imwrite(filename, drawing_pro);
+
+				if (!contour_is_simple(morphed_A) || !contour_is_simple(final_pettern))
+				{
+					cout << "Warning! The " << j << " candidate patterns are not simple! No results!" << endl;
+					continue;
+				}
 				int halftone_num = 5000;
-				double offsetl = -2;
+				double offsetl = 0;
 				Mat drawing_tesse = Mat(halftone_num, halftone_num, CV_8UC3, Scalar(255, 255, 255));
-				//vector<vector<Point2f>> all_tiles = tesse_all(morphed_A, return_p, all_inner_conts[i].type, halftone_num, offsetl);
-				vector<vector<Point2f>> all_tiles = tesse_all(final_pettern, mid_inter_morphed, all_inner_conts[i].type, halftone_num, offsetl);
-				fileout("D://swan_after.txt", morphed_A);
+				vector<vector<Point2f>> all_tiles = tesse_all(morphed_A, return_p, all_inner_conts[i].type, halftone_num, offsetl);
+				//vector<vector<Point2f>> all_tiles = tesse_all(final_pettern, mid_inter_morphed, all_inner_conts[i].type, halftone_num, offsetl);
+				//fileout("D://swan_after.txt", morphed_A);
 				//halftone
 				//vector<vector<Point2f>> out_contours = extract_contours("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\502.png", halftone_num);
 				//halftone_gen(out_contours, all_tiles, halftone_num);
-
+				cout << "The num of tiles in final tesse result: " << all_tiles.size() << endl;
 				for (int m = 0; m < all_tiles.size(); m++)
 				{			
 					//框架图
@@ -1059,6 +1079,7 @@ namespace Tiling_tiles{
 
 	vector<Point2f> Tiling_opt::morphing(vector<Point_f> contour1, vector<Point_f> contour2, vector<pair<int, int>> path, double ratio)
 	{
+		mid_inter_morphed.swap(vector<int>()); //一定要注意全局变量的清理
 		vector<Point2f> final_pettern;
 		int cnum1 = contour1.size();
 		int cnum2 = contour2.size();
@@ -1202,9 +1223,9 @@ namespace Tiling_tiles{
 		contour2_seg[0] = p2f2p_f(ttt2);*/
 		int ttt = 0;
 		contour_fin = morph_segment(contour1_seg[ttt], contour2_seg[ttt], contour1_seg[ttt][0], ratio);
-		Mat drawing31 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
-		Point2f shhh = Point2f(200, 200) - contour_fin[0].point;
-		MyLine(drawing31, Point2f(200, 200), contour_fin.back().point + shhh, "green1");
+		Mat drawing31 = Mat(1200, 1200, CV_8UC3, Scalar(255, 255, 255));
+		Point2f shhh = Point2f(600, 600) - contour_fin[0].point;
+		MyLine(drawing31, Point2f(600, 600), contour_fin.back().point + shhh, "green1");
 		/*for (int nm = 0; nm < contour1_seg[ttt].size(); nm++)
 			cout << "contour1_seg[g]:" <<contour1_seg[ttt][nm].point << endl;
 		for (int nm = 0; nm < contour2_seg[ttt].size(); nm++)
@@ -1229,7 +1250,10 @@ namespace Tiling_tiles{
 		int cfinsize = contour_fin.size();
 		for (int n = 0; n < cfinsize;n++)
 			if (contour_fin[n].type == 3) mid_inter_morphed.push_back(n);
-		cout << "cfinsize: " << cfinsize << "  ==  " << mid_inter_morphed.size() << endl;
+		if (mid_inter_morphed.size() != 4)
+		{
+			cout << "Warning !!! ------cfinsize: " << cfinsize << "  ==  " << mid_inter_morphed.size() << endl;
+		}	
 		final_pettern = p_f2p2f(contour_fin);
 
 		Point2f cen1 = center_p(p_f2p2f(contour1));
@@ -1298,11 +1322,11 @@ namespace Tiling_tiles{
 		{
 			if (contour1[path[j].first].type>1)	MyLine(drawing1, contour1[path[j].first].point + shift1, contour2[path[j].second].point + shift1, "gray");
 			//length += length_two_point2f(contour1[path[j].first].point, contour2[path[j].second].point);
-			cout << path[j].first << " : " << contour1[path[j].first].type << "    " << path[j].second <<" : "<< contour2[path[j].second].type << endl;
+			//cout << path[j].first << " : " << contour1[path[j].first].type << "    " << path[j].second <<" : "<< contour2[path[j].second].type << endl;
 			//MyLine(drawing1, contour1[path[j].first].point + shift1, contour2[path[j].second].point + shift1, "gray");
 		}
 		
-		cout << "path length: " << length<<endl;
+		//cout << "path length: " << length<<endl;
 		imshow("path show",drawing1);
 
 		return final_pettern;
@@ -3686,6 +3710,7 @@ namespace Tiling_tiles{
 		Lab = path.size();		
 		//tar 对比得分
 		total_score = 1 - (re / (1 + shape_com1 + shape_com2)) / (2 * Lab);
+		//cout << "total_score: " << total_score << "  ";
 		//以下计算面积：T并S-T交S，因为事先处理过，所以不需要重新计算位置，直接进行像素计算即可
 
 		int raw = 1000;
@@ -3726,14 +3751,15 @@ namespace Tiling_tiles{
 		}
 		imshow("poly3", drawing_3);
 		double area_score = (double)poly_ / poly2;
-
+		//cout << "area_score: " << area_score << "  ";
 		//std::cout << "dianshu:  " << poly1 << "    " << poly2 << "    " << poly_ << endl;
 		//std::cout << "total_score: " << total_score << " area_score" << area_score << endl;
 
-		
+		double penalty_score = 0; //如果contour1有交叉，会扣除0.5分;contour2肯定不会有交叉
+		if (!contour_is_simple(contour1)) penalty_score = -0.5;
 		//score_mid_r = contourArea(contour[2]) / contourArea(contour[0]);
 		//score_sec_r = contourArea(contour[1]) / contourArea(contour[0]);
-		return total_score + area_score;
+		return total_score + area_score + penalty_score;
 	}
 
 	vector<Point2f> Tiling_opt::p_f2p2f(vector<Point_f> origin)

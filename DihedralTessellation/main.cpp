@@ -21,7 +21,7 @@ int main(int argc, char** argv)
 	Tiling_tiles::Prototile *prototile_third;
 	prototile_third = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
-	int f = 0;
+	int f = 1;
 	//0:result  1:simulation  2:批量读图  3:feature points  4:compute_TAR  5:min_minsmatch  6:extract_contour  7:compare and choose
 	//8:morphing  9:draw  10:math  11:check  12:thickness  13:color  14:windows 15:evalua_deformation
 	//17:2Dtriangle  18:求差 19：三角化  20:contour_dilate
@@ -1036,23 +1036,26 @@ int main(int argc, char** argv)
 	if (f == 20)
 	{
 		Polygon2 poly;
-		/*poly.push_back(Point2(100, 100));
+		poly.push_back(Point2(100, 100));
 		poly.push_back(Point2(105, 100));
 		poly.push_back(Point2(195, 100));
 		poly.push_back(Point2(200, 100));
 		poly.push_back(Point2(200, 105));
 		poly.push_back(Point2(200, 195));
 		poly.push_back(Point2(200, 200));
-		poly.push_back(Point2(100, 200));*/
+		poly.push_back(Point2(100, 200));
+		
+		if (poly.is_simple()) cout << "poly.is_simple();" << endl;
 		ifstream in("D://swan_after.txt");
 		if (!in) cout << "file error!" << endl;
 		
-		in >> poly;
+		//in >> poly;
 
 		//cout <<  poly<<endl;
 		Polygon2 off_c = offset_poly(-20, poly);//正值为腐蚀
 		cout << "off_c.size!" << off_c.size() << endl;
 		vector<Point2f> vec_c = Polygon2vector(poly);
+		if (contour_is_simple(vec_c)) cout << "contour_is_simple" << endl;
 		cout << vec_c.size()<< endl;
 		vector<Point2f> vec_c2 = contour_dilate(vec_c,17);//Polygon2vector(off_c);
 		cout <<vec_c2.size() << endl;
