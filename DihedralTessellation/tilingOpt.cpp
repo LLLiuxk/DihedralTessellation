@@ -14,7 +14,7 @@ namespace Tiling_tiles{
 		prototile_mid = new Prototile();
 		prototile_second = new Prototile();
 		prototile_tem = new Prototile();
-		all_types = 400;
+		all_types = 490;
 		sampling_num = 3;
 		allnum_inner_c = 0;
 		match_window_width = 6;
@@ -164,9 +164,9 @@ namespace Tiling_tiles{
 		}
 		mkdir(na);
 
-		int trans = Tanslation_rule(p_p_index, cont_orig, rootname);
+		int trans = 0;// Tanslation_rule(p_p_index, cont_orig, rootname);
 		int flips = Flipping_rule(p_p_index, cont_orig, rootname);
-		int rotas = Rotation_rule(p_p_index, cont_rota, rootname);
+		int rotas = 0;// Rotation_rule(p_p_index, cont_rota, rootname);
 
 		int count = trans + rotas + flips;
 		prototile_first->contour_r = cont_rota;
@@ -202,7 +202,7 @@ namespace Tiling_tiles{
 				for (int i = 0; i < can_fea_num; i++) contour2[cand_points_index[i]].type = 2;
 				double ratio_max = 100;
 				double result_score = 0;
-				int ratio = 30;
+				int ratio = 20;
 				for (; ratio <= 90; ratio += 5)
 				{
 					//ratio越高，中间形状保持越多，对应的morphed_A的形状保持越多，eve2越高
@@ -285,9 +285,9 @@ namespace Tiling_tiles{
 		vector<int> p_p_index = prototile_first->partition_points(imaname);
 		vector<int> ttt;
 		ttt.push_back(p_p_index[0]);
-		ttt.push_back(p_p_index[14]);
-		ttt.push_back(p_p_index[21]);
+		ttt.push_back(p_p_index[16]);
 		ttt.push_back(p_p_index[28]);
+		ttt.push_back(p_p_index[45]);
 		std::cout << "ttt: " << ttt.size() << endl;
 		vector<Point_f> cont_orig = prototile_first->contour_f;
 		vector<Point_f> cont_rota = prototile_first->contour_r; //旋转暂时用500个点
@@ -307,9 +307,9 @@ namespace Tiling_tiles{
 		}
 		mkdir(na);
 
-		int trans = Tanslation_rule(ttt, cont_orig, rootname);
+		int trans = 0;//Tanslation_rule(ttt, cont_orig, rootname);
 		int rotas = 0;// Rotation_rule(ttt, cont_rota, rootname);
-		int flips = 0;// Flipping_rule(ttt, cont_orig, rootname);
+		int flips = Flipping_rule(ttt, cont_orig, rootname);
 		int count = trans + rotas + flips;
 		std::cout << "succeed count: " << count << " trans: " << trans << " rotat: " << rotas << " flips: " << flips << endl;
 		//midtime = clock();
@@ -948,7 +948,7 @@ namespace Tiling_tiles{
 		int num_c = 1;//采样点数
 		vector<Point2f> compare_one;
 		mid_inter = all_inner_conts[Tiling_index].in_interval;
-		cout << "Tiling_index: " << compare_one.size() << "   " << mid_inter.size()<< endl;
+		//cout << "Tiling_index: " << compare_one.size() << "   " << mid_inter.size()<< endl;
 		prototile_mid->Pro_clear();
 		prototile_mid->contour_f = all_inner_conts[Tiling_index].in_contour;
 		prototile_mid->contour = p_f2p2f(prototile_mid->contour_f);
@@ -1084,13 +1084,31 @@ namespace Tiling_tiles{
 		int cnum1 = contour1.size();
 		int cnum2 = contour2.size();
 		int psize = path.size();
-		//确定以下筛选原则：1.双边选择如果一方有>2的点，则将双方设置为>2
-		//2.对于多对1的情况：i.如果对面没有>2的，则选择距离最短的点; 2.如果对面有多个，则选择距离最短的; 3如果对面有一个，则选这一个
+		int ddd = 0;
+		/*for (int n = 0; n < cnum1; n++)
+		{
+			cout << "contour1: "<<n<<" ";
+			if (contour1[n].type == 3)
+			{
+				ddd++;
+				cout << "3333333 ";
+			}
+			cout << "  : " << contour1[n].type << endl;
+		}
+		cout << "ddd: " << ddd << endl;
+		for (int j = 0; j < psize; j++)
+		{
+			cout << j << "--" << path[j].first << " : " << contour1[path[j].first].type << "    " << path[j].second << " : " << contour2[path[j].second].type << endl;
+		}*/
+
+		//确定以下筛选原则：1.双边选择如果一方有>2的点，则将双方坐标记录下来
+		//2.对于多对1的情况：i.如果对面没有>2的，则选择距离最短的点; 2.如果对面有多个，则选择距离最短的; 3如果对面有一个，则选这一个		
 		vector<pair<int, int>> final_pair;
 		int lock_l = -1;
 		int lock_r = -1;  //被锁上的序号不会被再次使用
 		for (int j = 0; j < psize; j++)
 		{
+			//cout << j << "--" << path[j].first << " : " << contour1[path[j].first].type << "    " << path[j].second << " : " << contour2[path[j].second].type << endl;
 			if (path[j].first == lock_l || path[j].second == lock_r) continue; //把锁住的情况跳过
 			if (contour1[path[j].first].type > 1 || contour2[path[j].second].type > 1)
 			{
@@ -1125,7 +1143,7 @@ namespace Tiling_tiles{
 				else if (path[t].first != path[j].first && path[t].second == path[j].second)  //右边一对多
 				{
 					double length_min = length_two_point2f(contour1[path[j].first].point, contour2[path[j].second].point);
-					int type_max = contour1[path[j].second].type;
+					int type_max = contour1[path[j].first].type;
 					int index = j;
 					while (path[t].second == path[j].second)
 					{
@@ -1146,7 +1164,7 @@ namespace Tiling_tiles{
 			}
 				
 			//length += length_two_point2f(contour1[path[j].first].point, contour2[path[j].second].point);
-			//cout << j<<"--"<<path[j].first << " : " << contour1[path[j].first].type << "    " << path[j].second << " : " << contour2[path[j].second].type << endl;		
+			
 		}
 		int final_pair_size = final_pair.size();
 
@@ -1161,24 +1179,21 @@ namespace Tiling_tiles{
 				f_d = 2;
 				if (contour1[final_pair[mn].first].type > contour1[final_pair[(mn + 1) % final_pair_size].first].type)
 					f_d++;
-				else f_d--;
+				else if (contour1[final_pair[mn].first].type < contour1[final_pair[(mn + 1) % final_pair_size].first].type)
+					f_d--;
 			}
 			if (f_d == 3) de_index.push_back((1 + mn++) % final_pair_size);
 			if (f_d == 1) de_index.push_back(mn);
-			if (f_d == 2)
-			{
-				if (contour1[final_pair[mn].first].type == 3)
-					cout << "Error in deleting cloest final_pair!!" << endl;
-				else de_index.push_back(mn);
-			}
+			if (f_d == 2 && contour1[final_pair[mn].first].type != 3) de_index.push_back(mn);
+			
 		}
 		for (int mn = de_index.size()-1; mn >=0; mn--)
 		{
 			pair<int, int> de = delete_vector(final_pair, de_index[mn]);
-			//cout << de_index[mn] << endl;// de.first << " : " << de.second << endl;
+			//cout << de_index[mn] <<"  "<<de.first << " : " << de.second << endl;
 		}
 		final_pair_size = final_pair.size();
-		cout << "final_pair : " << final_pair_size << endl;
+		cout << "Matched feature point pair : " << final_pair_size << endl;
 		//将两个轮廓分段存储
 		vector<vector<Point_f>> contour1_seg;
 		vector<vector<Point_f>> contour2_seg;
@@ -1204,7 +1219,7 @@ namespace Tiling_tiles{
 		contour1_seg.push_back(c_seg1);
 		contour2_seg.push_back(c_seg2);
 
-		//cout << "contour1_seg:  " << contour1_seg.size() << "    :   " << final_pair_size << endl
+		//cout << "contour1_seg:  " << contour1_seg.size() << "    contour2_seg:  " << contour2_seg.size() << endl;
 		//	<< contour1_seg.back().back().point << "   " << contour1_seg.back().back().type << endl;
 		vector<Point_f> contour_fin;
 		/*vector<Point2f> ttt1;
@@ -1236,7 +1251,7 @@ namespace Tiling_tiles{
 		}*/
 		for (int g = 1; g < contour1_seg.size(); g++)//contour1_seg.size()
 		{
-			//cout << "start before: " << contour_fin.back().point << endl;
+			//cout << contour1_seg[g].size() << "   :  " << contour2_seg[g].size()<<endl<<"start before: " << contour_fin.back().point << endl;
 			vector<Point_f> contour_tem = morph_segment(contour1_seg[g], contour2_seg[g], contour_fin.back(),ratio);
 			MyLine(drawing31, contour_tem[0].point + shhh, contour_tem.back().point + shhh, "green1");
 			//for (int nm = 0; nm < contour_tem.size(); nm++)
@@ -1338,18 +1353,22 @@ namespace Tiling_tiles{
 		Point_f end = seg1.back();  //如果end.type==3, end 不需要变
 		double length_ave = length_two_point2f(start.point, end.point);
 		double angle_ave;
-
 		//cout << "1----start: " << start.point << "     --end: " << end.point << endl;
 		//确定框架的参数 
 		if (end.type != 3) // 确定新的end点 
 		{
-			double angle1 = acos(cos_two_vector(Point2f(1, 0), seg1.back().point - seg1[0].point));
+			double angle1 = cos_two_vector(Point2f(1, 0), seg1.back().point - seg1[0].point);
+			angle1 = (angle1 > 0.999) ? 0.999 : (angle1 < -0.999) ? -0.999 : angle1; //防止出现acos(1)的情况，会返回错误值
+			angle1 = acos(angle1);
 			if (sin_two_vector(Point2f(1, 0), seg1.back().point - seg1[0].point) < 0) angle1 = -angle1;
-			double angle_12 = acos(cos_two_vector(seg1.back().point - seg1[0].point, seg2.back().point - seg2[0].point));
+			double angle_12 = cos_two_vector(seg1.back().point - seg1[0].point, seg2.back().point - seg2[0].point);
+			angle_12 = (angle_12 > 0.999) ? 0.999 : (angle_12 < -0.999) ? -0.999 : angle_12;
+			angle_12 = acos(angle_12);
 			if (sin_two_vector(seg1.back().point - seg1[0].point, seg2.back().point - seg2[0].point) < 0) angle_12 = - angle_12;
 			angle_ave = angle1 + (1 - ratio)*angle_12;
 			//angle_ave = angle1 + 0.5*angle_12;
 			length_ave = ratio*length_two_point2f(seg1.back().point, seg1[0].point) + (1 - ratio)* length_two_point2f(seg2.back().point, seg2[0].point);
+			//cout << "angle1: " << angle1 << " angle_12 " << angle_12 << " length: " << length_ave<<endl;
 			Point2f vec_fin = Point2f(cos(angle_ave), sin(angle_ave));
 			end.point = start.point + length_ave*vec_fin;
 			//end.point = start.point + length_ave*unit_vec(end.point - start.point);
@@ -3222,7 +3241,7 @@ namespace Tiling_tiles{
 		vector<vector<double>> tar_mid = prototile_mid->compute_TAR(contour_mid, shape_com_mid);
 		std::cout << "contour_mid: " << contour_mid.size() << "  tar_mid: " << tar_mid.size() << endl;
 		int ttrt = 0;
-		for (int can_num = 350; can_num < total_num; can_num++)
+		for (int can_num = 0; can_num < total_num; can_num++)
 		{
 			int index = all_total[can_num].first;
 			//std::cout << index << "  : ";
@@ -3280,7 +3299,7 @@ namespace Tiling_tiles{
 			std::cout << "order: " << all_final[t].first << "  flip: " << all_final[t].second << " value: " << all_result[t] << " complxeity: " << all_shape_complexity[all_final[t].first] << endl;
 		}
 		all_final.swap(all_total_mid);
-		cout << "ttrt: " << ttrt << endl;
+		cout << "The num of ones byeond dis_threshold: " << ttrt << endl;
 		return all_final;
 	}
 
