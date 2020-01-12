@@ -31,7 +31,7 @@ namespace Tiling_tiles{
 
 	void Tiling_opt::Tiling_clear()
 	{
-		all_types = 400;
+		all_types = 490;
 		sampling_num = 3;
 		allnum_inner_c = 0;
 		memset(dis, 0, sizeof(dis));
@@ -164,8 +164,8 @@ namespace Tiling_tiles{
 		}
 		mkdir(na);
 
-		int trans = 0;// Tanslation_rule(p_p_index, cont_orig, rootname);
-		int flips = Flipping_rule(p_p_index, cont_orig, rootname);
+		int trans =  Tanslation_rule(p_p_index, cont_orig, rootname);
+		int flips = 0;// Flipping_rule(p_p_index, cont_orig, rootname);
 		int rotas = 0;// Rotation_rule(p_p_index, cont_rota, rootname);
 
 		int count = trans + rotas + flips;
@@ -255,8 +255,9 @@ namespace Tiling_tiles{
 				}
 				int halftone_num = 5000;
 				double l_offset = 2;
+				double scale_t = 0.7;
 				Mat drawing_tesse = Mat(halftone_num, halftone_num, CV_8UC3, Scalar(255, 255, 255));
-				vector<vector<Point2f>> all_tiles = tesse_all(morphed_A, return_p, all_inner_conts[i].type, halftone_num, l_offset);
+				vector<vector<Point2f>> all_tiles = tesse_all(morphed_A, return_p, all_inner_conts[i].type, halftone_num, l_offset,scale_t);
 				int alltilesnum = all_tiles.size();
 				cout << "The num of tiles in final tesse result: " << alltilesnum << endl;
 				for (int m = 0; m < alltilesnum; m++)
@@ -285,9 +286,9 @@ namespace Tiling_tiles{
 		vector<int> p_p_index = prototile_first->partition_points(imaname);
 		vector<int> ttt;
 		ttt.push_back(p_p_index[0]);
-		ttt.push_back(p_p_index[16]);
-		ttt.push_back(p_p_index[28]);
-		ttt.push_back(p_p_index[45]);
+		ttt.push_back(p_p_index[19]);
+		ttt.push_back(p_p_index[23]);
+		ttt.push_back(p_p_index[35]);
 		std::cout << "ttt: " << ttt.size() << endl;
 		vector<Point_f> cont_orig = prototile_first->contour_f;
 		vector<Point_f> cont_rota = prototile_first->contour_r; //旋转暂时用500个点
@@ -307,9 +308,9 @@ namespace Tiling_tiles{
 		}
 		mkdir(na);
 
-		int trans = 0;//Tanslation_rule(ttt, cont_orig, rootname);
+		int trans = Tanslation_rule(ttt, cont_orig, rootname);
 		int rotas = 0;// Rotation_rule(ttt, cont_rota, rootname);
-		int flips = Flipping_rule(ttt, cont_orig, rootname);
+		int flips = 0;// Flipping_rule(ttt, cont_orig, rootname);
 		int count = trans + rotas + flips;
 		std::cout << "succeed count: " << count << " trans: " << trans << " rotat: " << rotas << " flips: " << flips << endl;
 		//midtime = clock();
@@ -354,7 +355,7 @@ namespace Tiling_tiles{
 				for (int i = 0; i < can_fea_num; i++) contour2[cand_points_index[i]].type = 2;
 				double ratio_max = 100;
 				double result_score = 0;
-				int ratio = 0;
+				int ratio = 20;
 				for (; ratio <= 95; ratio += 5)
 				{
 					//ratio越高，中间形状保持越多，对应的morphed_A的形状保持越多，eve2越高
@@ -421,13 +422,14 @@ namespace Tiling_tiles{
 				}
 				int halftone_num = 5000;
 				double offsetl = 0;
+				double scale_t = 0.7;
 				Mat drawing_tesse = Mat(halftone_num, halftone_num, CV_8UC3, Scalar(255, 255, 255));
-				vector<vector<Point2f>> all_tiles = tesse_all(morphed_A, return_p, all_inner_conts[i].type, halftone_num, offsetl);
+				vector<vector<Point2f>> all_tiles = tesse_all(morphed_A, return_p, all_inner_conts[i].type, halftone_num, offsetl, scale_t);
 				//vector<vector<Point2f>> all_tiles = tesse_all(final_pettern, mid_inter_morphed, all_inner_conts[i].type, halftone_num, offsetl);
 				//fileout("D://swan_after.txt", morphed_A);
 				//halftone
-				//vector<vector<Point2f>> out_contours = extract_contours("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\502.png", halftone_num);
-				//halftone_gen(out_contours, all_tiles, halftone_num);
+				vector<vector<Point2f>> out_contours = extract_contours("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\502.png", halftone_num);
+				halftone_gen(out_contours, all_tiles, halftone_num, scale_t);
 				cout << "The num of tiles in final tesse result: " << all_tiles.size() << endl;
 				for (int m = 0; m < all_tiles.size(); m++)
 				{			
@@ -925,7 +927,7 @@ namespace Tiling_tiles{
 							{
 								circle(drawing2, contour_s[result_index[jj]].point + shift2, 8, Scalar(0, 255, 0), -1);
 							}
-							circle(drawing2, contour_s[part_points_index[0]].point + shift2, 8, Scalar(255, 255, 0), -1);
+							//circle(drawing2, contour_s[part_points_index[0]].point + shift2, 8, Scalar(255, 255, 0), -1);
 							string filename = rootname + "\\" + int2string(allnum_inner_c - 1) + "flip(2-4)PlacingResult.png";
 							imwrite(filename, drawing2);
 							//Mat draw = drawing2(Rect(800, 0, 800, 800));
@@ -1084,29 +1086,29 @@ namespace Tiling_tiles{
 		int cnum1 = contour1.size();
 		int cnum2 = contour2.size();
 		int psize = path.size();
-		int ddd = 0;
-		/*for (int n = 0; n < cnum1; n++)
-		{
-			cout << "contour1: "<<n<<" ";
-			if (contour1[n].type == 3)
-			{
-				ddd++;
-				cout << "3333333 ";
-			}
-			cout << "  : " << contour1[n].type << endl;
-		}
-		cout << "ddd: " << ddd << endl;
-		for (int j = 0; j < psize; j++)
+		//int ddd = 0;
+		//for (int n = 0; n < cnum1; n++)
+		//{
+		//	cout << "contour1: "<<n<<" ";
+		//	if (contour1[n].type == 3)
+		//	{
+		//		ddd++;
+		//		cout << "3333333 ";
+		//	}
+		//	cout << "  : " << contour1[n].type << endl;
+		//}
+		//cout << "ddd: " << ddd << endl;
+		/*for (int j = 0; j < psize; j++)
 		{
 			cout << j << "--" << path[j].first << " : " << contour1[path[j].first].type << "    " << path[j].second << " : " << contour2[path[j].second].type << endl;
-		}*/
-
+		}
+*/
 		//确定以下筛选原则：1.双边选择如果一方有>2的点，则将双方坐标记录下来
 		//2.对于多对1的情况：i.如果对面没有>2的，则选择距离最短的点; 2.如果对面有多个，则选择距离最短的; 3如果对面有一个，则选这一个		
 		vector<pair<int, int>> final_pair;
 		int lock_l = -1;
 		int lock_r = -1;  //被锁上的序号不会被再次使用
-		for (int j = 0; j < psize; j++)
+		for (int j = 0; j < psize - 1; j++)
 		{
 			//cout << j << "--" << path[j].first << " : " << contour1[path[j].first].type << "    " << path[j].second << " : " << contour2[path[j].second].type << endl;
 			if (path[j].first == lock_l || path[j].second == lock_r) continue; //把锁住的情况跳过
@@ -1134,6 +1136,7 @@ namespace Tiling_tiles{
 							index = t;
 						}
 						t++;
+						if (t == psize) break;
 					}
 					//lock
 					lock_l = path[j].first;
@@ -1154,6 +1157,7 @@ namespace Tiling_tiles{
 							index = t;
 						}
 						t++;
+						if (t == psize) break;
 					}
 					//lock
 					lock_l = path[index].first;
@@ -1173,8 +1177,8 @@ namespace Tiling_tiles{
 		for (int mn = 0; mn < final_pair_size; mn++)
 		{
 			int f_d = 0;
-			if (abs((final_pair[mn].first - final_pair[(mn + 1) % final_pair_size].first)) < tolerance
-				|| abs((final_pair[mn].second - final_pair[(mn + 1) % final_pair_size].second)) < tolerance)
+			if (abs((final_pair[mn].first - final_pair[(mn + 1) % final_pair_size].first)) <= tolerance
+				|| abs((final_pair[mn].second - final_pair[(mn + 1) % final_pair_size].second)) <= tolerance)
 			{
 				f_d = 2;
 				if (contour1[final_pair[mn].first].type > contour1[final_pair[(mn + 1) % final_pair_size].first].type)
@@ -1190,7 +1194,7 @@ namespace Tiling_tiles{
 		for (int mn = de_index.size()-1; mn >=0; mn--)
 		{
 			pair<int, int> de = delete_vector(final_pair, de_index[mn]);
-			//cout << de_index[mn] <<"  "<<de.first << " : " << de.second << endl;
+			cout << de_index[mn] <<"  "<<de.first << " : " << de.second << endl;
 		}
 		final_pair_size = final_pair.size();
 		cout << "Matched feature point pair : " << final_pair_size << endl;
@@ -1241,17 +1245,17 @@ namespace Tiling_tiles{
 		Mat drawing31 = Mat(1200, 1200, CV_8UC3, Scalar(255, 255, 255));
 		Point2f shhh = Point2f(600, 600) - contour_fin[0].point;
 		MyLine(drawing31, Point2f(600, 600), contour_fin.back().point + shhh, "green1");
-		/*for (int nm = 0; nm < contour1_seg[ttt].size(); nm++)
-			cout << "contour1_seg[g]:" <<contour1_seg[ttt][nm].point << endl;
-		for (int nm = 0; nm < contour2_seg[ttt].size(); nm++)
-			cout << "contour2_seg[g]:" << contour2_seg[ttt][nm].point << endl;
-		for (int g = 0; g < contour_fin.size(); g++)
-		{
-			cout << "contour_fin: " << contour_fin[g].point << endl;
-		}*/
+		//for (int nm = 0; nm < contour1_seg[ttt].size(); nm++)
+		//	cout << "contour1_seg[g]:" <<contour1_seg[ttt][nm].point << endl;
+		//for (int nm = 0; nm < contour2_seg[ttt].size(); nm++)
+		//	cout << "contour2_seg[g]:" << contour2_seg[ttt][nm].point << endl;
+		//for (int g = 0; g < contour_fin.size(); g++)
+		//{
+		//	cout << "contour_fin: " << contour_fin[g].point << endl;
+		//}
 		for (int g = 1; g < contour1_seg.size(); g++)//contour1_seg.size()
 		{
-			//cout << contour1_seg[g].size() << "   :  " << contour2_seg[g].size()<<endl<<"start before: " << contour_fin.back().point << endl;
+			cout << contour1_seg[g].size() << "   :  " << contour2_seg[g].size()<<endl<<"start before: " << contour_fin.back().point << endl;
 			vector<Point_f> contour_tem = morph_segment(contour1_seg[g], contour2_seg[g], contour_fin.back(),ratio);
 			MyLine(drawing31, contour_tem[0].point + shhh, contour_tem.back().point + shhh, "green1");
 			//for (int nm = 0; nm < contour_tem.size(); nm++)
@@ -1501,12 +1505,15 @@ namespace Tiling_tiles{
 	}
 
 	//compute final tessellation
-	vector<vector<Point2f>> Tiling_opt::tesse_all(vector<Point2f> contour, vector<int>inter_index, int type, int col_raw_num, double offsetl)
+	vector<vector<Point2f>> Tiling_opt::tesse_all(vector<Point2f> contour, vector<int>inter_index, int type, int col_raw_num, double offsetl, double scale_)
 	{
+		if (col_raw_num > 30000) cout << "Warning! The size is over!" << endl;
 		int drawrow = col_raw_num;
 		int drawcol = col_raw_num;
-		int border = 0.06 * col_raw_num;
-		int con_size = contour.size();		
+		int border = 0.06 * scale_ * col_raw_num;
+		int con_size = contour.size();	
+		for (int m = 0; m < con_size; m++) contour[m] = contour[m] * scale_;
+
 		double length_ = arcLength(contour, 1) / con_size;
 		Point2f center = center_p(contour);
 		vector<vector<Point2f>> all_tiles;

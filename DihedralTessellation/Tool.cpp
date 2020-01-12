@@ -745,44 +745,45 @@ namespace Tiling_tiles{
 
 	vector<Point2f> contour_dilate(vector<Point2f> contour, double step_leng)
 	{
-		vector<Point2f> dilation_c;
-		Polygon2 poly = vectorPolygon2(contour);
-		Polygon2 off_c = offset_poly(step_leng, poly);//正值为腐蚀,但点顺序不一样，因此变为膨胀
-		int csize = off_c.size();
-		for (int i = 0; i < csize; i++)
-		{
-			Point2f new_one = To_cvp(off_c[i]);
-			if (abs(pointPolygonTest(contour, new_one, true)) > step_leng - 1)
-				dilation_c.push_back(new_one);
-		}
-		return dilation_c;
+		return contour_erode(contour, -step_leng);
+		//vector<Point2f> dilation_c;
+		//Polygon2 poly = vectorPolygon2(contour);
+		//Polygon2 off_c = offset_poly(step_leng, poly);//正值为腐蚀,但点顺序不一样，因此变为膨胀
+		//int csize = off_c.size();
+		//for (int i = 0; i < csize; i++)
+		//{
+		//	Point2f new_one = To_cvp(off_c[i]);
+		//	if (abs(pointPolygonTest(contour, new_one, true)) > step_leng - 1)
+		//		dilation_c.push_back(new_one);
+		//}
+		//return dilation_c;
 	}
 
 
 	vector<Point2f> contour_erode(vector<Point2f> contour, double step_leng)
 	{
 		vector<Point2f> dilation_c;
-		/*int csize = contour.size();
+		int csize = contour.size();
 		for (int i = 0; i < csize; i++)
 		{
 			double dx = contour[(i + 1) % csize].x - contour[(i + csize - 1) % csize].x;
 			double dy = contour[(i + 1) % csize].y - contour[(i + csize - 1) % csize].y;
 			Point2f step = unit_vec(Point2f(dy, -dx));
 			Point2f new_one = contour[i] + step_leng*step;
-			if (abs(pointPolygonTest(contour, new_one, true))>= step_leng - 1)
+			if (abs(pointPolygonTest(contour, new_one, true))>= (abs(step_leng) - 1))
 				dilation_c.push_back(contour[i] + step_leng*step);
 		}
-		return dilation_c;*/
-		Polygon2 poly = vectorPolygon2(contour);
-		Polygon2 off_c = offset_poly(-step_leng, poly);//正值为腐蚀
-		int csize = off_c.size();
-		for (int i = 0; i < csize; i++)
-		{
-			Point2f new_one = To_cvp(off_c[i]);
-			if (abs(pointPolygonTest(contour, new_one, true)) >= step_leng - 1)
-				dilation_c.push_back(new_one);
-		}
 		return dilation_c;
+		//Polygon2 poly = vectorPolygon2(contour);
+		//Polygon2 off_c = offset_poly(-step_leng, poly);//正值为腐蚀
+		//int csize = off_c.size();
+		//for (int i = 0; i < csize; i++)
+		//{
+		//	Point2f new_one = To_cvp(off_c[i]);
+		//	if (abs(pointPolygonTest(contour, new_one, true)) >= step_leng - 1)
+		//		dilation_c.push_back(new_one);
+		//}
+		//return dilation_c;
 	}
 
 
@@ -846,12 +847,14 @@ namespace Tiling_tiles{
 	}
 	
 
-	void halftone_gen(vector<vector<Point2f>> out_contours, vector<vector<Point2f>> tiling_contours, int halftone_num)
+	void halftone_gen(vector<vector<Point2f>> out_contours, vector<vector<Point2f>> tiling_contours, int halftone_num, double scale_)
 	{
-		cout << "halftone_gen:" << endl;
+		std::cout << "halftone_gen:" << std::endl;
 		Mat drawing_pro = Mat(halftone_num, halftone_num, CV_8UC3, Scalar(255, 255, 255));
 		int tilis_num = tiling_contours.size();
 		int outc_num = out_contours.size();
+		double length[4] = { 12.0, 6.0, 0.0, -3.0 };
+		for (int m = 0; m < 4; m++)  length[m] = length[m] * scale_;
 		for (int j = 0; j < outc_num; j++)
 		{
 			int out1size = out_contours[j].size();
@@ -872,27 +875,27 @@ namespace Tiling_tiles{
 			}
 			if (l_min < 300)
 			{
-				vector<Point2f> tile_dilate = contour_dilate(tileone, 12);
+				vector<Point2f> tile_dilate = contour_dilate(tileone, length[0]);
 				draw_poly(drawing_pro, tile_dilate, center_p(tile_dilate));
 			}
 			else if (l_min < 600)
 			{
-				vector<Point2f> tile_dilate = contour_dilate(tileone, 8);
+				vector<Point2f> tile_dilate = contour_dilate(tileone, length[1]);
 				draw_poly(drawing_pro, tile_dilate, center_p(tile_dilate));
 			}
 			else if (l_min < 1600)
 			{
-				vector<Point2f> tile_erode = contour_erode(tileone, 8);
-				draw_poly(drawing_pro, tile_erode, center_p(tile_erode));
+				vector<Point2f> tile_dilate = contour_dilate(tileone, length[2]);
+				draw_poly(drawing_pro, tile_dilate, center_p(tile_dilate));
 			}
 			else
 			{
-				vector<Point2f> tile_erode = contour_erode(tileone, 12);
-				draw_poly(drawing_pro, tile_erode, center_p(tile_erode));
+				vector<Point2f> tile_dilate = contour_dilate(tileone, length[3]);
+				draw_poly(drawing_pro, tile_dilate, center_p(tile_dilate));
 			}
 			
 		}
-		imwrite("D:\\VisualStudioProjects\\DihedralTessellation\\halftone.png", drawing_pro);
+		cv::imwrite("D:\\VisualStudioProjects\\DihedralTessellation\\halftone.png", drawing_pro);
 	}
 
 	Point2f center_p(vector<Point2f> contour_)
@@ -2017,7 +2020,7 @@ namespace Tiling_tiles{
 		bool is_simple = true;
 		Polygon2 poly = vectorPolygon2(contour);
 		is_simple = poly.is_simple();
-		return is_simple;
+		return !is_simple;
 	}
 
 	vector<Point2f> Polygon_2vector(Polygon_2 poly)

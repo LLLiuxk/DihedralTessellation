@@ -155,7 +155,7 @@ namespace Tiling_tiles{
 		vector<Point_f> morph_segment(vector<Point_f> seg1, vector<Point_f> seg2, Point_f start, double ratio = 0.5);
 		
 		//compute final tessellation
-		vector<vector<Point2f>> tesse_all(vector<Point2f> contour, vector<int>inter_index, int type, int col_raw_num = 5000, double offsetl = 0);
+		vector<vector<Point2f>> tesse_all(vector<Point2f> contour, vector<int>inter_index, int type, int col_raw_num = 5000, double offsetl = 0, double scale_ = 1.0);
 		
 		void contour_fine_tuning(vector<Point2f> &contour_, int first, int second);
 

@@ -49,7 +49,7 @@ namespace Tiling_tiles{
 	
 	//application
 	vector<vector<Point2f>> extract_contours(string imaname, int halftone_num = 5000);
-	void halftone_gen(vector<vector<Point2f>> out_contours, vector<vector<Point2f>> tiling_contours, int halftone_num = 5000);
+	void halftone_gen(vector<vector<Point2f>> out_contours, vector<vector<Point2f>> tiling_contours, int halftone_num = 5000, double scale_= 1.0);
 	
 
 	//math tool

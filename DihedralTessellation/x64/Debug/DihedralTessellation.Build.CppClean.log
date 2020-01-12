@@ -1,12 +1,12 @@
 d:\visualstudioprojects\dihedraltessellation\dihedraltessellation\x64\debug\vc120.pdb
 d:\visualstudioprojects\dihedraltessellation\dihedraltessellation\x64\debug\vc120.idb
-d:\visualstudioprojects\dihedraltessellation\dihedraltessellation\x64\debug\main.obj
 d:\visualstudioprojects\dihedraltessellation\dihedraltessellation\x64\debug\prototile.obj
 d:\visualstudioprojects\dihedraltessellation\dihedraltessellation\x64\debug\math.obj
 d:\visualstudioprojects\dihedraltessellation\dihedraltessellation\x64\debug\tilingopt.obj
-d:\visualstudioprojects\dihedraltessellation\dihedraltessellation\x64\debug\morphing.obj
-d:\visualstudioprojects\dihedraltessellation\dihedraltessellation\x64\debug\skeleton.obj
-d:\visualstudioprojects\dihedraltessellation\dihedraltessellation\x64\debug\compare.obj
+d:\visualstudioprojects\dihedraltessellation\dihedraltessellation\x64\debug\main.obj
+d:\visualstudioprojects\dihedraltessellation\dihedraltessellation\x64\debug\openglwindow.obj
+d:\visualstudioprojects\dihedraltessellation\dihedraltessellation\x64\debug\tool.obj
+d:\visualstudioprojects\dihedraltessellation\dihedraltessellation\x64\debug\cgal_tool.obj
 d:\visualstudioprojects\dihedraltessellation\x64\debug\dihedraltessellation.ilk
 d:\visualstudioprojects\dihedraltessellation\x64\debug\dihedraltessellation.exe
 d:\visualstudioprojects\dihedraltessellation\x64\debug\dihedraltessellation.pdb

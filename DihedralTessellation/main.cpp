@@ -21,7 +21,7 @@ int main(int argc, char** argv)
 	Tiling_tiles::Prototile *prototile_third;
 	prototile_third = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
-	int f = 0;
+	int f = 1;
 	//0:result  1:simulation  2:批量读图  3:feature points  4:compute_TAR  5:min_minsmatch  6:extract_contour  7:compare and choose
 	//8:morphing  9:draw  10:math  11:check  12:thickness  13:color  14:windows 15:evalua_deformation
 	//17:2Dtriangle  18:求差 19：三角化  20:contour_dilate
@@ -132,7 +132,7 @@ int main(int argc, char** argv)
 	if (f == 0) //已有dataset, 计算结果
 	{
 
-		tiling_opt->tiliing_generation("307");
+		tiling_opt->tiliing_generation("293");
 
 		//批量计算
 		//int iii[20] = {48,75,80,124,220,218,212,228,248,251,280,312,317};//{484,483,482,482,480,479,478,474,472,467,451}; 
@@ -149,7 +149,7 @@ int main(int argc, char** argv)
 		tiling_opt->Tiling_clear();
 		int inner_one = 1;
 		int cand_one = 1;
-		jointPat sim_mid = tiling_opt->simulation_tar("307", inner_one, cand_one);  //
+		jointPat sim_mid = tiling_opt->simulation_tar("293", inner_one, cand_one);  //
 
 		//int mid = 0;
 		//vector<Point2f> new_c = tiling_opt->construct_joint(sim_mid,mid);
@@ -854,7 +854,7 @@ int main(int argc, char** argv)
 		Mat dst = src;
 		cvtColor(src, src, COLOR_BGR2GRAY);
 
-		threshold(src, src, 128, 255, cv::THRESH_BINARY); //255 white
+		threshold(src, src, 155, 255, cv::THRESH_BINARY); //255 white
 		//imshow("zala", src);
 		//imshow("nine", dst);
 		Vec3b color1, color2;
@@ -863,8 +863,8 @@ int main(int argc, char** argv)
 		//t = colorbar[7].second;
 		//color2 = Vec3b(t.val[0], t.val[1], t.val[2]);
 
-		color1 = Vec3b(255, 255, 255);
-		color2 = Vec3b(0, 0, 0);
+		color1 = Vec3b(130, 149, 225);
+		color2 = Vec3b(215, 223, 233);
 
 		for (int i = 0; i < src.rows; i++)
 			for (int j = 0; j < src.cols; j++)
