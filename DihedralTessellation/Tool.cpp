@@ -898,6 +898,35 @@ namespace Tiling_tiles{
 		cv::imwrite("D:\\VisualStudioProjects\\DihedralTessellation\\halftone.png", drawing_pro);
 	}
 
+	Mat halftone_generater(Mat src_gray, vector<vector<Point2f>> tiling_contours, int halftone_num)
+	{
+		vector<vector<Point2f>> final_contours;
+		vector<int> final_grays;
+		int col = src_gray.cols;
+		int row = src_gray.rows;
+		if (col != row) cout << "col != row!" << endl;
+		else cout << "col: "<<col << endl;
+		double scale = halftone_num / col;
+		int t_c_size = tiling_contours.size();
+		vector<Point2f> bbx_c = b_box(tiling_contours[0]);
+		double length = bbx_c[2].x - bbx_c[1].x;
+		double hight = bbx_c[0].y - bbx_c[1].y;
+		double length_ = length * 3 / scale;
+		double hight_ = hight * 3 / scale;
+		for (int i = 0; i < t_c_size; i++)
+		{
+			vector<Point2f> tileone = tiling_contours[i];
+			Point2f cent = center_p(tileone);
+			if (cent.x < 0 || cent.y < 0) continue;
+			int centx = cent.x / scale;
+			int centy = cent.y / scale;
+			for (int m = max(0, int(centx - 0.5*length_)); m < min(col, int(centx + 0.5*length_)); m++)
+			{
+				//for (int n=max())
+			}
+		}
+	}
+
 	Point2f center_p(vector<Point2f> contour_)
 	{
 		//ÀûÓÃÂÖÀªµÄ¾Ø

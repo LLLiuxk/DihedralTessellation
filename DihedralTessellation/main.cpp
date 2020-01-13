@@ -21,12 +21,19 @@ int main(int argc, char** argv)
 	Tiling_tiles::Prototile *prototile_third;
 	prototile_third = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
-	int f = 1;
+	int f = 111;
 	//0:result  1:simulation  2:批量读图  3:feature points  4:compute_TAR  5:min_minsmatch  6:extract_contour  7:compare and choose
 	//8:morphing  9:draw  10:math  11:check  12:thickness  13:color  14:windows 15:evalua_deformation
 	//17:2Dtriangle  18:求差 19：三角化  20:contour_dilate
 	if (f == 111) //test
 	{
+		double a = 0.0;
+		double b = 0;
+		int c = 0;
+		if (a == b &&b == c)
+		{
+			cout << "====" << b-c<< endl;
+		}
 		//Point2f a(600, 200);
 		//vector<vector<Point2f>> contours = extract_contours("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\502.png");
 		//Mat drawing_pro = Mat(20000, 20000, CV_8UC3, Scalar(255, 255, 255));
@@ -132,7 +139,7 @@ int main(int argc, char** argv)
 	if (f == 0) //已有dataset, 计算结果
 	{
 
-		tiling_opt->tiliing_generation("293");
+		tiling_opt->tiliing_generation("273");
 
 		//批量计算
 		//int iii[20] = {48,75,80,124,220,218,212,228,248,251,280,312,317};//{484,483,482,482,480,479,478,474,472,467,451}; 

@@ -165,8 +165,8 @@ namespace Tiling_tiles{
 		mkdir(na);
 
 		int trans =  Tanslation_rule(p_p_index, cont_orig, rootname);
-		int flips = 0;// Flipping_rule(p_p_index, cont_orig, rootname);
-		int rotas = 0;// Rotation_rule(p_p_index, cont_rota, rootname);
+		int flips =  Flipping_rule(p_p_index, cont_orig, rootname);
+		int rotas =  Rotation_rule(p_p_index, cont_rota, rootname);
 
 		int count = trans + rotas + flips;
 		prototile_first->contour_r = cont_rota;
@@ -255,7 +255,7 @@ namespace Tiling_tiles{
 				}
 				int halftone_num = 5000;
 				double l_offset = 2;
-				double scale_t = 0.7;
+				double scale_t = 0.5;
 				Mat drawing_tesse = Mat(halftone_num, halftone_num, CV_8UC3, Scalar(255, 255, 255));
 				vector<vector<Point2f>> all_tiles = tesse_all(morphed_A, return_p, all_inner_conts[i].type, halftone_num, l_offset,scale_t);
 				int alltilesnum = all_tiles.size();
@@ -428,8 +428,14 @@ namespace Tiling_tiles{
 				//vector<vector<Point2f>> all_tiles = tesse_all(final_pettern, mid_inter_morphed, all_inner_conts[i].type, halftone_num, offsetl);
 				//fileout("D://swan_after.txt", morphed_A);
 				//halftone
-				vector<vector<Point2f>> out_contours = extract_contours("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\502.png", halftone_num);
-				halftone_gen(out_contours, all_tiles, halftone_num, scale_t);
+				string imageName = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\504.png";
+				Mat src_gray = imread(imageName);
+
+				//halftone_generater(src_gray, all_tiles, halftone_num);
+
+
+				//vector<vector<Point2f>> out_contours = extract_contours("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\502.png", halftone_num);
+				//halftone_gen(out_contours, all_tiles, halftone_num, scale_t);
 				cout << "The num of tiles in final tesse result: " << all_tiles.size() << endl;
 				for (int m = 0; m < all_tiles.size(); m++)
 				{			
