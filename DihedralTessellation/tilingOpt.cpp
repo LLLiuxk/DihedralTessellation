@@ -420,7 +420,7 @@ namespace Tiling_tiles{
 					cout << "Warning! The " << j << " candidate patterns are not simple! No results!" << endl;
 					continue;
 				}
-				int halftone_num = 20000;
+				int halftone_num = 25000;
 				double offsetl = 0;
 				double scale_t = 0.5;
 				Mat drawing_tesse = Mat(halftone_num, halftone_num, CV_8UC3, Scalar(255, 255, 255));

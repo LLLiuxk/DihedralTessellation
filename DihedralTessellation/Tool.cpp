@@ -956,20 +956,39 @@ namespace Tiling_tiles{
 			if (count_gray > gray_max) gray_max = count_gray;
 			if (count_gray < gray_min) gray_min = count_gray;
 		}
-		double each_l = gray_max + 1.0 - gray_min;
-		each_l = each_l / level;
+		double each_l = gray_max - gray_min;
+		//each_l = each_l / level;
 		cout << "gray_max: " << gray_max << "  gray_min: " << gray_min << " each_l: " << each_l<<endl;
 		for (int i = 0; i < final_contours.size(); i++)
 		{
 
-			int one_level = (final_grays[i] - gray_min) / each_l;
+			double one_level = scale_ *(16 - 32 * (final_grays[i] - gray_min) / each_l);  //对元素进行侵蚀
+			double scale_t = 1 - 0.4*((final_grays[i] - gray_min) / each_l);              //对元素进行缩放
 			//cout << "i:"<<i<<"  "<<final_grays[i]<<"   "<<one_level;
-			vector<Point2f> one_c = contour_dilate(final_contours[i], diff_l[one_level]);// );
+			vector<Point2f> one_c = contour_dilate(final_contours[i], one_level);// );
+			one_c = scale_contour(one_c, scale_t);
 			draw_poly(target, one_c, center_p(one_c));
 		}
 		imwrite("D:\\VisualStudioProjects\\DihedralTessellation\\Halftone.png", target);
 		return target;
 	}
+
+	vector<Point2f> scale_contour(vector<Point2f> c, double scale_)
+	{
+		int csize = c.size();
+		Point2f cent = center_p(c);
+		for (int i = 0; i < csize;i++)
+		{
+			c[i] = c[i] * scale_;
+		}
+		Point2f shift = cent - center_p(c);
+		for (int i = 0; i < csize; i++)
+		{
+			c[i] = c[i] + shift;
+		}
+		return c;
+	}
+
 
 	Point2f center_p(vector<Point2f> contour_)
 	{
