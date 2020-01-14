@@ -898,10 +898,17 @@ namespace Tiling_tiles{
 		cv::imwrite("D:\\VisualStudioProjects\\DihedralTessellation\\halftone.png", drawing_pro);
 	}
 
-	Mat halftone_generater(Mat src_gray, vector<vector<Point2f>> tiling_contours, int halftone_num)
+	Mat halftone_generater(Mat src_gray, vector<vector<Point2f>> tiling_contours, int halftone_num, double scale_)
 	{
+		Mat target = Mat(halftone_num, halftone_num, CV_8UC3, Scalar(255, 255, 255)); //ºÚÉ«»Ò¶ÈµÍ
 		vector<vector<Point2f>> final_contours;
 		vector<int> final_grays;
+		int level = 8;
+		vector<int> diff_l;
+		for (int j = 0; j < level; j++)
+		{
+			diff_l.push_back(scale_ *(16 - 4 * j));
+		}
 		int col = src_gray.cols;
 		int row = src_gray.rows;
 		if (col != row) cout << "col != row!" << endl;
@@ -913,18 +920,55 @@ namespace Tiling_tiles{
 		double hight = bbx_c[0].y - bbx_c[1].y;
 		double length_ = length * 3 / scale;
 		double hight_ = hight * 3 / scale;
+		double margin = 0.5*length;
+		cout << "scale: " << scale<<"  "<<length << "  " << hight << "  " << length_ << "  " << hight_ << "  " << endl;
+		int gray_max = 0;
+		int gray_min = 100000;
+		//int ddd = 0;
 		for (int i = 0; i < t_c_size; i++)
 		{
 			vector<Point2f> tileone = tiling_contours[i];
 			Point2f cent = center_p(tileone);
-			if (cent.x < 0 || cent.y < 0) continue;
-			int centx = cent.x / scale;
-			int centy = cent.y / scale;
-			for (int m = max(0, int(centx - 0.5*length_)); m < min(col, int(centx + 0.5*length_)); m++)
+			
+			if (cent.x < 0 || cent.x > halftone_num || cent.y < 0 || cent.y > halftone_num) continue;
+			//{
+			//	cout << "i:" << i << "  cent: " << cent << "   outttttttttttttt: " << endl;
+			//	ddd++;
+			//}
+			double centx = cent.x / scale;
+			double centy = cent.y / scale;
+			int count_gray = 0;
+			int times = 0;
+			for (int m = max(0.0, centx - 0.5*length_); m < min((double)col, centx + 0.5*length_); m++)
 			{
-				//for (int n=max())
+				for (int n = max(0.0, centy - 0.5*hight_); n < min((double)row, centy + 0.5*hight_); n++)
+				{
+					times++;
+					count_gray += (int)src_gray.at<uchar>(n, m);
+				}
 			}
+			count_gray = count_gray / times;
+			//count_gray = src_gray.at<uchar>((int)centy, (int)centx);
+			final_contours.push_back(tileone);
+			//cout << "i:" << i << "  cent: " << cent << " (int)centx: " << (int)centx<<"   count_gray: " << count_gray << endl;
+			////cout << "count_gray: " << count_gray << endl;
+			final_grays.push_back(count_gray);
+			if (count_gray > gray_max) gray_max = count_gray;
+			if (count_gray < gray_min) gray_min = count_gray;
 		}
+		double each_l = gray_max + 1.0 - gray_min;
+		each_l = each_l / level;
+		cout << "gray_max: " << gray_max << "  gray_min: " << gray_min << " each_l: " << each_l<<endl;
+		for (int i = 0; i < final_contours.size(); i++)
+		{
+
+			int one_level = (final_grays[i] - gray_min) / each_l;
+			//cout << "i:"<<i<<"  "<<final_grays[i]<<"   "<<one_level;
+			vector<Point2f> one_c = contour_dilate(final_contours[i], diff_l[one_level]);// );
+			draw_poly(target, one_c, center_p(one_c));
+		}
+		imwrite("D:\\VisualStudioProjects\\DihedralTessellation\\Halftone.png", target);
+		return target;
 	}
 
 	Point2f center_p(vector<Point2f> contour_)
@@ -1412,10 +1456,10 @@ namespace Tiling_tiles{
 	vector<Point2f> b_box(vector<Point2f> contour)
 	{
 		vector<Point2f> four_cor;
-		double bbx_max_x = -10000;
-		double bbx_max_y = -10000;
-		double bbx_min_x = 10000;
-		double bbx_min_y = 10000;
+		double bbx_max_x = -100000;
+		double bbx_max_y = -100000;
+		double bbx_min_x = 100000;
+		double bbx_min_y = 100000;
 		for (int i = 0; i < contour.size(); i++)
 		{
 			if (contour[i].x < bbx_min_x) bbx_min_x = contour[i].x;
@@ -2046,10 +2090,11 @@ namespace Tiling_tiles{
 
 	bool contour_is_simple(vector<Point2f> contour)
 	{
-		bool is_simple = true;
+		/*int first;
+		int second;
+		return !self_intersect(contour, first, second);*/
 		Polygon2 poly = vectorPolygon2(contour);
-		is_simple = poly.is_simple();
-		return !is_simple;
+		return poly.is_simple();
 	}
 
 	vector<Point2f> Polygon_2vector(Polygon_2 poly)

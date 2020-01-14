@@ -14,11 +14,11 @@ namespace Tiling_tiles{
 		prototile_mid = new Prototile();
 		prototile_second = new Prototile();
 		prototile_tem = new Prototile();
-		all_types = 490;
+		all_types = 400;
 		sampling_num = 3;
 		allnum_inner_c = 0;
-		match_window_width = 6;
-		tolerance = 5;
+		match_window_width = 10;
+		tolerance = 10;
 		morph_ratio = 0.7;
 		//memset(dp, 0, sizeof(dp));
 		//memset(dp_inver, 0, sizeof(dp_inver));
@@ -31,7 +31,7 @@ namespace Tiling_tiles{
 
 	void Tiling_opt::Tiling_clear()
 	{
-		all_types = 490;
+		all_types = 400;
 		sampling_num = 3;
 		allnum_inner_c = 0;
 		memset(dis, 0, sizeof(dis));
@@ -286,9 +286,9 @@ namespace Tiling_tiles{
 		vector<int> p_p_index = prototile_first->partition_points(imaname);
 		vector<int> ttt;
 		ttt.push_back(p_p_index[0]);
-		ttt.push_back(p_p_index[19]);
-		ttt.push_back(p_p_index[23]);
-		ttt.push_back(p_p_index[35]);
+		ttt.push_back(p_p_index[16]);
+		ttt.push_back(p_p_index[26]);
+		ttt.push_back(p_p_index[41]);
 		std::cout << "ttt: " << ttt.size() << endl;
 		vector<Point_f> cont_orig = prototile_first->contour_f;
 		vector<Point_f> cont_rota = prototile_first->contour_r; //旋转暂时用500个点
@@ -308,9 +308,9 @@ namespace Tiling_tiles{
 		}
 		mkdir(na);
 
-		int trans = Tanslation_rule(ttt, cont_orig, rootname);
+		int trans = 0;// Tanslation_rule(ttt, cont_orig, rootname);
 		int rotas = 0;// Rotation_rule(ttt, cont_rota, rootname);
-		int flips = 0;// Flipping_rule(ttt, cont_orig, rootname);
+		int flips = Flipping_rule(ttt, cont_orig, rootname);
 		int count = trans + rotas + flips;
 		std::cout << "succeed count: " << count << " trans: " << trans << " rotat: " << rotas << " flips: " << flips << endl;
 		//midtime = clock();
@@ -339,7 +339,7 @@ namespace Tiling_tiles{
 				string filename = rootname + "\\" + int2string(i) + "_Candidate_" + int2string(j) + ".png";
 				imwrite(filename, drawing_pro);
 			}*/
-			for (int j = 0; j < 5; j++)
+			for (int j = 0; j < 1; j++)
 			{
 				vector<pair<int, int>> path = cand_paths[i][j];
 				vector<Point_f> contour1 = prototile_mid->contour_f;
@@ -356,7 +356,7 @@ namespace Tiling_tiles{
 				double ratio_max = 100;
 				double result_score = 0;
 				int ratio = 20;
-				for (; ratio <= 95; ratio += 5)
+				for (; ratio <= 90; ratio += 5)
 				{
 					//ratio越高，中间形状保持越多，对应的morphed_A的形状保持越多，eve2越高
 					double ratio_d = ratio / 100.0;
@@ -420,18 +420,18 @@ namespace Tiling_tiles{
 					cout << "Warning! The " << j << " candidate patterns are not simple! No results!" << endl;
 					continue;
 				}
-				int halftone_num = 5000;
+				int halftone_num = 20000;
 				double offsetl = 0;
-				double scale_t = 0.7;
+				double scale_t = 0.5;
 				Mat drawing_tesse = Mat(halftone_num, halftone_num, CV_8UC3, Scalar(255, 255, 255));
 				vector<vector<Point2f>> all_tiles = tesse_all(morphed_A, return_p, all_inner_conts[i].type, halftone_num, offsetl, scale_t);
 				//vector<vector<Point2f>> all_tiles = tesse_all(final_pettern, mid_inter_morphed, all_inner_conts[i].type, halftone_num, offsetl);
 				//fileout("D://swan_after.txt", morphed_A);
 				//halftone
-				string imageName = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\504.png";
-				Mat src_gray = imread(imageName);
+				string imageName = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\505.png";
+				Mat src_gray = imread(imageName, IMREAD_GRAYSCALE);
 
-				//halftone_generater(src_gray, all_tiles, halftone_num);
+				halftone_generater(src_gray, all_tiles, halftone_num, scale_t);
 
 
 				//vector<vector<Point2f>> out_contours = extract_contours("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\502.png", halftone_num);
@@ -3254,7 +3254,7 @@ namespace Tiling_tiles{
 		vector<vector<double>> tar_mid = prototile_mid->compute_TAR(contour_mid, shape_com_mid);
 		std::cout << "contour_mid: " << contour_mid.size() << "  tar_mid: " << tar_mid.size() << endl;
 		int ttrt = 0;
-		for (int can_num = 0; can_num < total_num; can_num++)
+		for (int can_num = 350; can_num < total_num; can_num++)
 		{
 			int index = all_total[can_num].first;
 			//std::cout << index << "  : ";
@@ -3785,10 +3785,10 @@ namespace Tiling_tiles{
 		double area_score = (double)poly_ / poly2;
 		//cout << "area_score: " << area_score << "  ";
 		//std::cout << "dianshu:  " << poly1 << "    " << poly2 << "    " << poly_ << endl;
-		//std::cout << "total_score: " << total_score << " area_score" << area_score << endl;
 
 		double penalty_score = 0; //如果contour1有交叉，会扣除0.5分;contour2肯定不会有交叉
 		if (!contour_is_simple(contour1)) penalty_score = -0.5;
+		std::cout << "total_score: " << total_score << " area_score" << area_score << endl;
 		//score_mid_r = contourArea(contour[2]) / contourArea(contour[0]);
 		//score_sec_r = contourArea(contour[1]) / contourArea(contour[0]);
 		return total_score + area_score + penalty_score;

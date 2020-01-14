@@ -21,18 +21,17 @@ int main(int argc, char** argv)
 	Tiling_tiles::Prototile *prototile_third;
 	prototile_third = new Tiling_tiles::Prototile();
 	//////prototile_first->imgtocout(imagename1);
-	int f = 111;
+	int f = 1;
 	//0:result  1:simulation  2:批量读图  3:feature points  4:compute_TAR  5:min_minsmatch  6:extract_contour  7:compare and choose
 	//8:morphing  9:draw  10:math  11:check  12:thickness  13:color  14:windows 15:evalua_deformation
 	//17:2Dtriangle  18:求差 19：三角化  20:contour_dilate
 	if (f == 111) //test
 	{
-		double a = 0.0;
-		double b = 0;
-		int c = 0;
-		if (a == b &&b == c)
+		string imageName = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\507.png";
+		Mat src_gray = imread(imageName, IMREAD_GRAYSCALE);
+		for (int i = 0; i < src_gray.cols; i++)
 		{
-			cout << "====" << b-c<< endl;
+			cout<<i<<"  "<< (int)src_gray.at<uchar>(2, i) << endl;
 		}
 		//Point2f a(600, 200);
 		//vector<vector<Point2f>> contours = extract_contours("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\502.png");
@@ -139,7 +138,7 @@ int main(int argc, char** argv)
 	if (f == 0) //已有dataset, 计算结果
 	{
 
-		tiling_opt->tiliing_generation("273");
+		tiling_opt->tiliing_generation("307");
 
 		//批量计算
 		//int iii[20] = {48,75,80,124,220,218,212,228,248,251,280,312,317};//{484,483,482,482,480,479,478,474,472,467,451}; 
@@ -156,7 +155,7 @@ int main(int argc, char** argv)
 		tiling_opt->Tiling_clear();
 		int inner_one = 1;
 		int cand_one = 1;
-		jointPat sim_mid = tiling_opt->simulation_tar("293", inner_one, cand_one);  //
+		jointPat sim_mid = tiling_opt->simulation_tar("307", inner_one, cand_one);  //
 
 		//int mid = 0;
 		//vector<Point2f> new_c = tiling_opt->construct_joint(sim_mid,mid);
@@ -222,12 +221,24 @@ int main(int argc, char** argv)
 	}
 	if (f == 2) //批量读图
 	{
-		string image = "502";//int2string(i);
+		string image = "506";//int2string(i);
 
-		prototile_first->txtpath = "D:\\VisualStudioProjects\\DihedralTessellation\\contours\\";
-		prototile_first->dataroot = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\";
-		prototile_first->imgtocout(image); //default  raw=0
+		//prototile_first->txtpath = "D:\\VisualStudioProjects\\DihedralTessellation\\contours\\";
+		//prototile_first->dataroot = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\";
+		//prototile_first->imgtocout(image); //default  raw=0
 		
+		Mat src;
+		Mat src_gray;
+		//read image
+		String imageName = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\506.png"; // by default
+		cout << imageName << endl;
+		src = imread(imageName, IMREAD_COLOR);
+		cvtColor(src, src_gray, COLOR_BGR2GRAY);
+		GaussianBlur(src_gray, src_gray, Size(3, 3), 10, 10);
+		imwrite("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\507.png", src_gray);
+		//int t = (int)src_gray.ptr<uchar>(100,100);
+		//cout << (int)src_gray.ptr<uchar>(100)[100] << endl;
+
 		//prototile_first->setname(image);
 		//string filepath = "D:\\VisualStudioProjects\\DihedralTessellation\\contours\\aaa.txt";
 		//prototile_first->contour=prototile_first->readTxt();
@@ -1043,33 +1054,33 @@ int main(int argc, char** argv)
 	if (f == 20)
 	{
 		Polygon2 poly;
-		poly.push_back(Point2(100, 100));
+		/*poly.push_back(Point2(100, 100));
 		poly.push_back(Point2(105, 100));
 		poly.push_back(Point2(195, 100));
 		poly.push_back(Point2(200, 100));
 		poly.push_back(Point2(200, 105));
 		poly.push_back(Point2(200, 195));
 		poly.push_back(Point2(200, 200));
-		poly.push_back(Point2(100, 200));
+		poly.push_back(Point2(100, 200));*/
 		
-		if (poly.is_simple()) cout << "poly.is_simple();" << endl;
+		
 		ifstream in("D://swan_after.txt");
 		if (!in) cout << "file error!" << endl;
 		
-		//in >> poly;
-
+		in >> poly;
+		if (poly.is_simple()) cout << "poly.is_simple();" << endl;
 		//cout <<  poly<<endl;
-		Polygon2 off_c = offset_poly(-20, poly);//正值为腐蚀
-		cout << "off_c.size!" << off_c.size() << endl;
+		//Polygon2 off_c = offset_poly(-20, poly);//正值为腐蚀
+		//cout << "off_c.size!" << off_c.size() << endl;
 		vector<Point2f> vec_c = Polygon2vector(poly);
 		if (contour_is_simple(vec_c)) cout << "contour_is_simple" << endl;
-		cout << vec_c.size()<< endl;
-		vector<Point2f> vec_c2 = contour_dilate(vec_c,17);//Polygon2vector(off_c);
-		cout <<vec_c2.size() << endl;
-		Mat drawing_pro = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
-		draw_poly(drawing_pro, vec_c, Point2f(400,400));
-		draw_poly(drawing_pro, vec_c2, Point2f(1200, 400));
-		imwrite("D://asd.png", drawing_pro);
+		//cout << vec_c.size()<< endl;
+		//vector<Point2f> vec_c2 = contour_dilate(vec_c,17);//Polygon2vector(off_c);
+		//cout <<vec_c2.size() << endl;
+		//Mat drawing_pro = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
+		//draw_poly(drawing_pro, vec_c, Point2f(400,400));
+		//draw_poly(drawing_pro, vec_c2, Point2f(1200, 400));
+		//imshow("D://asd.png", drawing_pro);
 		
 
 		//Polygon2 out = offset_poly(15, poly);
