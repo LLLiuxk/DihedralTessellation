@@ -51,7 +51,6 @@ namespace Tiling_tiles{
 	vector<vector<Point2f>> extract_contours(string imaname, int halftone_num = 5000);
 	void halftone_gen(vector<vector<Point2f>> out_contours, vector<vector<Point2f>> tiling_contours, int halftone_num = 5000, double scale_= 1.0);
 	Mat halftone_generater(Mat src_gray, vector<vector<Point2f>> tiling_contours, int halftone_num = 5000, double scale_ = 1.0);
-	vector<Point2f> scale_contour(vector<Point2f> c, double scale_);
 
 	//math tool
 	Point2f center_p(vector<Point2f> contour_);

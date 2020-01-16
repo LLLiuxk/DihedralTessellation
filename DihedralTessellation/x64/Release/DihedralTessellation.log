@@ -1,8 +1,5 @@
-﻿生成启动时间为 2020/1/15 3:26:06。
-     1>项目“D:\VisualStudioProjects\DihedralTessellation\DihedralTessellation\DihedralTessellation.vcxproj”在节点 2 上(Clean 个目标)。
-     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppClean.targets(76,5): warning : 对路径“d:\visualstudioprojects\dihedraltessellation\x64\release\dihedraltessellation.exe”的访问被拒绝。
-     1>已完成生成项目“D:\VisualStudioProjects\DihedralTessellation\DihedralTessellation\DihedralTessellation.vcxproj”(Clean 个目标)的操作。
+﻿生成启动时间为 2020/1/17 3:39:15。
 
 生成成功。
 
-已用时间 00:00:00.03
+已用时间 00:00:00.07

@@ -29,7 +29,7 @@ namespace Tiling_tiles{
 	typedef struct Point_feature
 	{
 		Point2f point;
-		int type; //0:普通点 1:候选点 2:特征点
+		int type; //0:普通点 1:候选点 2:特征点 3:固定点
 	}Point_f;
 
 	typedef struct candPat_angle_index_error
@@ -140,7 +140,7 @@ namespace Tiling_tiles{
 		void match_candidate(int Tiling_index);
 
 		//shapes comparing and candidate contour choosing
-		vector<pair<int, bool>> compare_choose_TAR(vector<Point2f> inner_c); //得到选择出的pattern的序号和是否翻转的标志
+		vector<pair<int, bool>> compare_choose_TAR(vector<Point2f> inner_c,int final_num=10); //得到选择出的pattern的序号和是否翻转的标志,final_num返回前多少个
 		vector<pair<int, bool>> quick_choose_TAR(vector<Point2f> inner_c); //得到选择出的pattern的序号和是否翻转的标志
 
 		double tar_mismatch(vector<vector<double>> first_arr, vector<vector<double>> second_arr, vector<pair<int, int>>& path, int &sec_shift, int width = 4);//点对应匹配的筛选框宽度
@@ -174,6 +174,7 @@ namespace Tiling_tiles{
 		//simulation 
 		vector<Point2f> simulation_mid(string imaname, int inner_one, int cand_one);
 		jointPat simulation_tar(string imaname, int inner_one, int cand_one);
+		void simulation_specify(string imaname);
 
 		//compute joint
 		void pattern_joint(jointPat pattern);
