@@ -14,7 +14,7 @@ namespace Tiling_tiles{
 		prototile_mid = new Prototile();
 		prototile_second = new Prototile();
 		prototile_tem = new Prototile();
-		all_types = 400;
+		all_types = 490;
 		sampling_num = 3;
 		allnum_inner_c = 0;
 		match_window_width = 10;
@@ -31,7 +31,7 @@ namespace Tiling_tiles{
 
 	void Tiling_opt::Tiling_clear()
 	{
-		all_types = 400;
+		all_types = 490;
 		sampling_num = 3;
 		allnum_inner_c = 0;
 		memset(dis, 0, sizeof(dis));
@@ -164,8 +164,8 @@ namespace Tiling_tiles{
 		}
 		mkdir(na);
 
-		int trans =  Tanslation_rule(p_p_index, cont_orig, rootname);
-		int flips =  Flipping_rule(p_p_index, cont_orig, rootname);
+		int trans = 0;// Tanslation_rule(p_p_index, cont_orig, rootname);
+		int flips = 0;// Flipping_rule(p_p_index, cont_orig, rootname);
 		int rotas =  Rotation_rule(p_p_index, cont_rota, rootname);
 
 		int count = trans + rotas + flips;
@@ -454,6 +454,265 @@ namespace Tiling_tiles{
 		//return contour_inner;
 	}
 
+	void Tiling_opt::simulation_specify(string imaname)
+	{
+		int candi_pattern = 399;
+		clock_t start, midtime, finish;
+		start = clock();
+		int num_c = 1;//选择(num_c+1)*100个点
+		vector<int> p_p_index = prototile_first->partition_points(imaname);
+		int fourindex[4] = { 0, 16, 26, 41 };
+		vector<int> ttt;
+		ttt.push_back(p_p_index[fourindex[0]]);
+		ttt.push_back(p_p_index[fourindex[1]]);
+		ttt.push_back(p_p_index[fourindex[2]]);
+		ttt.push_back(p_p_index[fourindex[3]]);
+		string point_id = int2string(fourindex[0]) + "-" + int2string(fourindex[1]) + "-" + int2string(fourindex[2]) + "-" + int2string(fourindex[3]);
+		std::cout << "ttt: " << ttt.size() << endl;
+		vector<Point_f> cont_orig = prototile_first->contour_f;
+		vector<Point_f> cont_rota = prototile_first->contour_r; //旋转暂时用500个点
+		//int contsize = contour_.size();
+		//Point2f cent_cont = center_p(contour_);
+		//vector<Point2f> contour_ = prototile_first->contour;
+		load_dataset();
+		com_all_TARs(num_c);
+		string rootname = "D:\\VisualStudioProjects\\DihedralTessellation\\result200\\specific\\" + prototile_first->contourname;
+		//string rootname = "D:\\VisualStudioProjects\\DihedralTessellation\\result_tuning\\" + prototile_first->contourname;
+		const char *na = rootname.c_str();
+		if (_access(na, 0) != -1)
+
+		{
+			printf("The  file/dir had been Exisit \n");
+			//return;
+		}
+		mkdir(na);
+
+		int trans = 0;// Tanslation_rule(ttt, cont_orig, rootname);
+		int rotas = 0;// Rotation_rule(ttt, cont_rota, rootname);
+		int flips = Flipping_rule(ttt, cont_orig, rootname);
+		int count = trans + rotas + flips;
+		std::cout << "succeed count: " << count << " trans: " << trans << " rotat: " << rotas << " flips: " << flips << endl;
+		//midtime = clock();
+		//std::cout << "Time consumption: " << (double)(midtime - start) / CLOCKS_PER_SEC << " s " << endl;
+		if (count == 0) std::cout << "no right placement" << endl;
+
+		int all_inner_num = all_inner_conts.size();
+		cout << "all_inner_num: " << all_inner_num << endl;
+		candidate_contours.swap(vector<vector<vector<Point2f>>>());
+		cand_paths.swap(vector<vector<vector<pair<int, int>>>>());
+
+		for (int i = 0; i < all_inner_num; i++)
+		{
+			vector<Point2f> compare_one;
+			mid_inter = all_inner_conts[i].in_interval;
+			//cout << "Tiling_index: " << compare_one.size() << "   " << mid_inter.size()<< endl;
+			prototile_mid->Pro_clear();
+			prototile_mid->contour_f = all_inner_conts[i].in_contour;
+			prototile_mid->contour = p_f2p2f(prototile_mid->contour_f);
+			compare_one = prototile_mid->contour;
+			vector<pair<int, bool>> candidate_patterns = compare_choose_TAR(compare_one, 100);//当前中间图案对应的候选图案,返回前100个
+			cout << "This is the " << i << "th inner contour" << endl <<
+				"candidate_patterns size: " << candidate_patterns.size() << endl;
+			//对中间图案采样200点并重新确认候选点坐标
+			//mid_inter = joint_relocate(all_inner_conts[Tiling_index].in_contour, all_inner_conts[Tiling_index].in_interval, num_c);
+
+			//vector<Point2f> contour_inner = prototile_mid->contour; // 
+			double sc_inner = 0;
+			vector<vector<double>> inner_tar = prototile_mid->compute_TAR(compare_one, sc_inner);
+			int flag = -1;
+			for (int t = 0; t < candidate_patterns.size(); t++)
+			{
+				if (candidate_patterns[t].first == candi_pattern)
+				{
+					cout << "This candidate ranks " << t << endl;
+					flag = t;
+				}
+			}
+			if (flag == -1)
+			{
+				cout << "This candidate is not in the top 100!" << endl;
+				return;
+			}
+			prototile_second->loadPoints(contour_dataset[candi_pattern]);
+			vector<Point2f> contour_cand;// = prototile_second->contour_sample[1];
+			vector<vector<double>> cand_tar;
+			if (candidate_patterns[flag].second)
+			{
+				//std::cout << "it is flip" << endl;
+				cand_tar = all_con_tars_flip[candi_pattern];
+				contour_cand = prototile_second->contour_sample_flip[1];
+			}
+			else
+			{
+				//std::cout << "it is not flip" << endl;
+				cand_tar = all_con_tars[candi_pattern];
+				contour_cand = prototile_second->contour_sample[1];
+			}
+			vector<pair<int, int>> path;
+			int shift = 0;
+			int width = match_window_width; //
+			double re = tar_mismatch(inner_tar, cand_tar, path, shift, width);
+			vector<Point2f> contour_mid;
+			int c2size = contour_cand.size();
+			for (int m = shift; m < shift + c2size; m++)
+			{
+				contour_mid.push_back(contour_cand[m % c2size]);
+			}
+			std::cout << "c1: " << compare_one.size() << "  c2: " << c2size << "  c3: " << contour_mid.size() << endl;
+			contour_cand = contour_mid;
+			double scale = arcLength(compare_one, true) / arcLength(contour_cand, true);
+			for (int j = 0; j < contour_cand.size(); j++)
+				contour_cand[j] = contour_cand[j] * scale;
+			Point2f cen1 = center_p(compare_one);
+			Point2f cen2 = center_p(contour_cand);
+			Point2f shift2 = cen1 - cen2;
+			for (int i = 0; i < contour_cand.size(); i++) contour_cand[i] = contour_cand[i] + shift2;
+
+			double length_min = 1000000;
+			int angle_min = 0;
+			int times = 0;
+			double angl_al = 0;
+			Point2f sh_al = Point2f(0, 0);
+			Point2f shift_t = Point2f(1000, 1000);
+			cout << "  path_size:  " << path.size() << "  cent:" << cen2 << endl;
+			while (times < 3 || length_two_point2f(shift_t, Point2f(0, 0)) > 100 || angle_min > 10)
+			{
+				length_min = 1000000;
+				angle_min = 0;
+				cen2 = center_p(contour_cand);
+				//找到距离最近的角度
+				for (int angle = 0; angle < 360; angle = angle + 5)
+				{
+					double leng = 0;
+					Mat rot_mat(2, 3, CV_32FC1);
+					rot_mat = getRotationMatrix2D(cen2, angle, 1);
+					cv::transform(contour_cand, contour_mid, rot_mat);
+					for (int m = 0; m < path.size(); m++)
+					{
+						leng += length_two_point2f(compare_one[path[m].first], contour_mid[path[m].second]);
+					}
+					if (leng < length_min)
+					{
+						angle_min = angle;
+						length_min = leng;
+					}
+				}
+				Mat rot_mat1(2, 3, CV_32FC1);
+				rot_mat1 = getRotationMatrix2D(cen2, angle_min, 1);
+				cv::transform(contour_cand, contour_mid, rot_mat1);
+				angl_al += angle_min;
+				//contour_cand = contour_mid;
+				//移动重心
+				shift_t = Point2f(0, 0);
+				for (int m = 0; m < path.size(); m++)
+				{
+					shift_t += compare_one[path[m].first] - contour_mid[path[m].second];
+				}
+				shift_t = Point2f(shift_t.x / path.size(), shift_t.y / path.size());
+				for (int j = 0; j < contour_cand.size(); j++)
+				{
+					contour_cand[j] = contour_mid[j] + shift_t;
+				}
+				sh_al += shift_t;
+				times++;
+			}
+			vector<Point_f> contour1 = prototile_mid->contour_f;
+			vector<Point2f> contour_ = contour_cand;
+			vector<Point_f> contour2 = p2f2p_f(contour_);
+			double con_sc;
+			vector<vector<double>> contour2_tar;
+			//求contour_对应的point_f和tar值
+			//contour2_tar = computeTAR(contour_, con_sc, 0.5);
+			double angle = 165;
+			vector<int> cand_points_index = feature_points(contour_, Feature_Min, Feature_Max, cos(PI * angle / 180));
+			int can_fea_num = cand_points_index.size();
+			for (int i = 0; i < can_fea_num; i++) contour2[cand_points_index[i]].type = 2;
+			double ratio_max = 100;
+			double result_score = 0;
+			int ratio = 20;
+			for (; ratio <= 90; ratio += 5)
+			{
+				//ratio越高，中间形状保持越多，对应的morphed_A的形状保持越多，eve2越高
+				double ratio_d = ratio / 100.0;
+				cout << "ratio_d: " << ratio_d << "  ";
+				vector<Point2f> final_pettern = morphing(contour1, contour2, path, ratio_d);
+				//这里final_pettern的点数不一定为200点，但是后续的计算中会重新采样
+				vector<int> return_p;
+				vector<vector<Point2f>> four_place;
+				vector<Point2f> morphed_A = extract_contour(final_pettern, mid_inter_morphed, return_p, four_place, all_inner_conts[i].type);
+
+				return_p.swap(vector<int>());
+				four_place.swap(vector<vector<Point2f>>());
+				vector<Point2f> morphed_A_ori = extract_contour(prototile_mid->contour, mid_inter, return_p, four_place, all_inner_conts[i].type);
+
+				double evaluation1 = evalua_deformation(final_pettern, contour_);
+				double evaluation2 = evalua_deformation(morphed_A, morphed_A_ori);
+				cout << "evaluation1: " << evaluation1 << "   " << "evaluation2: " << evaluation2 << "  ";
+				double score_ave = (1 - ratio_d)*evaluation2 + ratio_d*evaluation1;
+				cout << "score: " << score_ave << endl;
+				if (score_ave > result_score)
+				{
+					result_score = score_ave;
+					ratio_max = ratio_d;
+				}
+			}
+
+			vector<Point2f> final_pettern = morphing(contour1, contour2, path, ratio_max);
+
+			cout << "zahuishi?*****************" << endl;
+			vector<int> return_p;
+			vector<vector<Point2f>> four_place;
+			vector<Point2f> morphed_A = extract_contour(final_pettern, mid_inter_morphed, return_p, four_place, all_inner_conts[i].type);
+			//vector<int> return_p2;
+			//vector<vector<Point2f>> four_place2;
+			//vector<Point2f> morphed_A_ori = extract_contour(prototile_mid->contour, mid_inter, return_p2, four_place2, all_inner_conts[i].type);
+
+			cout << "ratio_max: " << ratio_max << "  --  result_score:  " << result_score << endl;
+			Mat drawing_pro = Mat(800, 3200, CV_8UC3, Scalar(255, 255, 255));
+			draw_poly(drawing_pro, prototile_mid->contour, Point2f(400, 400));
+			draw_poly(drawing_pro, contour_, Point2f(1200, 400));
+			draw_poly(drawing_pro, final_pettern, Point2f(2000, 400));
+			
+			prototile_tem->loadPoints(final_pettern);
+			draw_poly(drawing_pro, morphed_A, Point2f(2800, 400));
+			string filename = rootname + "\\" + point_id + "_Candidate_" + int2string(candi_pattern) + ".png";
+			imwrite(filename, drawing_pro);
+
+			if (!contour_is_simple(morphed_A) || !contour_is_simple(final_pettern))
+			{
+				cout << "Warning! The " << candi_pattern << " candidate patterns are not simple! No results!" << endl;
+				continue;
+			}
+			int halftone_num = 20000;
+			double offsetl = 0;
+			double scale_t = 0.5;
+			Mat drawing_tesse = Mat(halftone_num, halftone_num, CV_8UC3, Scalar(255, 255, 255));
+			vector<vector<Point2f>> all_tiles = tesse_all(morphed_A, return_p, all_inner_conts[i].type, halftone_num, offsetl, scale_t);
+			//vector<vector<Point2f>> all_tiles = tesse_all(final_pettern, mid_inter_morphed, all_inner_conts[i].type, halftone_num, offsetl);
+			//fileout("D://swan_after.txt", morphed_A);
+			//halftone
+			/*string imageName = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\505.png";
+			Mat src_gray = imread(imageName, IMREAD_GRAYSCALE);
+
+			halftone_generater(src_gray, all_tiles, halftone_num, scale_t);*/
+
+			//vector<vector<Point2f>> out_contours = extract_contours("D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\502.png", halftone_num);
+			//halftone_gen(out_contours, all_tiles, halftone_num, scale_t);
+			cout << "The num of tiles in final tesse result: " << all_tiles.size() << endl;
+			for (int m = 0; m < all_tiles.size(); m++)
+			{
+				//框架图
+				//vector<Point2f> tile_dilate = contour_dilate(all_tiles[m], 5);
+				//vector<Point2f> tile_erode = contour_erode(all_tiles[m], 8);
+				////draw_poly(drawing_tesse, tile_dilate, center_p(tile_dilate));
+				////draw_poly(drawing_tesse, tile_erode, center_p(tile_erode), 1);
+				draw_poly(drawing_tesse, all_tiles[m], center_p(all_tiles[m]));
+			}
+			string filename2 = rootname + "\\" + point_id + "_TessellationResult_" + int2string(candi_pattern) + ".png";
+			imwrite(filename2, drawing_tesse);
+		}
+	}
+
 	int Tiling_opt::Tanslation_rule(vector<int> part_points_index, vector<Point_f> &contour_s, string rootname)
 	{
 		int trans = 0;
@@ -526,25 +785,22 @@ namespace Tiling_tiles{
 
 	int Tiling_opt::Rotation_rule(vector<int> part_points_index, vector<Point_f> &contour_r, string rootname)
 	{
-		//part_points_index保存的初始的所有候选点集，需要保留用作后续的变形。但是保留下标无法应对后续的插值等操作
-		//因此首先根据初始点集计算应插值的坐标，然后保留四点坐标，并记录应插值的点（过程中插值会导致后续的误差）
-		//然后统一将应插值的点插入到轮廓点集中及候选点集中，然后对点集进行保留候选点集的重采样，保证点数在200
-		//然后根据坐标，将候选点集和所有的四点进行下标重定位
+		//不再局限于使用统一的rota轮廓，因为那样需要把所有的点插入后再计算
 		int rotas = 0;
 		int ppindex = part_points_index.size();
 		vector<Point2f> contour_rota = p_f2p2f(contour_r);  //通过contour_rota来计算点的下标
 		Point2f cent_cont = center_p(contour_rota);
-
+		cout << "ppindexsize:  " << ppindex << "contour_rotasize: " << contour_rota.size() << endl;
 		vector<pair<Point2f, int>> insert_points;
-		vector<vector<Point2f>> all_result_points;
+		vector<vector<Point2f>> all_result_points; //所有可能的四个点
 		vector<vector<int>> all_result_index; //通过重新定位确定点的下标序列
 		for (int i = 0; i < ppindex; i++)
 		{
 			for (int j = i + 1; j < ppindex; j++)
 			{
 				//cout << i << " " << part_points_index[i] << "  " << j << "  "<<part_points_index[j] << endl;
-				vector<Point2f> inner_contour;
-				vector<int> mid_interval; //mid_interval存储的是组合成的inner 的分段连接点
+				//vector<Point2f> inner_contour;
+				//vector<int> mid_interval; //mid_interval存储的是组合成的inner 的分段连接点
 				vector<int> mark_13;
 				mark_13.push_back(part_points_index[i]);
 				mark_13.push_back(part_points_index[j]);
@@ -557,7 +813,7 @@ namespace Tiling_tiles{
 			}
 		}
 		int allinsertsize = insert_points.size();
-
+		cout << "allinsertsize : " << allinsertsize << endl;
 		//将新点插入轮廓点集，先对insert_points进行从大到小排序，然后从后往前排，因为insert里记录的也是序列，如果从前往后就会出错
 		int ii, jj;
 		pair<Point2f, int> temp;
@@ -580,6 +836,7 @@ namespace Tiling_tiles{
 						insert_points[jj + 1] = temp;
 					}
 				}
+
 		//排序后对初始轮廓contour_r进行插值，并将插值点放入到候选点集中，此时候选点集是一个有序点集
 		for (int num = 0; num < allinsertsize; num++)
 		{
@@ -588,13 +845,22 @@ namespace Tiling_tiles{
 			one_p.type = 1;
 			insert_vector(contour_r, insert_points[num].second, one_p);
 		}
-		
+		Mat drawing2 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		for (int g = 0; g < contour_r.size(); g++)
+		{
+			circle(drawing2, contour_r[g].point, 1, Scalar(0, 0, 0), -1);
+		}
+		for (int g = 0; g < insert_points.size(); g++)
+		{
+			circle(drawing2, insert_points[g].first, 1, Scalar(0, 0, 255), -1);
+		}
+		imwrite("D://rotation.png", drawing2);
 		//此时轮廓中有不定个点，需要维持200个点的数量。所以根据候选点集对轮廓进行重采样
 		//重采样之前需要有候选点集的下标序列
 		vector<Point_f> part_points_;  //初始候选点集的坐标
 		vector<int> pp_index;
 		int contsize = contour_r.size();
-		cout << "The contsize after insert new points:  " << contsize << endl;
+		cout << "The contsize after inserting new points:  " << contsize << endl;
 		for (int it = 0; it < contsize; it++)
 		{
 			if (contour_r[it].type != 0)
@@ -603,7 +869,7 @@ namespace Tiling_tiles{
 				pp_index.push_back(it);
 			}
 		}
-		
+		cout << "pp_indexsize: " << pp_index.size() << endl;
 		//根据候选点集采样
 		double length = contour_length(p_f2p2f(contour_r));
 		int sample_num = 200;
@@ -649,8 +915,18 @@ namespace Tiling_tiles{
 		}
 
 		int ppointsize = part_points_.size();
-		std::cout << "The num of points with higher weight:" << ppointsize << endl;
-		
+		std::cout << "The num of points with higher weight:" << ppointsize << endl << "all points after inserting: " << contour_sam.size()<<endl<<endl;
+		Mat drawing21 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		for (int g = 0; g < contour_sam.size(); g++)
+		{ 
+			if (contour_sam[g].type>0)	circle(drawing21, contour_sam[g].point, 1, Scalar(0, 255, 0), -1);
+			else circle(drawing21, contour_sam[g].point, 1, Scalar(0, 0, 0), -1);
+		}
+		//for (int g = 0; g < insert_points.size(); g++)
+		//{
+		//	circle(drawing2, insert_points[g].first, 1, Scalar(0, 255, 0), -1);
+		//}
+		imwrite("D://rotation2.png", drawing21);
 		//最后检测数组里是否为200个点
 		int dis = contour_sam.size();
 		if (dis != 200)
@@ -749,8 +1025,254 @@ namespace Tiling_tiles{
 		return rotas;
 	}
 
+	/*int Tiling_opt::Rotation_rule(vector<int> part_points_index, vector<Point_f> &contour_r, string rootname)
+	{
+		//part_points_index保存的初始的所有候选点集，需要保留用作后续的变形。但是保留下标无法应对后续的插值等操作
+		//因此首先根据初始点集计算应插值的坐标，然后保留四点坐标，并记录应插值的点（过程中插值会导致后续的误差）
+		//然后统一将应插值的点插入到轮廓点集中及候选点集中，然后对点集进行保留候选点集的重采样，保证点数在200
+		//然后根据坐标，将候选点集和所有的四点进行下标重定位
+		int rotas = 0;
+		int ppindex = part_points_index.size();
+		vector<Point2f> contour_rota = p_f2p2f(contour_r);  //通过contour_rota来计算点的下标
+		Point2f cent_cont = center_p(contour_rota);
+		cout << "ppindexsize:  " << ppindex << "contour_rotasize: " << contour_rota.size() << endl;
+		vector<pair<Point2f, int>> insert_points;
+		vector<vector<Point2f>> all_result_points; //所有可能的四个点
+		vector<vector<int>> all_result_index; //通过重新定位确定点的下标序列
+		for (int i = 0; i < ppindex; i++)
+		{
+			for (int j = i + 1; j < ppindex; j++)
+			{
+				//cout << i << " " << part_points_index[i] << "  " << j << "  "<<part_points_index[j] << endl;
+				//vector<Point2f> inner_contour;
+				//vector<int> mid_interval; //mid_interval存储的是组合成的inner 的分段连接点
+				vector<int> mark_13;
+				mark_13.push_back(part_points_index[i]);
+				mark_13.push_back(part_points_index[j]);
+				vector<vector<Point2f>> all_result_p = find_rota_tilingV(contour_rota, mark_13, insert_points);
+				int allresultsize = all_result_p.size();
+				for (int num = 0; num < allresultsize; num++)
+				{
+					all_result_points.push_back(all_result_p[num]);
+				}
+			}
+		}
+		int allinsertsize = insert_points.size();
+		cout << "allinsertsize : " << allinsertsize << endl;
+		//将新点插入轮廓点集，先对insert_points进行从大到小排序，然后从后往前排，因为insert里记录的也是序列，如果从前往后就会出错
+		int ii, jj;
+		pair<Point2f, int> temp;
+		for (ii = 0; ii < allinsertsize - 1; ii++)
+			for (jj = 0; jj <allinsertsize - 1 - ii; jj++)
+				if (insert_points[jj].second < insert_points[jj + 1].second)
+				{
+					temp = insert_points[jj];
+					insert_points[jj] = insert_points[jj + 1];
+					insert_points[jj + 1] = temp;
+				}
+				else if (insert_points[jj].second == insert_points[jj + 1].second)  //可能会遇到对同一条边插值的情况，在这里也对其区分清楚
+				{
+					double leng1 = length_two_point2f(insert_points[jj].first, contour_rota[insert_points[jj].second]);
+					double leng2 = length_two_point2f(insert_points[jj + 1].first, contour_rota[insert_points[jj + 1].second]);
+					if (leng1 < leng2)
+					{
+						temp = insert_points[jj];
+						insert_points[jj] = insert_points[jj + 1];
+						insert_points[jj + 1] = temp;
+					}
+				}
+
+		//排序后对初始轮廓contour_r进行插值，并将插值点放入到候选点集中，此时候选点集是一个有序点集
+		for (int num = 0; num < allinsertsize; num++)
+		{
+			Point_f one_p;
+			one_p.point = insert_points[num].first;
+			one_p.type = 1;
+			insert_vector(contour_r, insert_points[num].second, one_p);
+		}
+		Mat drawing2 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		for (int g = 0; g < contour_r.size(); g++)
+		{
+			circle(drawing2, contour_r[g].point, 1, Scalar(0, 0, 0), -1);
+		}
+		for (int g = 0; g < insert_points.size(); g++)
+		{
+			circle(drawing2, insert_points[g].first, 1, Scalar(0, 0, 255), -1);
+		}
+		imwrite("D://rotation.png", drawing2);
+		//此时轮廓中有不定个点，需要维持200个点的数量。所以根据候选点集对轮廓进行重采样
+		//重采样之前需要有候选点集的下标序列
+		vector<Point_f> part_points_;  //初始候选点集的坐标
+		vector<int> pp_index;
+		int contsize = contour_r.size();
+		cout << "The contsize after inserting new points:  " << contsize << endl;
+		for (int it = 0; it < contsize; it++)
+		{
+			if (contour_r[it].type != 0)
+			{
+				part_points_.push_back(contour_r[it]);
+				pp_index.push_back(it);
+			}
+		}
+		cout << "pp_indexsize: " << pp_index.size() << endl;
+		//根据候选点集采样
+		double length = contour_length(p_f2p2f(contour_r));
+		int sample_num = 200;
+		double Lambda = length / (sample_num + 10);  //采样间隔
+		vector<Point_f> contour_sam;
+		Point_f sample = contour_r[0];
+		int ppnum = 0;
+		for (int nn = 1; nn <= contsize;nn++)
+		{
+			if (length_two_point2f(sample.point, part_points_[ppnum].point) < Lambda)
+			{
+				sample = part_points_[ppnum];
+				contour_sam.push_back(sample);	
+				nn = pp_index[ppnum] + 1;
+				ppnum++;			
+			}
+			else
+			{
+				contour_sam.push_back(sample);
+			}
+			//计算新的sample点
+			double length_ = length_two_point2f(sample.point, contour_r[nn%contsize].point);
+			if (length_ > Lambda)
+			{
+				Point2f vec = unit_vec(contour_r[nn%contsize].point - sample.point);
+				sample.point = sample.point + Lambda * vec;
+				sample.type = 0;
+				nn = nn - 1;
+			}
+			else if (nn < contsize)
+			{
+				while ((length_ + length_two_point2f(contour_r[nn].point, contour_r[(nn + 1) % contsize].point)) < Lambda)
+				{
+					length_ = length_ + length_two_point2f(contour_r[nn].point, contour_r[(nn + 1) % contsize].point);
+					nn++;
+					if (nn > contsize - 1) break;
+				}
+				if (nn > contsize - 1) break;
+				Point2f vec = unit_vec(contour_r[(nn + 1) % contsize].point - contour_r[nn].point);
+				sample.point = contour_r[nn].point + (Lambda - length_) * vec;
+				sample.type = 0;
+			}		
+		}
+
+		int ppointsize = part_points_.size();
+		std::cout << "The num of points with higher weight:" << ppointsize << endl << "all points after inserting: " << contour_sam.size()<<endl<<endl;
+		Mat drawing21 = Mat(800, 800, CV_8UC3, Scalar(255, 255, 255));
+		for (int g = 0; g < contour_sam.size(); g++)
+		{ 
+			if (contour_sam[g].type>0)	circle(drawing21, contour_sam[g].point, 1, Scalar(0, 255, 0), -1);
+			else circle(drawing21, contour_sam[g].point, 1, Scalar(0, 0, 0), -1);
+		}
+		//for (int g = 0; g < insert_points.size(); g++)
+		//{
+		//	circle(drawing2, insert_points[g].first, 1, Scalar(0, 255, 0), -1);
+		//}
+		imwrite("D://rotation2.png", drawing21);
+		//最后检测数组里是否为200个点
+		int dis = contour_sam.size();
+		if (dis != 200)
+		{
+			dis = dis - 200;
+			int changenum = 50;
+			while (dis != 0)
+			{
+				if (dis < 0) //添加点
+				{				
+					Point_f one_p;
+					one_p.point = 0.5 * (contour_sam[changenum].point + contour_sam[changenum + 1].point);
+					one_p.type = 0;
+					insert_vector(contour_sam, changenum, one_p);
+					changenum = changenum + 2;
+					dis = dis + 1;
+				}
+				else //删除点
+				{
+					if (contour_sam[changenum].type == 0)
+					{
+						Point_f one_p = delete_vector(contour_sam, changenum);
+						dis = dis - 1;
+					}
+					changenum++;
+				}
+			}
+		}
+		contour_r = contour_sam;
+		cout << "The consize after resampling: " << contour_sam.size()<< endl;
+		//确定候选点集part_points_的下标，以及all_result_points里的点的下标
+		part_points_index.swap(vector<int>());
+		contsize = contour_r.size();
+		for (int n = 0; n < contsize; n++)
+		{
+			if (contour_r[n].type != 0)
+				part_points_index.push_back(n);
+		}
+		std::cout << "Relocate the index of part_points:" << part_points_index.size() << endl;
+
+		vector<Point2f> contourroat = p_f2p2f(contour_r);
+		//重新确定之前排列候选点的下标
+		for (int n = 0; n < all_result_points.size(); n++)
+		{
+			vector<int> one_result;
+			int resultnum = all_result_points[n].size();
+			for (int m = 0; m < resultnum; m++)
+			{
+				one_result.push_back(location(contourroat, all_result_points[n][m]));
+			}
+			all_result_index.push_back(one_result);
+		}
+		int allindexsize = all_result_index.size();
+		std::cout << "All possible tiling index:" << allindexsize << endl;
+		
+		for (int num = 0; num < allindexsize; num++)
+		{
+			vector<Point_f> inner_contour;
+			vector<int> mid_interval; //mid_interval存储的是组合成的inner 的分段连接点
+			//vector<int> result_index; //1.translation：以下所有该类摆放都以1-3,2-4为轴摆放
+			Mat drawing1 = Mat(800, 1600, CV_8UC3, Scalar(255, 255, 255));
+			if (rotation_placement(all_result_index[num], contour_r, inner_contour, mid_interval, drawing1))
+			{
+				std::cout << ++rotas << " Rotation succeed" << endl;
+				allnum_inner_c++;
+				inPat one_situation;
+				one_situation.in_contour = inner_contour;
+				one_situation.in_interval = mid_interval;
+				one_situation.type = 1;
+				all_inner_conts.push_back(one_situation);
+				Point2f shift2 = Point2f(400, 400) - cent_cont;
+				for (int jj = 0; jj < contsize; jj++)
+				{
+					if (contour_r[jj].type == 0)
+					{
+						circle(drawing1, contour_r[jj].point + shift2, 1, Scalar(0, 0, 0), -1);
+					}
+					else 
+					{
+						circle(drawing1, contour_r[jj].point + shift2, 4, Scalar(0, 0, 255), -1);
+					}
+					//MyLine(drawing4, prototile_first->contour_sample[sam_num][j] - shift1, prototile_first->contour_sample[sam_num][j + 1] - shift1, "red");
+				}
+				for (int jj = 0; jj < 4; jj++)
+				{
+					circle(drawing1, contour_r[all_result_index[num][jj]].point + shift2, 8, Scalar(0, 255, 0), -1);
+				}
+				string filename = rootname + "\\" + int2string(allnum_inner_c - 1) + "rota_PlacingResult.png";
+				imwrite(filename, drawing1);
+				//Mat draw = drawing1(Rect(800, 0, 800, 800));
+				//all_tiling_Mat.push_back(draw);
+			}
+			inner_contour.swap(vector<Point_f>());
+			mid_interval.swap(vector<int>());
+		}
+		return rotas;
+	}*/
+
 	vector<vector<Point2f>> Tiling_opt::find_rota_tilingV(vector<Point2f>&cont, vector<int> mark_13, vector<pair<Point2f, int>> &all_insert_points)
 	{
+		//返回的是所有可能的四点情况
 		vector<vector<Point2f>> all_result_points;
 		int contsize = cont.size();
 		double line_length = arcLength(cont, 1) / 2;
@@ -3226,7 +3748,7 @@ namespace Tiling_tiles{
 		return false;
 	}
 
-	vector<pair<int,bool>> Tiling_opt::compare_choose_TAR(vector<Point2f> inner_c)
+	vector<pair<int, bool>> Tiling_opt::compare_choose_TAR(vector<Point2f> inner_c, int final_num)
 	{
 		int method = 2;
 		int match_width = match_window_width;
@@ -3254,7 +3776,7 @@ namespace Tiling_tiles{
 		vector<vector<double>> tar_mid = prototile_mid->compute_TAR(contour_mid, shape_com_mid);
 		std::cout << "contour_mid: " << contour_mid.size() << "  tar_mid: " << tar_mid.size() << endl;
 		int ttrt = 0;
-		for (int can_num = 350; can_num < total_num; can_num++)
+		for (int can_num = 0; can_num < total_num; can_num++)
 		{
 			int index = all_total[can_num].first;
 			//std::cout << index << "  : ";
@@ -3306,7 +3828,7 @@ namespace Tiling_tiles{
 				}
 		//std::cout << "the fianl order: " << endl;
 		vector<pair<int, bool>> all_total_mid;
-		for (int t = 0; t < 10; t++)
+		for (int t = 0; t < final_num; t++)
 		{
 			all_total_mid.push_back(all_final[t]);
 			std::cout << "order: " << all_final[t].first << "  flip: " << all_final[t].second << " value: " << all_result[t] << " complxeity: " << all_shape_complexity[all_final[t].first] << endl;
