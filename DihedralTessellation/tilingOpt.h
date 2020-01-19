@@ -29,7 +29,7 @@ namespace Tiling_tiles{
 	typedef struct Point_feature
 	{
 		Point2f point;
-		int type; //0:普通点 1:候选点 2:特征点
+		int type; //0:普通点 1:候选点 2:特征点 3:固定点
 	}Point_f;
 
 	typedef struct candPat_angle_index_error

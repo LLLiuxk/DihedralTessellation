@@ -460,6 +460,7 @@ namespace Tiling_tiles{
 		{
 			circle(drawing5, contour[feature_p[j]], 6, Scalar(0, 0, 255), -1);
 		}
+		circle(drawing5, contour[feature_p[0]], 6, Scalar(0, 255, 0), -1);
 		for (int j = 0; j < all_order.size(); j++)
 		{
 			circle(drawing5, contour[all_order[j]], 3, Scalar(128, 128, 128), -1);

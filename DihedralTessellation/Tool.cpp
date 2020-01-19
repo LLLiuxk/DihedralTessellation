@@ -1600,43 +1600,51 @@ namespace Tiling_tiles{
 		double angle_start = 2; //起始点对应的值
 		int contoursize = contour_.size();
 		double arl = arcLength(contour_, true);
-		dmin = dmin * arl / contoursize;
-		dmax = dmax * arl / contoursize;
+		dmin = dmin * arl / 500;
+		dmax = dmax * arl / 500;
 		double dmid = dmin * 3;
-
+		//cout << dmin << "  " << dmax << "  " << dmid << endl;
 		for (int i = 0; i < contoursize; i++)
 		{
 			int k = 1;
 			double length_l = length_two_point2f(contour_[i], contour_[(i + contoursize - k) % contoursize]);
 			double length_r = length_two_point2f(contour_[i], contour_[(i + k) % contoursize]);
-			//while (length_l < dmin || length_r < dmin)
-			//{
-			//	k++;
-			//	length_l = length_two_point2f(contour_[i], contour_[(i + contoursize - k) % contoursize]);
-			//	length_r = length_two_point2f(contour_[i], contour_[(i + k) % contoursize]);
-			//}
-			//cout << "ok" << endl;
+			//cout << contour_[i] << "   " << contour_[(i + contoursize - k) % contoursize] << "   " << contour_[(i + k) % contoursize] << "  "<<length_l << "  " << length_r << endl;
+						
 			double length_op = 0;
 			double angle = 2; 
 			int f = 0;
-		
-			while (length_l < dmax && length_r < dmax)
+			if (length_l < dmax && length_r < dmax)
 			{
-				length_op = length_two_point2f(contour_[(i + contoursize - k) % contoursize], contour_[(i + k) % contoursize]);
-				double angle1 = cos_3edges(length_l, length_r, length_op);
-				if (angle1 < angle_cos)  //角度大于angle_cos的度数
+				while (length_l < dmax && length_r < dmax)
 				{
-					f = 1;
-					break;
-				}
-				else
-				{
-					if (angle1 < angle) angle = angle1;    //满足条件的所有角里度数最大的那个
-					k++;
-					length_l = length_two_point2f(contour_[i], contour_[(i + contoursize - k) % contoursize]);
-					length_r = length_two_point2f(contour_[i], contour_[(i + k) % contoursize]);
+					length_op = length_two_point2f(contour_[(i + contoursize - k) % contoursize], contour_[(i + k) % contoursize]);
+					double angle1 = cos_3edges(length_l, length_r, length_op);
+					//cout << "angle1: " << angle1 << "  angle_cos:  " << angle_cos << endl;
+					if (angle1 < angle_cos)  //角度大于angle_cos的度数
+					{
+						f = 1;
+						break;
+					}
+					else
+					{
+						if (angle1 < angle) angle = angle1;    //满足条件的所有角里度数最大的那个
+						k++;
+						length_l = length_two_point2f(contour_[i], contour_[(i + contoursize - k) % contoursize]);
+						length_r = length_two_point2f(contour_[i], contour_[(i + k) % contoursize]);
+						//cout << k << "  " << contour_[i] << "   " << contour_[(i + contoursize - k) % contoursize] << "   " << contour_[(i + k) % contoursize] << "  " << length_l << "  " << length_r << endl;
+					}
 				}
 			}
+			else
+			{
+				length_op = length_two_point2f(contour_[(i + contoursize - k) % contoursize], contour_[(i + k) % contoursize]);
+				angle = cos_3edges(length_l, length_r, length_op);
+				//cout << "angle1: " << angle1 << "  angle_cos:  " << angle_cos << endl;
+				//角度大于angle_cos的度数
+				if (angle < angle_cos) f = 1;
+			}
+			
 			if (f == 0 && angle != 2)
 			{
 				if (index_num.empty()) 
@@ -1644,6 +1652,7 @@ namespace Tiling_tiles{
 					angle_start = angle;
 					angle_back = angle;
 					index_num.push_back(i);
+					//cout << "input fea: " << i << endl;
 				}
 				else
 				{
@@ -1667,6 +1676,7 @@ namespace Tiling_tiles{
 								if (index_num.empty())
 									angle_start = angle;
 								index_num.push_back(i);
+								//cout << "index_num.pop   input fea: " << i << endl;
 							}
 						}
 						else
@@ -1680,7 +1690,6 @@ namespace Tiling_tiles{
 								index_num.push_back(i);
 							}
 						}
-						
 					}	
 				}	
 			}
@@ -1695,7 +1704,7 @@ namespace Tiling_tiles{
 				index_num.swap(index2);
 				//index_num[0] = index_num.back();
 			}
-			index_num.pop_back();			
+			else index_num.pop_back();			
 		}
 		return index_num;
 	}
@@ -1886,7 +1895,7 @@ namespace Tiling_tiles{
 			contour_sam.pop_back();
 			contour_sam_index.pop_back();
 		}
-
+		cout << "contour_sam: " << contour_sam.size() << endl;
 		return contour_sam;
 	}
 
