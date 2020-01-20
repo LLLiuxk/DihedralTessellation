@@ -140,7 +140,7 @@ int main(int argc, char** argv)
 	if (f == 0) //已有dataset, 计算结果
 	{
 
-		tiling_opt->tiliing_generation("500");
+		tiling_opt->tiliing_generation("499");
 
 		//批量计算
 		//int iii[20] = {48,75,80,124,220,218,212,228,248,251,280,312,317};//{484,483,482,482,480,479,478,474,472,467,451}; 
@@ -159,7 +159,7 @@ int main(int argc, char** argv)
 		int cand_one = 1;
 		//jointPat sim_mid = tiling_opt->simulation_tar("307", inner_one, cand_one);  //
 
-		tiling_opt->simulation_specify("500");
+		tiling_opt->simulation_specify("499");
 		//int mid = 0;
 		//vector<Point2f> new_c = tiling_opt->construct_joint(sim_mid,mid);
 		///*string file = "D:\\show\\model1.obj";
@@ -224,7 +224,7 @@ int main(int argc, char** argv)
 	}
 	if (f == 2) //批量读图
 	{
-		string image = "500";//int2string(i);
+		string image = "499";//int2string(i);
 
 		prototile_first->txtpath = "D:\\VisualStudioProjects\\DihedralTessellation\\contours\\";
 		prototile_first->dataroot = "D:\\VisualStudioProjects\\DihedralTessellation\\dataset\\";

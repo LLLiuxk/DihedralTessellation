@@ -1600,8 +1600,16 @@ namespace Tiling_tiles{
 		double angle_start = 2; //起始点对应的值
 		int contoursize = contour_.size();
 		double arl = arcLength(contour_, true);
-		dmin = dmin * arl / 500;
-		dmax = dmax * arl / 500;
+		if (contoursize<100)
+		{
+			dmin = dmin * arl / 200;
+			dmax = dmax * arl / 200;
+		}
+		else
+		{
+			dmin = dmin * arl / contoursize;
+			dmax = dmax * arl / contoursize;
+		}
 		double dmid = dmin * 3;
 		//cout << dmin << "  " << dmax << "  " << dmid << endl;
 		for (int i = 0; i < contoursize; i++)
@@ -1895,7 +1903,7 @@ namespace Tiling_tiles{
 			contour_sam.pop_back();
 			contour_sam_index.pop_back();
 		}
-		cout << "contour_sam: " << contour_sam.size() << endl;
+		//cout << "contour_sam: " << contour_sam.size() << endl;
 		return contour_sam;
 	}
 

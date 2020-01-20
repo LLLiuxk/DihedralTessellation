@@ -468,12 +468,22 @@ namespace Tiling_tiles{
 		ttt.push_back(p_p_index[fourindex[2]]);
 		ttt.push_back(p_p_index[fourindex[3]]);
 		vector<int> dd;
-		dd.push_back(p_p_index[17]);
-		dd.push_back(p_p_index[36]);
+		dd.push_back(p_p_index[0]);
+		dd.push_back(p_p_index[25]);
+
+		Mat draw1 = Mat(1600, 1600, CV_8UC3, Scalar(255, 255, 255));
+		for (int j = 0; j < prototile_first->contour.size(); j++)
+		{
+			circle(draw1, prototile_first->contour[j] + Point2f(400, 400), 2, Scalar(0,0,0), -1);
+		}
+		circle(draw1, prototile_first->contour[dd[0]] + Point2f(400, 400), 2, Scalar(0, 0, 255), -1);
+		circle(draw1, prototile_first->contour[dd[1]] + Point2f(400, 400), 2, Scalar(0, 0, 255), -1);
+		imshow("dadas", draw1);
+
 		string point_id = int2string(fourindex[0]) + "-" + int2string(fourindex[1]) + "-" + int2string(fourindex[2]) + "-" + int2string(fourindex[3]);
 		std::cout << "ttt: " << ttt.size() << endl;
 		vector<Point_f> cont_orig = prototile_first->contour_f;
-		vector<Point_f> cont_rota = prototile_first->contour_r; //旋转暂时用500个点
+		vector<Point_f> cont_rota = prototile_first->contour_r; 
 		//int contsize = contour_.size();
 		//Point2f cent_cont = center_p(contour_);
 		//vector<Point2f> contour_ = prototile_first->contour;
@@ -803,7 +813,7 @@ namespace Tiling_tiles{
 		{
 			for (int j = i + 1; j < ppindex; j++)
 			{
-				//cout << i << " " << part_points_index[i] << "  " << j << "  "<<part_points_index[j];
+				cout << i << " " << part_points_index[i] << "  " << j << "  "<<part_points_index[j];
 				//vector<Point2f> inner_contour;
 				//vector<int> mid_interval; //mid_interval存储的是组合成的inner 的分段连接点
 				vector<int> mark_13;
@@ -811,7 +821,7 @@ namespace Tiling_tiles{
 				mark_13.push_back(part_points_index[j]);
 				vector<vector<Point2f>> all_result_p = find_rota_tilingV(contour_rota, mark_13, insert_points);
 				int allresultsize = all_result_p.size();
-				//cout << "  allresultsize: " << allresultsize << endl;
+				cout << "  allresultsize: " << allresultsize << endl;
 				for (int num = 0; num < allresultsize; num++)  //一般allresultsize=1，偶尔会出现多个
 				{
 					allindexsize++; //统计共有多少个可能的四个点
@@ -832,7 +842,7 @@ namespace Tiling_tiles{
 								index_min = n;
 							}
 						}
-						//cout << cr_r[index_min].point << "    :     " << replace_p[m] << endl;
+						cout << cr_r[index_min].point << "    :     " << replace_p[m] << endl;
 						cr_r[index_min].point = replace_p[m];
 						cr_r[index_min].type = 3;
 						result_index.push_back(index_min);
@@ -1181,7 +1191,7 @@ namespace Tiling_tiles{
 				{
 					double leng1 = length_two_point2f(left_sec[j], center);
 					double leng2 = length_two_point2f(right_sec[t], center);
-					if (abs(leng1 - leng2) < 0.01)  //长度符合要求，进行下一步处理
+					if (abs(leng1 - leng2) < 1)  //长度符合要求，进行下一步处理
 					{
 						vector<Point2f> result_points;   //记录四个点的坐标，存储到all_result_points中
 						result_points.push_back(cont[mark_13[0]]);
@@ -2669,7 +2679,7 @@ namespace Tiling_tiles{
 		if (abs(length_two_point2f(contour_s[results[2]].point, cross_p) - length_two_point2f(contour_s[results[0]].point, cross_p)) > 5) return false;
 		if (abs(length_two_point2f(contour_s[results[3]].point, cross_p) - length_two_point2f(contour_s[results[1]].point, cross_p)) > 5) return false;
 		int csize = contour_s.size();
-		cout << "csize: " << csize << endl;
+		//cout << "csize: " << csize << endl;
 		// 提取旋转围成的轮廓
 		vector<vector<Point_f>> four_place;
 		vector<Point2f> one_loca = p_f2p2f(contour_s);
@@ -2688,7 +2698,7 @@ namespace Tiling_tiles{
 				four_place[i + 1][g].point = one_loca[g];
 			}     			                                                                             
 		}
-		/*Mat draw1 = Mat(1600, 1600, CV_8UC3, Scalar(255, 255, 255));
+		Mat draw1 = Mat(1600, 1600, CV_8UC3, Scalar(255, 255, 255));
 		for (int i = 0; i < 4; i++)
 		{
 			Scalar color = Scalar(255 - 80 * i, 0, 80 * i);
@@ -2697,7 +2707,7 @@ namespace Tiling_tiles{
 				circle(draw1, four_place[i][j].point+ Point2f(400,400), 2, color, -1);
 			}
 		}
-		imshow("dadas",draw1);*/
+		imshow("dadas",draw1);
 		
 		//rotation的提取规律为1的1-4，4的4-3,3的3-2,2的2-1
 		//               ②    ③            共有①②③④四个图案，
@@ -2727,7 +2737,7 @@ namespace Tiling_tiles{
 
 		if (vertex_angle(a[0], a[0]) || vertex_angle(a[1], a[1]) || vertex_angle(a[2], a[2]) || vertex_angle(a[3], a[3]))
 		{
-			//cout << "vertex collision!" << endl;
+			cout << "vertex collision!" << endl;
 			return false; //到这里用时0.009s
 		}
 		for (int i = 0; i < 4; i++)
@@ -2736,7 +2746,7 @@ namespace Tiling_tiles{
 			{
 				if (coll_detec_bbx(p_f2p2f(four_place[i]), p_f2p2f(four_place[j]), 50) || coll_detec_geometry(p_f2p2f(four_place[i]), p_f2p2f(four_place[j]), 2))
 				{
-					//cout << "collision!!!!!" << endl;
+					cout << "collision!!!!!" << endl;
 					return false;
 				}
 			}
